@@ -124,10 +124,15 @@ if __name__ == "__main__":
 
 	filemanager = ROOT.FileManager()
 
+	#ROOT.gROOT.ForceStyle()
+
 
 	filemanager.AddItem("signal", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted_mvanew.root", "tree")
 	filemanager.AddItem("bkgnoresponse", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPH1-3Run2018B_converted.root", "tree")
 	filemanager.AddItem("background", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPHRun2018B_converted_mvanew.root", "tree")
+	filemanager.AddItem("oldroc",  "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "xgboOptimized/scikit-like_ROC")
+	#filemanager.AddItem("TMVAROC", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "xgboOptimized/TMVA-like_ROC")
+	#filemanager.AddItem("bkgEff", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "xgboOptimized/bkgEff(sigEff)")
 
 	filemanager.OpenAllItems()
 
@@ -171,8 +176,26 @@ if __name__ == "__main__":
 
 	canv = ROOT.TCanvas("canv", "canv", 800, 600)
 	graph = ROOT.TGraph(len(bkgeff), np.asarray(sigeff, "d"), np.asarray(bkgeff, "d"))
-	graph.Draw()
+	oldgraph = filemanager.GetItem("oldroc")
+	oldgraph.Draw("AP")
+	graph.Draw("SAME P")
 	canv.Draw()
+	graph.SetMarkerColor(ROOT.kBlue)
+	oldgraph.SetMarkerColor(ROOT.kGreen)
+	#oldgraph.SetLineColor(ROOT.kGreen)
+	oldgraph.SetMarkerSize(1)
+	oldgraph.SetMarkerStyle(8)
+
+	legend = ROOT.TLegend(0.6, 0.2, 0.9, 0.3)
+	legend.AddEntry(oldgraph, "Initial variables")
+	legend.AddEntry(graph, "New variables")
+	legend.SetBorderSize(0)
+  	legend.SetFillColor(0)
+  	legend.SetTextSize(0.04)
+	legend.Draw()
+
+	oldgraph.GetXaxis().SetTitleSize(0.04)
+	oldgraph.GetYaxis().SetTitleSize(0.04)
 	canv.Print(outputfolder+"NewRoc.pdf")
 
 

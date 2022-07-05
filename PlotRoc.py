@@ -100,6 +100,30 @@ def getStatsBox(histogram):  #Works
 	return stats
 
 
+def GetFom(sigeffs, bkgeffs, sigInSample=1., bkgInSample=1): 
+
+	assert(len(sigeffs) == len(bkgeffs))
+	numPoints = len(sigeffs)
+
+	FOM = ROOT.TH1D("FOM", "", numPoints, -1., 1.)
+
+	for point in range(0, numPoints): 
+		sigEff = sigeffs[point]
+		bkgEff = bkgeffs[point]
+		
+		print "Sig eff: {}, bkg eff: {}".format(sigEff, bkgEff)
+
+		B = bkgInSample*bkgEff
+		S = sigInSample*sigEff
+
+		Sigma = 0 if (B == 0) else S/math.sqrt(B) #Sigma = 0 if (S+B == 0) else S/math.sqrt(S+B)
+
+		FOM.SetBinContent(point, Sigma)
+		#FOM.SetBinError(point, error)
+
+	return FOM
+
+
 # Web publication
 if (webpublication): 
 	webfolder = "/eos/home-m/mhuwiler/www/Analysis/MVAinputVariables/"
@@ -197,6 +221,20 @@ if __name__ == "__main__":
 	oldgraph.GetXaxis().SetTitleSize(0.04)
 	oldgraph.GetYaxis().SetTitleSize(0.04)
 	canv.Print(outputfolder+"NewRoc.pdf")
+
+
+	sigeffcorr = np.sort(sigeff)
+	bkgeffcorr = np.ones(len(bkgeff)) - np.sort(bkgeff)
+
+	print sigeffcorr 
+	print bkgeffcorr
+
+	fom = GetFom(sigeffcorr, bkgeffcorr)
+
+	fomcanvas = ROOT.TCanvas("fomcanvas", "fomcanvas", 800, 600)
+	fom.Draw()
+	fomcanvas.Draw()
+	fomcanvas.Print(outputfolder+"Fom.pdf")
 
 
 

@@ -234,7 +234,7 @@ xgbo_classifier.save_model(features, model="optimized")
 
 print "Training results: "
 print "xgboost: {}".format(model_default.get_score(importance_type='gain'))
-print "default: {}".format(trainingroptimized.get_score(importance_type='gain'))
+print "default: {}".format(trainingdefault.get_score(importance_type='gain'))
 print "optimized: {}".format(trainingroptimized.get_score(importance_type='gain'))
 
 

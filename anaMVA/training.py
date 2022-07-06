@@ -88,27 +88,28 @@ numLoad = testSize*options.trainEvents
 
 
 
-features = ["BsDstarTauNu_mu1_q", "BsDstarTauNu_D0_pt", "BsDstarTauNu_D0_eta", "BsDstarTauNu_D0_phi", "BsDstarTauNu_D0_vprob", "BsDstarTauNu_D0_fl3d", "BsDstarTauNu_D0_fls3d",
+features = [ "BsDstarTauNu_D0_pt", "BsDstarTauNu_D0_eta", "BsDstarTauNu_D0_phi", "BsDstarTauNu_D0_vprob", "BsDstarTauNu_D0_fl3d", "BsDstarTauNu_D0_fls3d",
 	"BsDstarTauNu_Ds_pt", "BsDstarTauNu_Ds_eta", "BsDstarTauNu_Ds_phi", "BsDstarTauNu_Ds_vprob", "BsDstarTauNu_Ds_fl3d", "BsDstarTauNu_Ds_fls3d",
 	"BsDstarTauNu_D0_lip", "BsDstarTauNu_D0_lips", "BsDstarTauNu_D0_pvip", "BsDstarTauNu_Ds_lip", "BsDstarTauNu_Ds_lips", "BsDstarTauNu_Ds_pvip", 
-	"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_q", "BsDstarTauNu_tau_fl3d", "BsDstarTauNu_tau_fls3d", "BsDstarTauNu_tau_vprob", 
+	"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_fl3d", "BsDstarTauNu_tau_fls3d", "BsDstarTauNu_tau_vprob", 
 	"BsDstarTauNu_tau_lip", "BsDstarTauNu_tau_lips", "BsDstarTauNu_tau_pvip", "BsDstarTauNu_tau_pvips", "BsDstarTauNu_tau_alpha", "BsDstarTauNu_tau_max_dr_3prong", 
-	"BsDstarTauNu_tau_pi1_pt", "BsDstarTauNu_tau_pi1_eta", "BsDstarTauNu_tau_pi1_phi", "BsDstarTauNu_tau_pi1_charge", 
-	"BsDstarTauNu_tau_pi2_pt", "BsDstarTauNu_tau_pi2_eta", "BsDstarTauNu_tau_pi2_phi", "BsDstarTauNu_tau_pi2_charge", 
-	"BsDstarTauNu_tau_pi3_pt", "BsDstarTauNu_tau_pi3_eta", "BsDstarTauNu_tau_pi3_phi", "BsDstarTauNu_tau_pi3_charge", 
-	"BsDstarTauNu_k_charge", "BsDstarTauNu_pi_charge", "BsDstarTauNu_spi_charge", 
-	"BsDstarTauNu_mu1_vx", "BsDstarTauNu_mu1_vy", "BsDstarTauNu_mu1_vz", ]    # *list* of features (branch names)
+	"BsDstarTauNu_tau_pi1_pt", "BsDstarTauNu_tau_pi1_eta", "BsDstarTauNu_tau_pi1_phi", 
+	"BsDstarTauNu_tau_pi2_pt", "BsDstarTauNu_tau_pi2_eta", "BsDstarTauNu_tau_pi2_phi", 
+	"BsDstarTauNu_tau_pi3_pt", "BsDstarTauNu_tau_pi3_eta", "BsDstarTauNu_tau_pi3_phi", 
+	"BsDstarTauNu_tau_sumofdnn", 
+	#"BsDstarTauNu_k_charge", "BsDstarTauNu_pi_charge", "BsDstarTauNu_spi_charge", 
+	 ]    # *list* of features (branch names) "BsDstarTauNu_mu1_vx", "BsDstarTauNu_mu1_vy", "BsDstarTauNu_tau_pi1_charge", "BsDstarTauNu_tau_pi2_charge", "BsDstarTauNu_tau_pi3_charge", "BsDstarTauNu_mu1_q", "BsDstarTauNu_tau_q", "BsDstarTauNu_mu1_vz",
 
-features_save = [("BsDstarTauNu_mu1_q", "I"), ("BsDstarTauNu_D0_pt", "F"), ("BsDstarTauNu_D0_eta", "F"), ("BsDstarTauNu_D0_phi", "F"), ("BsDstarTauNu_D0_vprob", "F"), ("BsDstarTauNu_D0_fl3d", "F"), ("BsDstarTauNu_D0_fls3d", "F"),
+features_save = [("BsDstarTauNu_D0_pt", "F"), ("BsDstarTauNu_D0_eta", "F"), ("BsDstarTauNu_D0_phi", "F"), ("BsDstarTauNu_D0_vprob", "F"), ("BsDstarTauNu_D0_fl3d", "F"), ("BsDstarTauNu_D0_fls3d", "F"),
 	("BsDstarTauNu_Ds_pt", "F"), ("BsDstarTauNu_Ds_eta", "F"), ("BsDstarTauNu_Ds_phi", "F"), ("BsDstarTauNu_Ds_vprob", "F"), ("BsDstarTauNu_Ds_fl3d", "F"), ("BsDstarTauNu_Ds_fls3d", "F"), 
 	("BsDstarTauNu_D0_lip", "F"), ("BsDstarTauNu_D0_lips", "F"), ("BsDstarTauNu_D0_pvip", "F"), ("BsDstarTauNu_Ds_lip", "F"), ("BsDstarTauNu_Ds_lips", "F"), ("BsDstarTauNu_Ds_pvip", "F"), 
-	("BsDstarTauNu_tau_pt", "F"), ("BsDstarTauNu_tau_eta", "F"), ("BsDstarTauNu_tau_phi", "F"), ("BsDstarTauNu_tau_q", "I"), ("BsDstarTauNu_tau_fl3d", "F"), ("BsDstarTauNu_tau_fls3d", "F"), ("BsDstarTauNu_tau_vprob", "F"), 
+	("BsDstarTauNu_tau_pt", "F"), ("BsDstarTauNu_tau_eta", "F"), ("BsDstarTauNu_tau_phi", "F"), ("BsDstarTauNu_tau_fl3d", "F"), ("BsDstarTauNu_tau_fls3d", "F"), ("BsDstarTauNu_tau_vprob", "F"), 
 	("BsDstarTauNu_tau_lip", "F"), ("BsDstarTauNu_tau_lips", "F"), ("BsDstarTauNu_tau_pvip", "F"), ("BsDstarTauNu_tau_pvips", "F"), ("BsDstarTauNu_tau_alpha", "F"), ("BsDstarTauNu_tau_max_dr_3prong", "F"), 
-	("BsDstarTauNu_tau_pi1_pt", "F"), ("BsDstarTauNu_tau_pi1_eta", "F"), ("BsDstarTauNu_tau_pi1_phi", "F"), ("BsDstarTauNu_tau_pi1_charge", "F"), 
-	("BsDstarTauNu_tau_pi2_pt", "F"), ("BsDstarTauNu_tau_pi2_eta", "F"), ("BsDstarTauNu_tau_pi2_phi", "F"), ("BsDstarTauNu_tau_pi2_charge", "F"), 
-	("BsDstarTauNu_tau_pi3_pt", "F"), ("BsDstarTauNu_tau_pi3_eta", "F"), ("BsDstarTauNu_tau_pi3_phi", "F"), ("BsDstarTauNu_tau_pi3_charge", "F"), 
-	("BsDstarTauNu_k_charge", "F"), ("BsDstarTauNu_pi_charge", "F"), ("BsDstarTauNu_spi_charge", "F"), 
-	("BsDstarTauNu_mu1_vx", "F"), ("BsDstarTauNu_mu1_vy", "F"), ("BsDstarTauNu_mu1_vz", "F")]
+	("BsDstarTauNu_tau_pi1_pt", "F"), ("BsDstarTauNu_tau_pi1_eta", "F"), ("BsDstarTauNu_tau_pi1_phi", "F"), 
+	("BsDstarTauNu_tau_pi2_pt", "F"), ("BsDstarTauNu_tau_pi2_eta", "F"), ("BsDstarTauNu_tau_pi2_phi", "F"), 
+	("BsDstarTauNu_tau_pi3_pt", "F"), ("BsDstarTauNu_tau_pi3_eta", "F"), ("BsDstarTauNu_tau_pi3_phi", "F"), ("BsDstarTauNu_tau_sumofdnn", "F"), 
+	#("BsDstarTauNu_k_charge", "F"), ("BsDstarTauNu_pi_charge", "F"), ("BsDstarTauNu_spi_charge", "F"), 
+	] #("BsDstarTauNu_mu1_vx", "F"), ("BsDstarTauNu_mu1_vy", "F"), ("BsDstarTauNu_tau_pi1_charge", "F"), ("BsDstarTauNu_tau_pi2_charge", "F"), ("BsDstarTauNu_tau_pi3_charge", "F"), ("BsDstarTauNu_mu1_q", "I"), ("BsDstarTauNu_tau_q", "I"), ("BsDstarTauNu_mu1_vz", "F")
 
 print "Features: {}".format(len(features))
 print "To be saved: {}".format(len(features_save))
@@ -131,8 +132,8 @@ from loadSamples import loadSamples
 samples = loadSamples(featuresToLoad, numLoad)
 
 
-signal = [samples["signalfloat"]]
-background = [samples["backgroundfloat"]]
+signal = [samples["signal"]]
+background = [samples["background"]]
 
 
 print "Background composition: {}".format(background[0].keys())

@@ -21,13 +21,13 @@ def loadSamples(features, eventFraction=-1) :
 
 	samples={}
 
-	samples["signal"] = uproot.open(os.path.expandvars(path+"all.root"))["ntuplizer/tree"].pandas.df(branches=features, entrystop=numEvents) #Dict-like structure 
-	samples["background"] = uproot.open(os.path.expandvars(path+"allDataYet.root"))["ntuplizer/tree"].pandas.df(branches=features, entrystop=numEvents)
+	samples["signal"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents) #Dict-like structure 
+	samples["background"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPH1-3Run2018B_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)
 
-	samples["signalfloatgendstar"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/PrivateProductionGenDstar_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)
-	samples["signalfloat"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)
-	samples["backgroundfloat"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPH1-3Run2018B_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)
-	samples["backgroundfloatprevious"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/DataVeryLarge_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)
+	#samples["signalfloatgendstar"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/PrivateProductionGenDstar_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)
+	#samples["signalfloat"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)
+	#samples["backgroundfloat"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPH1-3Run2018B_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)
+	#samples["backgroundfloatprevious"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/DataVeryLarge_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)
 	
 
 	return samples

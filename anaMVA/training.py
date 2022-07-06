@@ -220,17 +220,20 @@ model_default = xgb.train(params, xgtrain, num_boost_round=1000)
 """
 Next we try out the xgbo package.
 """
-from xgbo import XgboClassifier
+from xgbo.xgbo.xgbo import XgboClassifier
 
 xgbo_classifier = XgboClassifier(out_dir=options.outputpath)
 
 xgbo_classifier.optimize(xgtrain, init_points=options.nPoints, n_iter=options.nRounds, acq='ei')
 
 xgbo_classifier.fit(xgtrain, model="default")
-xgbo_classifier.fit(xgtrain, model="optimized")
+trainingresults = xgbo_classifier.fit(xgtrain, model="optimized")
 
 xgbo_classifier.save_model(features, model="default")
 xgbo_classifier.save_model(features, model="optimized")
+
+print "Training results: "
+print trainingresults.get_score(importance_type='gain')
 
 
 """

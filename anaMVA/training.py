@@ -46,6 +46,28 @@ Additionally, we do not want to consider electrons from tau decays, which are
 encoded with "matchedToGenEle == 2".
 """
 
+def WriteImportanceToFile(filename, standard = None, default = None, optimized = None, importance = 'gain'): 
+	with open(filename, "w") as file:
+		if not (standard == None): 
+			file.write("XGBoost standard:\n")
+			for key, value in standard.get_score(importance_type=importance).iteritems(): 
+				file.write("{} : {}\n".format(key, value))
+			file.write("\n")
+
+		if not (default == None): 
+			file.write("XGBO default:\n")
+			for key, value in default.get_score(importance_type=importance).iteritems(): 
+				file.write("{} : {}\n".format(key, value))
+			file.write("\n")
+
+		if not (optimized == None): 
+			file.write("XGBO optimized:\n")
+			for key, value in optimized.get_score(importance_type=importance).iteritems(): 
+				file.write("{} : {}\n".format(key, value))
+			file.write("\n")
+
+
+
 debug = 1
 weighted = False
 
@@ -236,6 +258,8 @@ print "Training results: "
 print "xgboost: {}".format(model_default.get_score(importance_type='gain'))
 print "default: {}".format(trainingdefault.get_score(importance_type='gain'))
 print "optimized: {}".format(trainingroptimized.get_score(importance_type='gain'))
+
+WriteImportanceToFile(options.outputpath+"/featureImprtance.txt", model_default, trainingdefault, trainingroptimized)
 
 
 """

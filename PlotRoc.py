@@ -224,7 +224,7 @@ if __name__ == "__main__":
 
 
 	sigeffcorr = np.sort(sigeff)
-	bkgeffcorr = np.ones(len(bkgeff)) - np.sort(bkgeff)
+	bkgeffcorr = np.sort(bkgeff) #np.ones(len(bkgeff)) - np.sort(bkgeff)
 
 	print sigeffcorr 
 	print bkgeffcorr

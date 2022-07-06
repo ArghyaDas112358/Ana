@@ -194,12 +194,12 @@ if __name__ == "__main__":
 	truths = np.concatenate([sigtruth, bkgtruth])
 
 	print "Starting to compute ROC curve... "
-	sigeff, bkgeff, _ = roc_curve(truths, labels)
+	bkgeff, sigeff, _ = roc_curve(truths, labels)
 	print "Computed ROC curve. "
 
 
 	canv = ROOT.TCanvas("canv", "canv", 800, 600)
-	graph = ROOT.TGraph(len(bkgeff), np.asarray(sigeff, "d"), np.asarray(bkgeff, "d"))
+	graph = ROOT.TGraph(len(bkgeff), np.asarray(bkgeff, "d"), np.asarray(sigeff, "d"))
 	oldgraph = filemanager.GetItem("oldroc")
 	oldgraph.Draw("AP")
 	graph.Draw("SAME P")

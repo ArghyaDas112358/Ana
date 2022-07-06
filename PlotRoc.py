@@ -118,7 +118,7 @@ def GetFom(sigeffs, bkgeffs, sigInSample=1., bkgInSample=1):
 
 		Sigma = 0 if (B == 0) else S/math.sqrt(B) #Sigma = 0 if (S+B == 0) else S/math.sqrt(S+B)
 
-		FOM.SetBinContent(point, Sigma)
+		FOM.SetBinContent(numPoints -1 - point, Sigma)
 		#FOM.SetBinError(point, error)
 
 	return FOM

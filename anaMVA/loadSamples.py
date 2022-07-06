@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-import uproot
+import uproot3 as uproot
 
 
 

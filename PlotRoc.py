@@ -233,6 +233,8 @@ if __name__ == "__main__":
 
 	fomcanvas = ROOT.TCanvas("fomcanvas", "fomcanvas", 800, 600)
 	fom.Draw()
+	fom.SetMarkerColor(ROOT.kGreen)
+	fom.SetMarkerSize(2)
 	fomcanvas.Draw()
 	fomcanvas.Print(outputfolder+"Fom.pdf")
 

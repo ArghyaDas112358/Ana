@@ -286,7 +286,7 @@ class XgboFitter(object):
             params["n_estimators"] = self._early_stops[np.argmax(self._bo.res["all"]["values"])]
 
         self._models[model] = xgb.train(params, xgtrain, params["n_estimators"], verbose_eval=10) #watchlist = [(xgtrain, 'train')]
-        print self._models[model].get_score(importance_type='gain')
+        #print self._models[model].get_score(importance_type='gain')
         return self._models[model]
 
     def predict(self, xgtest, model="optimized"):

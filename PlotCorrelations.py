@@ -32,6 +32,9 @@ print sigcorrelations.iloc[1, 1]
 
 histo = ROOT.TH2D("signalcorrelations", "signalcorrelations", Nx, 0, Nx, Ny, 0, Ny)
 
+labels = sigcorrelations.head()
+print labels
+
 for i in range(0, Nx): 
 	for j in range(0, Ny): 
 		entry = sigcorrelations.iloc[i, j]

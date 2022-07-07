@@ -32,13 +32,23 @@ print sigcorrelations.iloc[1, 1]
 
 histo = ROOT.TH2D("signalcorrelations", "signalcorrelations", Nx, 0, Nx, Ny, 0, Ny)
 
-labels = sigcorrelations.head()
+labels = list(sigcorrelations.columns.values)
 print labels
+labelsy = list(sigcorrelations.index.values)
+print labelsy
 
 for i in range(0, Nx): 
 	for j in range(0, Ny): 
 		entry = sigcorrelations.iloc[i, j]
 		histo.SetBinContent(i, j, entry)
+
+for i, label in enumerate(labels): 
+	histo.GetXaxis().SetBinLabel(i+1, label)
+
+for i, label in enumerate(labelsy): 
+	histo.GetYaxis().SetBinLabel(i+1, label)
+
+histo.GetXaxis().LabelsOption("v")
 
 canvas = ROOT.TCanvas("canvas", "canvas", 800, 600)
 histo.Draw("COLZ")

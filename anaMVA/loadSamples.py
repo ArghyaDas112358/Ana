@@ -1,6 +1,9 @@
 import os
 import pandas as pd
-import uproot3 as uproot
+try: 
+	import uproot3 as uproot #if the latest uproot is installed we want to use a previous version
+except: 
+	import uproot
 
 
 

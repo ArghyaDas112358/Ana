@@ -17,6 +17,8 @@ features = [ "BsDstarTauNu_D0_pt", "BsDstarTauNu_D0_eta", "BsDstarTauNu_D0_phi",
 
 samples = loadSamples(features, 10000)
 
+ROOT.gStyle.SetOptStat(0)
+
 signal = samples["signal"]
 background = samples["background"]
 
@@ -30,7 +32,7 @@ Ny = len(sigcorrelations)
 
 print sigcorrelations.iloc[1, 1]
 
-histo = ROOT.TH2D("signalcorrelations", "signalcorrelations", Nx, 0, Nx, Ny, 0, Ny)
+histo = ROOT.TH2D("signalcorrelations", "Signal correlations", Nx, 0, Nx, Ny, 0, Ny)
 
 labels = list(sigcorrelations.columns.values)
 print labels
@@ -43,15 +45,21 @@ for i in range(0, Nx):
 		histo.SetBinContent(i, j, entry)
 
 for i, label in enumerate(labels): 
+	label = label.replace("BsDstarTauNu_", "")
 	histo.GetXaxis().SetBinLabel(i+1, label)
 
 for i, label in enumerate(labelsy): 
+	label = label.replace("BsDstarTauNu_", "")
 	histo.GetYaxis().SetBinLabel(i+1, label)
 
 histo.GetXaxis().LabelsOption("v")
 
+
 canvas = ROOT.TCanvas("canvas", "canvas", 800, 600)
 histo.Draw("COLZ")
+canvas.SetLeftMargin(0.15)
+canvas.SetBottomMargin(0.15)
+canvas.Draw()
 canvas.Print("testcorrelations.pdf")
 
 

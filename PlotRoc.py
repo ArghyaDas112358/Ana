@@ -118,7 +118,17 @@ def GetFom(sigeffs, bkgeffs, sigInSample=1., bkgInSample=1):
 
 		Sigma = 0 if (B == 0) else S/math.sqrt(B) #Sigma = 0 if (S+B == 0) else S/math.sqrt(S+B)
 
+		factor = 0.1
+		factordenom = 0.0000001
+		corrB = factor if (bkgInSample*bkgEff < factor) else bkgInSample*bkgEff
+		corrS = factor if (sigInSample*sigEff < factor) else sigInSample*sigEff
+		corrSigma = factordenom if (Sigma < factordenom) else Sigma
+
+		# Error commputation taken from slide 13 in: /https://indico.cern.ch/event/66256/contributions/2071577/attachments/1017176/1447814/EfficiencyErrors.pdf
+		error = math.sqrt((S+1)*(S+2) - (S+1)*(S+1))/((B+2)*(B+3)-(B+2)*(B+2)) #(math.sqrt(corrB)/corrB)*(math.sqrt(corrS)/corrS)*corrSigma # *bkgInSample*sigInSample
+
 		FOM.SetBinContent(numPoints -1 - point, Sigma)
+		FOM.SetBinError(numPoints -1 - point, error)
 		#FOM.SetBinError(point, error)
 
 	return FOM
@@ -231,9 +241,36 @@ if __name__ == "__main__":
 
 	fom = GetFom(sigeffcorr, bkgeffcorr)
 
+	# Margins 
+	leftmargin = 0.1
+	rightmargin = 0.1
+	bottommargin = 0.15
+	topmargin = 0.1
+
 	fomcanvas = ROOT.TCanvas("fomcanvas", "fomcanvas", 800, 600)
-	fom.Draw()
+	fomcanvas.SetMargin(leftmargin, rightmargin, bottommargin, topmargin); 
+	signalDist = ROOT.RDataFrame(filemanager.GetItem("signal")).Filter("mvaScore>-1").Histo1D("mvaScore")
+	bkgDist = ROOT.RDataFrame(filemanager.GetItem("background")).Filter("mvaScore>-1").Histo1D("mvaScore")
+	fom.Draw("E")
+	fomcanvas.cd()
+	pad = ROOT.TPad("pad", "pad", 0., 0., 1., 1.)
+	pad.SetMargin(leftmargin, rightmargin, bottommargin, topmargin); 
+	pad.SetBorderSize(0)
+	pad.cd()
+	pad.SetFillColorAlpha(ROOT.kWhite, 0.); 
+	signalDist.Draw("HIST Y+") #"SAME"
+	signalDist.Scale(5./signalDist.Integral()) #1./signalDist.Integral()
+	signalDist.SetMarkerColor(ROOT.kBlue+1)
+	signalDist.SetLineColor(ROOT.kBlue+1)
+	bkgDist.Draw("HIST SAME Y+")
+	bkgDist.Scale(5./bkgDist.Integral())
+	bkgDist.SetMarkerColor(ROOT.kRed)
+	bkgDist.SetLineColor(ROOT.kRed)
+	signalDist.GetXaxis().SetRangeUser(-1., 1.)
+	fomcanvas.cd()
+	pad.Draw()
 	fom.SetLineColor(ROOT.kGreen+2)
+	#fom.SetMarkerColor(ROOT.kGreen+3)
 	#fom.SetMarkerColor(ROOT.kGreen)
 	#fom.SetMarkerStyle(1)
 	#fom.SetMarkerSize(2)

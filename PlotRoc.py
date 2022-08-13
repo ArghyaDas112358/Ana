@@ -329,6 +329,36 @@ if __name__ == "__main__":
 	line2 = ROOT.TLine(value2, bottommargin, value2, 1-topmargin)
 	line2.Draw()
 
+	label1 = ROOT.TPaveText(0.22, 0.38, 0.3, 0.45)
+	label1.AddText("modelling")
+	label1.AddText("region")
+	label1.SetBorderSize(0)
+  	label1.SetFillColor(0)
+  	label1.SetFillColorAlpha(ROOT.kWhite, 0.); 
+  	label1.SetTextSize(0.04)
+  	label1.SetTextColor(ROOT.kGray+2)
+	label1.Draw()
+
+	label2 = ROOT.TPaveText(0.45, 0.38, 0.6, 0.45)
+	label2.AddText("control")
+	label2.AddText("region")
+	label2.SetBorderSize(0)
+  	label2.SetFillColor(0)
+  	label2.SetFillColorAlpha(ROOT.kWhite, 0.); 
+  	label2.SetTextSize(0.04)
+  	label2.SetTextColor(ROOT.kGray+2)
+	label2.Draw()
+
+	label3 = ROOT.TPaveText(0.78, 0.26, 0.9, 0.34)  
+	label3.AddText("signal")
+	label3.AddText("region")
+	label3.SetBorderSize(0)
+  	label3.SetFillColor(0)
+  	label3.SetFillColorAlpha(ROOT.kWhite, 0.); 
+  	label3.SetTextSize(0.04)
+  	label3.SetTextColor(ROOT.kGray+2)
+	label3.Draw()
+
 	fomcanvas.Update()
 	fomcanvas.Print(outputfolder+"Fom.pdf")
 

@@ -133,6 +133,13 @@ def GetFom(sigeffs, bkgeffs, sigInSample=1., bkgInSample=1):
 
 	return FOM
 
+def ScaleCutToPad(cut, hist, pad):
+	leftmargin = pad.GetLeftMargin()
+	rightmargin = pad.GetRightMargin()
+	print leftmargin
+	print rightmargin
+	return leftmargin + (cut1 - hist.GetXaxis().GetXmin())/(hist.GetXaxis().GetXmax() - hist.GetXaxis().GetXmin())*(1-leftmargin-rightmargin)
+
 
 # Web publication
 if (webpublication): 
@@ -247,6 +254,9 @@ if __name__ == "__main__":
 	bottommargin = 0.15
 	topmargin = 0.1
 
+	cut1 = 0.7
+	cut2 = -0.2
+
 	ROOT.gStyle.SetPadTickY(0) # Disactivate axes on both sides
 
 	fomcanvas = ROOT.TCanvas("fomcanvas", "fomcanvas", 800, 600)
@@ -303,7 +313,21 @@ if __name__ == "__main__":
   	fomlegend.SetTextSize(0.03)
 	fomlegend.Draw()
 
-	signalDist.GetYaxis().Set
+	frac = (cut1 - fom.GetXaxis().GetXmin())/(fom.GetXaxis().GetXmax() - fom.GetXaxis().GetXmin())
+	factor = (1-leftmargin-rightmargin)
+	value1 = leftmargin + (cut1 - fom.GetXaxis().GetXmin())/(fom.GetXaxis().GetXmax() - fom.GetXaxis().GetXmin())*(1-leftmargin-rightmargin)
+	value2 = leftmargin + (cut2 - fom.GetXaxis().GetXmin())/(fom.GetXaxis().GetXmax() - fom.GetXaxis().GetXmin())*(1-leftmargin-rightmargin)
+	print fom.GetXaxis().GetXmax()
+	print fom.GetXaxis().GetXmin()
+	print frac
+	print factor
+	print frac*factor
+	print value1
+	line1 = ROOT.TLine(value1, bottommargin, value1, 1-topmargin)
+	line1.Draw()
+
+	line2 = ROOT.TLine(value2, bottommargin, value2, 1-topmargin)
+	line2.Draw()
 
 	fomcanvas.Update()
 	fomcanvas.Print(outputfolder+"Fom.pdf")

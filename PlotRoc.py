@@ -247,27 +247,45 @@ if __name__ == "__main__":
 	bottommargin = 0.15
 	topmargin = 0.1
 
+	ROOT.gStyle.SetPadTickY(0) # Disactivate axes on both sides
+
 	fomcanvas = ROOT.TCanvas("fomcanvas", "fomcanvas", 800, 600)
 	fomcanvas.SetMargin(leftmargin, rightmargin, bottommargin, topmargin); 
-	signalDist = ROOT.RDataFrame(filemanager.GetItem("signal")).Filter("mvaScore>-1").Histo1D("mvaScore")
-	bkgDist = ROOT.RDataFrame(filemanager.GetItem("background")).Filter("mvaScore>-1").Histo1D("mvaScore")
+	signalDist = ROOT.RDataFrame(filemanager.GetItem("signal")).Filter("mvaScore>-1").Histo1D(("signalDist", "signalDist", 100, -1., 1.), "mvaScore")
+	bkgDist = ROOT.RDataFrame(filemanager.GetItem("background")).Filter("mvaScore>-1").Histo1D(("bkgDist", "bkgDist", 100, -1., 1.), "mvaScore")
+	fomcanvas.cd()
+	fompad = ROOT.TPad("fompad", "fompad", 0., 0., 1., 1.)
+	fompad.SetMargin(leftmargin, rightmargin, bottommargin, topmargin); 
+	fompad.SetBorderSize(0)
+	fompad.SetFrameLineWidth(0)
+	fompad.SetFrameBorderMode(0)
+	fompad.cd()
 	fom.Draw("E")
+	fom.GetXaxis().SetRangeUser(-1., 1.)
+	fomcanvas.cd()
+	fompad.Draw()
 	fomcanvas.cd()
 	pad = ROOT.TPad("pad", "pad", 0., 0., 1., 1.)
 	pad.SetMargin(leftmargin, rightmargin, bottommargin, topmargin); 
 	pad.SetBorderSize(0)
+	pad.SetFrameLineWidth(0)
+	pad.SetFrameBorderMode(0)
+	pad.SetBorderMode(0)
 	pad.cd()
 	pad.SetFillColorAlpha(ROOT.kWhite, 0.); 
 	signalDist.Draw("HIST Y+") #"SAME"
 	signalDist.Scale(5./signalDist.Integral()) #1./signalDist.Integral()
 	signalDist.SetMarkerColor(ROOT.kBlue+1)
 	signalDist.SetLineColor(ROOT.kBlue+1)
+	signalDist.SetLineWidth(2)
 	bkgDist.Draw("HIST SAME Y+")
 	bkgDist.Scale(5./bkgDist.Integral())
 	bkgDist.SetMarkerColor(ROOT.kRed)
 	bkgDist.SetLineColor(ROOT.kRed)
+	bkgDist.SetLineWidth(2)
 	signalDist.GetXaxis().SetRangeUser(-1., 1.)
 	fomcanvas.cd()
+	pad.SetLogy()
 	pad.Draw()
 	fom.SetLineColor(ROOT.kGreen+2)
 	#fom.SetMarkerColor(ROOT.kGreen+3)
@@ -275,6 +293,19 @@ if __name__ == "__main__":
 	#fom.SetMarkerStyle(1)
 	#fom.SetMarkerSize(2)
 	fomcanvas.Draw()
+
+	fomlegend = ROOT.TLegend(0.6, 0.2, 0.85, 0.3)
+	fomlegend.AddEntry(fom, "significance")
+	fomlegend.AddEntry(signalDist.GetPtr(), "signal")
+	fomlegend.AddEntry(bkgDist.GetPtr(), "background")
+	fomlegend.SetBorderSize(0)
+  	fomlegend.SetFillColor(0)
+  	fomlegend.SetTextSize(0.03)
+	fomlegend.Draw()
+
+	signalDist.GetYaxis().Set
+
+	fomcanvas.Update()
 	fomcanvas.Print(outputfolder+"Fom.pdf")
 
 

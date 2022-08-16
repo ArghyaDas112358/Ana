@@ -21,6 +21,9 @@ class TFEvaluation:
 
         self.savedmodel = "/work/mhuwiler/software/Analysis/CMSSW_11_1_0/src/EXOVVNtuplizerRunII/Ntuplizer/data/DNN/RDLatest"
 
+        self.BATCHSIZE=10
+        self.NUM_POINT = 20
+
     def Condition(self, r):
         # Condition: returns a vector, where "True" matches the position of the rows with values 
         # False matches the positions of all-0-rows
@@ -38,8 +41,6 @@ class TFEvaluation:
 
         size = data.shape
         print('input_size =', size)
-        BATCHSIZE=10
-        NUM_POINT = 20
 
 
         print(data[0,1,:])
@@ -49,8 +50,8 @@ class TFEvaluation:
             output = sess.graph.get_tensor_by_name('Softmax_2:0') #Reshape_5:0
             
             #mock_data = np.ones((BATCHSIZE,NUM_POINT,NFEATURES),dtype=float)
-            mock_label = np.ones((BATCHSIZE,NUM_POINT),dtype=float)
-            #mock_glob = np.ones((BATCHSIZE,NGLOB),dtype=float)
+            mock_label = np.ones((self.BATCHSIZE,self.NUM_POINT),dtype=float)
+            #mock_glob = np.ones((self.BATCHSIZE,NGLOB),dtype=float)
             
         
             
@@ -58,16 +59,16 @@ class TFEvaluation:
             
             latest_num = 0
             
-            for i in range(0, math.floor(len(data)/BATCHSIZE)):
+            for i in range(0, math.floor(len(data)/self.BATCHSIZE)):
               
-            # print("Evaluating from: {} to {}".format(i*BATCHSIZE+1, (i+1)*BATCHSIZE))
+            # print("Evaluating from: {} to {}".format(i*self.BATCHSIZE+1, (i+1)*self.BATCHSIZE))
               feed_dict = {
-                'Placeholder:0': data[i*BATCHSIZE:(i+1)*BATCHSIZE],
+                'Placeholder:0': data[i*self.BATCHSIZE:(i+1)*self.BATCHSIZE],
                 'Placeholder_1:0': mock_label,
                 'Placeholder_2:0': False,
               }
               
-              latest_num = (i+1)*BATCHSIZE
+              latest_num = (i+1)*self.BATCHSIZE
               '''
               if feed_dict['Placeholder:0'].shape == (10, 20, 13):
                 pass
@@ -81,6 +82,47 @@ class TFEvaluation:
                 pred_list.append(pred)
                 pred_array = np.asarray(pred_list, dtype=object)
             return pred_array
+
+    def Evaluate(self, data): 
+        shape = data.shape
+
+        batchsize = shape[0]
+        numpoints = shape[1]
+        numvars = shape[2]
+
+        assert(batchsize == 1), "ERROR: The fuction requires a single event!"
+        if (numpoints > self.NUM_POINT): 
+            data = data[:, 0:self.NUM_POINT, :]
+
+        print(shape)
+
+        # update the shape after the consistency checks 
+        shape = data.shape
+
+        print("{}, {}, {}".format(batchsize, numpoints, numvars))
+
+        placeholder = np.zeros(shape)
+
+        dim = self.BATCHSIZE - 1
+
+        print(placeholder)
+        print(placeholder.shape)
+
+        placeholder = np.repeat(placeholder, dim, axis=0)
+
+        print(placeholder.shape)
+
+        batch = np.concatenate((data, placeholder))
+
+        print(batch.shape)
+
+        response = self.NN_response(batch)
+
+        return response[0,:,:]
+
+
+
+
 
     
     def plots_of_eta_and_pt(self, file_directory, modelpath):

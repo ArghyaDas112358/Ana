@@ -84,6 +84,7 @@ class TFEvaluation:
                 pred_array = np.asarray(pred_list, dtype=object)
             return pred_array
 
+    """
     def EvaluateBatch(self, batch): 
         with tf.Session(graph=tf.Graph()) as sess:
             tf.saved_model.loader.load(sess, [tf.saved_model.tag_constants.SERVING], self.savedmodel) #'../pretrained/{}'.format(FLAGS.name)
@@ -102,6 +103,7 @@ class TFEvaluation:
             predictions = sess.run(output, feed_dict)
 
             return predictions
+    """
             
         
 
@@ -138,7 +140,7 @@ class TFEvaluation:
 
         print(batch.shape)
 
-        response = self.EvaluateBatch(batch)
+        response = self.NN_response(batch)
 
         print(response.shape)
 

@@ -84,6 +84,27 @@ class TFEvaluation:
                 pred_array = np.asarray(pred_list, dtype=object)
             return pred_array
 
+    def EvaluateBatch(self, batch): 
+        with tf.Session(graph=tf.Graph()) as sess:
+            tf.saved_model.loader.load(sess, [tf.saved_model.tag_constants.SERVING], self.savedmodel) #'../pretrained/{}'.format(FLAGS.name)
+            output = sess.graph.get_tensor_by_name('Softmax_2:0') #Reshape_5:0
+            
+            #mock_data = np.ones((BATCHSIZE,NUM_POINT,NFEATURES),dtype=float)
+            mock_label = np.ones((self.BATCHSIZE,self.NUM_POINT),dtype=float)
+            #mock_glob = np.ones((self.BATCHSIZE,NGLOB),dtype=float)
+
+            feed_dict = {
+                'Placeholder:0': batch,
+                'Placeholder_1:0': mock_label,
+                'Placeholder_2:0': False,
+            }
+
+            predictions = sess.run(output, feed_dict)
+
+            return predictions
+            
+        
+
     def Evaluate(self, data): 
         shape = data.shape
 
@@ -117,7 +138,7 @@ class TFEvaluation:
 
         print(batch.shape)
 
-        response = self.NN_response(batch)
+        response = self.EvaluateBatch(batch)
 
         print(response.shape)
 

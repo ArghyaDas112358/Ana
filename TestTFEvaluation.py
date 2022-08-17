@@ -29,6 +29,7 @@ h1 = ROOT.TH1D("h1", "Event by event inference", 200, -0.1, 1.1)
 # make predictions
 for i in range(len(data_set[0:10])): 
     batch = data_set[i]
+    label = label_set[i]
     batch = np.expand_dims(batch, axis=0)
     print(batch.shape)
 
@@ -37,6 +38,8 @@ for i in range(len(data_set[0:10])):
     print(pred_array)
 
     column = pred_array[:,col]
+    print(label.shape)
+    column = column[label==1]
     dim = len(column)-1
     print("values {}".format(column))
     print(column.shape)
@@ -56,6 +59,8 @@ h2 = ROOT.TH1D("h2", "Batch inference", 200, -0.1, 1.1)
 # Test the legacy way 
 for i in range(0, 100, 10): 
     batch = data_set[i:i+10]
+    label = label_set[i:i+10]
+    label = np.concatenate(label, axis=0)
     print(batch.shape)
 
     prediction = evaluation.NN_response(batch)
@@ -65,6 +70,8 @@ for i in range(0, 100, 10):
     print(prediction.shape)
 
     prediction = np.concatenate(prediction, axis=0)
+
+    prediction = prediction[label==1]
 
     print(prediction.shape)
 

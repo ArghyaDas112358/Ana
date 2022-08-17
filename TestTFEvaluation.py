@@ -27,7 +27,7 @@ col = 1
 canv1 = ROOT.TCanvas("canv1", "Canvas 1", 800, 600)
 h1 = ROOT.TH1D("h1", "Event by event inference", 200, -0.1, 1.1)
 # make predictions
-for i in range(len(data_set[0:10])): 
+for i in range(len(data_set[0:100])): 
     batch = data_set[i]
     label = label_set[i]
     batch = np.expand_dims(batch, axis=0)
@@ -57,7 +57,7 @@ canv1.Print("EventInference.pdf")
 canv2 = ROOT.TCanvas("canv2", "Canvas 1", 800, 600)
 h2 = ROOT.TH1D("h2", "Batch inference", 200, -0.1, 1.1)
 # Test the legacy way 
-for i in range(0, 100, 10): 
+for i in range(0, 90, 10): 
     batch = data_set[i:i+10]
     label = label_set[i:i+10]
     label = np.concatenate(label, axis=0)
@@ -86,6 +86,7 @@ for i in range(0, 100, 10):
 
 h2.Draw()
 canv2.Draw("HIST")
+canv2.SetLogy()
 canv2.Print("BatchInference.pdf")
 
 

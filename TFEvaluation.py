@@ -10,6 +10,7 @@ import os, ast
 import sys
 import math
 from sklearn.metrics import roc_curve
+import ROOT
 
 print("Loading TFEvaluation.py")
 
@@ -19,7 +20,7 @@ class TFEvaluation:
     def __init__( self ):
         print('Initialising TFEvaluation')
 
-        self.savedmodel = "/work/mhuwiler/software/Analysis/CMSSW_11_1_0/src/EXOVVNtuplizerRunII/Ntuplizer/data/DNN/RDLatest"
+        self.savedmodel = "../../data/batchsize_10/serialized"
 
         self.BATCHSIZE=10
         self.NUM_POINT = 20
@@ -118,7 +119,9 @@ class TFEvaluation:
 
         response = self.NN_response(batch)
 
-        return response[0,:,:]
+        print(response.shape)
+
+        return response[0,:]
 
 
 
@@ -163,13 +166,37 @@ class TFEvaluation:
     def Test(self): 
         #background_test, signal_test, bkg_pred_test, signal_pred_test, labels_test, predictions_test = plots_of_eta_and_pt('/work/alorenze/bachelorthesis/TAU/test_TAU.h5', 
         #"/work/alorenze/bachelorthesis/taudnn/logs/fourthtraining/serialized/")
-        label_test, predictions_test , dataset = self.plots_of_eta_and_pt('/pnfs/psi.ch/cms/trivcat/store/user/mhuwiler/data/Analysis/taudnn/v10/test_TAU.h5', 
-        "../../data/DNN/RDLatest")
+        label_test, predictions_test , dataset = self.plots_of_eta_and_pt('../../data/v10/test_TAU.h5', 
+        "../../data/batchsize_10/serialized")
         print('shape of labels =', label_test.shape)
         print('shape of preds =', predictions_test.shape)
         print('predictions =', predictions_test) 
+        signal_mask = label_test==1
+        predictions_test = predictions_test[signal_mask]
         predictions_test = predictions_test.tolist()
         label_test = label_test.tolist()
+
+        #print(predictions_test.shape)
+
+        # ROOT plot 
+        canvas = ROOT.TCanvas("canvas", "canvas", 800, 600)
+        histo = ROOT.TH1D("histo", "histo", 200, -0.1, 1.1)
+
+        #histo.FillN(len(predictions_test)-1, np.asarray(predictions_test, "d"), np.zeros(len(predictions_test)))
+        for values in predictions_test: 
+            print(values)
+            #histo.Fill(val)
+            #histo.FillN(len(val)-1, np.asarray(val, "d"), np.zeros(len(val)))
+            for val in values: 
+                histo.Fill(val)
+
+        histo.Draw("HIST")
+        canvas.Draw()
+        canvas.Print("SignalDistribution.pdf")
+
+        with h5py.File('TestResponse.h5', "w") as f: 
+            f.create_dataset('predictions', data=predictions_test)
+            f.create_dataset('label', data=label_test)
 
 
 

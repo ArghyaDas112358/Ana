@@ -12,9 +12,14 @@ ClassImp(FileManager)
 #include <iostream>
 #include "DrawTMVAHistogram.C"
 #include "GetSeparation.C"
+#include "TPython.h"
 
 
 using namespace ROOT; 
+
+
+// To run this macro, the python class TFEvaluation.py needs to be loaded into root prior to execution. e.g.:
+// root -e 'TPython::LoadMacro("TFEvaluation.py");' ApplyTFweight.C
 
 
 void PauseUntilAnyKey() 
@@ -159,6 +164,8 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 	//auto histo1 = frame2.Histo1D("B_mass"); 
 
 	//auto histo2 = frame2.Histo2D({"Bmass_vs_Dmass", "Correlation plot between B and D masses", 100, 0., 7000., 100, 0., 5000.}, "BsDstarTauNu_B_mass", "BsDstarTauNu_D0_unfit_mass"); 
+
+	TFEvaluation eval; 
 
 	auto withWeight = dataframe.Define("TFscore", EvaluateTFresponse, {"track_pt", "track_eta", "track_phi", "track_charge", "track_doca2D", "track_doca2Derror", "track_doca", "track_docaerror", "track_dzToPV", "track_dzToClosestVertex", "track_isAssociatedToPV", "track_pvAssociationQuality", "track_isgenmatched"}); 
 

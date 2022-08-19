@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
 # welcome to the file that is made of three individual python codes: read_pb_new.py, plot_eta.py and plot_pt.py
-from __future__ import division, print_function
+#from __future__ import division, print_function
 import numpy as np
 import h5py
 import tensorflow as tf
-from argparse import ArgumentParser
-import os, ast
+#from argparse import ArgumentParser
+#import os, ast
 import sys
 import math
-from sklearn.metrics import roc_curve
-import ROOT
+#from sklearn.metrics import roc_curve
+#import ROOT
 
 print("Loading TFEvaluation.py")
 
@@ -82,7 +82,7 @@ class TFEvaluation:
               for pred in predictions:
                 pred_list.append(pred)
                 pred_array = np.asarray(pred_list, dtype=object)
-            return pred_array
+            return np.asarray(pred_array, "d")
 
     """
     def EvaluateBatch(self, batch): 
@@ -144,7 +144,7 @@ class TFEvaluation:
 
         print(response.shape)
 
-        return response[0,:]
+        return np.asarray(response[0,:], "d")
 
 
 
@@ -183,14 +183,17 @@ class TFEvaluation:
         print('short pred array =', short_pred_array.shape)
         
         #return(background, signal, pred_background, pred_signal, short_label_set, short_pred_array)
-        return(short_label_set, short_pred_array, short_data_set)
+        return [short_label_set, short_pred_array, short_data_set]
 
 
     def Test(self): 
         #background_test, signal_test, bkg_pred_test, signal_pred_test, labels_test, predictions_test = plots_of_eta_and_pt('/work/alorenze/bachelorthesis/TAU/test_TAU.h5', 
         #"/work/alorenze/bachelorthesis/taudnn/logs/fourthtraining/serialized/")
-        label_test, predictions_test , dataset = self.plots_of_eta_and_pt('../../data/v10/test_TAU.h5', 
+        resp = self.plots_of_eta_and_pt('../../data/v10/test_TAU.h5', 
         "../../data/batchsize_10/serialized")
+        label_test = resp[0]
+        predictions_test = resp[1]
+        dataset = resp[2]
         print('shape of labels =', label_test.shape)
         print('shape of preds =', predictions_test.shape)
         print('predictions =', predictions_test) 
@@ -202,6 +205,7 @@ class TFEvaluation:
         #print(predictions_test.shape)
 
         # ROOT plot 
+        """
         canvas = ROOT.TCanvas("canvas", "canvas", 800, 600)
         histo = ROOT.TH1D("histo", "histo", 200, -0.1, 1.1)
 
@@ -220,6 +224,7 @@ class TFEvaluation:
         with h5py.File('TestResponse.h5', "w") as f: 
             f.create_dataset('predictions', data=predictions_test)
             f.create_dataset('label', data=label_test)
+        """
 
 
 

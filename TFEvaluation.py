@@ -3,11 +3,11 @@
 # welcome to the file that is made of three individual python codes: read_pb_new.py, plot_eta.py and plot_pt.py
 #from __future__ import division, print_function
 import numpy as np
-import h5py
+#import h5py
 import tensorflow as tf
 #from argparse import ArgumentParser
 #import os, ast
-import sys
+#import sys
 import math
 #from sklearn.metrics import roc_curve
 #import ROOT
@@ -104,6 +104,10 @@ class TFEvaluation:
 
             return predictions
     """
+
+
+    def Hello(self): 
+        print("Hello!")
             
         
 
@@ -145,6 +149,15 @@ class TFEvaluation:
         print(response.shape)
 
         return np.asarray(response[0,:], "d")
+
+
+    def Eval(self, eta, phi, pt, q, DOCA2D, DOCA2DErr, DOCA, DOCAErr, dzToPV, dzToClosest, isAssociate, assocQuality): 
+        df = np.zeros((1, 20, 13))
+
+        df[1,:,1] = eta.Data()
+
+
+        print(df)
 
 
 
@@ -213,6 +226,7 @@ class TFEvaluation:
         for values in predictions_test: 
             print(values)
             #histo.Fill(val)
+
             #histo.FillN(len(val)-1, np.asarray(val, "d"), np.zeros(len(val)))
             for val in values: 
                 histo.Fill(val)

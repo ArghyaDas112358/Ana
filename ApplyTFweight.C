@@ -12,6 +12,7 @@ ClassImp(FileManager)
 #include <iostream>
 #include "DrawTMVAHistogram.C"
 #include "GetSeparation.C"
+#include "Python.h"
 #include "TPython.h"
 
 
@@ -54,6 +55,8 @@ TLorentzVector LV(double pt, double eta, double phi, double m)
 std::vector<float> EvaluateTFresponse(std::vector<float> pt, std::vector<float> eta, std::vector<float> phi, std::vector<float> q, std::vector<float> DOCA2D, std::vector<float> DOCA2DErr, std::vector<float> DOCA3D, std::vector<float> DOCA3DErr, std::vector<float> dzToPV, std::vector<float> dzToClosest, std::vector<float> isAssociate, std::vector<float> assocQualityToPV, std::vector<int> genmatch) 
 {
 	std::vector<float> response; 
+
+
 	response.push_back(-999.); 
 	return response; 
 }
@@ -165,9 +168,36 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 
 	//auto histo2 = frame2.Histo2D({"Bmass_vs_Dmass", "Correlation plot between B and D masses", 100, 0., 7000., 100, 0., 5000.}, "BsDstarTauNu_B_mass", "BsDstarTauNu_D0_unfit_mass"); 
 
-	TFEvaluation eval; 
+	MyPyClass TFmodel; //TFEvaluation TFmodel; 
 
-	auto withWeight = dataframe.Define("TFscore", EvaluateTFresponse, {"track_pt", "track_eta", "track_phi", "track_charge", "track_doca2D", "track_doca2Derror", "track_doca", "track_docaerror", "track_dzToPV", "track_dzToClosestVertex", "track_isAssociatedToPV", "track_pvAssociationQuality", "track_isgenmatched"}); 
+	auto TFresponse = [&TFmodel](std::vector<float> pt, std::vector<float> eta, std::vector<float> phi, std::vector<float> q, std::vector<float> DOCA2D, std::vector<float> DOCA2DErr, std::vector<float> DOCA3D, std::vector<float> DOCA3DErr, std::vector<float> dzToPV, std::vector<float> dzToClosest, std::vector<float> isAssociate, std::vector<float> assocQualityToPV, std::vector<int> genmatch) 
+	{
+		std::vector<float> response; 
+		std::vector<double> initial = {1., 2., 3.}; 
+		TArrayD array(initial.size(), initial.data()); 
+
+		int size = pt.size(); 
+
+		PyObject* pypt= TPython::CPPInstance_FromVoidPtr(&pt, "std::vector< std::vector<float> >"); // Declaring to python what type of object it is
+		std::cout << "After assignment" << std::endl; 
+		PyObject* pymain = PyImport_ImportModule("main");
+		PyModule_AddObject(pymain, "pt", pypt);
+
+		TPython::Prompt(); 
+
+		//std::vector<std::vector<float> > input = {eta, phi, pt, q, DOCA2D, DOCA2DErr, DOCA3D, DOCA3DErr, dzToPV, dzToClosest, isAssociate, assocQualityToPV}; 
+
+		//TFmodel.OtherTest();
+		//TFmodel.Eval(size, eta.data(), phi.data(), pt.data(), q.data(), DOCA2D.data(), DOCA2DErr.data(), DOCA3D.data(), DOCA3DErr.data(), dzToPV.data(), dzToClosest.data(), isAssociate.data(), assocQualityToPV.data())
+		//TFmodel.Eval(pt);  
+		//TFmodel.Test(array); 
+		//TFmodel.Condition(-1); 
+
+		response.push_back(-999.); 
+		return response; 
+	};
+
+	auto withWeight = dataframe.Define("TFscore", TFresponse, {"track_pt", "track_eta", "track_phi", "track_charge", "track_doca2D", "track_doca2Derror", "track_doca", "track_docaerror", "track_dzToPV", "track_dzToClosestVertex", "track_isAssociatedToPV", "track_pvAssociationQuality", "track_isgenmatched"}); 
 
 	withWeight.Snapshot("ntuplizer/tree", "SignalOfficialMC50M_withTHweight.root"); 
 

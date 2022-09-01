@@ -63,11 +63,11 @@ std::vector<float> EvaluateTFresponse(std::vector<float> pt, std::vector<float> 
 	return response; 
 }
 
-int EvaluateArray(double *data)
+int EvaluateArray(const vector<double>& data)
 {
-    double *ptr = data;
+    double *ptr = const_cast<double*>(data.data());
     PyObject *pName, *pModule, *pDict, *pFunc, *pArgs;
-    npy_intp dims[1] = { 4 };
+    npy_intp dims[1] = { static_cast<npy_intp>(data.size()) };
     PyObject *py_array;
 
     setenv("PYTHONPATH",".",1);
@@ -278,11 +278,15 @@ void TestApplyTFweight(TString campaignName = "ApplyTFweight/")
 
 	std::cout << "Result from python: " << result << std::endl; 
 
-	double data[20] = {1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9, 9.1, 1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9, 9.1, 1.2, 2.3}; 
+	std::vector<double> datavec = {1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9, 9.1, 1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9, 9.1, 1.2, 2.3}; 
 
-	EvaluateArray(data); 
+	double *data = datavec.data(); 
+
+	EvaluateArray(datavec); 
 
 	double *mydata = data; 
+
+	std::cout << "New function ran" << std::endl; 
 
 	npy_intp dims[1]; 
 	dims[0] = 20; 

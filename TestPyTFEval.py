@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+import ctypes
 
 
 class TestPyTFEval: 
@@ -14,5 +15,8 @@ class TestPyTFEval:
     def pyArray (self, a):
     	print ("Contents of a :")
     	print (a)
+    	print(type(a))
+    	for b in a: 
+    		print(type(b))
     	c = 0
-    	return c
+    	return a #a.data_as(ctypes.POINTER(ctypes.c_double))

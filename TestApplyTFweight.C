@@ -66,7 +66,7 @@ std::vector<float> EvaluateTFresponse(std::vector<float> pt, std::vector<float> 
 class PythonInterface 
 {
 	public: 
-	PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *python_class, *object;
+	PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *python_class, *object, *result;
 
 	PythonInterface(const std::string& moduleName) 
 	{
@@ -146,13 +146,21 @@ class PythonInterface
 
 	    if (PyCallable_Check (pFunc))
 	    {
-	        PyObject_CallObject(pFunc, pArgs);
-            PyObject_CallMethodObjArgs(object, pFunc, pArgs);
+	        result = PyObject_CallObject(pFunc, pArgs);
 	    } 
         else
 	    {
 	        cout << "Function is not callable !" << endl;
 	    }
+
+        double *response = static_cast<double*>(PyArray_DATA((PyArrayObject*)result)); 
+
+        for (int i=0; i<data.size(); i++) 
+        {
+            std::cout << *(response + i) << ", "; 
+            //response++; 
+        }
+        std::cout << std::endl; 
 
         //PyObject* myResult = PyObject_CallMethod(object, "Add2toNumber", "(d)", a); 
 

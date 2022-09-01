@@ -63,49 +63,65 @@ std::vector<float> EvaluateTFresponse(std::vector<float> pt, std::vector<float> 
 	return response; 
 }
 
-int EvaluateArray(const vector<double>& data)
+class PythonInterface 
 {
-    double *ptr = const_cast<double*>(data.data());
-    PyObject *pName, *pModule, *pDict, *pFunc, *pArgs;
-    npy_intp dims[1] = { static_cast<npy_intp>(data.size()) };
-    PyObject *py_array;
+	public: 
+	PyObject *pName, *pModule, *pDict, *pFunc, *pArgs;
 
-    setenv("PYTHONPATH",".",1);
-    Py_Initialize ();
-    pName = PyUnicode_FromString ("TestPyInclude");
+	PythonInterface(const std::string& moduleName) 
+	{
+		setenv("PYTHONPATH",".",1);
+    	Py_Initialize ();
+    	pName = PyUnicode_FromString (moduleName.data());
 
-    pModule = PyImport_Import(pName);
+    	pModule = PyImport_Import(pName);
 
-    pDict = PyModule_GetDict(pModule);
+    	pDict = PyModule_GetDict(pModule);
 
-    import_array ();                                   
+    	import_array ();                   
+	}
 
-    py_array = PyArray_SimpleNewFromData(1, dims, NPY_DOUBLE, ptr);
-    
+	~PythonInterface() 
+	{
+		Py_DECREF(pName);                
+    	Py_DECREF (pModule);
+    	Py_DECREF (pDict);
 
-    pArgs = PyTuple_New (1);
-    PyTuple_SetItem (pArgs, 0, py_array);
+    	Py_Finalize ();    
+	}
 
-    pFunc = PyDict_GetItemString (pDict, (char*)"pyArray"); 
+	int EvaluateArray(const vector<double>& data)
+	{
+	    double *ptr = const_cast<double*>(data.data());
+	    npy_intp dims[1] = { static_cast<npy_intp>(data.size()) };
+	    PyObject *py_array;
 
-    if (PyCallable_Check (pFunc))
-    {
-        PyObject_CallObject(pFunc, pArgs);
-    } else
-    {
-        cout << "Function is not callable !" << endl;
-    }
+	    
 
-    Py_DECREF(pName);
-    Py_DECREF (py_array);                             
-    Py_DECREF (pModule);
-    Py_DECREF (pDict);
-    Py_DECREF (pFunc);
+	    py_array = PyArray_SimpleNewFromData(1, dims, NPY_DOUBLE, ptr);
+	    
 
-    Py_Finalize ();                                    
+	    pArgs = PyTuple_New (1);
+	    PyTuple_SetItem (pArgs, 0, py_array);
 
-    return 0;
-}
+	    pFunc = PyDict_GetItemString (pDict, (char*)"pyArray"); 
+
+	    if (PyCallable_Check (pFunc))
+	    {
+	        PyObject_CallObject(pFunc, pArgs);
+	    } else
+	    {
+	        cout << "Function is not callable !" << endl;
+	    }
+
+	    Py_DECREF (py_array);                             
+	    Py_DECREF (pFunc);
+
+
+	    return 0;
+	}
+
+};
  
 
 void TestApplyTFweight(TString campaignName = "ApplyTFweight/") 
@@ -282,7 +298,11 @@ void TestApplyTFweight(TString campaignName = "ApplyTFweight/")
 
 	double *data = datavec.data(); 
 
-	EvaluateArray(datavec); 
+	PythonInterface pyEvaluation("TestPyInclude"); 
+
+	pyEvaluation.EvaluateArray(datavec);
+
+	//ClearPython();  
 
 	double *mydata = data; 
 

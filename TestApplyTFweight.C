@@ -128,7 +128,7 @@ class PythonInterface
     	Py_Finalize ();    
 	}
 
-	int EvaluateArray(const vector<double>& data)
+	std::vector<double> EvaluateArray(const vector<double>& data)
 	{
 	    double *ptr = const_cast<double*>(data.data());
 	    npy_intp dims[1] = { static_cast<npy_intp>(data.size()) };
@@ -155,9 +155,13 @@ class PythonInterface
 
         double *response = static_cast<double*>(PyArray_DATA((PyArrayObject*)result)); 
 
+        std::vector<double> returnvec; 
+        returnvec.reserve(data.size()); 
+
         for (int i=0; i<data.size(); i++) 
         {
             std::cout << *(response + i) << ", "; 
+            returnvec.push_back(*(response + i)); 
             //response++; 
         }
         std::cout << std::endl; 
@@ -168,7 +172,7 @@ class PythonInterface
 	    Py_DECREF (pFunc);
 
 
-	    return 0;
+	    return returnvec;
 	}
 
 };
@@ -354,9 +358,15 @@ void TestApplyTFweight(TString campaignName = "ApplyTFweight/")
 
     std::cout << "After making class" << std::endl; 
 
-	pyEvaluation.EvaluateArray(datavec);
+	auto response = pyEvaluation.EvaluateArray(datavec);
 
     std::cout << "After evaluation" << std::endl; 
+
+    for (auto element : response) 
+    {
+        std::cout << element << ", "; 
+    }
+    std::cout << std::endl; 
 
 	//ClearPython();  
 

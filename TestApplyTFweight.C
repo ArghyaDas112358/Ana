@@ -14,6 +14,8 @@ ClassImp(FileManager)
 #include "GetSeparation.C"
 #include "Python.h"
 #include "TPython.h"
+#include <numpy/arrayobject.h>
+#define NPY_NO_DEPRECATED_AP NPY_1_7_API_VERSION
 
 
 using namespace ROOT; 
@@ -59,6 +61,50 @@ std::vector<float> EvaluateTFresponse(std::vector<float> pt, std::vector<float> 
 
 	response.push_back(-999.); 
 	return response; 
+}
+
+int EvaluateArray(double *data)
+{
+    double *ptr = data;
+    PyObject *pName, *pModule, *pDict, *pFunc, *pArgs;
+    npy_intp dims[1] = { 4 };
+    PyObject *py_array;
+
+    setenv("PYTHONPATH",".",1);
+    Py_Initialize ();
+    pName = PyUnicode_FromString ("TestPyInclude");
+
+    pModule = PyImport_Import(pName);
+
+    pDict = PyModule_GetDict(pModule);
+
+    import_array ();                                   
+
+    py_array = PyArray_SimpleNewFromData(1, dims, NPY_DOUBLE, ptr);
+    
+
+    pArgs = PyTuple_New (1);
+    PyTuple_SetItem (pArgs, 0, py_array);
+
+    pFunc = PyDict_GetItemString (pDict, (char*)"pyArray"); 
+
+    if (PyCallable_Check (pFunc))
+    {
+        PyObject_CallObject(pFunc, pArgs);
+    } else
+    {
+        cout << "Function is not callable !" << endl;
+    }
+
+    Py_DECREF(pName);
+    Py_DECREF (py_array);                             
+    Py_DECREF (pModule);
+    Py_DECREF (pDict);
+    Py_DECREF (pFunc);
+
+    Py_Finalize ();                                    
+
+    return 0;
 }
  
 
@@ -175,6 +221,7 @@ void TestApplyTFweight(TString campaignName = "ApplyTFweight/")
 	PyObject *dict, *python_class, *object;
 
 	Py_Initialize();
+	import_array(); 
 
 	PyObject* myModuleString = PyUnicode_FromString("TFinference");
 
@@ -184,7 +231,7 @@ void TestApplyTFweight(TString campaignName = "ApplyTFweight/")
 	{
     	PyErr_Print();
     	std::cerr << "Fails to import the module.\n";
-    	return 1;
+    	return;
   	}
   	Py_DECREF(myModuleString);
 
@@ -194,7 +241,7 @@ void TestApplyTFweight(TString campaignName = "ApplyTFweight/")
   	{
     	PyErr_Print();
     	std::cerr << "Fails to get the dictionary.\n";
-    	return 1;
+    	return;
   	}
   	Py_DECREF(myModule);
 
@@ -204,7 +251,7 @@ void TestApplyTFweight(TString campaignName = "ApplyTFweight/")
   	{
     	PyErr_Print();
     	std::cerr << "Fails to get the Python class.\n";
-    	return 1;
+    	return;
   	}
   	Py_DECREF(dict);
 
@@ -218,18 +265,41 @@ void TestApplyTFweight(TString campaignName = "ApplyTFweight/")
   	{
     	std::cout << "Cannot instantiate the Python class" << std::endl;
     	Py_DECREF(python_class);
-    	return 1;
+    	return;
   	}
 
-	PyObject* args = PyTuple_Pack(1,PyFloat_FromDouble(2.0));
+	//PyObject* args = PyTuple_Pack(1,PyFloat_FromDouble(2.0));
 
-	double a = 1.; 
+	double a[20];
 
 	PyObject* myResult = PyObject_CallMethod(object, "Add2toNumber", "(d)", a); 
 
 	double result = PyFloat_AsDouble(myResult);
 
 	std::cout << "Result from python: " << result << std::endl; 
+
+	double data[20] = {1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9, 9.1, 1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9, 9.1, 1.2, 2.3}; 
+
+	EvaluateArray(data); 
+
+	double *mydata = data; 
+
+	npy_intp dims[1]; 
+	dims[0] = 20; 
+
+	PyObject* npdata = PyArray_SimpleNewFromData(1, dims, NPY_DOUBLE, mydata); 
+
+	PyObject* args = PyTuple_New (1);
+
+	PyTuple_SetItem(args, 1, npdata);
+
+	PyObject* pFunc = PyDict_GetItemString(dict, "DisplayArray"); 
+
+	//PyObject* myResult = PyObject_CallMethod(object, "DisplayArray", "NPY_DOUBLE", npdata); 
+
+	PyObject* newResult = PyObject_CallObject(pFunc, args); 
+
+	std::cout << "After first call" << std::endl; 
 
 	auto TFresponse = [&object](std::vector<float> pt, std::vector<float> eta, std::vector<float> phi, std::vector<float> q, std::vector<float> DOCA2D, std::vector<float> DOCA2DErr, std::vector<float> DOCA3D, std::vector<float> DOCA3DErr, std::vector<float> dzToPV, std::vector<float> dzToClosest, std::vector<float> isAssociate, std::vector<float> assocQualityToPV, std::vector<int> genmatch) 
 	{
@@ -238,6 +308,15 @@ void TestApplyTFweight(TString campaignName = "ApplyTFweight/")
 		TArrayD array(initial.size(), initial.data()); 
 
 		int size = pt.size(); 
+
+		double data[20] = {1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9, 9.1, 1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9, 9.1, 1.2, 2.3}; 
+
+		npy_intp dims[1]; 
+		dims[0] = 20; 
+
+		PyObject* npdata = PyArray_SimpleNewFromData(1, dims, NPY_DOUBLE, data); 
+
+		PyObject* myResult = PyObject_CallMethod(object, "DisplayArray", "NPY_DOUBLE", npdata); 
 
 		//PyObject* pypt= TPython::CPPInstance_FromVoidPtr(&pt, "std::vector< std::vector<float> >"); // Declaring to python what type of object it is
 		std::cout << "After assignment" << std::endl; 

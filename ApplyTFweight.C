@@ -14,6 +14,8 @@ ClassImp(FileManager)
 #include "GetSeparation.C"
 #include "Python.h"
 #include "TPython.h"
+#include <numpy/arrayobject.h>
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 
 
 using namespace ROOT; 
@@ -60,6 +62,121 @@ std::vector<float> EvaluateTFresponse(std::vector<float> pt, std::vector<float> 
 	response.push_back(-999.); 
 	return response; 
 }
+
+
+class PythonInterface 
+{
+	public: 
+	PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *python_class, *object, *result;
+
+	PythonInterface(const std::string& moduleName) 
+	{
+		setenv("PYTHONPATH",".",1);
+    	Py_Initialize ();
+    	pName = PyUnicode_FromString ((char*)moduleName.data());
+
+    	pModule = PyImport_Import(pName);
+
+    	//pDict = PyModule_GetDict(pModule);
+
+    	import_array ();                   
+
+        if (pModule == nullptr) 
+        {
+            PyErr_Print();
+            std::cerr << "Fails to import the module.\n";
+            return;
+        }
+
+        // dict is a borrowed reference.
+        pDict = PyModule_GetDict(pModule);
+        if (pDict == nullptr) 
+        {
+            PyErr_Print();
+            std::cerr << "Fails to get the dictionary.\n";
+            return;
+        }
+
+        // Builds the name of a callable class
+        python_class = PyDict_GetItemString(pDict, (char*)moduleName.data());
+        if (python_class == nullptr) 
+        {
+            PyErr_Print();
+            std::cerr << "Fails to get the Python class.\n";
+            return;
+        }
+
+        // Creates an instance of the class
+        if (PyCallable_Check(python_class)) 
+        {
+            object = PyObject_CallObject(python_class, nullptr);
+            Py_DECREF(python_class);
+        } 
+        else 
+        {
+            std::cout << "Cannot instantiate the Python class" << std::endl;
+            return;
+        }
+	}
+
+	~PythonInterface() 
+	{
+		Py_DECREF(pName);                
+    	Py_DECREF (pModule);
+    	Py_DECREF (pDict);
+        Py_DECREF(python_class);
+
+    	Py_Finalize ();    
+	}
+
+	std::vector<double> EvaluateArray(const vector<double>& data)
+	{
+	    double *ptr = const_cast<double*>(data.data());
+	    npy_intp dims[1] = { static_cast<npy_intp>(data.size()) };
+	    PyObject *py_array;
+
+	    
+
+	    py_array = PyArray_SimpleNewFromData(1, dims, NPY_DOUBLE, ptr);
+	    
+
+	    pArgs = PyTuple_New (1);
+	    PyTuple_SetItem (pArgs, 0, py_array);
+
+	    pFunc = PyObject_GetAttrString (object, (char*)"pyArray"); 
+
+	    if (PyCallable_Check (pFunc))
+	    {
+	        result = PyObject_CallObject(pFunc, pArgs);
+	    } 
+        else
+	    {
+	        cout << "Function is not callable !" << endl;
+	    }
+
+        double *response = static_cast<double*>(PyArray_DATA((PyArrayObject*)result)); 
+
+        std::vector<double> returnvec; 
+        returnvec.reserve(data.size()); 
+
+        /*for (int i=0; i<data.size(); i++) 
+        {
+            std::cout << *(response + i) << ", "; 
+            returnvec.push_back(*(response + i)); 
+            //response++; 
+        }
+        std::cout << std::endl; */
+
+        //PyObject* myResult = PyObject_CallMethod(object, "Add2toNumber", "(d)", a); 
+
+	    Py_DECREF (py_array);                             
+	    Py_DECREF (pFunc);
+
+
+	    return returnvec;
+	}
+
+};
  
 
 void ApplyTFweight(TString campaignName = "ApplyTFweight/") 
@@ -162,7 +279,11 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 	//				.Define("P_tau", P_v, {"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_mass"})
 	//				.Define("B_mass", invMass_v, {"P_Ds", "P_tau"}); 
 
-	
+    std::cout << "Before making class" << std::endl; 
+
+	PythonInterface pyEvaluation("TestPyTFEval"); 
+
+    std::cout << "After making class" << std::endl; 
 
 	//auto histo1 = frame2.Histo1D("B_mass"); 
 
@@ -170,30 +291,23 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 
 	MyPyClass TFmodel; //TFEvaluation TFmodel; 
 
-	auto TFresponse = [&TFmodel](std::vector<float> pt, std::vector<float> eta, std::vector<float> phi, std::vector<float> q, std::vector<float> DOCA2D, std::vector<float> DOCA2DErr, std::vector<float> DOCA3D, std::vector<float> DOCA3DErr, std::vector<float> dzToPV, std::vector<float> dzToClosest, std::vector<float> isAssociate, std::vector<float> assocQualityToPV, std::vector<int> genmatch) 
+	auto TFresponse = [&pyEvaluation](std::vector<float> pt, std::vector<float> eta, std::vector<float> phi, std::vector<float> q, std::vector<float> DOCA2D, std::vector<float> DOCA2DErr, std::vector<float> DOCA3D, std::vector<float> DOCA3DErr, std::vector<float> dzToPV, std::vector<float> dzToClosest, std::vector<float> isAssociate, std::vector<float> assocQualityToPV, std::vector<int> genmatch) 
 	{
-		std::vector<float> response; 
-		std::vector<double> initial = {1., 2., 3.}; 
-		TArrayD array(initial.size(), initial.data()); 
+		//std::vector<float> response; 
+		std::vector<double> datavec = {1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9, 9.1, 1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9, 9.1, 1.2, 2.3}; 
 
-		int size = pt.size(); 
+		double *data = datavec.data(); 
 
-		PyObject* pypt= TPython::CPPInstance_FromVoidPtr(&pt, "std::vector< std::vector<float> >"); // Declaring to python what type of object it is
-		std::cout << "After assignment" << std::endl; 
-		PyObject* pymain = PyImport_ImportModule("main");
-		PyModule_AddObject(pymain, "pt", pypt);
+		auto response = pyEvaluation.EvaluateArray(datavec);
 
-		TPython::Prompt(); 
+    	//std::cout << "After evaluation" << std::endl; 
 
-		//std::vector<std::vector<float> > input = {eta, phi, pt, q, DOCA2D, DOCA2DErr, DOCA3D, DOCA3DErr, dzToPV, dzToClosest, isAssociate, assocQualityToPV}; 
+    	/*for (auto element : response) 
+    	{
+        	std::cout << element << ", "; 
+    	}
+    	std::cout << std::endl; */
 
-		//TFmodel.OtherTest();
-		//TFmodel.Eval(size, eta.data(), phi.data(), pt.data(), q.data(), DOCA2D.data(), DOCA2DErr.data(), DOCA3D.data(), DOCA3DErr.data(), dzToPV.data(), dzToClosest.data(), isAssociate.data(), assocQualityToPV.data())
-		//TFmodel.Eval(pt);  
-		//TFmodel.Test(array); 
-		//TFmodel.Condition(-1); 
-
-		response.push_back(-999.); 
 		return response; 
 	};
 

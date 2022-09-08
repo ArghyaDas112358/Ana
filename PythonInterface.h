@@ -1,0 +1,123 @@
+#ifndef PythonInterface_h
+#define PythonInterface_h
+#include "Python.h"
+#include <numpy/arrayobject.h>
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+
+
+class PythonInterface 
+{
+	public: 
+	PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *python_class, *object, *result;
+
+	PythonInterface(const std::string& moduleName) 
+	{
+		setenv("PYTHONPATH",".",1);
+    	Py_Initialize ();
+    	pName = PyUnicode_FromString ((char*)moduleName.data());
+
+    	pModule = PyImport_Import(pName);
+
+    	//pDict = PyModule_GetDict(pModule);
+
+    	import_array ();                   
+
+        if (pModule == nullptr) 
+        {
+            PyErr_Print();
+            std::cerr << "Fails to import the module.\n";
+            return;
+        }
+
+        // dict is a borrowed reference.
+        pDict = PyModule_GetDict(pModule);
+        if (pDict == nullptr) 
+        {
+            PyErr_Print();
+            std::cerr << "Fails to get the dictionary.\n";
+            return;
+        }
+
+        // Builds the name of a callable class
+        python_class = PyDict_GetItemString(pDict, (char*)moduleName.data());
+        if (python_class == nullptr) 
+        {
+            PyErr_Print();
+            std::cerr << "Fails to get the Python class.\n";
+            return;
+        }
+
+        // Creates an instance of the class
+        if (PyCallable_Check(python_class)) 
+        {
+            object = PyObject_CallObject(python_class, nullptr);
+            Py_DECREF(python_class);
+        } 
+        else 
+        {
+            std::cout << "Cannot instantiate the Python class" << std::endl;
+            return;
+        }
+	}
+
+	~PythonInterface() 
+	{
+		Py_DECREF(pName);                
+    	Py_DECREF (pModule);
+    	Py_DECREF (pDict);
+        Py_DECREF(python_class);
+
+    	Py_Finalize ();    
+	}
+
+	std::vector<double> EvaluateArray(const vector<double>& data)
+	{
+	    double *ptr = const_cast<double*>(data.data());
+	    npy_intp dims[1] = { static_cast<npy_intp>(data.size()) };
+	    PyObject *py_array;
+
+	    
+
+	    py_array = PyArray_SimpleNewFromData(1, dims, NPY_DOUBLE, ptr);
+	    
+
+	    pArgs = PyTuple_New (1);
+	    PyTuple_SetItem (pArgs, 0, py_array);
+
+	    pFunc = PyObject_GetAttrString (object, (char*)"pyArray"); 
+
+	    if (PyCallable_Check (pFunc))
+	    {
+	        result = PyObject_CallObject(pFunc, pArgs);
+	    } 
+        else
+	    {
+	        cout << "Function is not callable !" << endl;
+	    }
+
+        double *response = static_cast<double*>(PyArray_DATA((PyArrayObject*)result)); 
+
+        std::vector<double> returnvec; 
+        returnvec.reserve(data.size()); 
+
+        /*for (int i=0; i<data.size(); i++) 
+        {
+            std::cout << *(response + i) << ", "; 
+            returnvec.push_back(*(response + i)); 
+            //response++; 
+        }
+        std::cout << std::endl; */
+
+        //PyObject* myResult = PyObject_CallMethod(object, "Add2toNumber", "(d)", a); 
+
+	    Py_DECREF (py_array);                             
+	    Py_DECREF (pFunc);
+
+
+	    return returnvec;
+	}
+
+};
+
+#endif
+

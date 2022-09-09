@@ -64,7 +64,34 @@ std::vector<float> EvaluateTFresponse(std::vector<float> pt, std::vector<float> 
 	return response; 
 }
 
+std::vector<float>  extendArray(const std::vector<float>& array, const int dim) 
+{
+	std::vector<float> result; 
+	if (array.size() > dim) 
+	{
+		result = std::vector<float>(array.begin(), array.begin()+dim); 
+	}
+	else 
+	{
+		result = array; 
+		while(result.size() < dim)
+		{
+			result.push_back(0.); 
+		}
+	}
+	return result; 
+}
 
+template<typename T>
+void PrintArray(const std::vector<T>& vec) 
+{
+	std::cout << "Vecctor content: "; 
+	for (auto i : vec) 
+	{
+		std::cout << i << ", "; 
+	}
+	std::cout << std::endl; 
+}
 
  
 
@@ -186,6 +213,16 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 		std::vector<double> datavec = {1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9, 9.1, 1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9, 9.1, 1.2, 2.3}; 
 
 		double *data = datavec.data(); 
+
+		std::cout << "Array size before: " << pt.size() << std::endl; 
+
+		PrintArray(pt); 
+
+		auto extended = extendArray(pt, 20); 
+
+		std::cout << "Aarray size after: " << extended.size() << std::endl; 
+
+		PrintArray(extended); 
 
 		auto response = pyEvaluation.EvaluateArray(datavec);
 

@@ -88,7 +88,7 @@ std::vector<float>  extendArray(const std::vector<float>& array, const int dim)
 template<typename T>
 void PrintArray(const std::vector<T>& vec) 
 {
-	std::cout << "Vecctor content: "; 
+	std::cout << "Vector content: "; 
 	for (auto i : vec) 
 	{
 		std::cout << i << ", "; 
@@ -117,6 +117,17 @@ void extendArray(std::vector<float>* array, const int dim, std::vector<std::vect
 	{
 		array->insert(array->end(), dim - array->size(), 0.); 
 	}
+}
+
+std::vector<double> castVector(std::vector<float> vec) 
+{
+	std::vector<double> result; 
+	result.reserve(vec.size()); 
+	for (auto element : vec)
+	{
+		result.push_back(static_cast<double>(element)); 
+	}
+	return result; 
 }
 
  

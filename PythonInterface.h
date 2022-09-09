@@ -119,9 +119,12 @@ class PythonInterface
 
     std::vector<float> Evaluate(const vector<float>& data)
     {
-        float *ptr = const_cast<float*>(data.data());
-        npy_intp dims[1] = { static_cast<npy_intp>(data.size()) };
+        std::vector<double> vec = castVector(data); 
+        double *ptr = vec.data(); //const_cast<float*>(data.data());
+        npy_intp dims[1] = { static_cast<npy_intp>(vec.size()) };
         PyObject *py_array;
+
+        std::cout << "Inside Evaluate function " << std::endl; 
 
         
 
@@ -131,7 +134,7 @@ class PythonInterface
         pArgs = PyTuple_New (1);
         PyTuple_SetItem (pArgs, 0, py_array);
 
-        pFunc = PyObject_GetAttrString (object, (char*)"Evaluate"); 
+        pFunc = PyObject_GetAttrString (object, (char*)"pyArray"); 
 
         if (PyCallable_Check (pFunc))
         {
@@ -142,7 +145,7 @@ class PythonInterface
             cout << "Function is not callable !" << endl;
         }
 
-        float *response = static_cast<float*>(PyArray_DATA((PyArrayObject*)result)); 
+        //float *response = static_cast<float*>(PyArray_DATA((PyArrayObject*)result)); 
 
         std::vector<float> returnvec; 
         returnvec.reserve(data.size()); 
@@ -162,6 +165,17 @@ class PythonInterface
 
 
         return returnvec;
+    }
+
+    std::vector<double> castVector(std::vector<float> vec) 
+    {
+        std::vector<double> result; 
+        result.reserve(vec.size()); 
+        for (auto element : vec)
+        {
+            result.push_back(static_cast<double>(element)); 
+        }
+        return result; 
     }
 
 };

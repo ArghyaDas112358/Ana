@@ -55,9 +55,20 @@ class PythonInterface
         } 
         else 
         {
+            PyErr_Print(); // TODO: throw an error 
             std::cout << "Cannot instantiate the Python class" << std::endl;
             return;
         }
+
+        PyRun_SimpleString("import sys"); 
+
+        PyRun_SimpleString("print(sys.path)"); 
+
+        PyRun_SimpleString("sys.path = ['/opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6', '/opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/lib-dynload', '/Users/mhuwiler/Library/Python/3.6/lib/python/site-packages', '/opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages']"); 
+
+        PyRun_SimpleString("print(sys.path)"); 
+
+        PyErr_Print();
 	}
 
 	~PythonInterface() 
@@ -134,7 +145,15 @@ class PythonInterface
         pArgs = PyTuple_New (1);
         PyTuple_SetItem (pArgs, 0, py_array);
 
-        pFunc = PyObject_GetAttrString (object, (char*)"pyArray"); 
+        PyErr_Print();
+
+        std::cout << "Before function export " << std::endl; 
+
+        pFunc = PyObject_GetAttrString (object, (char*)"Eval"); 
+
+        PyErr_Print();
+
+        std::cout << "After function export " << std::endl; 
 
         if (PyCallable_Check (pFunc))
         {
@@ -145,7 +164,7 @@ class PythonInterface
             cout << "Function is not callable !" << endl;
         }
 
-        //float *response = static_cast<float*>(PyArray_DATA((PyArrayObject*)result)); 
+        float *response = static_cast<float*>(PyArray_DATA((PyArrayObject*)result)); 
 
         std::vector<float> returnvec; 
         returnvec.reserve(data.size()); 

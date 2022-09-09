@@ -1,6 +1,7 @@
 import numpy as np
 import tensorflow as tf
 import ctypes
+import math
 
 
 class PyTFEval: 
@@ -12,26 +13,55 @@ class PyTFEval:
         self.BATCHSIZE=10
         self.NUM_POINT = 20
 
+        #np.__config__.show()
+
+        #os.environ['OPENBLAS_NUM_THREADS'] = '1'
+        #os.environ['NUMEXPR_NUM_THREADS=1']
+
     def Initialise(model, batchsize, numpoints): 
         self.savedmodel = model
         self.BATCHSIZE = batchsize
         self.NUM_POINT = numpoints
         
     def pyArray (self, a):
-    	print ("Contents of a :")
-    	print (a)
-    	print(type(a))
-    	for b in a: 
-    		print(type(b))
-    	c = 0
-    	return a #a.data_as(ctypes.POINTER(ctypes.c_double))
+        print ("Contents of a :")
+        print (a)
+        print(type(a))
+        for b in a: 
+            print(type(b))
+        c = 0
+
+        print(a.shape)
+
+        return [1., 2., 3., 4., 5] #a.data_as(ctypes.POINTER(ctypes.c_double))
+
+    def Eval(self, data): 
+        print("Evaluation called")
+
+        print(data.shape)
+
+        data = np.transpose(data.reshape(13, 20))
+
+        print(data.shape)
+
+        print(data)
+
+        data = np.expand_dims(data, 0)
+
+        print(data.shape)
+
+        return self.Evaluate(data)
+
 
     def Evaluate(self, data): 
+        print("In eval")
         shape = data.shape
 
         batchsize = shape[0]
         numpoints = shape[1]
         numvars = shape[2]
+
+        print(shape)
 
         assert(batchsize == 1), "ERROR: The fuction requires a single event!"
         if (numpoints > self.NUM_POINT): 
@@ -61,9 +91,19 @@ class PyTFEval:
 
         response = self.NN_response(batch)
 
+        #with open("response.txt", "a") as outfile: 
+        #    outfile.write(response)
+
+        #response = [1., 2., 3., 4., 5]
+
         print(response.shape)
 
-        return np.asarray(response[0,:], "d")
+        #result = np.asarray(response[0,:], "d")
+
+        print(response)
+
+        return response
+
 
     def NN_response(self, data):
         # the input to this definition is the first key in the h5 file
@@ -78,6 +118,7 @@ class PyTFEval:
         print(data[0,1,:])
         
         with tf.Session(graph=tf.Graph()) as sess:
+            print("Inside session")
             tf.saved_model.loader.load(sess, [tf.saved_model.tag_constants.SERVING], self.savedmodel) #'../pretrained/{}'.format(FLAGS.name)
             output = sess.graph.get_tensor_by_name('Softmax_2:0') #Reshape_5:0
             
@@ -107,7 +148,12 @@ class PyTFEval:
               else:
                 print('feed_dict size of placeholder 0 different:', feed_dict['Placeholder:0'].shape)
               '''
+
+              print("Before running prediction")
+
               predictions = sess.run(output, feed_dict)
+
+              print("After running prediction")
               
             #predictions store 1 value per particle. The shape is [1,100,2]. The probability as coming from the B decay is stored at position 2, for example, the probability for the first particle come from the B decay is stored at predictions[0,0,1], while for the second is stored at predictions[0,1,1] and so on.
               for pred in predictions:

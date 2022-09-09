@@ -272,21 +272,11 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 
 		double *data = datavec.data(); 
 
-		std::cout << "Array size before: " << pt.size() << std::endl; 
-
-		PrintArray(pt); 
-
-		std::cout << "Array size before: " << pt.size() << std::endl; 
-
-		auto extended = extendArray(pt, 20); 
-
 		auto concatenated = concatenateVectors(vectors); 
 
 		PrintArray(concatenated); 
 
-		std::cout << "Aarray size after: " << extended.size() << std::endl; 
-
-		PrintArray(extended); 
+		assert(concatenated.size() = 20*12); 
 
 		auto response = pyEvaluation.EvaluateArray(datavec);
 

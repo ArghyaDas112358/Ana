@@ -267,18 +267,14 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 			extendArray(vec, 20, garbageCollector); 
 		}
 
-		//std::vector<float> response; 
-		std::vector<double> datavec = {1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9, 9.1, 1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9, 9.1, 1.2, 2.3}; 
-
-		double *data = datavec.data(); 
-
 		auto concatenated = concatenateVectors(vectors); 
 
 		PrintArray(concatenated); 
 
 		assert(concatenated.size() = 20*12); 
 
-		auto response = pyEvaluation.EvaluateArray(datavec);
+		//auto response = pyEvaluation.EvaluateArray(datavec);
+		auto response = pyEvaluation.Evaluate(concatenated);
 
     	//std::cout << "After evaluation" << std::endl; 
 

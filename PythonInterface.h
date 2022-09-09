@@ -117,6 +117,53 @@ class PythonInterface
 	    return returnvec;
 	}
 
+    std::vector<float> Evaluate(const vector<float>& data)
+    {
+        float *ptr = const_cast<float*>(data.data());
+        npy_intp dims[1] = { static_cast<npy_intp>(data.size()) };
+        PyObject *py_array;
+
+        
+
+        py_array = PyArray_SimpleNewFromData(1, dims, NPY_DOUBLE, ptr);
+        
+
+        pArgs = PyTuple_New (1);
+        PyTuple_SetItem (pArgs, 0, py_array);
+
+        pFunc = PyObject_GetAttrString (object, (char*)"Evaluate"); 
+
+        if (PyCallable_Check (pFunc))
+        {
+            result = PyObject_CallObject(pFunc, pArgs);
+        } 
+        else
+        {
+            cout << "Function is not callable !" << endl;
+        }
+
+        float *response = static_cast<float*>(PyArray_DATA((PyArrayObject*)result)); 
+
+        std::vector<float> returnvec; 
+        returnvec.reserve(data.size()); 
+
+        /*for (int i=0; i<data.size(); i++) 
+        {
+            std::cout << *(response + i) << ", "; 
+            returnvec.push_back(*(response + i)); 
+            //response++; 
+        }
+        std::cout << std::endl; */
+
+        //PyObject* myResult = PyObject_CallMethod(object, "Add2toNumber", "(d)", a); 
+
+        Py_DECREF (py_array);                             
+        Py_DECREF (pFunc);
+
+
+        return returnvec;
+    }
+
 };
 
 #endif

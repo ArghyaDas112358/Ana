@@ -164,18 +164,18 @@ class PythonInterface
             cout << "Function is not callable !" << endl;
         }
 
-        float *response = static_cast<float*>(PyArray_DATA((PyArrayObject*)result)); 
+        double *response = static_cast<double*>(PyArray_DATA((PyArrayObject*)result)); 
 
         std::vector<float> returnvec; 
         returnvec.reserve(data.size()); 
 
-        /*for (int i=0; i<data.size(); i++) 
+        for (int i=0; i<data.size(); i++) 
         {
             std::cout << *(response + i) << ", "; 
-            returnvec.push_back(*(response + i)); 
+            returnvec.push_back(static_cast<float>(*(response + i))); 
             //response++; 
         }
-        std::cout << std::endl; */
+        std::cout << std::endl; 
 
         //PyObject* myResult = PyObject_CallMethod(object, "Add2toNumber", "(d)", a); 
 

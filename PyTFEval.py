@@ -50,6 +50,10 @@ class PyTFEval:
 
         print(data.shape)
 
+        data[:, :, 2] = np.log(data[:, :, 2]) # taking log of pT 
+
+        np.nan_to_num(data, False, 0.)
+
         return self.Evaluate(data)
 
 
@@ -98,11 +102,13 @@ class PyTFEval:
 
         print(response.shape)
 
-        #result = np.asarray(response[0,:], "d")
+        result = response[0,:, 0]
 
-        print(response)
+        #result = np.asarray(result, "d")
 
-        return response
+        print(result)
+
+        return result
 
 
     def NN_response(self, data):

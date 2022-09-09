@@ -243,8 +243,6 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 
 	//auto histo2 = frame2.Histo2D({"Bmass_vs_Dmass", "Correlation plot between B and D masses", 100, 0., 7000., 100, 0., 5000.}, "BsDstarTauNu_B_mass", "BsDstarTauNu_D0_unfit_mass"); 
 
-	MyPyClass TFmodel; //TFEvaluation TFmodel; 
-
 	auto TFresponse = [&pyEvaluation](std::vector<float> Dstarpt, std::vector<float> Dstareta, std::vector<float> Dstarphi, std::vector<float> Dstarcharge, std::vector<float> pt, std::vector<float> eta, std::vector<float> phi, std::vector<float> q, std::vector<float> DOCA2D, std::vector<float> DOCA2DErr, std::vector<float> DOCA3D, std::vector<float> DOCA3DErr, std::vector<float> dzToPV, std::vector<float> dzToClosest, std::vector<float> isAssociate, std::vector<float> assocQualityToPV, std::vector<int> genmatch) 
 	{
 		assert(Dstarpt.size() == 1); 

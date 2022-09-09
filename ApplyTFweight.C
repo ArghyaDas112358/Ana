@@ -106,6 +106,21 @@ std::vector<float> concatenateVectors(const std::vector<std::vector<float>* > ve
 	return result; 
 }
 
+void extendArray(std::vector<float>* array, const int dim, std::vector<std::vector<float>* >& garbageCollector) 
+{
+	std::vector<float> *result = nullptr; // We create a result in order to be able to 
+	if (array->size() > dim) 
+	{
+		array = new std::vector<float>(array->begin(), array->begin()+dim); 
+		garbageCollector.push_back(array); 
+	}
+	else 
+	{
+		std::vector<float> completion(dim - array->size(), 0.); 
+		array->insert(array->end(), completion.begin(), completion.end()); 
+	}
+}
+
  
 
 void ApplyTFweight(TString campaignName = "ApplyTFweight/") 
@@ -220,8 +235,40 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 
 	MyPyClass TFmodel; //TFEvaluation TFmodel; 
 
-	auto TFresponse = [&pyEvaluation](std::vector<float> pt, std::vector<float> eta, std::vector<float> phi, std::vector<float> q, std::vector<float> DOCA2D, std::vector<float> DOCA2DErr, std::vector<float> DOCA3D, std::vector<float> DOCA3DErr, std::vector<float> dzToPV, std::vector<float> dzToClosest, std::vector<float> isAssociate, std::vector<float> assocQualityToPV, std::vector<int> genmatch) 
+	auto TFresponse = [&pyEvaluation](std::vector<float> Dstarpt, std::vector<float> Dstareta, std::vector<float> Dstarphi, std::vector<float> Dstarcharge, std::vector<float> pt, std::vector<float> eta, std::vector<float> phi, std::vector<float> q, std::vector<float> DOCA2D, std::vector<float> DOCA2DErr, std::vector<float> DOCA3D, std::vector<float> DOCA3DErr, std::vector<float> dzToPV, std::vector<float> dzToClosest, std::vector<float> isAssociate, std::vector<float> assocQualityToPV, std::vector<int> genmatch) 
 	{
+		assert(Dstarpt.size() == 1); 
+		assert(Dstareta.size() == 1); 
+		assert(Dstarphi.size() == 1); 
+		assert(Dstarcharge.size() == 1); 
+
+		pt.insert(pt.begin(), Dstarpt[0]); 
+		eta.insert(eta.begin(), Dstareta[0]); 
+		phi.insert(phi.begin(), Dstarphi[0]); 
+		q.insert(q.begin(), Dstarcharge[0]); 
+
+		// create vector saying whether it is a Dstar 
+		std::vector<float> flag = {1.}; 
+
+		std::vector<std::vector<float>* > vectors = {&eta, &phi, &pt, &q}; 
+
+		std::vector<std::vector<float>* > additionalvectors = {&assocQualityToPV, &DOCA3D, &DOCA2D, &DOCA3DErr, &DOCA2DErr, &dzToPV, &isAssociate, &dzToClosest}; 
+
+		for (auto vec : additionalvectors) 
+		{
+			vec->insert(vec->begin(), 0.); 
+		}
+
+		vectors.insert(vectors.end(), additionalvectors.begin(), additionalvectors.end()); 
+
+		vectors.insert(vectors.end(), &flag); 
+
+		std::vector<std::vector<float>* > garbageCollector; 
+		for (auto vec : vectors) 
+		{
+			extendArray(vec, 20, garbageCollector); 
+		}
+
 		//std::vector<float> response; 
 		std::vector<double> datavec = {1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9, 9.1, 1.2, 2.3, 3.4, 4.5, 5.6, 6.7, 7.8, 8.9, 9.1, 1.2, 2.3}; 
 
@@ -230,8 +277,6 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 		std::cout << "Array size before: " << pt.size() << std::endl; 
 
 		PrintArray(pt); 
-
-		std::vector<std::vector<float>* > vectors = {&pt, &eta, &phi}; 
 
 		std::cout << "Array size before: " << pt.size() << std::endl; 
 
@@ -255,10 +300,15 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
     	}
     	std::cout << std::endl; */
 
+    	for (auto element: garbageCollector) 
+    	{
+    		delete element; 
+    	}
+
 		return response; 
 	};
 
-	auto withWeight = dataframe.Define("TFscore", TFresponse, {"track_pt", "track_eta", "track_phi", "track_charge", "track_doca2D", "track_doca2Derror", "track_doca", "track_docaerror", "track_dzToPV", "track_dzToClosestVertex", "track_isAssociatedToPV", "track_pvAssociationQuality", "track_isgenmatched"}); 
+	auto withWeight = dataframe.Define("TFscore", TFresponse, {"BsDstarTauNu_Ds_pt", "BsDstarTauNu_Ds_eta", "BsDstarTauNu_Ds_phi", "BsDstarTauNu_spi_charge", "track_pt", "track_eta", "track_phi", "track_charge", "track_doca2D", "track_doca2Derror", "track_doca", "track_docaerror", "track_dzToPV", "track_dzToClosestVertex", "track_isAssociatedToPV", "track_pvAssociationQuality", "track_isgenmatched"}); 
 
 	withWeight.Snapshot("ntuplizer/tree", "SignalOfficialMC50M_withTHweight.root"); 
 

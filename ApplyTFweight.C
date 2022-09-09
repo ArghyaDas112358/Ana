@@ -170,7 +170,7 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 
     std::cout << "Before making class" << std::endl; 
 
-	PythonInterface pyEvaluation("TestPyTFEval"); 
+	PythonInterface pyEvaluation("PyTFEval"); 
 
     std::cout << "After making class" << std::endl; 
 

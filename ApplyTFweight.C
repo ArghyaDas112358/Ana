@@ -67,6 +67,7 @@ std::vector<float> EvaluateTFresponse(std::vector<float> pt, std::vector<float> 
 std::vector<float>  extendArray(const std::vector<float>& array, const int dim) 
 {
 	std::vector<float> result; 
+	result.reserve(dim); 
 	if (array.size() > dim) 
 	{
 		result = std::vector<float>(array.begin(), array.begin()+dim); 
@@ -82,6 +83,8 @@ std::vector<float>  extendArray(const std::vector<float>& array, const int dim)
 	return result; 
 }
 
+// TODO: function that does the same inplace 
+
 template<typename T>
 void PrintArray(const std::vector<T>& vec) 
 {
@@ -91,6 +94,16 @@ void PrintArray(const std::vector<T>& vec)
 		std::cout << i << ", "; 
 	}
 	std::cout << std::endl; 
+}
+
+std::vector<float> concatenateVectors(const std::vector<std::vector<float>* > vectors) 
+{
+	std::vector<float> result; // TODO: reserve the size 
+	for (auto vec : vectors) 
+	{
+		result.insert(result.end(), vec->begin(), vec->end()); 
+	}
+	return result; 
 }
 
  
@@ -218,7 +231,15 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 
 		PrintArray(pt); 
 
+		std::vector<std::vector<float>* > vectors = {&pt, &eta, &phi}; 
+
+		std::cout << "Array size before: " << pt.size() << std::endl; 
+
 		auto extended = extendArray(pt, 20); 
+
+		auto concatenated = concatenateVectors(vectors); 
+
+		PrintArray(concatenated); 
 
 		std::cout << "Aarray size after: " << extended.size() << std::endl; 
 

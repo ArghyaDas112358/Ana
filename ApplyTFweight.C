@@ -108,7 +108,6 @@ std::vector<float> concatenateVectors(const std::vector<std::vector<float>* > ve
 
 void extendArray(std::vector<float>* array, const int dim, std::vector<std::vector<float>* >& garbageCollector) 
 {
-	std::vector<float> *result = nullptr; // We create a result in order to be able to 
 	if (array->size() > dim) 
 	{
 		array = new std::vector<float>(array->begin(), array->begin()+dim); 
@@ -116,8 +115,7 @@ void extendArray(std::vector<float>* array, const int dim, std::vector<std::vect
 	}
 	else 
 	{
-		std::vector<float> completion(dim - array->size(), 0.); 
-		array->insert(array->end(), completion.begin(), completion.end()); 
+		array->insert(array->end(), dim - array->size(), 0.); 
 	}
 }
 

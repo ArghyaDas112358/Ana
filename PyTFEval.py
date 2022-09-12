@@ -53,9 +53,11 @@ class PyTFEval:
 
         print(data.shape)
 
-        data[:, :, 2] = np.log(data[:, :, 2]) # taking log of pT 
+        data[:, :, 2] = np.log(data[:, :, 2], out=np.zeros_like(data[:, :, 2]), where=(data[:, :, 2]!=0)) # taking log of pT 
 
-        np.nan_to_num(data, False, 0.)
+        np.nan_to_num(data, copy=False)
+
+        self.CheckInput(data)
 
         return self.Evaluate(data)
 

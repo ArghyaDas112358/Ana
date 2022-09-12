@@ -2,6 +2,7 @@ import numpy as np
 import tensorflow as tf
 import ctypes
 import math
+import h5py
 
 
 class PyTFEval: 
@@ -12,6 +13,8 @@ class PyTFEval:
 
         self.BATCHSIZE=10
         self.NUM_POINT = 20
+
+        self.initCheck = False 
 
         #np.__config__.show()
 
@@ -166,6 +169,30 @@ class PyTFEval:
                 pred_list.append(pred)
                 pred_array = np.asarray(pred_list, dtype=object)
             return np.asarray(pred_array, "d")
+
+    def CheckInput(self, dataframe): 
+        # open the file and check if the dataframes are  identical
+        print("Check")
+        print(dataframe)
+        if (self.initCheck != True): 
+            self.InitCheck("../../data/firstAllTau.h5")
+        
+        print('data_set =', self.dataset.shape) 
+        element = self.dataset[self.count]
+        element = np.expand_dims(element, 0)
+        print(element)
+        self.count+=1
+        if (not np.allclose(dataframe, element)): #assert(np.allclose(dataframe, self.dataset[self.count]))
+            print("Warning: different values in arrays!")
+        print(dataframe - element)
+
+
+    def InitCheck(self, filename): 
+        self.file = h5py.File(filename, 'r') 
+        self.dataset = self.file['data']
+        self.initCheck = True
+        self.count = 0
+
 
     """
     def EvaluateBatch(self, batch): 

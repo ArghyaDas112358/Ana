@@ -167,12 +167,25 @@ class PythonInterface
         double *response = static_cast<double*>(PyArray_DATA((PyArrayObject*)result)); 
 
         std::vector<float> returnvec; 
-        returnvec.reserve(data.size()); 
+        returnvec.reserve(20); 
+        std::vector<float> probSig; 
+        probSig.reserve(20); 
+        std::vector<float> probBkg; 
+        probBkg.reserve(20); 
 
-        for (int i=0; i<data.size(); i++) 
+        for (int i=0; i<3*20; i++) 
         {
             std::cout << *(response + i) << ", "; 
-            returnvec.push_back(static_cast<float>(*(response + i))); 
+            float value = static_cast<float>(*(response + i)); 
+            returnvec.push_back(value); 
+            if ((i%3) == 1) 
+            {
+                probSig.push_back(value); 
+            }
+            if ((i%3) == 2) 
+            {
+                probBkg.push_back(value); 
+            }
             //response++; 
         }
         std::cout << std::endl; 
@@ -183,7 +196,7 @@ class PythonInterface
         Py_DECREF (pFunc);
 
 
-        return returnvec;
+        return probSig;
     }
 
     std::vector<double> castVector(std::vector<float> vec) 

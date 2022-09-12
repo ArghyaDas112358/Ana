@@ -107,11 +107,15 @@ class PyTFEval:
 
         print(response.shape)
 
-        result = response[0,:, 0]
+        print(response)
+
+        result = response[0,:, :]
 
         #result = np.asarray(result, "d")
 
         print(result)
+
+        print(result.shape)
 
         return result
 
@@ -177,7 +181,7 @@ class PyTFEval:
         print("Check")
         print(dataframe)
         if (self.initCheck != True): 
-            self.InitCheck("../../data/firstAllTau.h5")
+            self.InitCheck("../../data/firstAllTauFix.h5")
         
         print('data_set =', self.dataset.shape) 
         element = self.dataset[self.count]
@@ -187,6 +191,9 @@ class PyTFEval:
         if (not np.allclose(dataframe, element)): #assert(np.allclose(dataframe, self.dataset[self.count]))
             print("Warning: different values in arrays!")
         print(dataframe - element)
+        assert(np.allclose(dataframe, element))
+        print(dataframe.dtype)
+        print(element.dtype)
 
 
     def InitCheck(self, filename): 

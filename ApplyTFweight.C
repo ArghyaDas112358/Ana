@@ -252,6 +252,8 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 		assert(Dstarphi.size() == 1); 
 		assert(Dstarcharge.size() == 1); 
 
+		const int initialSize = pt.size(); 
+
 		pt.insert(pt.begin(), Dstarpt[0]); 
 		eta.insert(eta.begin(), Dstareta[0]); 
 		phi.insert(phi.begin(), Dstarphi[0]); 
@@ -287,6 +289,14 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 
 		//auto response = pyEvaluation.EvaluateArray(datavec);
 		auto response = pyEvaluation.Evaluate(concatenated);
+
+		std::cout << "Response size: " << response.size() << std::endl; 
+
+		response.resize(initialSize); 
+
+		response.erase(response.begin()); 
+
+		std::cout << "Response size: " << response.size() << std::endl; 
 
     	//std::cout << "After evaluation" << std::endl; 
 

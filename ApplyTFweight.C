@@ -165,6 +165,8 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 	filemanager.AddItem("MCSignal", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/PrivateProductionGenDstar_converted.root", "tree"); 
 	filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M.root", "ntuplizer/tree"); 
 	filemanager.AddItem("ParkingBPHAllRun2018B", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPHRun2018B_converted.root", "tree"); 
+	filemanager.AddItem("MCSignalMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstAllTau.root", "ntuplizer/tree"); 
+
 
 
 	filemanager.OpenAllItems(); 
@@ -172,7 +174,7 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 	gStyle->SetOptStat(0); 
 
 
-	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>("SignalOfficialMC50M")); // tree100k
+	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>("MCSignalMMultipleTau")); // tree100k
 	
 
 	// Defining the delta

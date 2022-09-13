@@ -106,7 +106,7 @@ std::vector<float> concatenateVectors(const std::vector<std::vector<float>* > ve
 	return result; 
 }
 
-void extendArray(std::vector<float>* array, const int dim, std::vector<std::vector<float>* >& garbageCollector) 
+void extendArray(std::vector<float>*& array, const int dim, std::vector<std::vector<float>* >& garbageCollector) 
 {
 	if (array->size() > dim) 
 	{
@@ -281,7 +281,7 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 		vectors.insert(vectors.end(), &flag); 
 
 		std::vector<std::vector<float>* > garbageCollector; 
-		for (auto vec : vectors) 
+		for (auto& vec : vectors) 
 		{
 			extendArray(vec, 20, garbageCollector); 
 		}

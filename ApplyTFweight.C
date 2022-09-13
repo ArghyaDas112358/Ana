@@ -241,11 +241,13 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 
     std::cout << "After making class" << std::endl; 
 
+    int counter = 0; 
+
 	//auto histo1 = frame2.Histo1D("B_mass"); 
 
 	//auto histo2 = frame2.Histo2D({"Bmass_vs_Dmass", "Correlation plot between B and D masses", 100, 0., 7000., 100, 0., 5000.}, "BsDstarTauNu_B_mass", "BsDstarTauNu_D0_unfit_mass"); 
 
-	auto TFresponse = [&pyEvaluation](std::vector<float> Dstarpt, std::vector<float> Dstareta, std::vector<float> Dstarphi, std::vector<float> Dstarcharge, std::vector<float> pt, std::vector<float> eta, std::vector<float> phi, std::vector<float> q, std::vector<float> DOCA2D, std::vector<float> DOCA2DErr, std::vector<float> DOCA3D, std::vector<float> DOCA3DErr, std::vector<float> dzToPV, std::vector<float> dzToClosest, std::vector<float> isAssociate, std::vector<float> assocQualityToPV, std::vector<int> genmatch) 
+	auto TFresponse = [&pyEvaluation, &counter](std::vector<float> Dstarpt, std::vector<float> Dstareta, std::vector<float> Dstarphi, std::vector<float> Dstarcharge, std::vector<float> pt, std::vector<float> eta, std::vector<float> phi, std::vector<float> q, std::vector<float> DOCA2D, std::vector<float> DOCA2DErr, std::vector<float> DOCA3D, std::vector<float> DOCA3DErr, std::vector<float> dzToPV, std::vector<float> dzToClosest, std::vector<float> isAssociate, std::vector<float> assocQualityToPV, std::vector<int> genmatch) 
 	{
 		assert(Dstarpt.size() == 1); 
 		assert(Dstareta.size() == 1); 
@@ -258,6 +260,9 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 		eta.insert(eta.begin(), Dstareta[0]); 
 		phi.insert(phi.begin(), Dstarphi[0]); 
 		q.insert(q.begin(), Dstarcharge[0]); 
+
+		std::cout << "Event no: " << counter << std::endl; 
+		counter++; 
 
 		// create vector saying whether it is a Dstar 
 		std::vector<float> flag = {1.}; 

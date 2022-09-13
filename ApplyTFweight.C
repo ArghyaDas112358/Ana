@@ -264,7 +264,12 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 
 		std::vector<std::vector<float>* > vectors = {&eta, &phi, &pt, &q}; 
 
-		std::vector<std::vector<float>* > additionalvectors = {&assocQualityToPV, &DOCA3D, &DOCA2D, &DOCA3DErr, &DOCA2DErr, &dzToPV, &isAssociate, &dzToClosest}; 
+		// Hack to fit the trained model 
+		auto fakePVassoc = new std::vector<float>(dzToClosest.begin(), dzToClosest.begin()+dzToClosest.size()); 
+		auto fakeAssoc = new std::vector<float>(dzToClosest.begin(), dzToClosest.begin()+dzToClosest.size()); 
+
+		std::vector<std::vector<float>* > additionalvectors = {fakePVassoc, &DOCA3D, &DOCA2D, &DOCA3DErr, &DOCA2DErr, &dzToPV, fakeAssoc, &dzToClosest}; 
+		// End hack 
 
 		for (auto vec : additionalvectors) 
 		{
@@ -280,6 +285,11 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 		{
 			extendArray(vec, 20, garbageCollector); 
 		}
+
+		// Hack to fit the trained model
+		garbageCollector.push_back(fakePVassoc); 
+		garbageCollector.push_back(fakeAssoc); 
+		// End hack 
 
 		auto concatenated = concatenateVectors(vectors); 
 

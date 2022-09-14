@@ -128,7 +128,7 @@ std::vector<double> castVector(std::vector<float> vec)
 }
 
 
-std::vector<float> FillTauDNNscore(ROOT::VecOps::RVec<int> trackIndices, std::vector<float> trackScores) 
+ROOT::VecOps::RVec<float> FillTauDNNscore(ROOT::VecOps::RVec<int> trackIndices, std::vector<float> trackScores) 
 {
 	std::vector<float> responses; 
 	for (auto index : trackIndices) 
@@ -143,6 +143,20 @@ std::vector<float> FillTauDNNscore(ROOT::VecOps::RVec<int> trackIndices, std::ve
 	}
 	assert(responses.size() == trackIndices.size()); 
 	return responses; 
+}
+
+
+std::vector<float> FillSumDNN(ROOT::VecOps::RVec<float> pion1_dnn, ROOT::VecOps::RVec<float> pion2_dnn, ROOT::VecOps::RVec<float> pion3_dnn) 
+{
+	std::vector<float> response; 
+	const int dim = pion1_dnn.size(); 
+	assert(pion2_dnn.size() == dim); 
+	assert(pion3_dnn.size() == dim); 
+	for (unsigned int i=0; i<dim; i++) 
+	{
+		response.push_back(pion1_dnn.at(i)+pion2_dnn.at(i)+pion3_dnn.at(i)); 
+	}
+	return response; 
 }
 
  
@@ -264,6 +278,8 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 	};
 
 	auto withDNN = dataframe.Define("b_tau_dnn_1", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx1", "TFscore"}).Define("b_tau_dnn_2", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx2", "TFscore"}).Define("b_tau_dnn_3", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx3", "TFscore"}); 
+
+	withDNN = withDNN.Define("b_tau_sumdnn", FillSumDNN, {"b_tau_dnn_1", "b_tau_dnn_2", "b_tau_dnn_3"}); 
 
 	withDNN.Snapshot("ntuplizer/tree", "SignalOfficialMC50M_tauDNN.root"); 
 

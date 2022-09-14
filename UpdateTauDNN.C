@@ -258,7 +258,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 		return response; 
 	};
 
-	auto withDNN = dataframe.Define("b_tau_dnn_1", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx1", "TFscore"}); 
+	auto withDNN = dataframe.Define("b_tau_dnn_1", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx1", "TFscore"}).Define("b_tau_dnn_2", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx2", "TFscore"}).Define("b_tau_dnn_3", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx3", "TFscore"}); 
 
 	withDNN.Snapshot("ntuplizer/tree", "SignalOfficialMC50M_tauDNN.root"); 
 

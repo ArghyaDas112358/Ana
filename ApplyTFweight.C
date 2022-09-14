@@ -331,7 +331,7 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 
 	auto withWeight = dataframe.Define("TFscore", TFresponse, {"BsDstarTauNu_Ds_pt", "BsDstarTauNu_Ds_eta", "BsDstarTauNu_Ds_phi", "BsDstarTauNu_spi_charge", "track_pt", "track_eta", "track_phi", "track_charge", "track_doca2D", "track_doca2Derror", "track_doca", "track_docaerror", "track_dzToPV", "track_dzToClosestVertex", "track_isAssociatedToPV", "track_pvAssociationQuality", "track_isgenmatched"}); 
 
-	withWeight.Snapshot("ntuplizer/tree", "SignalOfficialMC50M_withTHweight.root"); 
+	withWeight.Snapshot("ntuplizer/tree", "SignalOfficialMC50M_withTFweight.root"); 
 
 	//Pause(5); 
 

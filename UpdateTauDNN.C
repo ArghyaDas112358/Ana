@@ -195,7 +195,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 	filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M.root", "ntuplizer/tree"); 
 	filemanager.AddItem("ParkingBPHAllRun2018B", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPHRun2018B_converted.root", "tree"); 
 	filemanager.AddItem("MCSignalMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstAllTau.root", "ntuplizer/tree"); 
-	filemanager.AddItem("MCSignalMMultipleTauWithResponse", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/Ana/SignalOfficialMC50M_withTHweight.root", "ntuplizer/tree"); 
+	filemanager.AddItem("MCSignalMMultipleTauWithResponse", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_withTFweight.root", "ntuplizer/tree"); 
 
 
 
@@ -281,7 +281,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 
 	withDNN = withDNN.Define("b_tau_sumdnn", FillSumDNN, {"b_tau_dnn_1", "b_tau_dnn_2", "b_tau_dnn_3"}); 
 
-	withDNN.Snapshot("ntuplizer/tree", "SignalOfficialMC50M_tauDNN.root"); 
+	withDNN.Snapshot("ntuplizer/tree", "../../data/SignalOfficialMC50M_tauDNN.root"); 
 
 	//Pause(5); 
 

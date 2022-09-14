@@ -133,7 +133,12 @@ std::vector<float> FillTauDNNscore(ROOT::VecOps::RVec<int> trackIndices, std::ve
 	std::vector<float> responses; 
 	for (auto index : trackIndices) 
 	{
-		float dnnScore = trackScores.at(index); 
+		float dnnScore = -1; 
+		if (index < trackScores.size()) 
+		{
+			std::cout << "WARNING: index out of range! " << std::endl; 
+			dnnScore = trackScores.at(index); 
+		}
 		responses.push_back(dnnScore); 
 	}
 	assert(responses.size() == trackIndices.size()); 

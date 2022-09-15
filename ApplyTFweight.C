@@ -307,9 +307,9 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 
 		std::cout << "Response size: " << response.size() << std::endl; 
 
-		response.resize(initialSize); 
-
 		response.erase(response.begin()); 
+
+		response.resize(initialSize); 
 
 		std::cout << "Response size: " << response.size() << std::endl; 
 

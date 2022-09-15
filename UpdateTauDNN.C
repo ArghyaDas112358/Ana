@@ -128,13 +128,12 @@ std::vector<double> castVector(std::vector<float> vec)
 }
 
 
-ROOT::VecOps::RVec<float> FillTauDNNscore(ROOT::VecOps::RVec<int> trackIndices, std::vector<float> trackScores, int trackMult) 
+ROOT::VecOps::RVec<float> FillTauDNNscore(ROOT::VecOps::RVec<int> trackIndices, std::vector<float> trackScores) 
 {
 	std::vector<float> responses; 
 	for (auto index : trackIndices) 
 	{
 		float dnnScore = -1; 
-		std::cout << "Index: " << index << ", number of tracks " << trackScores.size() << " track multiplicity: " << trackMult << std::endl; 
 		if (index < trackScores.size()) 
 		{
 			dnnScore = trackScores.at(index); 
@@ -167,7 +166,7 @@ std::vector<float> FillSumDNN(ROOT::VecOps::RVec<float> pion1_dnn, ROOT::VecOps:
 
 void UpdateTauDNN(TString campaignName = "ApplyTFweight/") 
 {
-	ROOT::EnableImplicitMT(); //ROOT::DisableImplicitMT(); 
+	//ROOT::EnableImplicitMT(); //ROOT::DisableImplicitMT(); 
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C"); 
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C+");
 	//gSystem->Load("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.so"); 
@@ -281,7 +280,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 		return response; 
 	};
 
-	auto withDNN = dataframe.Define("b_tau_dnn_1", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx1", "TFscore", "track_multiplicity"}).Define("b_tau_dnn_2", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx2", "TFscore", "track_multiplicity"}).Define("b_tau_dnn_3", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx3", "TFscore", "track_multiplicity"}); 
+	auto withDNN = dataframe.Define("b_tau_dnn_1", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx1", "TFscore"}).Define("b_tau_dnn_2", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx2", "TFscore"}).Define("b_tau_dnn_3", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx3", "TFscore"}); 
 
 	withDNN = withDNN.Define("b_tau_sumdnn", FillSumDNN, {"b_tau_dnn_1", "b_tau_dnn_2", "b_tau_dnn_3"}); 
 

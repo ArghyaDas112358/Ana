@@ -128,16 +128,20 @@ std::vector<double> castVector(std::vector<float> vec)
 }
 
 
-ROOT::VecOps::RVec<float> FillTauDNNscore(ROOT::VecOps::RVec<int> trackIndices, std::vector<float> trackScores) 
+ROOT::VecOps::RVec<float> FillTauDNNscore(ROOT::VecOps::RVec<int> trackIndices, std::vector<float> trackScores, int trackMult) 
 {
 	std::vector<float> responses; 
 	for (auto index : trackIndices) 
 	{
 		float dnnScore = -1; 
+		std::cout << "Index: " << index << ", number of tracks " << trackScores.size() << " track multiplicity: " << trackMult << std::endl; 
 		if (index < trackScores.size()) 
 		{
-			std::cout << "WARNING: index out of range! " << std::endl; 
 			dnnScore = trackScores.at(index); 
+		}
+		else 
+		{
+			std::cout << "WARNING: index out of range! " << std::endl; 
 		}
 		responses.push_back(dnnScore); 
 	}
@@ -277,7 +281,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 		return response; 
 	};
 
-	auto withDNN = dataframe.Define("b_tau_dnn_1", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx1", "TFscore"}).Define("b_tau_dnn_2", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx2", "TFscore"}).Define("b_tau_dnn_3", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx3", "TFscore"}); 
+	auto withDNN = dataframe.Define("b_tau_dnn_1", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx1", "TFscore", "track_multiplicity"}).Define("b_tau_dnn_2", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx2", "TFscore", "track_multiplicity"}).Define("b_tau_dnn_3", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx3", "TFscore", "track_multiplicity"}); 
 
 	withDNN = withDNN.Define("b_tau_sumdnn", FillSumDNN, {"b_tau_dnn_1", "b_tau_dnn_2", "b_tau_dnn_3"}); 
 

@@ -14,6 +14,7 @@ ClassImp(FileManager)
 #include "GetSeparation.C"
 //#include "Python.h"
 //#include "TPython.h"
+#include "Tau.h"
 
 
 using namespace ROOT; 
@@ -162,6 +163,38 @@ std::vector<float> FillSumDNN(ROOT::VecOps::RVec<float> pion1_dnn, ROOT::VecOps:
 	return response; 
 }
 
+
+struct Basictau 
+{
+	float pt; 
+	float eta; 
+	float phi; 
+	int q; 
+	float m; 
+	int idx1;
+	int idx2; 
+	int idx3; 
+	float sumdnn; 
+	float dnn1; 
+	float dnn2; 
+	float dnn3; 
+
+}; 
+
+
+std::vector<Tau> SelectTauCandidate(ROOT::VecOps::RVec<float> taupt, ROOT::VecOps::RVec<float> taueta, ROOT::VecOps::RVec<float> tauphi) 
+{
+	std::vector<Tau> mytaus; 
+	for (unsigned int i=0; i<taupt.size(); i++) 
+	{
+		Tau tau; 
+		tau.pt = taupt.at(i); 
+
+		mytaus.push_back(tau); 
+	}
+	return mytaus; 
+}
+
  
 
 void UpdateTauDNN(TString campaignName = "ApplyTFweight/") 
@@ -283,6 +316,8 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 	auto withDNN = dataframe.Define("b_tau_dnn_1", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx1", "TFscore"}).Define("b_tau_dnn_2", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx2", "TFscore"}).Define("b_tau_dnn_3", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx3", "TFscore"}); 
 
 	withDNN = withDNN.Define("b_tau_sumdnn", FillSumDNN, {"b_tau_dnn_1", "b_tau_dnn_2", "b_tau_dnn_3"}); 
+
+	withDNN = withDNN.Define("b_taucandidates", SelectTauCandidate, {"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi"}); 
 
 	withDNN.Snapshot("ntuplizer/tree", "../../data/SignalOfficialMC50M_tauDNN.root"); 
 

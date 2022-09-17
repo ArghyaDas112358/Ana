@@ -27,6 +27,16 @@ class Tau : public TObject
 
 	ClassDef(Tau, 0);
 
+	static std::vector<float> WritePt(std::vector<Tau> collection) 
+	{
+		std::vector<float> result; 
+		for (auto tau : collection) 
+		{
+			result.push_back(tau.pt); 
+		}
+		return result; 
+	}; 
+
 }; 
 
 

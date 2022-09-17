@@ -317,7 +317,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 
 	withDNN = withDNN.Define("b_tau_sumdnn", FillSumDNN, {"b_tau_dnn_1", "b_tau_dnn_2", "b_tau_dnn_3"}); 
 
-	withDNN = withDNN.Define("b_taucandidates", SelectTauCandidate, {"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi"}); 
+	withDNN = withDNN.Define("b_taucandidates", SelectTauCandidate, {"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi"}).Define("b_tau_pt", Tau::WritePt, {"b_taucandidates"}); 
 
 	withDNN.Snapshot("ntuplizer/tree", "../../data/SignalOfficialMC50M_tauDNN.root"); 
 

@@ -57,7 +57,7 @@ class PyTFEval:
 
         np.nan_to_num(data, copy=False)
 
-        self.CheckInput(data)
+        #self.CheckInput(data)
 
         return self.Evaluate(data)
 

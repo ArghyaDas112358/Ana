@@ -182,17 +182,28 @@ struct Basictau
 }; 
 
 
-std::vector<Tau> SelectTauCandidate(ROOT::VecOps::RVec<float> taupt, ROOT::VecOps::RVec<float> taueta, ROOT::VecOps::RVec<float> tauphi) 
+std::vector<Tau> BuildTauCandidates(ROOT::VecOps::RVec<float> taupt, ROOT::VecOps::RVec<float> taueta, ROOT::VecOps::RVec<float> tauphi, ROOT::VecOps::RVec<int> taucharge, ROOT::VecOps::RVec<float> taumass, ROOT::VecOps::RVec<float> tauVprob, ROOT::VecOps::RVec<float> taufsig, ROOT::VecOps::RVec<float> taulip, ROOT::VecOps::RVec<int> idx1, ROOT::VecOps::RVec<int> idx2, ROOT::VecOps::RVec<int> idx3, ROOT::VecOps::RVec<float> dnn1, ROOT::VecOps::RVec<float> dnn2, ROOT::VecOps::RVec<float> dnn3, std::vector<float> sumdnn) 
 {
 	std::vector<Tau> mytaus; 
 	for (unsigned int i=0; i<taupt.size(); i++) 
 	{
-		Tau tau; 
-		tau.pt = taupt.at(i); 
+		Tau tau(taupt.at(i), taueta.at(i), tauphi.at(i), taucharge.at(i), taumass.at(i)); 
+		//tau.pt = taupt.at(i); 
+
+		tau.SetKinematics(tauVprob.at(i), taufsig.at(i), taulip.at(i)); 
+		tau.SetIndices(idx1.at(i), idx2.at(i), idx3.at(i)); 
+		tau.SetDNN(dnn1.at(i), dnn2.at(i), dnn3.at(i), sumdnn.at(i)); 
 
 		mytaus.push_back(tau); 
 	}
+	assert(mytaus.size() == taupt.size()); 
 	return mytaus; 
+}
+
+
+Tau SelectTauCandidate(std::vector<Tau> collection) 
+{
+	return collection.at(0); 
 }
 
  
@@ -317,7 +328,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 
 	withDNN = withDNN.Define("b_tau_sumdnn", FillSumDNN, {"b_tau_dnn_1", "b_tau_dnn_2", "b_tau_dnn_3"}); 
 
-	withDNN = withDNN.Define("b_taucandidates", SelectTauCandidate, {"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi"}).Define("b_tau_pt", Tau::WritePt, {"b_taucandidates"}); 
+	withDNN = withDNN.Define("b_taucandidates", BuildTauCandidates, {"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_q", "BsDstarTauNu_tau_mass", "BsDstarTauNu_tau_vprob", "BsDstarTauNu_tau_fls3d", "BsDstarTauNu_tau_lip", "BsDstarTauNu_tau_pfidx1", "BsDstarTauNu_tau_pfidx2", "BsDstarTauNu_tau_pfidx3", "b_tau_dnn_1", "b_tau_dnn_2", "b_tau_dnn_3", "b_tau_sumdnn"}).Define("b_tau_pt", Tau::WritePt, {"b_taucandidates"}).Define("b_tau", SelectTauCandidate, {"b_taucandidates"}); 
 
 	withDNN.Snapshot("ntuplizer/tree", "../../data/SignalOfficialMC50M_tauDNN.root"); 
 

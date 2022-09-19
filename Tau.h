@@ -58,6 +58,17 @@ class Tau : public TObject
 	}
 
 
+	bool operator>(const Tau& other) const 
+	{ 
+    	return pt > other.pt;
+  	}
+
+  	bool operator<(const Tau& other) const 
+	{ 
+    	return pt < other.pt;
+  	}
+
+
 
 
 	static std::vector<float> WritePt(std::vector<Tau> collection) 

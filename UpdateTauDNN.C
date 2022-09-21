@@ -200,9 +200,36 @@ std::vector<Tau> BuildTauCandidates(ROOT::VecOps::RVec<float> taupt, ROOT::VecOp
 	return mytaus; 
 }
 
+struct 
+{
+    bool operator()(const Tau& tau1, const Tau& tau2) const 
+    { 
+    	return  measure(tau1) > measure(tau2); 
+    }
+
+    float measure(const Tau& tau) const 
+    {
+    	return tau.pt * tau.sumdnn; 
+    }
+
+} SortTauCandidates; 
+
+
 
 Tau SelectTauCandidate(std::vector<Tau> collection) 
 {
+	std::sort(collection.begin(), collection.end(), std::greater<>()); 
+	std::cout << "New event" << std::endl; 
+	for (auto item : collection) 
+	{
+		std::cout << "Tau pt: " << item.pt << std::endl; 
+	}
+	std::sort(collection.begin(), collection.end(), SortTauCandidates); 
+	for (auto item : collection) 
+	{
+		std::cout << "Tau pt: " << item.pt << " " << item.sumdnn << std::endl; 
+	}
+
 	return collection.at(0); 
 }
 
@@ -241,7 +268,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 	filemanager.AddItem("MCSignal", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/PrivateProductionGenDstar_converted.root", "tree"); 
 	filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M.root", "ntuplizer/tree"); 
 	filemanager.AddItem("ParkingBPHAllRun2018B", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPHRun2018B_converted.root", "tree"); 
-	filemanager.AddItem("MCSignalMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstAllTau.root", "ntuplizer/tree"); 
+	filemanager.AddItem("MCSignalMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstAllTau_withTFweight.root", "ntuplizer/tree"); 
 	filemanager.AddItem("MCSignalMMultipleTauWithResponse", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_withTFweight.root", "ntuplizer/tree"); 
 
 
@@ -251,7 +278,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 	gStyle->SetOptStat(0); 
 
 
-	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>("MCSignalMMultipleTauWithResponse")); // tree100k
+	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>("MCSignalMMultipleTau")); // tree100k
 	
 
 	// Defining the delta

@@ -218,17 +218,7 @@ struct
 
 Tau SelectTauCandidate(std::vector<Tau> collection) 
 {
-	std::sort(collection.begin(), collection.end(), std::greater<>()); 
-	std::cout << "New event" << std::endl; 
-	for (auto item : collection) 
-	{
-		std::cout << "Tau pt: " << item.pt << std::endl; 
-	}
-	std::sort(collection.begin(), collection.end(), SortTauCandidates); 
-	for (auto item : collection) 
-	{
-		std::cout << "Tau pt: " << item.pt << " " << item.sumdnn << std::endl; 
-	}
+	std::sort(collection.begin(), collection.end(), SortTauCandidates); //std::greater<>()
 
 	return collection.at(0); 
 }
@@ -355,7 +345,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 
 	withDNN = withDNN.Define("b_tau_sumdnn", FillSumDNN, {"b_tau_dnn_1", "b_tau_dnn_2", "b_tau_dnn_3"}); 
 
-	withDNN = withDNN.Define("b_taucandidates", BuildTauCandidates, {"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_q", "BsDstarTauNu_tau_mass", "BsDstarTauNu_tau_vprob", "BsDstarTauNu_tau_fls3d", "BsDstarTauNu_tau_lip", "BsDstarTauNu_tau_pfidx1", "BsDstarTauNu_tau_pfidx2", "BsDstarTauNu_tau_pfidx3", "b_tau_dnn_1", "b_tau_dnn_2", "b_tau_dnn_3", "b_tau_sumdnn"}).Define("b_tau_pt", Tau::WritePt, {"b_taucandidates"}).Define("b_tau", SelectTauCandidate, {"b_taucandidates"}); 
+	withDNN = withDNN.Define("b_taucandidates", BuildTauCandidates, {"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_q", "BsDstarTauNu_tau_mass", "BsDstarTauNu_tau_vprob", "BsDstarTauNu_tau_fls3d", "BsDstarTauNu_tau_lip", "BsDstarTauNu_tau_pfidx1", "BsDstarTauNu_tau_pfidx2", "BsDstarTauNu_tau_pfidx3", "b_tau_dnn_1", "b_tau_dnn_2", "b_tau_dnn_3", "b_tau_sumdnn"}).Define("b_tau", SelectTauCandidate, {"b_taucandidates"}).Define("b_tau_pt", Tau::WritePt, {"b_tau"}); 
 
 	withDNN.Snapshot("ntuplizer/tree", "../../data/SignalOfficialMC50M_tauDNN.root"); 
 

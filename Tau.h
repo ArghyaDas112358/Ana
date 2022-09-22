@@ -71,14 +71,79 @@ class Tau : public TObject
 
 
 
-	static std::vector<float> WritePt(std::vector<Tau> collection) 
+	static float WritePt(const Tau& tau) 
 	{
-		std::vector<float> result; 
-		for (auto tau : collection) 
-		{
-			result.push_back(tau.pt); 
-		}
-		return result; 
+		return tau.pt; 
+	}; 
+
+	static float WriteEta(const Tau& tau) 
+	{
+		return tau.eta; 
+	}; 
+
+	static float WritePhi(const Tau& tau) 
+	{
+		return tau.phi; 
+	}; 
+
+	static int WriteCharge(const Tau& tau) 
+	{
+		return tau.q; 
+	}; 
+
+	static float WriteMass(const Tau& tau) 
+	{
+		return tau.m; 
+	}; 
+
+	static float WriteVprob(const Tau& tau) 
+	{
+		return tau.vprob; 
+	}; 
+
+	static float WriteFsig(const Tau& tau) 
+	{
+		return tau.fsig; 
+	}; 
+
+	static float WriteLip(const Tau& tau) 
+	{
+		return tau.lip; 
+	}; 
+
+	static int WriteIdx1(const Tau& tau) 
+	{
+		return tau.idx1; 
+	}; 
+
+	static int WriteIdx2(const Tau& tau) 
+	{
+		return tau.idx2; 
+	}; 
+
+	static int WriteIdx3(const Tau& tau) 
+	{
+		return tau.idx3; 
+	}; 
+
+	static float WriteDNN1(const Tau& tau) 
+	{
+		return tau.dnn1; 
+	}; 
+
+	static float WriteDNN2(const Tau& tau) 
+	{
+		return tau.dnn2; 
+	}; 
+
+	static float WriteDNN3(const Tau& tau) 
+	{
+		return tau.dnn3; 
+	}; 
+
+	static float WriteSumDNN(const Tau& tau) 
+	{
+		return tau.sumdnn; 
 	}; 
 
 }; 

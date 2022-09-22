@@ -341,13 +341,27 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 		return response; 
 	};
 
-	auto withDNN = dataframe.Define("b_tau_dnn_1", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx1", "TFscore"}).Define("b_tau_dnn_2", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx2", "TFscore"}).Define("b_tau_dnn_3", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx3", "TFscore"}); 
+	auto withDNN = dataframe.Define("v_tau_dnn_1", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx1", "TFscore"}).Define("v_tau_dnn_2", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx2", "TFscore"}).Define("v_tau_dnn_3", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx3", "TFscore"}); 
 
-	withDNN = withDNN.Define("b_tau_sumofdnn", FillSumDNN, {"b_tau_dnn_1", "b_tau_dnn_2", "b_tau_dnn_3"}); 
+	withDNN = withDNN.Define("v_tau_sumdnn", FillSumDNN, {"v_tau_dnn_1", "v_tau_dnn_2", "v_tau_dnn_3"}); 
 
-	withDNN = withDNN.Define("b_taucandidates", BuildTauCandidates, {"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_q", "BsDstarTauNu_tau_mass", "BsDstarTauNu_tau_vprob", "BsDstarTauNu_tau_fls3d", "BsDstarTauNu_tau_lip", "BsDstarTauNu_tau_pfidx1", "BsDstarTauNu_tau_pfidx2", "BsDstarTauNu_tau_pfidx3", "b_tau_dnn_1", "b_tau_dnn_2", "b_tau_dnn_3", "b_tau_sumofdnn"}).Define("b_tau", SelectTauCandidate, {"b_taucandidates"})
-				.Define("b_tau_eta", Tau::WriteEta, {"b_tau"}).Define("b_tau_phi", Tau::WritePhi, {"b_tau"}).Define("b_tau_q", Tau::WriteCharge, {"b_tau"}).Define("b_tau_m", Tau::WriteMass, {"b_tau"}).Define("b_tau_vprob", Tau::WriteVprob, {"b_tau"}).Define("b_tau_fsig", Tau::WriteFsig, {"b_tau"}).Define("b_tau_lip", Tau::WriteLip, {"b_tau"}).Define("b_tau_dnn1", Tau::WriteDNN1, {"b_tau"}).Define("b_tau_dnn2", Tau::WriteDNN2, {"b_tau"}).Define("b_tau_dnn3", Tau::WriteDNN3, {"b_tau"}).Define("b_tau_sumdnn", Tau::WriteSumDNN, {"b_tau"})
-				.Define("b_tau_idx1", Tau::WriteIdx1, {"b_tau"}).Define("b_tau_idx2", Tau::WriteIdx2, {"b_tau"}).Define("b_tau_idx3", Tau::WriteIdx3, {"b_tau"}); 
+	withDNN = withDNN.Define("v_taucandidates", BuildTauCandidates, {"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_q", "BsDstarTauNu_tau_mass", "BsDstarTauNu_tau_vprob", "BsDstarTauNu_tau_fls3d", "BsDstarTauNu_tau_lip", "BsDstarTauNu_tau_pfidx1", "BsDstarTauNu_tau_pfidx2", "BsDstarTauNu_tau_pfidx3", "v_tau_dnn_1", "v_tau_dnn_2", "v_tau_dnn_3", "v_tau_sumdnn"});
+	
+	withDNN = withDNN.Define("b_tau", SelectTauCandidate, {"v_taucandidates"})
+				.Define("b_tau_eta", Tau::WriteEta, {"b_tau"})
+				.Define("b_tau_phi", Tau::WritePhi, {"b_tau"})
+				.Define("b_tau_q", Tau::WriteCharge, {"b_tau"})
+				.Define("b_tau_m", Tau::WriteMass, {"b_tau"})
+				.Define("b_tau_vprob", Tau::WriteVprob, {"b_tau"})
+				.Define("b_tau_fsig", Tau::WriteFsig, {"b_tau"})
+				.Define("b_tau_lip", Tau::WriteLip, {"b_tau"})
+				.Define("b_tau_dnn1", Tau::WriteDNN1, {"b_tau"})
+				.Define("b_tau_dnn2", Tau::WriteDNN2, {"b_tau"})
+				.Define("b_tau_dnn3", Tau::WriteDNN3, {"b_tau"})
+				.Define("b_tau_sumdnn", Tau::WriteSumDNN, {"b_tau"})
+				.Define("b_tau_idx1", Tau::WriteIdx1, {"b_tau"})
+				.Define("b_tau_idx2", Tau::WriteIdx2, {"b_tau"})
+				.Define("b_tau_idx3", Tau::WriteIdx3, {"b_tau"}); 
 
 	withDNN.Snapshot("ntuplizer/tree", "../../data/SignalOfficialMC50M_tauDNN.root"); 
 

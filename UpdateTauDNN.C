@@ -348,6 +348,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 	withDNN = withDNN.Define("v_taucandidates", BuildTauCandidates, {"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_q", "BsDstarTauNu_tau_mass", "BsDstarTauNu_tau_vprob", "BsDstarTauNu_tau_fls3d", "BsDstarTauNu_tau_lip", "BsDstarTauNu_tau_pfidx1", "BsDstarTauNu_tau_pfidx2", "BsDstarTauNu_tau_pfidx3", "v_tau_dnn_1", "v_tau_dnn_2", "v_tau_dnn_3", "v_tau_sumdnn"});
 	
 	withDNN = withDNN.Define("b_tau", SelectTauCandidate, {"v_taucandidates"})
+				.Define("b_tau_pt", Tau::WritePt, {"b_tau"})
 				.Define("b_tau_eta", Tau::WriteEta, {"b_tau"})
 				.Define("b_tau_phi", Tau::WritePhi, {"b_tau"})
 				.Define("b_tau_q", Tau::WriteCharge, {"b_tau"})

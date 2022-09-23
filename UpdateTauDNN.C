@@ -230,13 +230,13 @@ Tau SelectTauCandidate(std::vector<Tau> collection)
 }
 
 
-float findMinPt(const float& pt1, const float& pt2, const float& pt3)
+float findMin(const float& pt1, const float& pt2, const float& pt3)
 {
 	return min(min(pt1, pt2), pt3); 
 }
 
 
-float findMaxPt(const float& pt1, const float& pt2, const float& pt3)
+float findMax(const float& pt1, const float& pt2, const float& pt3)
 {
 	return max(max(pt1, pt2), pt3); 
 }
@@ -397,7 +397,9 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 				.Define("b_tau_pi3eta", Tau::WriteDau3Eta, {"b_tau"})
 				.Define("b_tau_pi3phi", Tau::WriteDau3Phi, {"b_tau"}); 
 
-	withDNN = withDNN.Define("b_tau_minpipt", findMinPt, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"}).Define("b_tau_maxpipt", findMaxPt, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"}); 
+	withDNN = withDNN.Define("b_tau_minpipt", findMin, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"}).Define("b_tau_maxpipt", findMax, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"})
+						.Define("b_tau_minpieta", findMin, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"}).Define("b_tau_maxpieta", findMax, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"})
+						.Define("b_tau_minpiphi", findMin, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}).Define("b_tau_maxpiphi", findMax, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}); 
 
 	withDNN.Snapshot("ntuplizer/tree", "../../data/SignalOfficialMC50M_tauDNN.root"); 
 

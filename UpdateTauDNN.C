@@ -3,7 +3,7 @@
 #include "TTree.h"
 #include "TString.h"
 #include "TChain.h"
-#include "/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C"
+#include "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/Ana/plugins/FileManager/CFileManager.C"
 ClassImp(FileManager)
 #include "TLorentzVector.h"
 #include "TGraph2D.h"

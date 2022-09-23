@@ -3,7 +3,7 @@
 #include "TTree.h"
 #include "TString.h"
 #include "TChain.h"
-#include "/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C"
+#include "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/Ana/plugins/FileManager/CFileManager.C"
 ClassImp(FileManager)
 #include "TLorentzVector.h"
 #include "TGraph2D.h"
@@ -166,6 +166,7 @@ void ApplyTFweight(TString campaignName = "ApplyTFweight/")
 	filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M.root", "ntuplizer/tree"); 
 	filemanager.AddItem("ParkingBPHAllRun2018B", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPHRun2018B_converted.root", "tree"); 
 	filemanager.AddItem("MCSignalMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstAllTau.root", "ntuplizer/tree"); 
+	filemanager.AddItem("BkgDstarDsMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau.root", "ntuplizer/tree"); 
 
 
 

@@ -182,7 +182,8 @@ struct Basictau
 }; 
 
 
-std::vector<Tau> BuildTauCandidates(ROOT::VecOps::RVec<float> taupt, ROOT::VecOps::RVec<float> taueta, ROOT::VecOps::RVec<float> tauphi, ROOT::VecOps::RVec<int> taucharge, ROOT::VecOps::RVec<float> taumass, ROOT::VecOps::RVec<float> tauVprob, ROOT::VecOps::RVec<float> taufsig, ROOT::VecOps::RVec<float> taulip, ROOT::VecOps::RVec<int> idx1, ROOT::VecOps::RVec<int> idx2, ROOT::VecOps::RVec<int> idx3, ROOT::VecOps::RVec<float> dnn1, ROOT::VecOps::RVec<float> dnn2, ROOT::VecOps::RVec<float> dnn3, std::vector<float> sumdnn) 
+std::vector<Tau> BuildTauCandidates(ROOT::VecOps::RVec<float> taupt, ROOT::VecOps::RVec<float> taueta, ROOT::VecOps::RVec<float> tauphi, ROOT::VecOps::RVec<int> taucharge, ROOT::VecOps::RVec<float> taumass, ROOT::VecOps::RVec<float> tauVprob, ROOT::VecOps::RVec<float> taufsig, ROOT::VecOps::RVec<float> taulip, ROOT::VecOps::RVec<int> idx1, ROOT::VecOps::RVec<int> idx2, ROOT::VecOps::RVec<int> idx3, ROOT::VecOps::RVec<float> dnn1, ROOT::VecOps::RVec<float> dnn2, ROOT::VecOps::RVec<float> dnn3, std::vector<float> sumdnn, 
+										ROOT::VecOps::RVec<float> alpha, ROOT::VecOps::RVec<float> maxDr, ROOT::VecOps::RVec<float> taufl, ROOT::VecOps::RVec<float> pvip, ROOT::VecOps::RVec<float> pvips, ROOT::VecOps::RVec<float> dau1pt, ROOT::VecOps::RVec<float> dau1eta, ROOT::VecOps::RVec<float> dau1phi, ROOT::VecOps::RVec<float> dau2pt, ROOT::VecOps::RVec<float> dau2eta, ROOT::VecOps::RVec<float> dau2phi, ROOT::VecOps::RVec<float> dau3pt, ROOT::VecOps::RVec<float> dau3eta, ROOT::VecOps::RVec<float> dau3phi) 
 {
 	std::vector<Tau> mytaus; 
 	for (unsigned int i=0; i<taupt.size(); i++) 
@@ -193,6 +194,11 @@ std::vector<Tau> BuildTauCandidates(ROOT::VecOps::RVec<float> taupt, ROOT::VecOp
 		tau.SetKinematics(tauVprob.at(i), taufsig.at(i), taulip.at(i)); 
 		tau.SetIndices(idx1.at(i), idx2.at(i), idx3.at(i)); 
 		tau.SetDNN(dnn1.at(i), dnn2.at(i), dnn3.at(i), sumdnn.at(i)); 
+
+		tau.SetEventKinematics(alpha.at(i), maxDr.at(i), taufl.at(i), pvip.at(i), pvips.at(i)); 
+		tau.SetDau1Kin(dau1pt.at(i), dau1eta.at(i), dau1phi.at(i)); 
+		tau.SetDau2Kin(dau2pt.at(i), dau2eta.at(i), dau2phi.at(i)); 
+		tau.SetDau3Kin(dau3pt.at(i), dau3eta.at(i), dau3phi.at(i)); 
 
 		mytaus.push_back(tau); 
 	}
@@ -221,6 +227,18 @@ Tau SelectTauCandidate(std::vector<Tau> collection)
 	std::sort(collection.begin(), collection.end(), SortTauCandidates); //std::greater<>()
 
 	return collection.at(0); 
+}
+
+
+float findMinPt(const float& pt1, const float& pt2, const float& pt3)
+{
+	return min(min(pt1, pt2), pt3); 
+}
+
+
+float findMaxPt(const float& pt1, const float& pt2, const float& pt3)
+{
+	return max(max(pt1, pt2), pt3); 
 }
 
  
@@ -345,7 +363,8 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 
 	withDNN = withDNN.Define("v_tau_sumdnn", FillSumDNN, {"v_tau_dnn_1", "v_tau_dnn_2", "v_tau_dnn_3"}); 
 
-	withDNN = withDNN.Define("v_taucandidates", BuildTauCandidates, {"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_q", "BsDstarTauNu_tau_mass", "BsDstarTauNu_tau_vprob", "BsDstarTauNu_tau_fls3d", "BsDstarTauNu_tau_lip", "BsDstarTauNu_tau_pfidx1", "BsDstarTauNu_tau_pfidx2", "BsDstarTauNu_tau_pfidx3", "v_tau_dnn_1", "v_tau_dnn_2", "v_tau_dnn_3", "v_tau_sumdnn"});
+	withDNN = withDNN.Define("v_taucandidates", BuildTauCandidates, {"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_q", "BsDstarTauNu_tau_mass", "BsDstarTauNu_tau_vprob", "BsDstarTauNu_tau_fls3d", "BsDstarTauNu_tau_lip", "BsDstarTauNu_tau_pfidx1", "BsDstarTauNu_tau_pfidx2", "BsDstarTauNu_tau_pfidx3", "v_tau_dnn_1", "v_tau_dnn_2", "v_tau_dnn_3", "v_tau_sumdnn", 
+																		"BsDstarTauNu_tau_alpha", "BsDstarTauNu_tau_fl3d", "BsDstarTauNu_tau_pvip", "BsDstarTauNu_tau_pvips", "BsDstarTauNu_tau_max_dr_3prong", "BsDstarTauNu_tau_pi1_pt", "BsDstarTauNu_tau_pi1_eta", "BsDstarTauNu_tau_pi1_phi", "BsDstarTauNu_tau_pi2_pt", "BsDstarTauNu_tau_pi2_eta", "BsDstarTauNu_tau_pi2_phi", "BsDstarTauNu_tau_pi3_pt", "BsDstarTauNu_tau_pi3_eta", "BsDstarTauNu_tau_pi3_phi"});
 	
 	withDNN = withDNN.Define("b_tau", SelectTauCandidate, {"v_taucandidates"})
 				.Define("b_tau_pt", Tau::WritePt, {"b_tau"})
@@ -362,7 +381,23 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 				.Define("b_tau_sumdnn", Tau::WriteSumDNN, {"b_tau"})
 				.Define("b_tau_idx1", Tau::WriteIdx1, {"b_tau"})
 				.Define("b_tau_idx2", Tau::WriteIdx2, {"b_tau"})
-				.Define("b_tau_idx3", Tau::WriteIdx3, {"b_tau"}); 
+				.Define("b_tau_idx3", Tau::WriteIdx3, {"b_tau"})
+				.Define("b_tau_fl", Tau::WriteFl, {"b_tau"})
+				.Define("b_tau_alpha", Tau::WriteAlpha, {"b_tau"})
+				.Define("b_tau_PVIP", Tau::WritePVIP, {"b_tau"})
+				.Define("b_tau_PVIPsig", Tau::WritePVIPsig, {"b_tau"})
+				.Define("b_tau_maxDr", Tau::WriteDr, {"b_tau"})
+				.Define("b_tau_pi1pt", Tau::WriteDau1Pt, {"b_tau"})
+				.Define("b_tau_pi1eta", Tau::WriteDau1Eta, {"b_tau"})
+				.Define("b_tau_pi1phi", Tau::WriteDau1Phi, {"b_tau"})
+				.Define("b_tau_pi2pt", Tau::WriteDau2Pt, {"b_tau"})
+				.Define("b_tau_pi2eta", Tau::WriteDau2Eta, {"b_tau"})
+				.Define("b_tau_pi2phi", Tau::WriteDau2Phi, {"b_tau"})
+				.Define("b_tau_pi3pt", Tau::WriteDau3Pt, {"b_tau"})
+				.Define("b_tau_pi3eta", Tau::WriteDau3Eta, {"b_tau"})
+				.Define("b_tau_pi3phi", Tau::WriteDau3Phi, {"b_tau"}); 
+
+	withDNN = withDNN.Define("b_tau_minpipt", findMinPt, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"}).Define("b_tau_maxpipt", findMaxPt, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"}); 
 
 	withDNN.Snapshot("ntuplizer/tree", "../../data/SignalOfficialMC50M_tauDNN.root"); 
 

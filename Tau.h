@@ -12,21 +12,43 @@
 class Tau : public TObject 
 {
   public: 
-	float pt; 
-	float eta; 
-	float phi; 
-	int q; 
-	float m; 
-	float vprob; 
-	float fsig; 
-	float lip; 
-	int idx1;
-	int idx2; 
-	int idx3; 
-	float sumdnn; 
-	float dnn1; 
-	float dnn2; 
-	float dnn3; 
+	float pt = -999.; 
+	float eta = -999.; 
+	float phi = -999.; 
+	int q = -999; 
+	float m = -999.; 
+	float vprob = -999.; 
+	float fsig = -999.; 
+	float lip = -999.; 
+	int idx1 = -999; 
+	int idx2 = -999; 
+	int idx3 = -999; 
+	float sumdnn = -999.; 
+	float dnn1 = -999.; 
+	float dnn2 = -999.; 
+	float dnn3 = -999.; 
+	float alpha = -999.; 
+	float fl = -999.; 
+	float pvip = -999.; 
+	float pvips = -999.; 
+	float dr = -999.; 
+
+	float pi1pt = -999.; 
+	float pi2pt = -999.; 
+	float pi3pt = -999.; 
+	float pi1eta = -999.; 
+	float pi2eta = -999.; 
+	float pi3eta = -999.; 
+	float pi1phi = -999.; 
+	float pi2phi = -999.; 
+	float pi3phi = -999.; 
+
+	//float maxdaupt; 
+	//float mindaupt; 
+	//float maxdaueta; 
+	//float mindaueta; 
+	//float maxdauphi; 
+	//float mindauphi; 
 
 	ClassDef(Tau, 0);
 
@@ -67,6 +89,41 @@ class Tau : public TObject
 	{ 
     	return pt < other.pt;
   	}
+
+
+  	void SetEventKinematics(const float& angle, const float& deltaR, const float& flightLenght, const float& IPtoPV, const float& sigIPtoPV) 
+  	{
+  		alpha = angle; 
+  		dr = deltaR; 
+  		fl = flightLenght; 
+  		pvip = IPtoPV; 
+  		pvips = sigIPtoPV; 
+  	}
+
+
+  	void SetDau1Kin(const float& dauPt, const float& dauEta, const float& dauPhi) 
+  	{
+  		pi1pt = dauPt; 
+  		pi1eta = dauEta; 
+  		pi1phi = dauPhi; 
+  	}
+
+
+  	void SetDau2Kin(const float& dauPt, const float& dauEta, const float& dauPhi) 
+  	{
+  		pi2pt = dauPt; 
+  		pi2eta = dauEta; 
+  		pi2phi = dauPhi; 
+  	}
+
+
+  	void SetDau3Kin(const float& dauPt, const float& dauEta, const float& dauPhi) 
+  	{
+  		pi3pt = dauPt; 
+  		pi3eta = dauEta; 
+  		pi3phi = dauPhi; 
+  	}
+
 
 
 
@@ -144,6 +201,76 @@ class Tau : public TObject
 	static float WriteSumDNN(const Tau& tau) 
 	{
 		return tau.sumdnn; 
+	}; 
+
+	static float WriteAlpha(const Tau& tau) 
+	{
+		return tau.alpha; 
+	}; 
+
+	static float WriteFl(const Tau& tau) 
+	{
+		return tau.fl; 
+	}; 
+
+	static float WritePVIP(const Tau& tau) 
+	{
+		return tau.pvip; 
+	}; 
+
+	static float WritePVIPsig(const Tau& tau) 
+	{
+		return tau.pvips; 
+	}; 
+
+	static float WriteDr(const Tau& tau) 
+	{
+		return tau.dr; 
+	}; 
+
+	static float WriteDau1Pt(const Tau& tau) 
+	{
+		return tau.pi1pt; 
+	}; 
+
+	static float WriteDau1Eta(const Tau& tau) 
+	{
+		return tau.pi1eta; 
+	}; 
+
+	static float WriteDau1Phi(const Tau& tau) 
+	{
+		return tau.pi1phi; 
+	}; 
+
+	static float WriteDau2Pt(const Tau& tau) 
+	{
+		return tau.pi2pt; 
+	}; 
+
+	static float WriteDau2Eta(const Tau& tau) 
+	{
+		return tau.pi2eta; 
+	}; 
+
+	static float WriteDau2Phi(const Tau& tau) 
+	{
+		return tau.pi2phi; 
+	}; 
+
+	static float WriteDau3Pt(const Tau& tau) 
+	{
+		return tau.pi3pt; 
+	}; 
+
+	static float WriteDau3Eta(const Tau& tau) 
+	{
+		return tau.pi3eta; 
+	}; 
+
+	static float WriteDau3Phi(const Tau& tau) 
+	{
+		return tau.pi3phi; 
 	}; 
 
 }; 

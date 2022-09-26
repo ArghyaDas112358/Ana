@@ -252,7 +252,7 @@ float extractFirstElement(const ROOT::VecOps::RVec<float>& vec)
 
 void UpdateTauDNN(TString campaignName = "ApplyTFweight/") 
 {
-	//ROOT::EnableImplicitMT(); //ROOT::DisableImplicitMT(); 
+	ROOT::EnableImplicitMT(); //ROOT::DisableImplicitMT(); 
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C"); 
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C+");
 	//gSystem->Load("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.so"); 

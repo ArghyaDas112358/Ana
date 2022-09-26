@@ -285,6 +285,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 	filemanager.AddItem("ParkingBPHAllRun2018B", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPHRun2018B_converted.root", "tree"); 
 	filemanager.AddItem("MCSignalMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstAllTau_withTFweight.root", "ntuplizer/tree"); 
 	filemanager.AddItem("MCSignalMMultipleTauWithResponse", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_withTFweight.root", "ntuplizer/tree"); 
+	filemanager.AddItem("Data2018BFirst20k", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_withTFweight10k.root", "ntuplizer/tree"); 
 
 
 
@@ -293,7 +294,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 	gStyle->SetOptStat(0); 
 
 
-	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>("MCSignalMMultipleTau")); // tree100k
+	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>("Data2018BFirst20k")); // tree100k
 	
 
 	// Defining the delta

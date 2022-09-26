@@ -287,7 +287,7 @@ xgboost2tmva.convert_model(xgbo_classifier._models["optimized"].get_dump(), inpu
 """
 Finally, we want to plot some ROC curves.
 """
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from sklearn import metrics
 
 if (weighted): 

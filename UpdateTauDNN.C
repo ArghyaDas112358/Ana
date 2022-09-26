@@ -241,6 +241,13 @@ float findMax(const float& pt1, const float& pt2, const float& pt3)
 	return max(max(pt1, pt2), pt3); 
 }
 
+
+float extractFirstElement(const ROOT::VecOps::RVec<float>& vec) 
+{
+	assert(vec.size() > 0); 
+	return vec.at(0); 
+}
+
  
 
 void UpdateTauDNN(TString campaignName = "ApplyTFweight/") 
@@ -397,11 +404,30 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 				.Define("b_tau_pi3eta", Tau::WriteDau3Eta, {"b_tau"})
 				.Define("b_tau_pi3phi", Tau::WriteDau3Phi, {"b_tau"}); 
 
+	withDNN = withDNN.Define("b_D0_pt", extractFirstElement, {"BsDstarTauNu_D0_pt"})
+				.Define("b_D0_eta", extractFirstElement, {"BsDstarTauNu_D0_eta"})
+				.Define("b_D0_phi", extractFirstElement, {"BsDstarTauNu_D0_phi"})
+				.Define("b_D0_vprob", extractFirstElement, {"BsDstarTauNu_D0_vprob"})
+				.Define("b_D0_fl", extractFirstElement, {"BsDstarTauNu_D0_fl3d"})
+				.Define("b_D0_fsig", extractFirstElement, {"BsDstarTauNu_D0_fls3d"})
+				.Define("b_D0_lip", extractFirstElement, {"BsDstarTauNu_D0_lip"})
+				.Define("b_D0_lips", extractFirstElement, {"BsDstarTauNu_D0_lips"})
+				.Define("b_D0_pvip", extractFirstElement, {"BsDstarTauNu_D0_pvip"})
+				.Define("b_Ds_pt", extractFirstElement, {"BsDstarTauNu_Ds_pt"})
+				.Define("b_Ds_eta", extractFirstElement, {"BsDstarTauNu_Ds_eta"})
+				.Define("b_Ds_phi", extractFirstElement, {"BsDstarTauNu_Ds_phi"})
+				.Define("b_Ds_vprob", extractFirstElement, {"BsDstarTauNu_Ds_vprob"})
+				.Define("b_Ds_fl", extractFirstElement, {"BsDstarTauNu_Ds_fl3d"})
+				.Define("b_Ds_fsig", extractFirstElement, {"BsDstarTauNu_Ds_fls3d"})
+				.Define("b_Ds_lip", extractFirstElement, {"BsDstarTauNu_Ds_lip"})
+				.Define("b_Ds_lips", extractFirstElement, {"BsDstarTauNu_Ds_lips"})
+				.Define("b_Ds_pvip", extractFirstElement, {"BsDstarTauNu_Ds_pvip"}); 
+
 	withDNN = withDNN.Define("b_tau_minpipt", findMin, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"}).Define("b_tau_maxpipt", findMax, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"})
 						.Define("b_tau_minpieta", findMin, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"}).Define("b_tau_maxpieta", findMax, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"})
 						.Define("b_tau_minpiphi", findMin, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}).Define("b_tau_maxpiphi", findMax, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}); 
 
-	withDNN.Snapshot("ntuplizer/tree", "../../data/SignalOfficialMC50M_tauDNN.root"); 
+	withDNN.Snapshot("ntuplizer/tree", "../../data/prod2018BFirst_tauDNN.root"); 
 
 	//Pause(5); 
 

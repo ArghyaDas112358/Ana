@@ -43,22 +43,7 @@ void AddMVAVariableSimple(const TString infile, const TString trees, const TStri
 	TTree *tree = static_cast<TTree*>(inFile->Get(trees)); 
 
 
-	std::vector<TString> variables = {"BsDstarTauNu_D0_pt/F", "BsDstarTauNu_D0_eta/F", "BsDstarTauNu_D0_phi/F", "BsDstarTauNu_D0_vprob/F", "BsDstarTauNu_D0_fl3d/F", "BsDstarTauNu_D0_fls3d/F", //"BsDstarTauNu_mu1_q/I", 
-	"BsDstarTauNu_Ds_pt/F", "BsDstarTauNu_Ds_eta/F", "BsDstarTauNu_Ds_phi/F", "BsDstarTauNu_Ds_vprob/F", "BsDstarTauNu_Ds_fl3d/F", "BsDstarTauNu_Ds_fls3d/F",
-	"BsDstarTauNu_D0_lip/F", "BsDstarTauNu_D0_lips/F", "BsDstarTauNu_D0_pvip/F", "BsDstarTauNu_Ds_lip/F", "BsDstarTauNu_Ds_lips/F", "BsDstarTauNu_Ds_pvip/F", 
-	"BsDstarTauNu_tau_pt/F", "BsDstarTauNu_tau_eta/F", "BsDstarTauNu_tau_phi/F", //"BsDstarTauNu_tau_q/I", 
-	"BsDstarTauNu_tau_fl3d/F", "BsDstarTauNu_tau_fls3d/F", "BsDstarTauNu_tau_vprob/F", 
-	"BsDstarTauNu_tau_lip/F", "BsDstarTauNu_tau_lips/F", "BsDstarTauNu_tau_pvip/F", "BsDstarTauNu_tau_pvips/F", "BsDstarTauNu_tau_alpha/F", "BsDstarTauNu_tau_max_dr_3prong/F", 
-	"BsDstarTauNu_tau_pi1_pt/F", "BsDstarTauNu_tau_pi1_eta/F", "BsDstarTauNu_tau_pi1_phi/F", 
-	//"BsDstarTauNu_tau_pi1_charge/F", 
-	"BsDstarTauNu_tau_pi2_pt/F", "BsDstarTauNu_tau_pi2_eta/F", "BsDstarTauNu_tau_pi2_phi/F", 
-	//"BsDstarTauNu_tau_pi2_charge/F", 
-	"BsDstarTauNu_tau_pi3_pt/F", "BsDstarTauNu_tau_pi3_eta/F", "BsDstarTauNu_tau_pi3_phi/F", 
-	//"BsDstarTauNu_tau_pi3_charge/F", 
-	//"BsDstarTauNu_k_charge/F", "BsDstarTauNu_pi_charge/F", "BsDstarTauNu_spi_charge/F", 
-	//"BsDstarTauNu_mu1_vx/F", "BsDstarTauNu_mu1_vy/F", 
-	//"BsDstarTauNu_mu1_vz/F", 
-	"BsDstarTauNu_tau_sumofdnn/F"}; 
+	std::vector<TString> variables = {"b_D0_pt/F", "b_D0_eta/F", "b_D0_phi/F", "b_D0_vprob/F", "b_D0_fl/F", "b_D0_fls/F", "b_Ds_pt/F", "b_Ds_eta/F", "b_Ds_phi/F", "b_Ds_vprob/F", "b_Ds_fl/F", "b_Ds_fls/F", "b_D0_lip/F", "b_D0_lips/F", "b_D0_pvip/F", "b_Ds_lip/F", "b_Ds_lips/F", "b_Ds_pvip/F", "b_tau_pt/F", "b_tau_eta/F", "b_tau_phi/F", "b_tau_fl/F", "b_tau_fsig/F", "b_tau_vprob/F", "b_tau_lip/F", "b_tau_pvip/F", "b_tau_pvips/F", "b_tau_alpha/F", "b_tau_maxdr/F", "b_tau_pi1pt/F", "b_tau_pi1eta/F", "b_tau_pi1phi/F", "b_tau_pi2pt/F", "b_tau_pi2eta/F", "b_tau_pi2phi/F", "b_tau_pi3pt/F", "b_tau_pi3eta/F", "b_tau_pi3phi/F", "b_tau_sumdnn/F"}; 
 
 	std::unique_ptr<TMVA::Reader> reader = std::make_unique<TMVA::Reader>("!Color:Silent"); 
 

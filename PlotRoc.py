@@ -166,11 +166,12 @@ if __name__ == "__main__":
 	filemanager = ROOT.FileManager()
 
 	#ROOT.gROOT.ForceStyle()
+	ROOT.gSystem.Load("Tau.h")
 
 
-	filemanager.AddItem("signal", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted_mvanew.root", "tree")
+	filemanager.AddItem("signal", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_tauDNN_mva.root", "tree")
 	filemanager.AddItem("bkgnoresponse", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPH1-3Run2018B_converted.root", "tree")
-	filemanager.AddItem("background", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPHRun2018B_converted_mvanew.root", "tree")
+	filemanager.AddItem("background", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_tauDNN_mva.root", "tree")
 	filemanager.AddItem("oldroc",  "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "xgboOptimized/scikit-like_ROC")
 	#filemanager.AddItem("TMVAROC", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "xgboOptimized/TMVA-like_ROC")
 	#filemanager.AddItem("bkgEff", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "xgboOptimized/bkgEff(sigEff)")
@@ -180,12 +181,14 @@ if __name__ == "__main__":
 	#from anaMVA.loadSamples import loadSamples
 	#samples = loadSamples(featuresToLoad, numLoad)
 
+	columns = ["mvaScore"]
+
 
 	#signal = [samples["signal"]]
 	#background = [samples["background"]]
 
-	signal = ROOT.RDataFrame(filemanager.GetItem("signal")).Filter("mvaScore>-1").AsNumpy()
-	background = ROOT.RDataFrame(filemanager.GetItem("background")).Filter("mvaScore>-1").AsNumpy()
+	signal = ROOT.RDataFrame(filemanager.GetItem("signal")).Filter("mvaScore>-1").AsNumpy(columns)
+	background = ROOT.RDataFrame(filemanager.GetItem("background")).Filter("mvaScore>-1").AsNumpy(columns)
 
 	print signal.keys()
 
@@ -304,7 +307,7 @@ if __name__ == "__main__":
 	#fom.SetMarkerSize(2)
 	fomcanvas.Draw()
 
-	fomlegend = ROOT.TLegend(0.6, 0.2, 0.85, 0.3)
+	fomlegend = ROOT.TLegend(0.15, 0.7, 0.35, 0.85)
 	fomlegend.AddEntry(fom, "significance")
 	fomlegend.AddEntry(signalDist.GetPtr(), "signal")
 	fomlegend.AddEntry(bkgDist.GetPtr(), "background")
@@ -329,7 +332,7 @@ if __name__ == "__main__":
 	line2 = ROOT.TLine(value2, bottommargin, value2, 1-topmargin)
 	line2.Draw()
 
-	label1 = ROOT.TPaveText(0.22, 0.38, 0.3, 0.45)
+	label1 = ROOT.TPaveText(0.22, 0.5, 0.3, 0.6)
 	label1.AddText("modelling")
 	label1.AddText("region")
 	label1.SetBorderSize(0)
@@ -339,7 +342,7 @@ if __name__ == "__main__":
   	label1.SetTextColor(ROOT.kGray+2)
 	label1.Draw()
 
-	label2 = ROOT.TPaveText(0.45, 0.38, 0.6, 0.45)
+	label2 = ROOT.TPaveText(0.45, 0.5, 0.6, 0.6)
 	label2.AddText("control")
 	label2.AddText("region")
 	label2.SetBorderSize(0)
@@ -349,7 +352,7 @@ if __name__ == "__main__":
   	label2.SetTextColor(ROOT.kGray+2)
 	label2.Draw()
 
-	label3 = ROOT.TPaveText(0.78, 0.26, 0.9, 0.34)  
+	label3 = ROOT.TPaveText(0.78, 0.7, 0.9, 0.8)  
 	label3.AddText("signal")
 	label3.AddText("region")
 	label3.SetBorderSize(0)

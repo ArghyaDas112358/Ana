@@ -88,6 +88,7 @@ splitcut = "" #"splitTag < 6"
 
 #creating output directory 
 os.system("mkdir -p "+options.outputpath)
+os.system("mkdir -p "+options.outputpath+"/models")
 
 
 
@@ -282,6 +283,14 @@ if (debug) : print preds_default
 #savevars = [(key, item) for key, item in features_save.items()]
 #print savevars
 xgboost2tmva.convert_model(xgbo_classifier._models["optimized"].get_dump(), input_variables=features_save,output_xml=options.outputpath+'/model_optimized/xgboost.xml')
+
+# Saving the models
+import pickle
+pickle.dump(xgbo_classifier._models["optimized"], open(options.outputpath+"/models/model_optimized.pkcl", "wb"))
+pickle.dump(xgbo_classifier._models["default"], open(options.outputpath+"/models/model_default.pkcl", "wb"))
+pickle.dump(model_default, open(options.outputpath+"/models/model_standard.pkcl", "wb"))
+
+
 
 
 """

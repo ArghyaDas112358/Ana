@@ -286,6 +286,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 	filemanager.AddItem("MCSignalMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstAllTau_withTFweight.root", "ntuplizer/tree"); 
 	filemanager.AddItem("MCSignalMMultipleTauWithResponse", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_withTFweight.root", "ntuplizer/tree"); 
 	filemanager.AddItem("Data2018BFirst20k", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_withTFweight10k.root", "ntuplizer/tree"); 
+	filemanager.AddItem("BkgDstarDsMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau_withTFweightTeest.root", "ntuplizer/tree"); 
 
 
 

@@ -43,6 +43,9 @@ class Tau : public TObject
 	float pi2phi = -999.; 
 	float pi3phi = -999.; 
 
+	float rhomass1; 
+	float rhomass2; 
+
 	//float maxdaupt; 
 	//float mindaupt; 
 	//float maxdaueta; 
@@ -122,6 +125,12 @@ class Tau : public TObject
   		pi3pt = dauPt; 
   		pi3eta = dauEta; 
   		pi3phi = dauPhi; 
+  	}
+
+  	void SetRhoMasses(const float& m12, const float& m23) 
+  	{
+  		rhomass1 = m12; 
+  		rhomass2 = m23; 
   	}
 
 
@@ -271,6 +280,16 @@ class Tau : public TObject
 	static float WriteDau3Phi(const Tau& tau) 
 	{
 		return tau.pi3phi; 
+	}; 
+
+	static float WriteRhomass1(const Tau& tau) 
+	{
+		return tau.rhomass1; 
+	}; 
+
+	static float WriteRhomass2(const Tau& tau) 
+	{
+		return tau.rhomass2; 
 	}; 
 
 }; 

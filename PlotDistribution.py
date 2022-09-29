@@ -30,9 +30,10 @@ filemanager.AddItem("TMVAROC", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scr
 filemanager.AddItem("bkgEff", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/trainingLarge/plots.root", "xgboOptimized/bkgEff(sigEff)")
 filemanager.AddItem("bkgEffEval", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/ROCsummary.root", "bkgEff(sigEff)")
 
-filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted_mvanewsecond.root", "tree")
+filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted_mva.root", "tree")
 filemanager.AddItem("ParkingBPHAllRun2018B", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPHRun2018B_converted_mva.root", "tree")
 
+filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted_mva.root", "tree")
 filemanager.AddItem("ParkingBPH4-6Run2018B", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPH4-6Run2018B_converted_mva.root", "tree")
 
 filemanager.AddItem("signalTest", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "signalTest")
@@ -40,7 +41,11 @@ filemanager.AddItem("backgroundTrain", "/eos/home-m/mhuwiler/DoctoralThesis/Anal
 filemanager.AddItem("backgroundTest", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "backgroundTest")
 filemanager.AddItem("DataBackground", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/DataVeryLarge_converted.root", "tree")
 
-filemanager.AddItem("ParkingBPH1Run2018D", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPHRun2018B_converted_mvanewsecond.root", "tree")
+filemanager.AddItem("ParkingBPH1Run2018D", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPH1Run2018D_converted_mva.root", "tree")
+
+filemanager.AddItem("MCSignalMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_tauDNN_mva.root", "tree"); 
+filemanager.AddItem("Data2018BFirst", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_tauDNN_mva.root", "tree"); 
+filemanager.AddItem("BkgDstarDsMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau_tauDNN_mva.root", "tree"); 
 
 
 
@@ -176,7 +181,7 @@ if plotstats:
 
 # Web publication
 if (webpublication): 
-	webfolder = "/eos/home-m/mhuwiler/www/Analysis/BackgroundModellingMVA/"
+	webfolder = "/eos/home-m/mhuwiler/www/Analysis/BackgroundModellingNew/"
 	os.system("mkdir -p "+webfolder)
 	webenginesource = "/eos/home-m/mhuwiler/software/php-plots/"
 	os.system("cp -r "+webenginesource+"res "+webfolder)
@@ -216,28 +221,28 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	canvas = ROOT.RatioCanvas("romassunrolled", "Unrolled 2D distribution of rho mass", 800, 600)
 
-	#data = ROOT.RDataFrame(filemanager.GetItem("ParkingBPH4-6Run2018B")) 
-	data = ROOT.RDataFrame(filemanager.GetItem("ParkingBPH1Run2018D")) #"ParkingBPH4-6Run2018B"
-	MC = ROOT.RDataFrame(filemanager.GetItem("SignalOfficialMC50M"))
+	data = ROOT.RDataFrame(filemanager.GetItem("Data2018BFirst")) 
+	#data = ROOT.RDataFrame(filemanager.GetItem("ParkingBPH1Run2018D")) #"ParkingBPH4-6Run2018B"
+	MC = ROOT.RDataFrame(filemanager.GetItem("MCSignalMMultipleTau"))
 
 	data = data.Filter("mvaScore>-2.")
 	MC = MC.Filter("mvaScore>-2")
 
-	data = data.Define("rhomass2D", "int((min(BsDstarTauNu_tau_rhomass2, float(1.3)) - 0.2)/0.22) + 6*int((min(BsDstarTauNu_tau_rhomass1, float(1.3)) - 0.2)/0.22)")
-	MC = MC.Define("rhomass2D", "int((min(BsDstarTauNu_tau_rhomass2, float(1.3)) - 0.2)/0.22) + 6*int((min(BsDstarTauNu_tau_rhomass1, float(1.3)) - 0.2)/0.22)")
+	data = data.Define("rhomass2D", "int((min(b_tau_rhomass2, float(1.3)) - 0.2)/0.22) + 6*int((min(b_tau_rhomass1, float(1.3)) - 0.2)/0.22)")
+	MC = MC.Define("rhomass2D", "int((min(b_tau_rhomass2, float(1.3)) - 0.2)/0.22) + 6*int((min(b_tau_rhomass1, float(1.3)) - 0.2)/0.22)")
 
-	histo2D = data.Histo2D(("rhomass1", "rhomass2", 10, 0., 3., 10, 0., 3.), "BsDstarTauNu_tau_rhomass1", "BsDstarTauNu_tau_rhomass2")
+	histo2D = data.Histo2D(("rhomass1", "rhomass2", 10, 0., 3., 10, 0., 3.), "b_tau_rhomass1", "b_tau_rhomass2")
 
 	hist = UnrollHist(histo2D)
 
-	mvaThreshold = 0.4 #0.7
-	mvaLowerBound = -0.2 #0.4
+	mvaThreshold = 0.9
+	mvaLowThreshold = 0.0
 
 	dataSR = data.Filter("mvaScore>={}".format(mvaThreshold))
-	dataSB = data.Filter("(mvaScore<{})&&(mvaScore>={})".format(mvaThreshold, mvaLowerBound))
+	dataSB = data.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaThreshold, mvaLowThreshold))
 
 	MCSR = MC.Filter("mvaScore>={}".format(mvaThreshold))
-	MCSB = MC.Filter("(mvaScore<{})&&(mvaScore>={})".format(mvaThreshold, mvaLowerBound))
+	MCSB = MC.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaThreshold, mvaLowThreshold))
 
 	nBins = 6
 	rangeMin = 0.2
@@ -251,9 +256,9 @@ for quantity in ["Rhomass2Dunrolled"]:
 	useOtherMethod = True
 
 	if useOtherMethod: 
-		histoDataSB = UnrollHist(dataSB.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "BsDstarTauNu_tau_rhomass1", "BsDstarTauNu_tau_rhomass2"))
-		histoDataSR = UnrollHist(dataSR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "BsDstarTauNu_tau_rhomass1", "BsDstarTauNu_tau_rhomass2"))
-		histoMCSR = UnrollHist(MCSR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "BsDstarTauNu_tau_rhomass1", "BsDstarTauNu_tau_rhomass2"))
+		histoDataSB = UnrollHist(dataSB.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
+		histoDataSR = UnrollHist(dataSR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
+		histoMCSR = UnrollHist(MCSR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
 
 	print "Number of events: {}, {}".format(histoDataSB.GetEntries(), histoDataSR.GetEntries())
 
@@ -376,7 +381,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 
 	canv = ROOT.TCanvas("canv", "canv", 800, 600)
-	hist = MCSR.Histo2D(("rhomass1", "rhomass2", 15, rangeMin, rangeMax, 15, rangeMin, rangeMax), "BsDstarTauNu_tau_rhomass1", "BsDstarTauNu_tau_rhomass2")
+	hist = MCSR.Histo2D(("rhomass1", "rhomass2", 15, rangeMin, rangeMax, 15, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2")
 	hist.SetTitle("m(#rho_{1}) vs m(#rho_{2})")
 	hist.DrawCopy("COLZ")
 	canv.Draw()

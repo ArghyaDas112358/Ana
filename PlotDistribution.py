@@ -1,0 +1,401 @@
+import ROOT
+import os
+import math
+import uproot
+import numpy as np
+
+uproot.default_library = "np"
+
+
+#ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/libFunctions.C+")#ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/libFunctions.C")
+#ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/Drawing/ExperimentSpecificLayer.C")
+ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/FileManager/CFileManager.C")
+#ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/Drawing/CMS/tdrstyle.C")
+ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/Drawing/RatioCanvas.h")
+#ROOT.setTDRStyle()
+#import CMS_lumi
+
+
+filemanager = ROOT.FileManager()
+
+
+
+filemanager.AddItem("cutflowRef", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/TauCutflowReference.root", "ntuplizer/Taucutflow")
+filemanager.AddItem("cutflowRefEff", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/TauCutflowReference.root", "ntuplizer/Taucutflow_eff")
+
+filemanager.AddItem("cutflowGen", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/TauCutflowGen.root", "ntuplizer/Taucutflow")
+filemanager.AddItem("cutflowGenEff", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/TauCutflowGen.root", "ntuplizer/Taucutflow_eff")
+
+filemanager.AddItem("TMVAROC", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/trainingLarge/plots.root", "xgboOptimized/TMVA-like_ROC")
+filemanager.AddItem("bkgEff", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/trainingLarge/plots.root", "xgboOptimized/bkgEff(sigEff)")
+filemanager.AddItem("bkgEffEval", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/ROCsummary.root", "bkgEff(sigEff)")
+
+filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted_mva.root", "tree")
+filemanager.AddItem("ParkingBPHAllRun2018B", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPHRun2018B_converted_mva.root", "tree")
+
+filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted_mva.root", "tree")
+filemanager.AddItem("ParkingBPH4-6Run2018B", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPH4-6Run2018B_converted_mva.root", "tree")
+
+filemanager.AddItem("signalTest", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "signalTest")
+filemanager.AddItem("backgroundTrain", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "backgroundTrain")
+filemanager.AddItem("backgroundTest", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "backgroundTest")
+filemanager.AddItem("DataBackground", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/DataVeryLarge_converted.root", "tree")
+
+filemanager.AddItem("ParkingBPH1Run2018D", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPH1Run2018D_converted_mva.root", "tree")
+
+filemanager.AddItem("MCSignalMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_tauDNN.root", "ntuplizer/tree"); 
+filemanager.AddItem("Data2018BFirst", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_tauDNN.root", "ntuplizer/tree"); 
+filemanager.AddItem("BkgDstarDsMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau_tauDNN.root", "ntuplizer/tree"); 
+
+
+
+filemanager.OpenAllItems()
+
+bkgInSample = 9400000000*0.0000376
+sigInSample = 1130
+
+
+graphcollection = ROOT.vector('std::pair<TGraph*,TString>')()
+
+
+plotstats = False
+
+webpublication =False
+
+
+outputfolder = "./plots/BackgroundEstimateNew/"
+
+os.system("mkdir -p "+outputfolder)
+
+logscale = [""]
+
+#presentationfolder = "../Presentations/Presentation_22_5_10/reveal.js-master/Figures.root"
+
+
+#ROOT.ExperimentSpecificLayer.SetStyle("CMS")
+
+#layer = ROOT.ExperimentSpecificLayer("CMS", 21, 11, "Preliminary"); 
+
+#factor = 1.0
+#CMS_lumi.writeExtraText = True
+#CMS_lumi.extraText = "Simulation Preliminary"
+#CMS_lumi.lumiTextSize = 0.45*factor
+#CMS_lumi.lumiTextOffset = 0.2*factor
+#CMS_lumi.cmsTextSize = 0.75*factor
+#CMS_lumi.lumi_sqrtS = "14 TeV"
+#CMS_lumi.lumi_13TeV = "2021"
+
+def formatHistoCommon(hist): 
+	hist.SetLineWidth(2)
+	hist.SetLineStyle(1)
+	hist.SetMarkerStyle(8) # None 0
+	hist.SetMarkerSize(0.4)
+	#hist.SetLineColor(4)
+	hist.GetYaxis().SetRangeUser(0, hist.GetMaximum()*1.4)
+	#hist.GetYaxis().SetTitle("Events")
+	hist.GetYaxis().SetTitleOffset(1.3)
+	if quantity in logscale:
+		hist.GetYaxis().SetRangeUser(0.1, hist.GetMaximum()*1000)
+		canvas.SetLogy()
+	#hist.GetXaxis().SetTitleSize(0.05)
+	hist.GetXaxis().SetTitleOffset(1.1)
+	canvas.SetTopMargin(0.1)
+	#hist.GetXaxis().SetTitle("Probe jet #tau_{21}")
+	#hist.GetXaxis().SetTitleSize(0.05)
+	#hist.GetXaxis().SetTitleOffset(1.2)
+	#hist.GetYaxis().SetTitleSize(0.05)
+	#hist.GetYaxis().SetTitleOffset(1.2)
+	#hist.GetXaxis().SetLabelSize(0.)
+	#hist.GetXaxis().SetLabelOffset(-999.)
+
+	return #histo
+
+
+def formatAxisCommon(axis): 
+	axis.SetTitleSize(0.05)
+	axis.SetTitleOffset(1.2)
+
+	return
+
+def PromptYesNo(answerasbool=False): 
+		# Inspired from Fabrice Couderc 
+		rep = ''
+		while not rep in [ 'yes', 'no' ]:
+			rep = raw_input( "(type 'yes' or 'no'): " ).lower()
+		if (answerasbool): 
+			if (rep == 'yes'): 
+				return True
+			else: 
+				return False
+		return rep
+
+def getStatsBox(histogram):  #Works 
+	dummycanvas = ROOT.TCanvas("dummycanvas", "dummycanvas", 800, 600)
+	#histogram.SetStats(True)
+	newhistogram = histogram.Clone(histogram.GetName())
+	newhistogram.SetStats(True)
+	newhistogram.Draw()
+	dummycanvas.Update()
+	stats = newhistogram.GetListOfFunctions().FindObject("stats").Clone("stats"+histogram.GetName())
+	ROOT.SetOwnership(stats, 0)
+	return stats
+
+def exportHistFromTree(tree, variable, cut = "1", nbins = 0, minbin = None, maxbin = None): 
+	dummycanvas = ROOT.TCanvas("dummycanvas", "dummycanvas", 800, 600)
+	binning = ""; 
+	if (nbins): 
+		if (minbin == None): minbin = tree.CopyTree(cut).GetMinimum(variable) 
+		if (maxbin == None): maxbin = tree.CopyTree(cut).GetMaximum(variable)
+		binning = "({}, {}, {})".format(nbins, minbin, maxbin)
+	tree.Draw(variable+">>h"+binning, cut);
+	histo = tree.GetHistogram(); 
+	histo.SetDirectory(0); 
+	return histo; 
+
+def UnrollHist(histo2D, inverted=True): 
+	nx = histo2D.GetNbinsX()
+	ny = histo2D.GetNbinsY()
+	if inverted: 
+		ny = histo2D.GetNbinsX()
+		nx = histo2D.GetNbinsY()
+
+	nTotal = nx*ny
+
+	unrolled = ROOT.TH1D("unrolled", "unrolled", nTotal, 0, 100)
+
+	print "Nunmber of bins: {}, {}".format(nx, ny)
+
+	for i in range(0, nx):
+		for j in range(0, ny): # TODO: check overflow is handled properly 
+			if inverted: 
+				binContent = histo2D.GetBinContent(j, i)
+			else: 
+				binContent = histo2D.GetBinContent(i, j)
+			unrolled.SetBinContent(i+j*nx, binContent)
+
+	return unrolled
+
+
+if plotstats: 
+	ROOT.gStyle.SetOptStat(1111111)
+
+# Web publication
+if (webpublication): 
+	webfolder = "/eos/home-m/mhuwiler/www/Analysis/BackgroundModellingNew/"
+	os.system("mkdir -p "+webfolder)
+	webenginesource = "/eos/home-m/mhuwiler/software/php-plots/"
+	os.system("cp -r "+webenginesource+"res "+webfolder)
+	os.system("cp "+webenginesource+"index.php "+webfolder)
+	with open(webenginesource+"example/htaccess", "r") as permissionfile: 
+		content = permissionfile.read()
+		content = content.replace("/<me>/<my-project>/", webfolder)
+		file = open(webfolder+".htaccess", "w")
+		file.write(content)
+		file.close()
+	os.system("cp "+webfolder+".htaccess "+webfolder+"htaccess")
+	webfolder = webfolder+"plots/"
+	os.system("mkdir -p "+webfolder)
+
+textsize = 0.04
+
+numEvents = -1 
+
+
+
+#ROOT.gInterpreter.Declare("""
+#	double Rhomass2DUnrolled(Float_t rhomass1, Float_t rhomass2)
+#	{
+#		return int((std::min(rhomass2, 1.3) - 0.2)/0.22) + 6*int((std::min(tau_rhomass1, 1.3) - 0.2)/0.22); 
+#	}
+#""")
+
+# Don't plot stats box
+ROOT.gStyle.SetOptStat(0)
+
+for quantity in ["Rhomass2Dunrolled"]: 
+	print "Plotting {}".format(quantity)
+	#canvas = ROOT.TCanvas("romassunrolled", "Unrolled 2D distribution of rho mass", 800, 600) #ROOT.RatioCanvas(quantity, quantity, 950, 800) #800, 800
+	#canvas.SetMiddleMargin(0.13)
+	#canvas.SetPadDelimitation(0.34)
+	#canvas.SetRightMargin(0.12)
+
+	canvas = ROOT.RatioCanvas("romassunrolled", "Unrolled 2D distribution of rho mass", 800, 600)
+
+	data = ROOT.RDataFrame(filemanager.GetItem("Data2018BFirst")) 
+	#data = ROOT.RDataFrame(filemanager.GetItem("ParkingBPH1Run2018D")) #"ParkingBPH4-6Run2018B"
+	MC = ROOT.RDataFrame(filemanager.GetItem("MCSignalMMultipleTau"))
+
+	data = data.Filter("mvaScore>-2.")
+	MC = MC.Filter("mvaScore>-2")
+
+	data = data.Define("rhomass2D", "int((min(b_tau_rhomass2, float(1.3)) - 0.2)/0.22) + 6*int((min(b_tau_rhomass1, float(1.3)) - 0.2)/0.22)")
+	MC = MC.Define("rhomass2D", "int((min(b_tau_rhomass2, float(1.3)) - 0.2)/0.22) + 6*int((min(b_tau_rhomass1, float(1.3)) - 0.2)/0.22)")
+
+	histo2D = data.Histo2D(("rhomass1", "rhomass2", 10, 0., 3., 10, 0., 3.), "b_tau_rhomass1", "b_tau_rhomass2")
+
+	hist = UnrollHist(histo2D)
+
+	mvaThreshold = 0.7
+
+	dataSR = data.Filter("mvaScore>={}".format(mvaThreshold))
+	dataSB = data.Filter("mvaScore<{}".format(mvaThreshold))
+
+	MCSR = MC.Filter("mvaScore>={}".format(mvaThreshold))
+	MCSB = MC.Filter("mvaScore<{}".format(mvaThreshold))
+
+	nBins = 6
+	rangeMin = 0.2
+	rangeMax = 1.5
+
+
+	histoDataSB = dataSB.Histo1D(("rhomass2D", "rhomass2D", 30, 0., 30.), "rhomass2D")
+	histoDataSR = dataSR.Histo1D(("rhomass2D", "rhomass2D", 30, 0., 30.), "rhomass2D")
+	histoMCSR = MCSR.Histo1D(("rhomass2D", "rhomass2D", 30, 0., 30.), "rhomass2D")
+
+	useOtherMethod = True
+
+	if useOtherMethod: 
+		histoDataSB = UnrollHist(dataSB.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
+		histoDataSR = UnrollHist(dataSR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
+		histoMCSR = UnrollHist(MCSR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
+
+	print "Number of events: {}, {}".format(histoDataSB.GetEntries(), histoDataSR.GetEntries())
+
+	histoDataSB.Draw("LE")
+	histoDataSR.Draw("LE SAME")
+	histoMCSR.Draw("LE SAME")
+	#hist.Draw()
+	histoDataSB.GetXaxis().SetRangeUser(18, 100)
+
+	histoDataSR.Scale(1./histoDataSR.Integral())
+	histoDataSB.Scale(1./histoDataSB.Integral())
+	histoMCSR.Scale(1./histoMCSR.Integral())
+
+	histoDataSR.Sumw2()
+	histoDataSB.Sumw2()
+	histoMCSR.Sumw2()
+
+	maxes = [histoDataSR.GetMaximum(), histoDataSB.GetMaximum(), histoMCSR.GetMaximum()]
+	themax = max(maxes)
+
+	histoDataSB.SetMaximum(1.1*themax)
+
+	histoDataSR.SetLineColor(ROOT.kRed)
+	histoDataSB.SetLineColor(ROOT.kBlue)
+	histoMCSR.SetLineColor(ROOT.kGreen+3) #ROOT.kOrange
+
+	histoDataSB.SetTitle("Unrolled 2D #rho mass distribution")
+
+	histoDataSBerror = histoDataSB.DrawCopy("HIST SAME")
+	histoDataSRerror = histoDataSR.DrawCopy("HIST SAME")
+	histoMCSRerror = histoMCSR.DrawCopy("HIST SAME")
+
+	legend = ROOT.TLegend(.65,.60,.90,.85)
+	legend.SetBorderSize(0)
+	legend.SetFillColor(0)
+	legend.SetFillStyle(0)
+	legend.SetTextFont(42)
+	legend.SetTextSize(0.04)
+	legend.AddEntry(histoDataSRerror,"data (signal region)","l")
+	legend.AddEntry(histoDataSBerror,"data (sideband)","l")
+	legend.AddEntry(histoMCSRerror,"Signal MC (signal region)","l")
+	legend.Draw()
+
+	histoRatio = histoDataSB.Clone()
+	histoRatio.Divide(histoDataSR.Clone())
+
+	canvas.Lower()
+
+	histoRatio.Draw("HIST")
+	histoRatio.SetLineColor(1)
+	histoRatio.DrawCopy("LE SAME")
+
+
+	canvas.Draw()
+
+	#histoRatio.SetMaximum(0.2)
+	#histoRatio.SetMinimum(1.8)
+	histoRatio.GetYaxis().SetRangeUser(0.2, 1.8)
+	histoRatio.GetYaxis().SetNdivisions(5)
+	canvas.RemoveMiddleAxis()
+
+	canvas.Update()
+
+
+
+
+
+
+	#FOM = filemanager.GetItem("cutflowGen")
+
+	fomcanvas = ROOT.TCanvas("fomcanvas", "fomcanvas", 800, 600)
+
+	
+
+	#formatHistoCommon(histgwf)
+#	ROC.SetLineColor(ROOT.kBlue+2)
+#	ROC.SetLineWidth(2)
+#	ROC.GetXaxis().SetLabelSize(textsize)
+#	ROC.GetYaxis().SetLabelSize(textsize)
+
+#	FOM.SetLineColor(ROOT.kGreen)
+#	#FOM.SetLineWidth(2)
+#	FOM.SetMarkerStyle(7)
+#	FOM.SetMarkerColor(ROOT.kGreen)
+#	FOM.GetXaxis().SetLabelSize(textsize)
+#	FOM.GetYaxis().SetLabelSize(textsize)
+
+
+	splitfraction = 0.8
+
+	sc = 1.05
+
+	# Making the ratio plots 
+
+
+
+
+	#if plotstats: 
+	#	scale = 1./1.2
+	#else: 
+	#	scale = 1.
+	#legend = ROOT.TLegend(.62*scale,.60,.90*scale,.85)
+	#legend.SetBorderSize(0)
+	#legend.SetFillColor(0)
+	#legend.SetFillStyle(0)
+	#legend.SetTextFont(42)
+	#legend.SetTextSize(0.04)
+	#legend.AddEntry(histgwf,"GPU workflow","l")
+	#legend.Draw()
+
+	#histlwf.Scale(histgwf.Integral()/histlwf.Integral())
+
+
+
+   
+	canvas.Update()
+
+	canvas.Print(outputfolder+quantity+".pdf")
+	if (webpublication): canvas.Print(webfolder+quantity+".png")
+
+
+	canv = ROOT.TCanvas("canv", "canv", 800, 600)
+	hist = MCSR.Histo2D(("rhomass1", "rhomass2", 15, rangeMin, rangeMax, 15, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2")
+	hist.SetTitle("m(#rho_{1}) vs m(#rho_{2})")
+	hist.DrawCopy("COLZ")
+	canv.Draw()
+	canv.Print(outputfolder+"2Drhomass.pdf")
+
+	#f = ROOT.TFile.Open(presentationfolder, "Update")
+	#fomcanvas.Write()
+	#canvas.Write()
+	#f.Write()
+	#f.Close()
+
+
+
+
+filemanager.CloseAll()
+
+
+

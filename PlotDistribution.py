@@ -240,15 +240,19 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	mvaThreshold = 0.9
 	mvaLowThreshold = 0.0
+	mvaLowerBound = -0.5
 
 	dataSR = data.Filter("mvaScore>={}".format(mvaThreshold))
-	dataSB = data.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaThreshold, mvaLowThreshold))
+	dataCR = data.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaThreshold, mvaLowThreshold))
+	dataSB = data.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaLowThreshold, mvaLowerBound))
 
 	MCSR = MC.Filter("mvaScore>={}".format(mvaThreshold))
-	MCSB = MC.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaThreshold, mvaLowThreshold))
+	MCCR = MC.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaThreshold, mvaLowThreshold))
+	MCSB = MC.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaLowThreshold, mvaLowerBound))
 
 	bkgDsSR = bkgDs.Filter("mvaScore>={}".format(mvaThreshold))
-	bkgDsSB = bkgDs.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaThreshold, mvaLowThreshold))
+	bkgDsCR = bkgDs.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaThreshold, mvaLowThreshold))
+	bkgDsSB = bkgDs.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaLowThreshold, mvaLowerBound))
 
 	nBins = 6
 	rangeMin = 0.2
@@ -263,9 +267,9 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	if useOtherMethod: 
 		histoDataSB = UnrollHist(dataSB.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
-		histoDataSR = UnrollHist(dataSR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
-		histoMCSR = UnrollHist(MCSR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
-		histoDsSR = UnrollHist(bkgDsSR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
+		histoDataSR = UnrollHist(dataCR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
+		histoMCSR = UnrollHist(MCCR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
+		histoDsSR = UnrollHist(bkgDsCR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
 
 	print "Number of events: {}, {}".format(histoDataSB.GetEntries(), histoDataSR.GetEntries())
 

@@ -224,12 +224,15 @@ for quantity in ["Rhomass2Dunrolled"]:
 	data = ROOT.RDataFrame(filemanager.GetItem("Data2018BFirst")) 
 	#data = ROOT.RDataFrame(filemanager.GetItem("ParkingBPH1Run2018D")) #"ParkingBPH4-6Run2018B"
 	MC = ROOT.RDataFrame(filemanager.GetItem("MCSignalMMultipleTau"))
+	bkgDs = ROOT.RDataFrame(filemanager.GetItem("BkgDstarDsMMultipleTau"))
 
 	data = data.Filter("mvaScore>-2.")
 	MC = MC.Filter("mvaScore>-2")
+	bkgDs = bkgDs.Filter("mvaScore>-2")
 
 	data = data.Define("rhomass2D", "int((min(b_tau_rhomass2, float(1.3)) - 0.2)/0.22) + 6*int((min(b_tau_rhomass1, float(1.3)) - 0.2)/0.22)")
 	MC = MC.Define("rhomass2D", "int((min(b_tau_rhomass2, float(1.3)) - 0.2)/0.22) + 6*int((min(b_tau_rhomass1, float(1.3)) - 0.2)/0.22)")
+	bkgDs = bkgDs.Define("rhomass2D", "int((min(b_tau_rhomass2, float(1.3)) - 0.2)/0.22) + 6*int((min(b_tau_rhomass1, float(1.3)) - 0.2)/0.22)")
 
 	histo2D = data.Histo2D(("rhomass1", "rhomass2", 10, 0., 3., 10, 0., 3.), "b_tau_rhomass1", "b_tau_rhomass2")
 
@@ -243,6 +246,9 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	MCSR = MC.Filter("mvaScore>={}".format(mvaThreshold))
 	MCSB = MC.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaThreshold, mvaLowThreshold))
+
+	bkgDsSR = bkgDs.Filter("mvaScore>={}".format(mvaThreshold))
+	bkgDsSB = bkgDs.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaThreshold, mvaLowThreshold))
 
 	nBins = 6
 	rangeMin = 0.2
@@ -259,24 +265,28 @@ for quantity in ["Rhomass2Dunrolled"]:
 		histoDataSB = UnrollHist(dataSB.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
 		histoDataSR = UnrollHist(dataSR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
 		histoMCSR = UnrollHist(MCSR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
+		histoDsSR = UnrollHist(bkgDsSR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
 
 	print "Number of events: {}, {}".format(histoDataSB.GetEntries(), histoDataSR.GetEntries())
 
 	histoDataSB.Draw("LE")
 	histoDataSR.Draw("LE SAME")
 	histoMCSR.Draw("LE SAME")
+	histoDsSR.Draw("LE SAME")
 	#hist.Draw()
 	histoDataSB.GetXaxis().SetRangeUser(18, 100)
 
 	histoDataSR.Scale(1./histoDataSR.Integral())
 	histoDataSB.Scale(1./histoDataSB.Integral())
 	histoMCSR.Scale(1./histoMCSR.Integral())
+	histoDsSR.Scale(1./histoDsSR.Integral())
 
 	histoDataSR.Sumw2()
 	histoDataSB.Sumw2()
 	histoMCSR.Sumw2()
+	histoDsSR.Sumw2()
 
-	maxes = [histoDataSR.GetMaximum(), histoDataSB.GetMaximum(), histoMCSR.GetMaximum()]
+	maxes = [histoDataSR.GetMaximum(), histoDataSB.GetMaximum(), histoMCSR.GetMaximum(), histoDsSR.GetMaximum()]
 	themax = max(maxes)
 
 	histoDataSB.SetMaximum(1.1*themax)
@@ -284,12 +294,14 @@ for quantity in ["Rhomass2Dunrolled"]:
 	histoDataSR.SetLineColor(ROOT.kRed)
 	histoDataSB.SetLineColor(ROOT.kBlue)
 	histoMCSR.SetLineColor(ROOT.kGreen+3) #ROOT.kOrange
+	histoDsSR.SetLineColor(ROOT.kBlue+3)
 
 	histoDataSB.SetTitle("Unrolled 2D #rho mass distribution")
 
 	histoDataSBerror = histoDataSB.DrawCopy("HIST SAME")
 	histoDataSRerror = histoDataSR.DrawCopy("HIST SAME")
 	histoMCSRerror = histoMCSR.DrawCopy("HIST SAME")
+	histoDsSRerror = histoDsSR.DrawCopy("HIST SAME")
 
 	legend = ROOT.TLegend(.65,.60,.90,.85)
 	legend.SetBorderSize(0)
@@ -300,6 +312,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 	legend.AddEntry(histoDataSRerror,"data (signal region)","l")
 	legend.AddEntry(histoDataSBerror,"data (sideband)","l")
 	legend.AddEntry(histoMCSRerror,"Signal MC (signal region)","l")
+	legend.AddEntry(histoDsSRerror, "B->D^{*}D_s MC (signal region)", "l")
 	legend.Draw()
 
 	histoRatio = histoDataSB.Clone()

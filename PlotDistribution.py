@@ -3,6 +3,7 @@ import os
 import math
 import uproot
 import numpy as np
+import collections
 
 uproot.default_library = "np"
 
@@ -221,91 +222,94 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	canvas = ROOT.RatioCanvas("romassunrolled", "Unrolled 2D distribution of rho mass", 800, 600)
 
-	data = ROOT.RDataFrame(filemanager.GetItem("Data2018BFirst")) 
-	#data = ROOT.RDataFrame(filemanager.GetItem("ParkingBPH1Run2018D")) #"ParkingBPH4-6Run2018B"
-	MC = ROOT.RDataFrame(filemanager.GetItem("MCSignalMMultipleTau"))
-	bkgDs = ROOT.RDataFrame(filemanager.GetItem("BkgDstarDsMMultipleTau"))
-
-	data = data.Filter("mvaScore>-2.")
-	MC = MC.Filter("mvaScore>-2")
-	bkgDs = bkgDs.Filter("mvaScore>-2")
-
-	data = data.Define("rhomass2D", "int((min(b_tau_rhomass2, float(1.3)) - 0.2)/0.22) + 6*int((min(b_tau_rhomass1, float(1.3)) - 0.2)/0.22)")
-	MC = MC.Define("rhomass2D", "int((min(b_tau_rhomass2, float(1.3)) - 0.2)/0.22) + 6*int((min(b_tau_rhomass1, float(1.3)) - 0.2)/0.22)")
-	bkgDs = bkgDs.Define("rhomass2D", "int((min(b_tau_rhomass2, float(1.3)) - 0.2)/0.22) + 6*int((min(b_tau_rhomass1, float(1.3)) - 0.2)/0.22)")
-
-	histo2D = data.Histo2D(("rhomass1", "rhomass2", 10, 0., 3., 10, 0., 3.), "b_tau_rhomass1", "b_tau_rhomass2")
-
-	hist = UnrollHist(histo2D)
-
+	# Signal region definitions
 	mvaThreshold = 0.9
 	mvaLowThreshold = 0.0
 	mvaLowerBound = -0.5
 
-	dataSR = data.Filter("mvaScore>={}".format(mvaThreshold))
-	dataCR = data.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaThreshold, mvaLowThreshold))
-	dataSB = data.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaLowThreshold, mvaLowerBound))
-
-	MCSR = MC.Filter("mvaScore>={}".format(mvaThreshold))
-	MCCR = MC.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaThreshold, mvaLowThreshold))
-	MCSB = MC.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaLowThreshold, mvaLowerBound))
-
-	bkgDsSR = bkgDs.Filter("mvaScore>={}".format(mvaThreshold))
-	bkgDsCR = bkgDs.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaThreshold, mvaLowThreshold))
-	bkgDsSB = bkgDs.Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaLowThreshold, mvaLowerBound))
-
+	# Histo parameters
 	nBins = 6
 	rangeMin = 0.2
 	rangeMax = 1.5
 
+	dataframes = {}
+	histos = collections.defaultdict(dict)
+	dataframes["data"] = ROOT.RDataFrame(filemanager.GetItem("Data2018BFirst"))
+	#data = ROOT.RDataFrame(filemanager.GetItem("ParkingBPH1Run2018D")) #"ParkingBPH4-6Run2018B"
+	dataframes["MC"] = ROOT.RDataFrame(filemanager.GetItem("MCSignalMMultipleTau"))
+	dataframes["DstarDs"] = ROOT.RDataFrame(filemanager.GetItem("BkgDstarDsMMultipleTau"))
 
-	histoDataSB = dataSB.Histo1D(("rhomass2D", "rhomass2D", 30, 0., 30.), "rhomass2D")
-	histoDataSR = dataSR.Histo1D(("rhomass2D", "rhomass2D", 30, 0., 30.), "rhomass2D")
-	histoMCSR = MCSR.Histo1D(("rhomass2D", "rhomass2D", 30, 0., 30.), "rhomass2D")
+	SR = {}
+	CR = {}
+	SB = {}
 
-	useOtherMethod = True
+	for key in dataframes.keys(): 
+		dataframes[key] = dataframes[key].Filter("mvaScore>-2.")
+		dataframes[key] = dataframes[key].Define("rhomass2D", "int((min(b_tau_rhomass2, float(1.3)) - 0.2)/0.22) + 6*int((min(b_tau_rhomass1, float(1.3)) - 0.2)/0.22)")
+		SR[key] = dataframes[key].Filter("mvaScore>={}".format(mvaThreshold))
+		CR[key] = dataframes[key].Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaThreshold, mvaLowThreshold))
+		SB[key] = dataframes[key].Filter("(mvaScore<{})&&(mvaScore>{})".format(mvaLowThreshold, mvaLowerBound))
+		#histoDataSB = dataSB.Histo1D(("rhomass2D", "rhomass2D", 30, 0., 30.), "rhomass2D")
+		histos[key]["SR"] = UnrollHist(SR[key].Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
+		histos[key]["CR"] = UnrollHist(CR[key].Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
+		histos[key]["SB"] = UnrollHist(SB[key].Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
 
-	if useOtherMethod: 
-		histoDataSB = UnrollHist(dataSB.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
-		histoDataSR = UnrollHist(dataCR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
-		histoMCSR = UnrollHist(MCCR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
-		histoDsSR = UnrollHist(bkgDsCR.Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2"))
+	
+	#histo2D = data.Histo2D(("rhomass1", "rhomass2", 10, 0., 3., 10, 0., 3.), "b_tau_rhomass1", "b_tau_rhomass2")
 
-	print "Number of events: {}, {}".format(histoDataSB.GetEntries(), histoDataSR.GetEntries())
+	#hist = UnrollHist(histo2D)
 
-	histoDataSB.Draw("LE")
-	histoDataSR.Draw("LE SAME")
-	histoMCSR.Draw("LE SAME")
-	histoDsSR.Draw("LE SAME")
-	#hist.Draw()
-	histoDataSB.GetXaxis().SetRangeUser(18, 100)
+	showBKG = False
 
-	histoDataSR.Scale(1./histoDataSR.Integral())
-	histoDataSB.Scale(1./histoDataSB.Integral())
-	histoMCSR.Scale(1./histoMCSR.Integral())
-	histoDsSR.Scale(1./histoDsSR.Integral())
 
-	histoDataSR.Sumw2()
-	histoDataSB.Sumw2()
-	histoMCSR.Sumw2()
-	histoDsSR.Sumw2()
+	print "Number of events (SR, CR, SB): {}, {}, {}".format(histos["data"]["SR"].GetEntries(), histos["data"]["CR"].GetEntries(), histos["data"]["SB"].GetEntries())
 
-	maxes = [histoDataSR.GetMaximum(), histoDataSB.GetMaximum(), histoMCSR.GetMaximum(), histoDsSR.GetMaximum()]
+	estimate = histos["data"]["CR"]
+	reference = histos["data"]["SR"]
+	additionalhists = [histos["MC"]["SR"], histos["DstarDs"]["SR"]]
+	colors = [ROOT.kGreen+3, ROOT.kBlue+3] #ROOT.kOrange
+	legends = ["Signal MC (signal region)",  "B->D^{*}D_s MC (signal region)"]
+	norms = [1., 1.]
+
+	assert(len(colors) >= len(additionalhists))
+	assert(len(legends) >= len(additionalhists))
+	assert(len(norms) >= len(additionalhists))
+
+	# Plot the histogram
+	estimate.Draw("LE")
+	reference.Draw("LE SAME")
+	for i, hist in enumerate(additionalhists): 
+		additionalhists[i].Draw("LE SAME")
+
+	estimate.GetXaxis().SetRangeUser(18, 100)
+
+	reference.Scale(1./reference.Integral())
+	estimate.Scale(1./estimate.Integral())
+	estimate.Sumw2()
+	reference.Sumw2()
+	for i, hist in enumerate(additionalhists): 
+		hist.Scale(norms[i]/hist.Integral())
+		hist.Sumw2()
+
+	maxes = [estimate.GetMaximum(), reference.GetMaximum()]
+	for item in additionalhists: 
+		maxes.append(item.GetMaximum())
 	themax = max(maxes)
 
-	histoDataSB.SetMaximum(1.1*themax)
+	estimate.SetMaximum(1.1*themax)
 
-	histoDataSR.SetLineColor(ROOT.kRed)
-	histoDataSB.SetLineColor(ROOT.kBlue)
-	histoMCSR.SetLineColor(ROOT.kGreen+3) #ROOT.kOrange
-	histoDsSR.SetLineColor(ROOT.kBlue+3)
+	estimate.SetLineColor(ROOT.kRed)
+	reference.SetLineColor(ROOT.kBlue)
+	for i, hist in enumerate(additionalhists): 
+		hist.SetLineColor(colors[i]) 
 
-	histoDataSB.SetTitle("Unrolled 2D #rho mass distribution")
+	estimate.SetTitle("Unrolled 2D #rho mass distribution")
 
-	histoDataSBerror = histoDataSB.DrawCopy("HIST SAME")
-	histoDataSRerror = histoDataSR.DrawCopy("HIST SAME")
-	histoMCSRerror = histoMCSR.DrawCopy("HIST SAME")
-	histoDsSRerror = histoDsSR.DrawCopy("HIST SAME")
+	estimateErr = estimate.DrawCopy("HIST SAME")
+	referenceErr = reference.DrawCopy("HIST SAME")
+	additionalhistsErr = []
+	for hist in additionalhists: 
+		additionalhistsErr.append(hist.DrawCopy("HIST SAME"))
 
 	legend = ROOT.TLegend(.65,.60,.90,.85)
 	legend.SetBorderSize(0)
@@ -313,14 +317,14 @@ for quantity in ["Rhomass2Dunrolled"]:
 	legend.SetFillStyle(0)
 	legend.SetTextFont(42)
 	legend.SetTextSize(0.04)
-	legend.AddEntry(histoDataSRerror,"data (signal region)","l")
-	legend.AddEntry(histoDataSBerror,"data (sideband)","l")
-	legend.AddEntry(histoMCSRerror,"Signal MC (signal region)","l")
-	legend.AddEntry(histoDsSRerror, "B->D^{*}D_s MC (signal region)", "l")
+	legend.AddEntry(referenceErr,"data (signal region)","l")
+	legend.AddEntry(estimateErr,"data (sideband)","l")
+	for i, hist in enumerate(additionalhists): 
+		legend.AddEntry(hist,legends[i],"l")
 	legend.Draw()
 
-	histoRatio = histoDataSB.Clone()
-	histoRatio.Divide(histoDataSR.Clone())
+	histoRatio = estimate.Clone()
+	histoRatio.Divide(reference.Clone())
 
 	canvas.Lower()
 
@@ -398,7 +402,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 
 	canv = ROOT.TCanvas("canv", "canv", 800, 600)
-	hist = MCSR.Histo2D(("rhomass1", "rhomass2", 15, rangeMin, rangeMax, 15, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2")
+	hist = SR["MC"].Histo2D(("rhomass1", "rhomass2", 15, rangeMin, rangeMax, 15, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2")
 	hist.SetTitle("m(#rho_{1}) vs m(#rho_{2})")
 	hist.DrawCopy("COLZ")
 	canv.Draw()

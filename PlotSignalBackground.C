@@ -45,7 +45,7 @@ TLorentzVector LV(double pt, double eta, double phi, double m)
 }
 
 
-void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsFirst/") 
+void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/") 
 {
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C"); 
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C+");
@@ -64,13 +64,28 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsFirst
 	filemanager.AddItem("MCofficial", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/MCFirstSubmission.root", "ntuplizer/tree"); 
 	filemanager.AddItem("DataLarge", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/DataVeryLarge.root", "ntuplizer/tree"); 
 	filemanager.AddItem("MCSignal", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/PrivateProductionGenDstar_converted.root", "tree"); 
-	filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M.root", "ntuplizer/tree"); 
+	//filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M.root", "ntuplizer/tree"); 
 	filemanager.AddItem("ParkingBPHAllRun2018B", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPHRun2018B.root", "ntuplizer/tree"); 
 	filemanager.AddItem("SignalOfficialMC50M_mva", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted_mva.root", "tree"); 
 	filemanager.AddItem("ParkingBPHAllRun2018B_mva", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPHRun2018B_converted_mva.root", "tree"); 
 	filemanager.AddItem("BkgBtoDstarDs", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/BkgDstarDsInclPrivateProdFirst.root", "ntuplizer/tree"); 
 	filemanager.AddItem("BkgBtoDstar3piNonres", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/B0toDstar3piFirst.root", "ntuplizer/tree"); 
 	filemanager.AddItem("BkgBtoDstarDsstar", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/BkgDstarDsstarInclPrivateProdFirst.root", "ntuplizer/tree"); 
+
+	// Towards stable productions
+filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M.root", "ntuplizer/tree"); 
+filemanager.AddItem("SignalOfficialMC50M_tf", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_withTFweight.root", "ntuplizer/tree"); 
+filemanager.AddItem("SignalOfficialMC50M_DNN", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_tauDNN.root", "ntuplizer/tree"); 
+filemanager.AddItem("SignalOfficialMC50M_test", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50MwithTFweightTest.root", "ntuplizer/tree"); 
+filemanager.AddItem("Data2018BFirstTest", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstAllTau.root", "ntuplizer/tree"); 
+filemanager.AddItem("Data2018BFirstTest_tf", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstAllTau_withTFweight.root", "ntuplizer/tree"); 
+filemanager.AddItem("BkgDstarDsMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau.root", "ntuplizer/tree"); 
+filemanager.AddItem("Data2018BFirst", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst.root", "ntuplizer/tree"); 
+//filemanager.AddItem("Data2018BFirst_tf", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_withTFweight.root", "ntuplizer/tree"); 
+filemanager.AddItem("Data2018BFirst_DNN", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_tauDNN.root", "ntuplizer/tree"); 
+filemanager.AddItem("Data2018BFirst10k_tf", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_withTFweight10k.root", "ntuplizer/tree"); 
+//filemanager.AddItem("Data2018BFirst10k_DNN", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_tauDNN10k.root", "ntuplizer/tree"); 
+
 
 
 
@@ -81,7 +96,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsFirst
 
 	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>("DstarDsMCfirst")); // tree100k
 
-	auto sampleMC = RDataFrame(*filemanager.GetItem<TTree*>("DataLatest")); 
+	auto sampleMC = RDataFrame(*filemanager.GetItem<TTree*>("Data2018BFirst")); 
 	
 
 	// Defining the delta
@@ -194,7 +209,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsFirst
 
 	TString outfolder = "plots/"+campaignName; //plots/"+campaignName; //"plots/PlotsGenmactchedFinal/"
 
-	bool webpublication = true; 
+	bool webpublication = false; 
 
 	if (gSystem->AccessPathName(outfolder)) gSystem->Exec("mkdir -p "+outfolder); 
 
@@ -399,14 +414,14 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsFirst
 
 		TString cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1)"; 
 
-		filemanager.GetItem<TTree*>("ParkingBPHAllRun2018B")->Draw(quantityData.ReplaceAll(">>h", ">>h1"), cut); 
+		filemanager.GetItem<TTree*>("Data2018BFirst")->Draw(quantityData.ReplaceAll(">>h", ">>h1"), cut); 
 		TH1 *histoData = static_cast<TH1*>(canvas->GetPrimitive("h1")); 
 		histoData->GetYaxis()->SetTitleOffset(0.9); 
 		histoData->SetTitle(""); 
 		filemanager.GetItem<TTree*>("SignalOfficialMC50M")->Draw(TString(quantity).ReplaceAll(">>h", ">>h2"), cut); 
 		TH1 *histoMC = static_cast<TH1*>(canvas->GetPrimitive("h2")); 
 		histoMC->SetTitle(""); 
-		filemanager.GetItem<TTree*>("BkgBtoDstarDs")->Draw(TString(quantity).ReplaceAll(">>h", ">>h3"), cut); 
+		filemanager.GetItem<TTree*>("BkgDstarDsMMultipleTau")->Draw(TString(quantity).ReplaceAll(">>h", ">>h3"), cut); 
 		TH1 *histoBkgDs = static_cast<TH1*>(canvas->GetPrimitive("h3")); 
 		histoBkgDs->SetTitle(""); 
 		filemanager.GetItem<TTree*>("BkgBtoDstarDsstar")->Draw(TString(quantity).ReplaceAll(">>h", ">>h4"), cut); 
@@ -438,9 +453,9 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsFirst
 		//histoMC->Scale(histoData->Integral()/histoMC->Integral()); 
 		if (normalise) 
 		{
-			histoData->Scale(1./histoData->Integral()); 
-			histoMC->Scale(1./histoMC->Integral()); 
-			histoBkgDs->Scale(1./histoBkgDs->Integral());
+			//histoData->Scale(1./histoData->Integral()); 
+			histoMC->Scale(49.7/histoMC->Integral()); 
+			histoBkgDs->Scale(249./histoBkgDs->Integral());
 			histoBkgDsstar->Scale(1./histoBkgDsstar->Integral()); 
 			histoBkg3Pi->Scale(1./histoBkg3Pi->Integral()); 
 		}

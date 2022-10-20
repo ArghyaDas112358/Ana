@@ -3,13 +3,13 @@
 #include "TTree.h"
 #include "TString.h"
 #include "TChain.h"
-#include "/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C"
 ClassImp(FileManager)
 #include "TLorentzVector.h"
 #include "TGraph2D.h"
 #include "TH2D.h"
 #include "TLegend.h"
 #include <iostream>
+#include "FileFlow.h"
 
 
 using namespace ROOT; 
@@ -51,45 +51,16 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C+");
 	//gSystem->Load("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.so"); 
 
-	FileManager filemanager; 
+	Init(); 
+
+	std::vector<TString> filesUsed = {"Data2018BFirst_MVA", "SignalOfficialMC50M_MVA", "BkgDstarDsMultipleTau_MVA", "BkgBtoDstarDsstar", "BkgBtoDstar3piNonres", "DstarDsMCfirst", "Data2018BFirst"}; 
 
 
-	filemanager.AddItem("prodlatest", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/flatTupleDataLatest.root", "ntuplizer/tree"); 
-	filemanager.AddItem("MCgenmatched", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/flatTupleGenmatchedAllSingleTauLatest.root", "ntuplizer/tree"); 
-
-	filemanager.AddItem("MCOfficialSample", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/all.root", "ntuplizer/tree"); 
-	filemanager.AddItem("DstarDsMCfirst", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/bkgDstarDsFirst.root", "ntuplizer/tree"); 
-	filemanager.AddItem("DataWS", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/DataWS.root", "ntuplizer/tree"); 
-	filemanager.AddItem("DataLatest", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/DataLast.root", "ntuplizer/tree"); 
-	filemanager.AddItem("MCofficial", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/MCFirstSubmission.root", "ntuplizer/tree"); 
-	filemanager.AddItem("DataLarge", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/DataVeryLarge.root", "ntuplizer/tree"); 
-	filemanager.AddItem("MCSignal", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/PrivateProductionGenDstar_converted.root", "tree"); 
-	//filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M.root", "ntuplizer/tree"); 
-	filemanager.AddItem("ParkingBPHAllRun2018B", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPHRun2018B.root", "ntuplizer/tree"); 
-	filemanager.AddItem("SignalOfficialMC50M_mva", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted_mva.root", "tree"); 
-	filemanager.AddItem("ParkingBPHAllRun2018B_mva", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPHRun2018B_converted_mva.root", "tree"); 
-	filemanager.AddItem("BkgBtoDstarDs", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/BkgDstarDsInclPrivateProdFirst.root", "ntuplizer/tree"); 
-	filemanager.AddItem("BkgBtoDstar3piNonres", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/B0toDstar3piFirst.root", "ntuplizer/tree"); 
-	filemanager.AddItem("BkgBtoDstarDsstar", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/BkgDstarDsstarInclPrivateProdFirst.root", "ntuplizer/tree"); 
-
-	// Towards stable productions
-filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M.root", "ntuplizer/tree"); 
-filemanager.AddItem("SignalOfficialMC50M_tf", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_withTFweight.root", "ntuplizer/tree"); 
-filemanager.AddItem("SignalOfficialMC50M_DNN", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_tauDNN.root", "ntuplizer/tree"); 
-filemanager.AddItem("SignalOfficialMC50M_test", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50MwithTFweightTest.root", "ntuplizer/tree"); 
-filemanager.AddItem("Data2018BFirstTest", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstAllTau.root", "ntuplizer/tree"); 
-filemanager.AddItem("Data2018BFirstTest_tf", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstAllTau_withTFweight.root", "ntuplizer/tree"); 
-filemanager.AddItem("BkgDstarDsMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau.root", "ntuplizer/tree"); 
-filemanager.AddItem("Data2018BFirst", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst.root", "ntuplizer/tree"); 
-//filemanager.AddItem("Data2018BFirst_tf", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_withTFweight.root", "ntuplizer/tree"); 
-filemanager.AddItem("Data2018BFirst_DNN", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_tauDNN.root", "ntuplizer/tree"); 
-filemanager.AddItem("Data2018BFirst10k_tf", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_withTFweight10k.root", "ntuplizer/tree"); 
-//filemanager.AddItem("Data2018BFirst10k_DNN", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_tauDNN10k.root", "ntuplizer/tree"); 
-
-
-
-
-	filemanager.OpenAllItems(); 
+	for (auto item : filesUsed) 
+	{
+		std::cout << "Opening file: " << item << std::endl; 
+		filemanager.OpenItem(item); 
+	}
 
 	gStyle->SetOptStat(0); 
 
@@ -190,7 +161,7 @@ filemanager.AddItem("Data2018BFirst10k_tf", "/eos/home-m/mhuwiler/DoctoralThesis
 											"BsDstarTauNu_tau_sumofdnn>>h(200, -0.5, 3.5)", "max(max(BsDstarTauNu_tau_pfidx1, BsDstarTauNu_tau_pfidx2), BsDstarTauNu_tau_pfidx3)>>h(200, -0.5, 15.)", "min(min(BsDstarTauNu_tau_pfidx1, BsDstarTauNu_tau_pfidx2), BsDstarTauNu_tau_pfidx3)>>h(200, -0.5, 15.)", "BsDstarTauNu_tau_max_dr_3prong>>h(100, 0., 1.)"
 											}; //"BsDstarTauNu_B_unfit_mass",  "BsDstarTauNu_Ds_unfit_mass-BsDstarTauNu_Ds_unfit_mass" 
 
-	std::vector<TString> quantitiesNew = { "BsDstarTauNu_tau_rhomass1>>h(100, 0., 3.)", "BsDstarTauNu_tau_rhomass2>>h(100, 0., 3.)", "BsDstarTauNu_B_mass>>h(100, 2., 6.)", "BsDstarTauNu_tau_mass>>h(100, 0., 2.)" }; 
+	std::vector<TString> quantitiesNew = { "b_tau_rhomass1>>h(100, 0., 3.)", "n_tau_rhomass2>>h(100, 0., 3.)" }; // "BsDstarTauNu_B_mass>>h(100, 2., 6.)", "b_tau_mass>>h(100, 0., 2.)"
 
 	/*quantitiesToPlot2D*/ quantitiesToPlotFromTree = quantitiesNew; 
 
@@ -412,24 +383,32 @@ filemanager.AddItem("Data2018BFirst10k_tf", "/eos/home-m/mhuwiler/DoctoralThesis
 
 		//histo->GetXaxis()->SetRangeUser(0., 100.); 
 
-		TString cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1)"; 
+		TString cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1) && (mvaScore > -0.5) && (mvaScore <= 0.0)"; // && (mvaScore > 0.0) && (mvaScore <= 0.9)
+		TString dummycut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1)"; 
 
-		filemanager.GetItem<TTree*>("Data2018BFirst")->Draw(quantityData.ReplaceAll(">>h", ">>h1"), cut); 
+		filemanager.GetItem<TTree*>("SignalOfficialMC50M_MVA")->Draw(">>eventlist", "1", "goff"); 
+		TEventList *eventlist = static_cast<TEventList*>(gDirectory->Get("eventlist")); 
+		Int_t numberBeforeMC = eventlist->GetN(); 
+		filemanager.GetItem<TTree*>("BkgDstarDsMultipleTau_MVA")->Draw(">>eventlist", "1", "goff"); 
+		Int_t numberBeforeDs = eventlist->GetN();
+		std::cout << "Number of events: " << numberBeforeMC << std::endl; 
+
+		filemanager.GetItem<TTree*>("Data2018BFirst_MVA")->Draw(quantityData.ReplaceAll(">>h", ">>h1"), cut); 
 		TH1 *histoData = static_cast<TH1*>(canvas->GetPrimitive("h1")); 
 		histoData->GetYaxis()->SetTitleOffset(0.9); 
 		histoData->SetTitle(""); 
-		filemanager.GetItem<TTree*>("SignalOfficialMC50M")->Draw(TString(quantity).ReplaceAll(">>h", ">>h2"), cut); 
+		filemanager.GetItem<TTree*>("SignalOfficialMC50M_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h2"), cut); 
 		TH1 *histoMC = static_cast<TH1*>(canvas->GetPrimitive("h2")); 
 		histoMC->SetTitle(""); 
-		filemanager.GetItem<TTree*>("BkgDstarDsMMultipleTau")->Draw(TString(quantity).ReplaceAll(">>h", ">>h3"), cut); 
+		filemanager.GetItem<TTree*>("BkgDstarDsMultipleTau_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h3"), cut); 
 		TH1 *histoBkgDs = static_cast<TH1*>(canvas->GetPrimitive("h3")); 
 		histoBkgDs->SetTitle(""); 
-		filemanager.GetItem<TTree*>("BkgBtoDstarDsstar")->Draw(TString(quantity).ReplaceAll(">>h", ">>h4"), cut); 
-		TH1 *histoBkgDsstar = static_cast<TH1*>(canvas->GetPrimitive("h4")); 
-		histoBkgDsstar->SetTitle(""); 
-		filemanager.GetItem<TTree*>("BkgBtoDstar3piNonres")->Draw(TString(quantity).ReplaceAll(">>h", ">>h5"), cut); 
-		TH1 *histoBkg3Pi = static_cast<TH1*>(canvas->GetPrimitive("h5")); 
-		histoBkg3Pi->SetTitle(""); 
+		//filemanager.GetItem<TTree*>("BkgBtoDstarDsstar")->Draw(TString(quantity).ReplaceAll(">>h", ">>h4"), dummycut); 
+		//TH1 *histoBkgDsstar = static_cast<TH1*>(canvas->GetPrimitive("h4")); 
+		//histoBkgDsstar->SetTitle(""); 
+		//filemanager.GetItem<TTree*>("BkgBtoDstar3piNonres")->Draw(TString(quantity).ReplaceAll(">>h", ">>h5"), dummycut); 
+		//TH1 *histoBkg3Pi = static_cast<TH1*>(canvas->GetPrimitive("h5")); 
+		//histoBkg3Pi->SetTitle(""); 
 
 		// Plot roc curve here 
 		//if (name == "track_genmatched_doca") 
@@ -447,6 +426,11 @@ filemanager.AddItem("Data2018BFirst10k_tf", "/eos/home-m/mhuwiler/DoctoralThesis
 		//	}
 		//}
 
+		Int_t numberAfterMC = histoMC->GetEntries(); 
+		Int_t numberAfterDs = histoBkgDs->GetEntries(); 
+		std::cout << "Efficiency of SR for MC: " << static_cast<float>(numberAfterMC)/static_cast<float>(numberBeforeMC) << std::endl; 
+		std::cout << "Efficiency of SR for Ds bkg: " << static_cast<float>(numberAfterDs)/static_cast<float>(numberBeforeDs) << std::endl; 
+
 
 		std::cout << "Number of MC events: " << histoMC->Integral() << std::endl; 
 
@@ -454,23 +438,23 @@ filemanager.AddItem("Data2018BFirst10k_tf", "/eos/home-m/mhuwiler/DoctoralThesis
 		if (normalise) 
 		{
 			//histoData->Scale(1./histoData->Integral()); 
-			histoMC->Scale(49.7/histoMC->Integral()); 
-			histoBkgDs->Scale(249./histoBkgDs->Integral());
-			histoBkgDsstar->Scale(1./histoBkgDsstar->Integral()); 
-			histoBkg3Pi->Scale(1./histoBkg3Pi->Integral()); 
+			histoMC->Scale(1.06/histoMC->Integral()); 
+			histoBkgDs->Scale(1.74/histoBkgDs->Integral());
+			//histoBkgDsstar->Scale(1./histoBkgDsstar->Integral()); 
+			//histoBkg3Pi->Scale(1./histoBkg3Pi->Integral()); 
 		}
 
 		histoData->SetLineColor(kBlue); 
 		histoMC->SetLineColor(kRed); 
 		histoBkgDs->SetLineColor(kGreen); 
-		histoBkgDsstar->SetLineColor(kGreen+3); 
-		histoBkg3Pi->SetLineColor(kOrange+2); 
+		//histoBkgDsstar->SetLineColor(kGreen+3); 
+		//histoBkg3Pi->SetLineColor(kOrange+2); 
 
 		histoData->SetLineWidth(2); 
 		histoMC->SetLineWidth(2); 
 		histoBkgDs->SetLineWidth(2); 
-		histoBkgDsstar->SetLineWidth(2); 
-		histoBkg3Pi->SetLineWidth(2); 
+		//histoBkgDsstar->SetLineWidth(2); 
+		//histoBkg3Pi->SetLineWidth(2); 
 
 		std::vector<double> maxes = { histoData->GetMaximum(), histoMC->GetMaximum(), histoBkgDs->GetMaximum() }; 
 
@@ -485,8 +469,8 @@ filemanager.AddItem("Data2018BFirst10k_tf", "/eos/home-m/mhuwiler/DoctoralThesis
       	legend->AddEntry(histoData,"data","F");
       	legend->AddEntry(histoMC,"signal MC (genmatched)","F");
       	legend->AddEntry(histoBkgDs, "B^{0}#rightarrow D^{#ast}D_{s} Inclusive"); 
-      	legend->AddEntry(histoBkgDsstar, "B^{0}#rightarrow D^{*}D_{s}^{*} Inclusive"); 
-      	legend->AddEntry(histoBkg3Pi, "B^{0}#rightarrow D^{*}3#pi Non resonant"); 
+      	//legend->AddEntry(histoBkgDsstar, "B^{0}#rightarrow D^{*}D_{s}^{*} Inclusive"); 
+      	//legend->AddEntry(histoBkg3Pi, "B^{0}#rightarrow D^{*}3#pi Non resonant"); 
       	legend->SetBorderSize(1);
       	legend->SetMargin( 0.3 );
       	legend->SetTextSize(0.04);
@@ -506,8 +490,8 @@ filemanager.AddItem("Data2018BFirst10k_tf", "/eos/home-m/mhuwiler/DoctoralThesis
       	histoData->Draw("HIST"); 
       	histoMC->Draw("HISTSAME"); 
       	histoBkgDs->Draw("HISTSAME"); 
-      	histoBkgDsstar->Draw("HISTSAME"); 
-      	histoBkg3Pi->Draw("HISTSAME"); 
+      	//histoBkgDsstar->Draw("HISTSAME"); 
+      	//histoBkg3Pi->Draw("HISTSAME"); 
 
       	legend->Draw(); 
 

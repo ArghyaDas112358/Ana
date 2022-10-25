@@ -16,10 +16,10 @@ elif [[ $# > 2 ]]; then
 fi 
 
 INITIALREF=${1}
-FINALREF="${INITIALREF}_DNN_test" # Adding suffix to the ref
+FINALREF="${INITIALREF}_DNN" # Adding suffix to the ref
 #Remove suffix from string
 #FINALREF=${INITIALREF%".root"}
-MAXEVENTS=10
+MAXEVENTS=0
 if [[ $# == 2 ]]; then
 	FINALREF=${2}
 fi

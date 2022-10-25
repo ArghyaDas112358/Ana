@@ -133,7 +133,7 @@ std::vector<double> castVector(std::vector<float> vec)
 
  
 
-void ApplyTFweight(const TString& inIdentifier, const TString& outIndentifier) 
+void ApplyTFweight(const TString& inIdentifier, const TString& outIndentifier, const Int_t Nmax = 0) 
 {
 	//ROOT::EnableImplicitMT(); //ROOT::DisableImplicitMT(); 
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C"); 
@@ -302,7 +302,7 @@ void ApplyTFweight(const TString& inIdentifier, const TString& outIndentifier)
 		return response; 
 	};
 
-	auto withWeight = dataframe.Range(0, 100).Define("TFscore", TFresponse, {"BsDstarTauNu_Ds_pt", "BsDstarTauNu_Ds_eta", "BsDstarTauNu_Ds_phi", "BsDstarTauNu_spi_charge", "track_pt", "track_eta", "track_phi", "track_charge", "track_doca2D", "track_doca2Derror", "track_doca", "track_docaerror", "track_dzToPV", "track_dzToClosestVertex", "track_isAssociatedToPV", "track_pvAssociationQuality", "track_isgenmatched"}); 
+	auto withWeight = dataframe.Range(0, Nmax).Define("TFscore", TFresponse, {"BsDstarTauNu_Ds_pt", "BsDstarTauNu_Ds_eta", "BsDstarTauNu_Ds_phi", "BsDstarTauNu_spi_charge", "track_pt", "track_eta", "track_phi", "track_charge", "track_doca2D", "track_doca2Derror", "track_doca", "track_docaerror", "track_dzToPV", "track_dzToClosestVertex", "track_isAssociatedToPV", "track_pvAssociationQuality", "track_isgenmatched"}); 
 
 	withWeight.Snapshot(filemanager.GetObject(outIndentifier), filemanager.GetFile(outIndentifier)); 
 

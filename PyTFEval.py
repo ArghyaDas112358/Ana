@@ -21,6 +21,16 @@ class PyTFEval:
         #os.environ['OPENBLAS_NUM_THREADS'] = '1'
         #os.environ['NUMEXPR_NUM_THREADS=1']
 
+        self.sess = tf.Session(graph=tf.Graph())
+        print("Inside session")
+
+        tf.saved_model.loader.load(self.sess, [tf.saved_model.tag_constants.SERVING], self.savedmodel) #'../pretrained/{}'.format(FLAGS.name)
+        self.output = self.sess.graph.get_tensor_by_name('Softmax_2:0') #Reshape_5:0
+            
+        #mock_data = np.ones((BATCHSIZE,NUM_POINT,NFEATURES),dtype=float)
+        self.mock_label = np.ones((self.BATCHSIZE,self.NUM_POINT),dtype=float)
+        #mock_glob = np.ones((self.BATCHSIZE,NGLOB),dtype=float)
+
     def Initialise(model, batchsize, numpoints): 
         self.savedmodel = model
         self.BATCHSIZE = batchsize
@@ -132,49 +142,41 @@ class PyTFEval:
 
         print(data[0,1,:])
         
-        with tf.Session(graph=tf.Graph()) as sess:
-            print("Inside session")
-            tf.saved_model.loader.load(sess, [tf.saved_model.tag_constants.SERVING], self.savedmodel) #'../pretrained/{}'.format(FLAGS.name)
-            output = sess.graph.get_tensor_by_name('Softmax_2:0') #Reshape_5:0
+        
             
-            #mock_data = np.ones((BATCHSIZE,NUM_POINT,NFEATURES),dtype=float)
-            mock_label = np.ones((self.BATCHSIZE,self.NUM_POINT),dtype=float)
-            #mock_glob = np.ones((self.BATCHSIZE,NGLOB),dtype=float)
             
         
             
-            pred_list = []
+        pred_list = []
             
-            latest_num = 0
-            
-            for i in range(0, math.floor(len(data)/self.BATCHSIZE)):
+        for i in range(0, math.floor(len(data)/self.BATCHSIZE)): # TODO: remove
               
-            # print("Evaluating from: {} to {}".format(i*self.BATCHSIZE+1, (i+1)*self.BATCHSIZE))
-              feed_dict = {
+        # print("Evaluating from: {} to {}".format(i*self.BATCHSIZE+1, (i+1)*self.BATCHSIZE))
+            feed_dict = {
                 'Placeholder:0': data[i*self.BATCHSIZE:(i+1)*self.BATCHSIZE],
-                'Placeholder_1:0': mock_label,
+                'Placeholder_1:0': self.mock_label,
                 'Placeholder_2:0': False,
-              }
-              
-              latest_num = (i+1)*self.BATCHSIZE
-              '''
+            }
+            '''
               if feed_dict['Placeholder:0'].shape == (10, 20, 13):
                 pass
               else:
                 print('feed_dict size of placeholder 0 different:', feed_dict['Placeholder:0'].shape)
-              '''
+            '''
 
-              print("Before running prediction")
+        print("Before running prediction")
 
-              predictions = sess.run(output, feed_dict)
+        predictions = self.sess.run(self.output, feed_dict)
 
-              print("After running prediction")
+        print("After running prediction")
+
+        print(predictions)
               
-            #predictions store 1 value per particle. The shape is [1,100,2]. The probability as coming from the B decay is stored at position 2, for example, the probability for the first particle come from the B decay is stored at predictions[0,0,1], while for the second is stored at predictions[0,1,1] and so on.
-              for pred in predictions:
-                pred_list.append(pred)
-                pred_array = np.asarray(pred_list, dtype=object)
-            return np.asarray(pred_array, "d")
+        #predictions store 1 value per particle. The shape is [1,100,2]. The probability as coming from the B decay is stored at position 2, for example, the probability for the first particle come from the B decay is stored at predictions[0,0,1], while for the second is stored at predictions[0,1,1] and so on.
+        for pred in predictions:
+            pred_list.append(pred)
+            pred_array = np.asarray(pred_list, dtype=object)
+        return np.asarray(pred_array, "d")
 
     def CheckInput(self, dataframe): 
         # open the file and check if the dataframes are  identical

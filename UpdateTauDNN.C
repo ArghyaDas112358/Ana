@@ -287,6 +287,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 	filemanager.AddItem("MCSignalMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstAllTau_withTFweight.root", "ntuplizer/tree"); 
 	filemanager.AddItem("MCSignalMMultipleTauWithResponse", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_withTFweight.root", "ntuplizer/tree"); 
 	filemanager.AddItem("Data2018BFirst20k", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_withTFweight10k.root", "ntuplizer/tree"); 
+	filemanager.AddItem("BkgDstarDsMMultipleTau_tf", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau_withTFweight.root", "ntuplizer/tree"); 
 	filemanager.AddItem("BkgDstarDsMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau_withTFweightTeest.root", "ntuplizer/tree"); 
 
 
@@ -296,7 +297,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 	gStyle->SetOptStat(0); 
 
 
-	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>("Data2018BFirst20k")); // tree100k
+	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>("BkgDstarDsMMultipleTau_tf")); // tree100k
 	
 
 	// Defining the delta
@@ -432,7 +433,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 						.Define("b_tau_minpieta", findMin, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"}).Define("b_tau_maxpieta", findMax, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"})
 						.Define("b_tau_minpiphi", findMin, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}).Define("b_tau_maxpiphi", findMax, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}); 
 
-	withDNN.Snapshot("ntuplizer/tree", "../../data/prod2018BFirst_tauDNN.root"); 
+	withDNN.Snapshot("ntuplizer/tree", "../../data/firstDstarDsMultipleTau_tauDNN.root"); 
 
 	//Pause(5); 
 

@@ -23,6 +23,7 @@ FINALREF="${INITIALREF}_tf" # Adding suffix to the ref
 #FINALREF=${INITIALREF%".root"}
 STARTEVT=0
 STOPEVT=0
+OUTPATH=./submit/ # FIXME
 #if [[ $# == 2 ]]; then
 #	FINALREF=${2}
 #fi
@@ -31,6 +32,7 @@ if [[ $# -ge 2 ]]; then
 fi
 if [[ $# -ge 3 ]]; then
 	STARTEVT=${3}
+	OUTPATH="${OUTPATH}${STARTEVT}-${STOPEVT}/"
 fi
 
 if [[ $STARTEVT == 0 ]]; then
@@ -44,8 +46,11 @@ echo $FINALREF
 
 echo $STARTEVT
 echo $STOPEVT
+echo $OUTPATH
+
+mkdir -p $OUTPATH
 
 #root -e 'gInterpreter->AddIncludePath("/opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/numpy/core/include");' TestApplyTFweightnew.C
-root -e 'gInterpreter->AddIncludePath("'$NUMPYLIBRARY'");' 'ApplyTFweight.C("'$INITIALREF'", "'$FINALREF'", '$STOPEVT', '$STARTEVT')'
+root -e 'gInterpreter->AddIncludePath("'$NUMPYLIBRARY'");' 'ApplyTFweight.C("'$INITIALREF'", "'$FINALREF'", '$STOPEVT', '$STARTEVT', "'$OUTPATH'")'
 #root -e 'gInterpreter->AddIncludePath("/opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/numpy/core/include");' ApplyTFweight.C
 #root -e 'gInterpreter->AddIncludePath("/t3home/mhuwiler/.local/lib/python3.6/site-packages/numpy/core/include/");' ApplyTFweight.C

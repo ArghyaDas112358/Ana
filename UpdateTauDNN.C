@@ -3,13 +3,14 @@
 #include "TTree.h"
 #include "TString.h"
 #include "TChain.h"
-#include "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/Ana/plugins/FileManager/CFileManager.C"
+//#include "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/Ana/plugins/FileManager/CFileManager.C"
 ClassImp(FileManager)
 #include "TLorentzVector.h"
 #include "TGraph2D.h"
 #include "TH2D.h"
 #include "TLegend.h"
 #include <iostream>
+#include "FileFlow.h"
 #include "DrawTMVAHistogram.C"
 #include "GetSeparation.C"
 //#include "Python.h"
@@ -251,53 +252,21 @@ float extractFirstElement(const ROOT::VecOps::RVec<float>& vec)
 
  
 
-void UpdateTauDNN(TString campaignName = "ApplyTFweight/") 
+void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier) 
 {
 	ROOT::EnableImplicitMT(); //ROOT::DisableImplicitMT(); 
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C"); 
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C+");
 	//gSystem->Load("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.so"); 
-
-	FileManager filemanager; 
-
-
-	filemanager.AddItem("prodlatest", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/flatTupleDataLatest.root", "ntuplizer/tree"); 
-	filemanager.AddItem("MCgenmatched", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/flatTupleGenmatchedAllSingleTauLatest.root", "ntuplizer/tree"); 
-
-	filemanager.AddItem("MCOfficialSample", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/all.root", "ntuplizer/tree"); 
-	filemanager.AddItem("DstarDsMCfirst", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/bkgDstarDsFirst.root", "ntuplizer/tree"); 
-	filemanager.AddItem("DataWS", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/DataWS.root", "ntuplizer/tree"); 
-	filemanager.AddItem("DataLatest", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/DataLast.root", "ntuplizer/tree"); 
-	filemanager.AddItem("MCofficial", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/MCFirstSubmission.root", "ntuplizer/tree"); 
-	filemanager.AddItem("DataLarge", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/DataVeryLarge.root", "ntuplizer/tree"); 
-
-	// For ABCD estimation
-	filemanager.AddItem("DataLargeMVAfirst", "/eos/home-m/mhuwiler/data/Analysis/v9/DataVeryLarge_mva.root", "tree"); 
-	filemanager.AddItem("DataLargeMVA", "/eos/home-m/mhuwiler/data/Analysis/v9/DataVeryLarge_mvaxgb.root", "tree"); 
-	filemanager.AddItem("DataLargeMVASimple", "/eos/home-m/mhuwiler/data/Analysis/v9/DataVeryLarge_converted_mvaxgbsimple.root", "tree"); 
-	filemanager.AddItem("MCvalidation", "/eos/home-m/mhuwiler/data/Analysis/v9/TauCutflowSample_mva.root", "tree"); 
-	filemanager.AddItem("signalTrain", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/trainingLarge/plots.root", "signalTrain"); 
-	filemanager.AddItem("signalTest", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/trainingLarge/plots.root", "signalTest"); 
-	filemanager.AddItem("backgroundTrain", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/trainingLarge/plots.root", "backgroundTrain"); 
-	filemanager.AddItem("backgroundTest", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/trainingLarge/plots.root", "backgroundTest"); 
-	filemanager.AddItem("DataBackground", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/DataVeryLarge_converted.root", "tree"); 
-	filemanager.AddItem("MCSignal", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/PrivateProductionGenDstar_converted.root", "tree"); 
-	filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M.root", "ntuplizer/tree"); 
-	filemanager.AddItem("ParkingBPHAllRun2018B", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPHRun2018B_converted.root", "tree"); 
-	filemanager.AddItem("MCSignalMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstAllTau_withTFweight.root", "ntuplizer/tree"); 
-	filemanager.AddItem("MCSignalMMultipleTauWithResponse", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_withTFweight.root", "ntuplizer/tree"); 
-	filemanager.AddItem("Data2018BFirst20k", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_withTFweight10k.root", "ntuplizer/tree"); 
-	filemanager.AddItem("BkgDstarDsMMultipleTau_tf", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau_withTFweight.root", "ntuplizer/tree"); 
-	filemanager.AddItem("BkgDstarDsMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau_withTFweightTeest.root", "ntuplizer/tree"); 
+	Init(); 
 
 
-
-	filemanager.OpenAllItems(); 
+	filemanager.OpenItem(inIdentifier); 
 
 	gStyle->SetOptStat(0); 
 
 
-	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>("BkgDstarDsMMultipleTau_tf")); // tree100k
+	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>(inIdentifier)); // tree100k
 	
 
 	// Defining the delta
@@ -433,7 +402,7 @@ void UpdateTauDNN(TString campaignName = "ApplyTFweight/")
 						.Define("b_tau_minpieta", findMin, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"}).Define("b_tau_maxpieta", findMax, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"})
 						.Define("b_tau_minpiphi", findMin, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}).Define("b_tau_maxpiphi", findMax, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}); 
 
-	withDNN.Snapshot("ntuplizer/tree", "../../data/firstDstarDsMultipleTau_tauDNN.root"); 
+	withDNN.Snapshot(filemanager.GetObject(outIndentifier), filemanager.GetFile(outIndentifier)); 
 
 	//Pause(5); 
 

@@ -4,6 +4,7 @@ if [[ $ENVDEF == "MyMacOS" ]]; then
 	NUMPYLIBRARY=/opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/numpy/core/include
 elif [[ $ENVDEF == "T3PSI" ]]; then
 	NUMPYLIBRARY=/t3home/mhuwiler/.local/lib/python3.6/site-packages/numpy/core/include
+	export PATH=/work/mhuwiler/software/Analysis/root626/pythonlib/Python-3.6.8/install/include/python3.6m:$PATH
 else 
 	echo "Unknown environment "$ENVDEF
 fi
@@ -16,12 +17,18 @@ elif [[ $# > 2 ]]; then
 fi 
 
 INITIALREF=${1}
-FINALREF="${INITIALREF}_DNN" # Adding suffix to the ref
+FINALREF="${INITIALREF}_tf" # Adding suffix to the ref
 #Remove suffix from string
 #FINALREF=${INITIALREF%".root"}
 MAXEVENTS=0
 if [[ $# == 2 ]]; then
 	FINALREF=${2}
+fi
+
+if [[ $MAXEVENTS == 0 ]]; then
+	echo -e "//We want to run on the full sample. " > UseRange.h
+else
+	echo -e "#ifndef SUBSET\n\t#define SUBSET\n#endif" > UseRange.h
 fi
 
 echo $INITIALREF

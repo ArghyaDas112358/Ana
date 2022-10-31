@@ -133,7 +133,7 @@ std::vector<double> castVector(std::vector<float> vec)
 
  
 
-void ApplyTFweight(const TString& inIdentifier, const TString& outIndentifier, const Int_t Nmax = 0, const TString& destination = "") 
+void ApplyTFweight(const TString& inIdentifier, const TString& outIndentifier, const Int_t Nmax = 0, const Int_t Nmin = 0, const TString& destination = "") 
 {
 	//ROOT::EnableImplicitMT(); //ROOT::DisableImplicitMT(); 
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C"); 

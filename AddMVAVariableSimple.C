@@ -2,6 +2,7 @@
 #include <TChain.h>
 #include <TFile.h>
 #include <iostream>
+#include "FileFlow.h"
 #include <TRandom3.h>
 #include <TSystem.h>
 #include <TPRegexp.h>
@@ -36,11 +37,15 @@ struct TMVAWeightfileVariables
 };
 
 
-void AddMVAVariableSimple(const TString infile, const TString trees, const TString weightfile = "newtest/model_optimized/weights.xml", TString branchName = "mvaScore", TString suffix = "_mva") 
+void AddMVAVariableSimple(const TString& inIdentifier, const TString& outIndentifier, const TString& weightfile = "newtest/model_optimized/weights.xml", const TString& branchName = "mvaScore", const TString& suffix = "_mva") 
 {
-	TFile *inFile = TFile::Open(infile.Data(), "READ"); 
+	Init(); 
 
-	TTree *tree = static_cast<TTree*>(inFile->Get(trees)); 
+	filemanager.OpenItem(inIdentifier); 
+
+	//TFile *inFile = TFile::Open(infile.Data(), "READ"); 
+
+	TTree *tree = filemanager.GetItem<TTree*>(inIdentifier); 
 
 
 	std::vector<TString> variables = {"b_D0_pt/F", "b_D0_eta/F", "b_D0_phi/F", "b_D0_vprob/F", "b_D0_fl/F", "b_D0_fls/F", "b_Ds_pt/F", "b_Ds_eta/F", "b_Ds_phi/F", "b_Ds_vprob/F", "b_Ds_fl/F", "b_Ds_fls/F", "b_D0_lip/F", "b_D0_lips/F", "b_D0_pvip/F", "b_Ds_lip/F", "b_Ds_lips/F", "b_Ds_pvip/F", "b_tau_pt/F", "b_tau_eta/F", "b_tau_phi/F", "b_tau_fl/F", "b_tau_fsig/F", "b_tau_vprob/F", "b_tau_lip/F", "b_tau_pvip/F", "b_tau_pvips/F", "b_tau_alpha/F", "b_tau_maxdr/F", "b_tau_pi1pt/F", "b_tau_pi1eta/F", "b_tau_pi1phi/F", "b_tau_pi2pt/F", "b_tau_pi2eta/F", "b_tau_pi2phi/F", "b_tau_pi3pt/F", "b_tau_pi3eta/F", "b_tau_pi3phi/F", "b_tau_sumdnn/F"}; 
@@ -98,7 +103,7 @@ void AddMVAVariableSimple(const TString infile, const TString trees, const TStri
 
 	reader->BookMVA("BDT", weightfile); 
 
-	TFile *outFile = TFile::Open(TString(infile).ReplaceAll(".root", suffix+".root"), "RECREATE"); 
+	TFile *outFile = TFile::Open(filemanager.GetFile(outIndentifier).data(), "RECREATE"); // TODO: create directory structure 
 
 	tree->SetBranchStatus("*", 1); 
 
@@ -155,7 +160,7 @@ void AddMVAVariableSimple(const TString infile, const TString trees, const TStri
 	outFile->Write(); 
 	outFile->Close(); 
 
-	inFile->Close(); 
+	//inFile->Close(); 
 
 	// Clean up memory 
 }

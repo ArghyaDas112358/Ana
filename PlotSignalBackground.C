@@ -182,7 +182,8 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 
 	bool webpublication = false; 
 
-	TString region = "SR"; 
+	//TString region = "SB"; 
+	std::vector<TString> regions = {"SR", "CR", "SB"}; 
 
 	if (gSystem->AccessPathName(outfolder)) gSystem->Exec("mkdir -p "+outfolder); 
 
@@ -354,195 +355,198 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 		delete canvas; 
 	}
 
-	for (auto quantity : quantitiesToPlotFromTree) 
+	for (auto region : regions) 
 	{
-		auto strings = quantity.Tokenize(">>"); 
-
-		//strings->Print(); 
-
-		TString name = static_cast<TObjString*>(strings->At(0))->GetString(); 
-
-		std::cout << "To be drawn: " << quantity << std::endl; 
-		TCanvas *canvas = new TCanvas(name, name, 800, 600); 
-
-		
-		//tree->Draw(quantity); 
-
-		if (not quantity.Contains(">>")) quantity+=">>h"; 
-
-		TString quantityData = quantity; 
-		quantityData.ReplaceAll("_genmatched", ""); 
-
-		std::cout << "Quantity: " << quantity << std::endl; 
-		std::cout << "Quantity data: " << quantityData << std::endl; 
-
-		//if (quantity.Contains("track_genmatched_dR_Dstar")) quantityData.ReplaceAll("track_", "track_tracks_"); 
-		//if (quantity.Contains("track_genmatched_pvAssociationQuality")) quantityData.ReplaceAll("track_", "track_track_"); 
-		//if (quantity.Contains("track_dR_Dstar")) quantityData.ReplaceAll("track_", "track_tracks_"); 
-		//if (quantity.Contains("track_pvAssociationQuality")) quantityData.ReplaceAll("track_", "track_track_"); 
-
-		std::cout << "Quantity data: " << quantityData << std::endl; 
-
-		//histo->GetXaxis()->SetRangeUser(0., 100.); 
-
-		TString cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1)"; 
-		Double_t normSig = 1.; 
-		Double_t normDs = 1.; 
-		Double_t norm3pi = 1.; 
-		if (region == "SR") 
+		for (auto quantity : quantitiesToPlotFromTree) 
 		{
-			cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1) && (mvaScore >0.9)"; // && (mvaScore > 0.0) && (mvaScore <= 0.9)
-			normSig = 183; 
-			normDs = 411; 
-			norm3pi = 2.95; 
+			auto strings = quantity.Tokenize(">>"); 
+
+			//strings->Print(); 
+
+			TString name = static_cast<TObjString*>(strings->At(0))->GetString(); 
+
+			std::cout << "To be drawn: " << quantity << std::endl; 
+			TCanvas *canvas = new TCanvas(name, name, 800, 600); 
+
+			
+			//tree->Draw(quantity); 
+
+			if (not quantity.Contains(">>")) quantity+=">>h"; 
+
+			TString quantityData = quantity; 
+			quantityData.ReplaceAll("_genmatched", ""); 
+
+			std::cout << "Quantity: " << quantity << std::endl; 
+			std::cout << "Quantity data: " << quantityData << std::endl; 
+
+			//if (quantity.Contains("track_genmatched_dR_Dstar")) quantityData.ReplaceAll("track_", "track_tracks_"); 
+			//if (quantity.Contains("track_genmatched_pvAssociationQuality")) quantityData.ReplaceAll("track_", "track_track_"); 
+			//if (quantity.Contains("track_dR_Dstar")) quantityData.ReplaceAll("track_", "track_tracks_"); 
+			//if (quantity.Contains("track_pvAssociationQuality")) quantityData.ReplaceAll("track_", "track_track_"); 
+
+			std::cout << "Quantity data: " << quantityData << std::endl; 
+
+			//histo->GetXaxis()->SetRangeUser(0., 100.); 
+
+			TString cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1)"; 
+			Double_t normSig = 1.; 
+			Double_t normDs = 1.; 
+			Double_t norm3pi = 1.; 
+			if (region == "SR") 
+			{
+				cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1) && (mvaScore >0.9)"; // && (mvaScore > 0.0) && (mvaScore <= 0.9)
+				normSig = 183; 
+				normDs = 411; 
+				norm3pi = 2.95; 
+			}
+			else if (region == "CR") 
+			{
+				cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1) && (mvaScore > 0.0) && (mvaScore <= 0.9)"; 
+				normSig = 59.3; 
+				normDs = 389.; 
+				norm3pi = 2.06; 
+			}
+			else if (region == "SB") 
+			{
+				cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1) && (mvaScore > -0.5) && (mvaScore <= 0.0)"; // && (mvaScore > 0.0) && (mvaScore <= 0.9)
+				normSig = 6.77; 
+				normDs = 111.;
+				norm3pi = 0.568;  
+			}
+			else 
+			{
+				std::cout << "ERROR: no known region named " << region << std::endl; 
+			}
+			TString dummycut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1)"; 
+
+			std::cout << cut << std::endl; 
+
+			filemanager.GetItem<TTree*>("SignalOfficialMC50M_MVA")->Draw(">>eventlist", "1", "goff"); 
+			TEventList *eventlist = static_cast<TEventList*>(gDirectory->Get("eventlist")); 
+			Int_t numberBeforeMC = eventlist->GetN(); 
+			filemanager.GetItem<TTree*>("BkgDstarDsMultipleTau_MVA")->Draw(">>eventlist", "1", "goff"); 
+			Int_t numberBeforeDs = eventlist->GetN();
+			filemanager.GetItem<TTree*>("BkgBtoDstar3piNonres_MVA")->Draw(">>eventlist", "1", "goff"); 
+			Int_t numberBefore3pi = eventlist->GetN();
+			std::cout << "Number of events: " << numberBeforeMC << std::endl; 
+
+			filemanager.GetItem<TTree*>("Data2018BFirst_MVA")->Draw(quantityData.ReplaceAll(">>h", ">>h1"), cut); 
+			TH1 *histoData = static_cast<TH1*>(canvas->GetPrimitive("h1")); 
+			histoData->GetYaxis()->SetTitleOffset(0.9); 
+			histoData->SetTitle(""); 
+			filemanager.GetItem<TTree*>("SignalOfficialMC50M_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h2"), cut); 
+			TH1 *histoMC = static_cast<TH1*>(canvas->GetPrimitive("h2")); 
+			histoMC->SetTitle(""); 
+			filemanager.GetItem<TTree*>("BkgDstarDsMultipleTau_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h3"), cut); 
+			TH1 *histoBkgDs = static_cast<TH1*>(canvas->GetPrimitive("h3")); 
+			histoBkgDs->SetTitle(""); 
+			//filemanager.GetItem<TTree*>("BkgBtoDstarDsstar_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h4"), dummycut); 
+			//TH1 *histoBkgDsstar = static_cast<TH1*>(canvas->GetPrimitive("h4")); 
+			//histoBkgDsstar->SetTitle(""); 
+			filemanager.GetItem<TTree*>("BkgBtoDstar3piNonres_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h5"), cut); 
+			TH1 *histoBkg3Pi = static_cast<TH1*>(canvas->GetPrimitive("h5")); 
+			histoBkg3Pi->SetTitle(""); 
+
+			// Plot roc curve here 
+			//if (name == "track_genmatched_doca") 
+			//{
+			//	TString outname = outfolder+name+"ROC.root"; 
+			//	std::cout << "making ROC curve for: " << name << " in file: " << outname << std::endl; 
+			//	TCanvas *efficiencyCanvas = new TCanvas("efficiencyCanvas", "efficiencyCanvas", 800, 600); 
+			//	filemanager.GetItem<TTree*>("MCgenmatched")->Draw(name+">>h(1000, -1.5, 0.5)"); 
+
+	//		//	TH1 * effHisto = static_cast<TH1*>(efficiencyCanvas->GetPrimitive("h")); 
+			//	Double_t denominator = effHisto->Integral(); 
+
+	//		//	for (unsigned int i=0; i<1000; i++) {
+			//		
+			//	}
+			//}
+
+			Int_t numberAfterMC = histoMC->GetEntries(); 
+			Int_t numberAfterDs = histoBkgDs->GetEntries(); 
+			Int_t numberAfter3pi = histoBkg3Pi->GetEntries(); 
+			std::cout << "Efficiency of SR for MC: " << static_cast<float>(numberAfterMC)/static_cast<float>(numberBeforeMC) << std::endl; 
+			std::cout << "Efficiency of SR for Ds bkg: " << static_cast<float>(numberAfterDs)/static_cast<float>(numberBeforeDs) << std::endl; 
+			std::cout << "Efficiency of SR for 3pi bkg: " << static_cast<float>(numberAfter3pi)/static_cast<float>(numberBefore3pi) << std::endl; 
+
+
+			std::cout << "Number of MC events: " << histoMC->Integral() << std::endl; 
+
+			//histoMC->Scale(histoData->Integral()/histoMC->Integral()); 
+			if (normalise) 
+			{
+				//histoData->Scale(1./histoData->Integral()); 
+				histoMC->Scale(normSig/histoMC->Integral()); 
+				histoBkgDs->Scale(normDs/histoBkgDs->Integral());
+				//histoBkgDsstar->Scale(1./histoBkgDsstar->Integral()); 
+				histoBkg3Pi->Scale(norm3pi/histoBkg3Pi->Integral()); 
+			}
+
+			histoData->SetLineColor(kBlue); 
+			histoMC->SetLineColor(kRed); 
+			histoBkgDs->SetLineColor(kGreen); 
+			//histoBkgDsstar->SetLineColor(kGreen+3); 
+			histoBkg3Pi->SetLineColor(kOrange+2); 
+
+			histoData->SetLineWidth(2); 
+			histoMC->SetLineWidth(2); 
+			histoBkgDs->SetLineWidth(2); 
+			//histoBkgDsstar->SetLineWidth(2); 
+			histoBkg3Pi->SetLineWidth(2); 
+
+			std::vector<double> maxes = { histoData->GetMaximum(), histoMC->GetMaximum(), histoBkgDs->GetMaximum() }; 
+
+
+
+			TLegend *legend= new TLegend( canvas->GetLeftMargin()+0.35, 
+	                                    1-canvas->GetTopMargin()-.15, 
+	                                    //canvas->GetLeftMargin()+.4, 
+	                                    canvas->GetLeftMargin()+(1.-(canvas->GetLeftMargin()+canvas->GetRightMargin())),
+	                                    1-canvas->GetTopMargin() );
+	      	legend->SetFillStyle(1);
+	      	legend->AddEntry(histoData,"data","F");
+	      	legend->AddEntry(histoMC,"signal MC (genmatched)","F");
+	      	legend->AddEntry(histoBkgDs, "B^{0}#rightarrow D^{*}D_{s} Inclusive"); 
+	      	//legend->AddEntry(histoBkgDsstar, "B^{0}#rightarrow D^{*}D_{s}^{*} Inclusive"); 
+	      	legend->AddEntry(histoBkg3Pi, "B^{0}#rightarrow D*3#pi Nonresonant"); 
+	      	legend->SetBorderSize(1);
+	      	legend->SetMargin( 0.3 );
+	      	legend->SetTextSize(0.04);
+
+	      	histoData->SetLineColor(kBlue); 
+	      	histoMC->SetLineColor(kRed); 
+
+	      	//histoData->SetTitle(name); 
+
+	      	Float_t sc = 1.3;
+	      	//if not (histo->GetMaximum())
+	      	auto it = max_element(std::begin(maxes), std::end(maxes));
+
+	      	histoData->SetMaximum( *it*static_cast<float>(sc) ); // TMath::Max(histoData->GetMaximum(), histoMC->GetMaximum())*sc
+	      	std::cout << histoData->GetMaximum() << " " << histoMC->GetMaximum() << std::endl; 
+
+	      	histoData->Draw("HIST"); 
+	      	histoMC->Draw("HISTSAME"); 
+	      	histoBkgDs->Draw("HISTSAME"); 
+	      	//histoBkgDsstar->Draw("HISTSAME"); 
+	      	histoBkg3Pi->Draw("HISTSAME"); 
+
+	      	legend->Draw(); 
+
+
+			//histo->GetXaxis()->SetRangeUser(0., 100.); 
+
+			canvas->Draw(); 
+
+			for (auto format : formatsToPlot) 
+			{
+				canvas->Print(outfolder+name+region+format); 
+				if (webpublication) canvas->Print(webfolder+name+region+format); 
+			}
+
+			delete canvas; 
 		}
-		else if (region == "CR") 
-		{
-			cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1) && (mvaScore > 0.0) && (mvaScore <= 0.9)"; 
-			normSig = 59.3; 
-			normDs = 389.; 
-			norm3pi = 2.06; 
-		}
-		else if (region == "SB") 
-		{
-			cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1) && (mvaScore > -0.5) && (mvaScore <= 0.0)"; // && (mvaScore > 0.0) && (mvaScore <= 0.9)
-			normSig = 6.77; 
-			normDs = 111.;
-			norm3pi = 0.568;  
-		}
-		else 
-		{
-			std::cout << "ERROR: no known region named " << region << std::endl; 
-		}
-		TString dummycut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1)"; 
-
-		std::cout << cut << std::endl; 
-
-		filemanager.GetItem<TTree*>("SignalOfficialMC50M_MVA")->Draw(">>eventlist", "1", "goff"); 
-		TEventList *eventlist = static_cast<TEventList*>(gDirectory->Get("eventlist")); 
-		Int_t numberBeforeMC = eventlist->GetN(); 
-		filemanager.GetItem<TTree*>("BkgDstarDsMultipleTau_MVA")->Draw(">>eventlist", "1", "goff"); 
-		Int_t numberBeforeDs = eventlist->GetN();
-		filemanager.GetItem<TTree*>("BkgBtoDstar3piNonres_MVA")->Draw(">>eventlist", "1", "goff"); 
-		Int_t numberBefore3pi = eventlist->GetN();
-		std::cout << "Number of events: " << numberBeforeMC << std::endl; 
-
-		filemanager.GetItem<TTree*>("Data2018BFirst_MVA")->Draw(quantityData.ReplaceAll(">>h", ">>h1"), cut); 
-		TH1 *histoData = static_cast<TH1*>(canvas->GetPrimitive("h1")); 
-		histoData->GetYaxis()->SetTitleOffset(0.9); 
-		histoData->SetTitle(""); 
-		filemanager.GetItem<TTree*>("SignalOfficialMC50M_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h2"), cut); 
-		TH1 *histoMC = static_cast<TH1*>(canvas->GetPrimitive("h2")); 
-		histoMC->SetTitle(""); 
-		filemanager.GetItem<TTree*>("BkgDstarDsMultipleTau_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h3"), cut); 
-		TH1 *histoBkgDs = static_cast<TH1*>(canvas->GetPrimitive("h3")); 
-		histoBkgDs->SetTitle(""); 
-		//filemanager.GetItem<TTree*>("BkgBtoDstarDsstar_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h4"), dummycut); 
-		//TH1 *histoBkgDsstar = static_cast<TH1*>(canvas->GetPrimitive("h4")); 
-		//histoBkgDsstar->SetTitle(""); 
-		filemanager.GetItem<TTree*>("BkgBtoDstar3piNonres_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h5"), cut); 
-		TH1 *histoBkg3Pi = static_cast<TH1*>(canvas->GetPrimitive("h5")); 
-		histoBkg3Pi->SetTitle(""); 
-
-		// Plot roc curve here 
-		//if (name == "track_genmatched_doca") 
-		//{
-		//	TString outname = outfolder+name+"ROC.root"; 
-		//	std::cout << "making ROC curve for: " << name << " in file: " << outname << std::endl; 
-		//	TCanvas *efficiencyCanvas = new TCanvas("efficiencyCanvas", "efficiencyCanvas", 800, 600); 
-		//	filemanager.GetItem<TTree*>("MCgenmatched")->Draw(name+">>h(1000, -1.5, 0.5)"); 
-
-//		//	TH1 * effHisto = static_cast<TH1*>(efficiencyCanvas->GetPrimitive("h")); 
-		//	Double_t denominator = effHisto->Integral(); 
-
-//		//	for (unsigned int i=0; i<1000; i++) {
-		//		
-		//	}
-		//}
-
-		Int_t numberAfterMC = histoMC->GetEntries(); 
-		Int_t numberAfterDs = histoBkgDs->GetEntries(); 
-		Int_t numberAfter3pi = histoBkg3Pi->GetEntries(); 
-		std::cout << "Efficiency of SR for MC: " << static_cast<float>(numberAfterMC)/static_cast<float>(numberBeforeMC) << std::endl; 
-		std::cout << "Efficiency of SR for Ds bkg: " << static_cast<float>(numberAfterDs)/static_cast<float>(numberBeforeDs) << std::endl; 
-		std::cout << "Efficiency of SR for 3pi bkg: " << static_cast<float>(numberAfter3pi)/static_cast<float>(numberBefore3pi) << std::endl; 
-
-
-		std::cout << "Number of MC events: " << histoMC->Integral() << std::endl; 
-
-		//histoMC->Scale(histoData->Integral()/histoMC->Integral()); 
-		if (normalise) 
-		{
-			//histoData->Scale(1./histoData->Integral()); 
-			histoMC->Scale(normSig/histoMC->Integral()); 
-			histoBkgDs->Scale(normDs/histoBkgDs->Integral());
-			//histoBkgDsstar->Scale(1./histoBkgDsstar->Integral()); 
-			histoBkg3Pi->Scale(norm3pi/histoBkg3Pi->Integral()); 
-		}
-
-		histoData->SetLineColor(kBlue); 
-		histoMC->SetLineColor(kRed); 
-		histoBkgDs->SetLineColor(kGreen); 
-		//histoBkgDsstar->SetLineColor(kGreen+3); 
-		histoBkg3Pi->SetLineColor(kOrange+2); 
-
-		histoData->SetLineWidth(2); 
-		histoMC->SetLineWidth(2); 
-		histoBkgDs->SetLineWidth(2); 
-		//histoBkgDsstar->SetLineWidth(2); 
-		histoBkg3Pi->SetLineWidth(2); 
-
-		std::vector<double> maxes = { histoData->GetMaximum(), histoMC->GetMaximum(), histoBkgDs->GetMaximum() }; 
-
-
-
-		TLegend *legend= new TLegend( canvas->GetLeftMargin()+0.35, 
-                                    1-canvas->GetTopMargin()-.15, 
-                                    //canvas->GetLeftMargin()+.4, 
-                                    canvas->GetLeftMargin()+(1.-(canvas->GetLeftMargin()+canvas->GetRightMargin())),
-                                    1-canvas->GetTopMargin() );
-      	legend->SetFillStyle(1);
-      	legend->AddEntry(histoData,"data","F");
-      	legend->AddEntry(histoMC,"signal MC (genmatched)","F");
-      	legend->AddEntry(histoBkgDs, "B^{0}#rightarrow D^{*}D_{s} Inclusive"); 
-      	//legend->AddEntry(histoBkgDsstar, "B^{0}#rightarrow D^{*}D_{s}^{*} Inclusive"); 
-      	legend->AddEntry(histoBkg3Pi, "B^{0}#rightarrow D*3#pi Nonresonant"); 
-      	legend->SetBorderSize(1);
-      	legend->SetMargin( 0.3 );
-      	legend->SetTextSize(0.04);
-
-      	histoData->SetLineColor(kBlue); 
-      	histoMC->SetLineColor(kRed); 
-
-      	//histoData->SetTitle(name); 
-
-      	Float_t sc = 1.3;
-      	//if not (histo->GetMaximum())
-      	auto it = max_element(std::begin(maxes), std::end(maxes));
-
-      	histoData->SetMaximum( *it*static_cast<float>(sc) ); // TMath::Max(histoData->GetMaximum(), histoMC->GetMaximum())*sc
-      	std::cout << histoData->GetMaximum() << " " << histoMC->GetMaximum() << std::endl; 
-
-      	histoData->Draw("HIST"); 
-      	histoMC->Draw("HISTSAME"); 
-      	histoBkgDs->Draw("HISTSAME"); 
-      	//histoBkgDsstar->Draw("HISTSAME"); 
-      	histoBkg3Pi->Draw("HISTSAME"); 
-
-      	legend->Draw(); 
-
-
-		//histo->GetXaxis()->SetRangeUser(0., 100.); 
-
-		canvas->Draw(); 
-
-		for (auto format : formatsToPlot) 
-		{
-			canvas->Print(outfolder+name+format); 
-			if (webpublication) canvas->Print(webfolder+name+format); 
-		}
-
-		delete canvas; 
 	}
 
 	//histo1->Draw(); 

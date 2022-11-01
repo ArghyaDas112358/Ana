@@ -53,7 +53,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 
 	Init(); 
 
-	std::vector<TString> filesUsed = {"Data2018BFirst_MVA", "SignalOfficialMC50M_MVA", "BkgDstarDsMultipleTau_MVA", "BkgBtoDstarDsstar", "BkgBtoDstar3piNonres", "DstarDsMCfirst", "Data2018BFirst"}; 
+	std::vector<TString> filesUsed = {"Data2018BFirst_MVA", "SignalOfficialMC50M_MVA", "BkgDstarDsMultipleTau_MVA", "BkgBtoDstarDsstar_MVA", "BkgBtoDstar3piNonres_MVA", "DstarDsMCfirst", "Data2018BFirst"}; 
 
 
 	for (auto item : filesUsed) 
@@ -161,7 +161,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 											"BsDstarTauNu_tau_sumofdnn>>h(200, -0.5, 3.5)", "max(max(BsDstarTauNu_tau_pfidx1, BsDstarTauNu_tau_pfidx2), BsDstarTauNu_tau_pfidx3)>>h(200, -0.5, 15.)", "min(min(BsDstarTauNu_tau_pfidx1, BsDstarTauNu_tau_pfidx2), BsDstarTauNu_tau_pfidx3)>>h(200, -0.5, 15.)", "BsDstarTauNu_tau_max_dr_3prong>>h(100, 0., 1.)"
 											}; //"BsDstarTauNu_B_unfit_mass",  "BsDstarTauNu_Ds_unfit_mass-BsDstarTauNu_Ds_unfit_mass" 
 
-	std::vector<TString> quantitiesNew = { "b_tau_rhomass1>>h(100, 0., 3.)", "n_tau_rhomass2>>h(100, 0., 3.)" }; // "BsDstarTauNu_B_mass>>h(100, 2., 6.)", "b_tau_mass>>h(100, 0., 2.)"
+	std::vector<TString> quantitiesNew = { "b_tau_rhomass1>>h(100, 0., 3.)", "b_tau_rhomass2>>h(100, 0., 3.)" }; // "BsDstarTauNu_B_mass>>h(100, 2., 6.)", "b_tau_mass>>h(100, 0., 2.)"
 
 	/*quantitiesToPlot2D*/ quantitiesToPlotFromTree = quantitiesNew; 
 
@@ -403,12 +403,12 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 		filemanager.GetItem<TTree*>("BkgDstarDsMultipleTau_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h3"), cut); 
 		TH1 *histoBkgDs = static_cast<TH1*>(canvas->GetPrimitive("h3")); 
 		histoBkgDs->SetTitle(""); 
-		//filemanager.GetItem<TTree*>("BkgBtoDstarDsstar")->Draw(TString(quantity).ReplaceAll(">>h", ">>h4"), dummycut); 
+		//filemanager.GetItem<TTree*>("BkgBtoDstarDsstar_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h4"), dummycut); 
 		//TH1 *histoBkgDsstar = static_cast<TH1*>(canvas->GetPrimitive("h4")); 
 		//histoBkgDsstar->SetTitle(""); 
-		//filemanager.GetItem<TTree*>("BkgBtoDstar3piNonres")->Draw(TString(quantity).ReplaceAll(">>h", ">>h5"), dummycut); 
-		//TH1 *histoBkg3Pi = static_cast<TH1*>(canvas->GetPrimitive("h5")); 
-		//histoBkg3Pi->SetTitle(""); 
+		filemanager.GetItem<TTree*>("BkgBtoDstar3piNonres_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h5"), cut); 
+		TH1 *histoBkg3Pi = static_cast<TH1*>(canvas->GetPrimitive("h5")); 
+		histoBkg3Pi->SetTitle(""); 
 
 		// Plot roc curve here 
 		//if (name == "track_genmatched_doca") 
@@ -428,6 +428,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 
 		Int_t numberAfterMC = histoMC->GetEntries(); 
 		Int_t numberAfterDs = histoBkgDs->GetEntries(); 
+		Int_t numberAfter3pi = histoBkg3Pi->GetEntries(); 
 		std::cout << "Efficiency of SR for MC: " << static_cast<float>(numberAfterMC)/static_cast<float>(numberBeforeMC) << std::endl; 
 		std::cout << "Efficiency of SR for Ds bkg: " << static_cast<float>(numberAfterDs)/static_cast<float>(numberBeforeDs) << std::endl; 
 
@@ -441,20 +442,20 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 			histoMC->Scale(1.06/histoMC->Integral()); 
 			histoBkgDs->Scale(1.74/histoBkgDs->Integral());
 			//histoBkgDsstar->Scale(1./histoBkgDsstar->Integral()); 
-			//histoBkg3Pi->Scale(1./histoBkg3Pi->Integral()); 
+			histoBkg3Pi->Scale(1./histoBkg3Pi->Integral()); 
 		}
 
 		histoData->SetLineColor(kBlue); 
 		histoMC->SetLineColor(kRed); 
 		histoBkgDs->SetLineColor(kGreen); 
 		//histoBkgDsstar->SetLineColor(kGreen+3); 
-		//histoBkg3Pi->SetLineColor(kOrange+2); 
+		histoBkg3Pi->SetLineColor(kOrange+2); 
 
 		histoData->SetLineWidth(2); 
 		histoMC->SetLineWidth(2); 
 		histoBkgDs->SetLineWidth(2); 
 		//histoBkgDsstar->SetLineWidth(2); 
-		//histoBkg3Pi->SetLineWidth(2); 
+		histoBkg3Pi->SetLineWidth(2); 
 
 		std::vector<double> maxes = { histoData->GetMaximum(), histoMC->GetMaximum(), histoBkgDs->GetMaximum() }; 
 
@@ -468,9 +469,9 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
       	legend->SetFillStyle(1);
       	legend->AddEntry(histoData,"data","F");
       	legend->AddEntry(histoMC,"signal MC (genmatched)","F");
-      	legend->AddEntry(histoBkgDs, "B^{0}#rightarrow D^{#ast}D_{s} Inclusive"); 
+      	legend->AddEntry(histoBkgDs, "B^{0}#rightarrow D^{*}D_{s} Inclusive"); 
       	//legend->AddEntry(histoBkgDsstar, "B^{0}#rightarrow D^{*}D_{s}^{*} Inclusive"); 
-      	//legend->AddEntry(histoBkg3Pi, "B^{0}#rightarrow D^{*}3#pi Non resonant"); 
+      	legend->AddEntry(histoBkg3Pi, "B^{0}#rightarrow D*3#pi Nonresonant"); 
       	legend->SetBorderSize(1);
       	legend->SetMargin( 0.3 );
       	legend->SetTextSize(0.04);
@@ -491,7 +492,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
       	histoMC->Draw("HISTSAME"); 
       	histoBkgDs->Draw("HISTSAME"); 
       	//histoBkgDsstar->Draw("HISTSAME"); 
-      	//histoBkg3Pi->Draw("HISTSAME"); 
+      	histoBkg3Pi->Draw("HISTSAME"); 
 
       	legend->Draw(); 
 

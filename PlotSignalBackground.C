@@ -182,6 +182,8 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 
 	bool webpublication = false; 
 
+	TString region = "SR"; 
+
 	if (gSystem->AccessPathName(outfolder)) gSystem->Exec("mkdir -p "+outfolder); 
 
 	TString webfolder = "/eos/home-m/mhuwiler/www/Analysis/"+campaignName; // "/eos/home-m/mhuwiler/www/Analysis/DataMCplotsGenmatchedFinal/"
@@ -383,14 +385,46 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 
 		//histo->GetXaxis()->SetRangeUser(0., 100.); 
 
-		TString cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1) && (mvaScore > -0.5) && (mvaScore <= 0.0)"; // && (mvaScore > 0.0) && (mvaScore <= 0.9)
+		TString cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1)"; 
+		Double_t normSig = 1.; 
+		Double_t normDs = 1.; 
+		Double_t norm3pi = 1.; 
+		if (region == "SR") 
+		{
+			cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1) && (mvaScore >0.9)"; // && (mvaScore > 0.0) && (mvaScore <= 0.9)
+			normSig = 183; 
+			normDs = 411; 
+			norm3pi = 2.95; 
+		}
+		else if (region == "CR") 
+		{
+			cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1) && (mvaScore > 0.0) && (mvaScore <= 0.9)"; 
+			normSig = 59.3; 
+			normDs = 389.; 
+			norm3pi = 2.06; 
+		}
+		else if (region == "SB") 
+		{
+			cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1) && (mvaScore > -0.5) && (mvaScore <= 0.0)"; // && (mvaScore > 0.0) && (mvaScore <= 0.9)
+			normSig = 6.77; 
+			normDs = 111.;
+			norm3pi = 0.568;  
+		}
+		else 
+		{
+			std::cout << "ERROR: no known region named " << region << std::endl; 
+		}
 		TString dummycut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1)"; 
+
+		std::cout << cut << std::endl; 
 
 		filemanager.GetItem<TTree*>("SignalOfficialMC50M_MVA")->Draw(">>eventlist", "1", "goff"); 
 		TEventList *eventlist = static_cast<TEventList*>(gDirectory->Get("eventlist")); 
 		Int_t numberBeforeMC = eventlist->GetN(); 
 		filemanager.GetItem<TTree*>("BkgDstarDsMultipleTau_MVA")->Draw(">>eventlist", "1", "goff"); 
 		Int_t numberBeforeDs = eventlist->GetN();
+		filemanager.GetItem<TTree*>("BkgBtoDstar3piNonres_MVA")->Draw(">>eventlist", "1", "goff"); 
+		Int_t numberBefore3pi = eventlist->GetN();
 		std::cout << "Number of events: " << numberBeforeMC << std::endl; 
 
 		filemanager.GetItem<TTree*>("Data2018BFirst_MVA")->Draw(quantityData.ReplaceAll(">>h", ">>h1"), cut); 
@@ -431,6 +465,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 		Int_t numberAfter3pi = histoBkg3Pi->GetEntries(); 
 		std::cout << "Efficiency of SR for MC: " << static_cast<float>(numberAfterMC)/static_cast<float>(numberBeforeMC) << std::endl; 
 		std::cout << "Efficiency of SR for Ds bkg: " << static_cast<float>(numberAfterDs)/static_cast<float>(numberBeforeDs) << std::endl; 
+		std::cout << "Efficiency of SR for 3pi bkg: " << static_cast<float>(numberAfter3pi)/static_cast<float>(numberBefore3pi) << std::endl; 
 
 
 		std::cout << "Number of MC events: " << histoMC->Integral() << std::endl; 
@@ -439,10 +474,10 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 		if (normalise) 
 		{
 			//histoData->Scale(1./histoData->Integral()); 
-			histoMC->Scale(1.06/histoMC->Integral()); 
-			histoBkgDs->Scale(1.74/histoBkgDs->Integral());
+			histoMC->Scale(normSig/histoMC->Integral()); 
+			histoBkgDs->Scale(normDs/histoBkgDs->Integral());
 			//histoBkgDsstar->Scale(1./histoBkgDsstar->Integral()); 
-			histoBkg3Pi->Scale(1./histoBkg3Pi->Integral()); 
+			histoBkg3Pi->Scale(norm3pi/histoBkg3Pi->Integral()); 
 		}
 
 		histoData->SetLineColor(kBlue); 

@@ -183,6 +183,8 @@ if __name__ == "__main__":
 
 	columns = ["mvaScore"]
 
+	scheme = "original"
+
 
 	#signal = [samples["signal"]]
 	#background = [samples["background"]]
@@ -263,6 +265,15 @@ if __name__ == "__main__":
 
 	ROOT.gStyle.SetPadTickY(0) # Disactivate axes on both sides
 
+	if (scheme == "original"): 
+		signalColor = ROOT.kBlue+1
+		backgroundColor = ROOT.kRed
+	elif (scheme == "match"): 
+		signalColor = ROOT.kRed
+		backgroundColor = ROOT.kBlue+1
+	else: 
+		print "Unknown schemme"
+
 	fomcanvas = ROOT.TCanvas("fomcanvas", "fomcanvas", 800, 600)
 	fomcanvas.SetMargin(leftmargin, rightmargin, bottommargin, topmargin); 
 	signalDist = ROOT.RDataFrame(filemanager.GetItem("signal")).Filter("mvaScore>-1").Histo1D(("signalDist", "signalDist", 100, -1., 1.), "mvaScore") # TODO: use cut >= -1.
@@ -289,13 +300,13 @@ if __name__ == "__main__":
 	pad.SetFillColorAlpha(ROOT.kWhite, 0.); 
 	signalDist.Draw("HIST Y+") #"SAME"
 	signalDist.Scale(5./signalDist.Integral()) #1./signalDist.Integral()
-	signalDist.SetMarkerColor(ROOT.kBlue+1)
-	signalDist.SetLineColor(ROOT.kBlue+1)
+	signalDist.SetMarkerColor(signalColor)
+	signalDist.SetLineColor(signalColor)
 	signalDist.SetLineWidth(2)
 	bkgDist.Draw("HIST SAME Y+")
 	bkgDist.Scale(5./bkgDist.Integral())
-	bkgDist.SetMarkerColor(ROOT.kRed)
-	bkgDist.SetLineColor(ROOT.kRed)
+	bkgDist.SetMarkerColor(backgroundColor)
+	bkgDist.SetLineColor(backgroundColor)
 	bkgDist.SetLineWidth(2)
 	signalDist.GetXaxis().SetRangeUser(-1., 1.)
 	fomcanvas.cd()

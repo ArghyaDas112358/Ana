@@ -508,15 +508,15 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 
 
 			TLegend *legend= new TLegend( canvas->GetLeftMargin()+0.35, 
-	                                    1-canvas->GetTopMargin()-.15, 
+	                                    1-canvas->GetTopMargin()-.2, 
 	                                    //canvas->GetLeftMargin()+.4, 
 	                                    canvas->GetLeftMargin()+(1.-(canvas->GetLeftMargin()+canvas->GetRightMargin())),
 	                                    1-canvas->GetTopMargin() );
 	      	legend->SetFillStyle(1);
 	      	legend->AddEntry(histoData,"data","F");
 	      	legend->AddEntry(histoMC,"signal MC (genmatched)","F");
-	      	legend->AddEntry(histoBkgDs, "B^{0}#rightarrow D^{*}D_{s} Inclusive"); 
-	      	legend->AddEntry(histoBkgDsstar, "B^{0}#rightarrow D^{*}D_{s}^{*} Inclusive"); 
+	      	legend->AddEntry(histoBkgDs, "B^{0}#rightarrow D*D_{s} Inclusive"); 
+	      	legend->AddEntry(histoBkgDsstar, "B^{0}#rightarrow D*D_{s}* Inclusive"); 
 	      	legend->AddEntry(histoBkg3Pi, "B^{0}#rightarrow D*3#pi Nonresonant"); 
 	      	legend->SetBorderSize(1);
 	      	legend->SetMargin( 0.3 );

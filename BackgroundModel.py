@@ -371,6 +371,13 @@ for quantity in ["Rhomass2Dunrolled"]:
 				"BkgBtoDstar3piNonres_MVA": ROOT.kOrange+2
 			}
 
+	legends = {	"Data2018BFirst_MVA": "data", 
+				"SignalOfficialMC50M_MVA": "signal MC (genmatched)", 
+				"BkgDstarDsMultipleTau_MVA": "B^{0}#rightarrow D*D_{s} Inclusive", 
+				"BkgBtoDstarDsstar_MVA": "B^{0}#rightarrow D*D_{s}* Inclusive", 
+				"BkgBtoDstar3piNonres_MVA": "B^{0}#rightarrow D*3#pi Nonresonant"
+			}
+
 	regions = ["SR", "CR", "SB"]
 
 	for item in filesUsed: 
@@ -449,7 +456,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 
 	variable = "b_tau_rhomass1"
-	model = ("model", "", 200, 0., 2.)
+	model = ("model", "", 100, 0., 2.)
 	datadesc = "Data2018BFirst_MVA"
 
 	data = frames["Data2018BFirst_MVA"]["SR"].Histo1D(model, variable)
@@ -470,19 +477,38 @@ for quantity in ["Rhomass2Dunrolled"]:
 	# Plot the different regions
 	for region in regions: 
 		canvas = ROOT.TCanvas("canvas", "canvas", 800, 600)
+		legend = ROOT.TLegend(	canvas.GetLeftMargin()+0.35, 
+								1-canvas.GetTopMargin()-.2, 
+								canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
+								1-canvas.GetTopMargin())
+		legend.SetFillStyle(1)
+		legend.SetBorderSize(1)
+		legend.SetMargin(0.3)
+		legend.SetTextSize(0.04)
 		hists = {}
 		reference = frames[datadesc][region].Histo1D(model, variable)
-		reference.DrawCopy()
-		reference.SetLineColor(ROOT.kBlue)
+		reference.SetLineColor(ROOT.kBlack)
+		reference.SetMarkerColor(ROOT.kBlack)
+		reference.SetLineWidth(2)
+		reference.SetMarkerStyle(8)
+		datahist = reference.DrawCopy("E")
 		normalisation = reference.Integral()
+		legend.AddEntry(datahist,"data","F");
 		for item in MC: 
 			hist = frames[item][region].Histo1D(model, variable)
-			hist.DrawCopy("HIST SAME")
 			hist.Scale(norm[item][region]/hist.Integral())
 			hist.SetLineColor(colors[item])
 			hist.SetMarkerColor(colors[item])
+			hist.SetLineWidth(2)
+			histo = hist.DrawCopy("HIST SAME")
 			hists[item] = hist
 
+			legend.AddEntry(histo, legends[item], "F");
+
+
+		legend.Draw()
+
+		canvas.Draw()
 		canvas.Print(outputfolder+"rhomass1"+region+".pdf")
 
 

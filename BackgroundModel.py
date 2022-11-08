@@ -4,6 +4,7 @@ import math
 import uproot
 import numpy as np
 import collections
+import copy
 
 uproot.default_library = "np"
 
@@ -363,6 +364,13 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	filesUsed = ["Data2018BFirst_MVA", "SignalOfficialMC50M_MVA", "BkgDstarDsMultipleTau_MVA", "BkgBtoDstarDsstar_MVA", "BkgBtoDstar3piNonres_MVA"] #, "DstarDsMCfirst", "Data2018BFirst"
 
+	colors = {	"Data2018BFirst_MVA": ROOT.kBlue, 
+				"SignalOfficialMC50M_MVA": ROOT.kRed, 
+				"BkgDstarDsMultipleTau_MVA": ROOT.kGreen, 
+				"BkgBtoDstarDsstar_MVA": ROOT.kGreen+3, 
+				"BkgBtoDstar3piNonres_MVA": ROOT.kOrange+2
+			}
+
 	regions = ["SR", "CR", "SB"]
 
 	for item in filesUsed: 
@@ -411,6 +419,10 @@ for quantity in ["Rhomass2Dunrolled"]:
 	norm["BkgBtoDstarDsstar_MVA"]["CR"] = 288.
 	norm["BkgBtoDstarDsstar_MVA"]["SB"] = 88.7
 
+	norm["Data2018BFirst_MVA"]["SR"] = 1.
+	norm["Data2018BFirst_MVA"]["CR"] = 1.
+	norm["Data2018BFirst_MVA"]["SB"] = 1.
+
 
 	print cut["SR"]
 
@@ -437,7 +449,8 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 
 	variable = "b_tau_rhomass1"
-	model = ("model", "model", 200, 0., 2.)
+	model = ("model", "", 200, 0., 2.)
+	datadesc = "Data2018BFirst_MVA"
 
 	data = frames["Data2018BFirst_MVA"]["SR"].Histo1D(model, variable)
 	bkg = frames["BkgDstarDsMultipleTau_MVA"]["SR"].Histo1D(model, variable)
@@ -450,6 +463,28 @@ for quantity in ["Rhomass2Dunrolled"]:
 	AtomicDraw(data, outputfolder+"data_after.pdf")
 
 	AtomicDraw(background, outputfolder+"BackgroundModel.pdf")
+
+
+	MC = copy.deepcopy(filesUsed)
+	MC.remove(datadesc)
+	# Plot the different regions
+	for region in regions: 
+		canvas = ROOT.TCanvas("canvas", "canvas", 800, 600)
+		hists = {}
+		reference = frames[datadesc][region].Histo1D(model, variable)
+		reference.DrawCopy()
+		reference.SetLineColor(ROOT.kBlue)
+		normalisation = reference.Integral()
+		for item in MC: 
+			hist = frames[item][region].Histo1D(model, variable)
+			hist.DrawCopy("HIST SAME")
+			hist.Scale(norm[item][region]/hist.Integral())
+			hist.SetLineColor(colors[item])
+			hist.SetMarkerColor(colors[item])
+			hists[item] = hist
+
+		canvas.Print(outputfolder+"rhomass1"+region+".pdf")
+
 
 	
 

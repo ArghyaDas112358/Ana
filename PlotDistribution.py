@@ -268,7 +268,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 	reference = histos["data"]["SR"]
 	additionalhists = [histos["MC"]["SR"], histos["DstarDs"]["SR"]]
 	colors = [ROOT.kGreen+3, ROOT.kBlue+3] #ROOT.kOrange
-	legends = ["Signal MC (signal region)",  "B->D^{*}D_s MC (signal region)"]
+	legends = ["Signal MC (signal region)",  "B#rightarrowD*D_{s} MC (signal region)"]
 	norms = [1., 1.]
 
 	assert(len(colors) >= len(additionalhists))

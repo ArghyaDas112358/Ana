@@ -456,7 +456,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 
 	variable = "b_tau_rhomass1"
-	model = ("model", "", 100, 0., 2.)
+	model = ("model", "", 50, 0., 2.)
 	datadesc = "Data2018BFirst_MVA"
 
 	data = frames["Data2018BFirst_MVA"]["SR"].Histo1D(model, variable)
@@ -474,6 +474,10 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	MC = copy.deepcopy(filesUsed)
 	MC.remove(datadesc)
+	canv = ROOT.TCanvas("canv", "canv", 800, 600)
+	count = 0
+	maxes = []
+	refhist = 0
 	# Plot the different regions
 	for region in regions: 
 		canvas = ROOT.TCanvas("canvas", "canvas", 800, 600)
@@ -493,7 +497,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 		reference.SetMarkerStyle(8)
 		datahist = reference.DrawCopy("E")
 		normalisation = reference.Integral()
-		legend.AddEntry(datahist,"data","P");
+		legend.AddEntry(datahist,"data","P")
 		for item in MC: 
 			hist = frames[item][region].Histo1D(model, variable)
 			hist.Scale(norm[item][region]/hist.Integral())
@@ -503,13 +507,95 @@ for quantity in ["Rhomass2Dunrolled"]:
 			histo = hist.DrawCopy("HIST SAME")
 			hists[item] = hist
 
-			legend.AddEntry(histo, legends[item], "L");
+			legend.AddEntry(histo, legends[item], "L")
 
 
 		legend.Draw()
 
 		canvas.Draw()
 		canvas.Print(outputfolder+"rhomass1"+region+".pdf")
+
+
+		canv.cd()
+		background = reference.Clone("backgroundModel{}".format(count)) # Works (does not change initial histo)
+		bkg = frames["BkgBtoDstarDsstar_MVA"][region].Histo1D(model, variable)
+		normfactor = norm["BkgBtoDstarDsstar_MVA"][region]/bkg.Integral()
+		background.Add(bkg.GetPtr(), -1.*normfactor)
+		background.SetLineColor(ROOT.kOrange+1+count)
+		currenthist = background.DrawCopy("HIST SAME")
+		if (count == 0): 
+			refhist = currenthist
+		maxes.append(background.GetMaximum())
+		count+=1
+
+	refhist.SetMaximum(max(maxes)*1.3)
+	canv.Draw()
+	canv.Print(outputfolder+"BackgroundModel.pdf")
+
+
+	count = 0
+	shapes = {}
+	maxes=[]
+	drawn = {}
+	for region in regions: 
+		background = frames["Data2018BFirst_MVA"][region].Histo1D(model, variable) #.Clone("backgroundModel{}".format(count)) # Works (does not change initial histo)
+		background.Sumw2()
+		bkg = frames["BkgDstarDsMultipleTau_MVA"][region].Histo1D(model, variable)
+		normfactor = norm["BkgDstarDsMultipleTau_MVA"][region]/bkg.Integral()
+		background.Add(bkg.GetPtr(), -1.*normfactor)
+		background.SetLineColor(ROOT.kOrange+1+count)
+		shapes[region] = background
+		background.Scale(1./background.Integral())
+		background.SetLineWidth(2)
+		maxes.append(background.GetMaximum())
+		count+=1
+
+	newcanvas = ROOT.TCanvas("newcanvas", "newcanvas", 800, 600)
+	legend = ROOT.TLegend(	canvas.GetLeftMargin()+0.35, 
+								1-canvas.GetTopMargin()-.2, 
+								canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
+								1-canvas.GetTopMargin())
+	drawn["SR"] = shapes["SR"].DrawCopy("HIST E")
+	drawn["CR"] = shapes["CR"].DrawCopy("HIST E SAME")
+	drawn["SB"] = shapes["SB"].DrawCopy("HIST E SAME")
+	drawn["SR"].SetMaximum(max(maxes)*1.3)
+	legend.AddEntry(drawn["SR"], "SR", "L")
+	legend.AddEntry(drawn["CR"], "CR", "L")
+	legend.AddEntry(drawn["SB"], "SB", "L")
+	legend.Draw()
+	newcanvas.Draw()
+	newcanvas.Print(outputfolder+"BackgroundModel.pdf")
+
+
+	count = 0
+	shapes = {}
+	maxes=[]
+	drawn = {}
+	for region in regions: 
+		shapes[region] = frames["BkgDstarDsMultipleTau_MVA"][region].Histo1D(model, variable)
+		shapes[region].Sumw2()
+		shapes[region].SetLineColor(ROOT.kAzure+1+count)
+		shapes[region].SetLineWidth(2)
+		shapes[region].Scale(1./shapes[region].Integral())
+		maxes.append(shapes[region].GetMaximum())
+		count+=1
+
+	newcanvas = ROOT.TCanvas("newcanvas", "newcanvas", 800, 600)
+	legend = ROOT.TLegend(	canvas.GetLeftMargin()+0.35, 
+								1-canvas.GetTopMargin()-.2, 
+								canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
+								1-canvas.GetTopMargin())
+	drawn["SR"] = shapes["SR"].DrawCopy("HIST E")
+	drawn["CR"] = shapes["CR"].DrawCopy("HIST E SAME")
+	drawn["SB"] = shapes["SB"].DrawCopy("HIST E SAME")
+	drawn["SR"].SetMaximum(max(maxes)*1.3)
+	legend.AddEntry(drawn["SR"], "SR", "L")
+	legend.AddEntry(drawn["CR"], "CR", "L")
+	legend.AddEntry(drawn["SB"], "SB", "L")
+	legend.Draw()
+	newcanvas.Draw()
+	newcanvas.Print(outputfolder+"DstarDsShapes.pdf")
+
 
 
 	

@@ -493,7 +493,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 		reference.SetMarkerStyle(8)
 		datahist = reference.DrawCopy("E")
 		normalisation = reference.Integral()
-		legend.AddEntry(datahist,"data","F");
+		legend.AddEntry(datahist,"data","P");
 		for item in MC: 
 			hist = frames[item][region].Histo1D(model, variable)
 			hist.Scale(norm[item][region]/hist.Integral())
@@ -503,7 +503,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 			histo = hist.DrawCopy("HIST SAME")
 			hists[item] = hist
 
-			legend.AddEntry(histo, legends[item], "F");
+			legend.AddEntry(histo, legends[item], "L");
 
 
 		legend.Draw()

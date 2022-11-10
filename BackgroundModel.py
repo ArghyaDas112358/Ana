@@ -318,6 +318,36 @@ def AtomicDraw(histo, name, options = ""):
 	canv.Draw()
 	canv.Print(name)
 
+def SuperimposeRegions(frames, sample, variable, outputname, model=("model", "", 50, 0., 2.)): # TODO: make histo stack
+	count = 0
+	shapes = {}
+	maxes=[]
+	drawn = {}
+	for region in regions: 
+		shapes[region] = frames[sample][region].Histo1D(model, variable)
+		shapes[region].Sumw2()
+		shapes[region].SetLineColor(ROOT.kAzure+1+count)
+		shapes[region].SetLineWidth(2)
+		shapes[region].Scale(1./shapes[region].Integral())
+		maxes.append(shapes[region].GetMaximum())
+		count+=1
+
+	newcanvas = ROOT.TCanvas("newcanvas", "newcanvas", 800, 600)
+	legend = ROOT.TLegend(	canvas.GetLeftMargin()+0.35, 
+								1-canvas.GetTopMargin()-.2, 
+								canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
+								1-canvas.GetTopMargin())
+	drawn["SR"] = shapes["SR"].DrawCopy("HIST E")
+	drawn["CR"] = shapes["CR"].DrawCopy("HIST E SAME")
+	drawn["SB"] = shapes["SB"].DrawCopy("HIST E SAME")
+	drawn["SR"].SetMaximum(max(maxes)*1.3)
+	legend.AddEntry(drawn["SR"], "SR", "L")
+	legend.AddEntry(drawn["CR"], "CR", "L")
+	legend.AddEntry(drawn["SB"], "SB", "L")
+	legend.Draw()
+	newcanvas.Draw()
+	newcanvas.Print(outputname) #outputfolder+"DstarDsShapes.pdf"
+
 
 if plotstats: 
 	ROOT.gStyle.SetOptStat(1111111)
@@ -532,6 +562,8 @@ for quantity in ["Rhomass2Dunrolled"]:
 	canv.Draw()
 	canv.Print(outputfolder+"BackgroundModel.pdf")
 
+
+	SuperimposeRegions(frames, "BkgDstarDsMultipleTau_MVA", variable, outputfolder+"DstarDsShapesTest.pdf", model)
 
 	count = 0
 	shapes = {}

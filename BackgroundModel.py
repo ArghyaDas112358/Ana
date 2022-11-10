@@ -5,6 +5,7 @@ import uproot
 import numpy as np
 import collections
 import copy
+from datetime import datetime
 
 uproot.default_library = "np"
 
@@ -627,6 +628,56 @@ for quantity in ["Rhomass2Dunrolled"]:
 	legend.Draw()
 	newcanvas.Draw()
 	newcanvas.Print(outputfolder+"DstarDsShapes.pdf")
+
+
+	# Making datacards 
+	with open("datacard.txt", "w") as datacard: 
+		datacard.write("# Datacard generated automatically with {}{} on {}.\n".format(os.getcwd(), __file__, datetime.today().strftime("%d.%m.%y %H:%M:%S")))
+		datacard.write("# Rhomass fit with DstarDs component\n\n")
+
+		innerlengths = []
+		for item, element in frames.iteritems(): 
+			innerlengths.append(len(element))
+		print innerlengths
+		assert(len(innerlengths)>=1), "ERROR: No region/channel defined."
+		assert(all(element == innerlengths[0] for element in innerlengths)), "ERROR: Collection with different numbers of regions provided. "
+		imax = innerlengths[0]
+		datacard.write("imax {}\n".format(imax))
+		datacard.write("jmax {}\n".format(len(filesUsed)-2))
+		datacard.write("kmax {}\n".format(0))
+
+		datacard.write("\n#Observed events (data)\n")
+		regionstring = "bin "
+		for item in regions: 
+			regionstring += (item+" ")
+		regionstring+="\n"
+		datacard.write(regionstring)
+
+		observationstring = "observation "
+		for item in frames["Data2018BFirst_MVA"]: 
+			observationstring += ("{} ".format(frames["Data2018BFirst_MVA"][item].Count().GetValue()))
+		datacard.write(observationstring+"\n")
+
+		datacard.write("\n#Expected events (MC/model)\n")
+		binstring = "bins "
+		labelstring = "process "
+		indexstring = "process "
+		expectedstring = "rate "
+		count = 1
+		for region in regions: 
+			for item in MC: 
+				binstring += "{} ".format(region)
+				labelstring += "{} ".format(item)
+				indexstring += "{} ".format(count)
+				expectedstring += "{} ".format(norm[item][region])
+				count += 1
+		datacard.write(binstring+"\n")
+		datacard.write(labelstring+"\n")
+		datacard.write(indexstring+"\n")
+		datacard.write(expectedstring+"\n")
+
+
+
 
 
 

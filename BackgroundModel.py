@@ -676,9 +676,20 @@ for quantity in ["Rhomass2Dunrolled"]:
 		datacard.write(indexstring+"\n")
 		datacard.write(expectedstring+"\n")
 
-
-
-
+		datacard.write("\n#Shapes and RooFit workspace\n")
+		workspacefile = "workspace.root"
+		workspacename = "workspace"
+		file = ROOT.TFile.Open(workspacefile, "RECREATE")
+		workspace = ROOT.RooWorkspace(workspacename)
+		for region in regions: 
+			for item in MC: 
+				histname = item+"_"+region
+				datacard.write("shapes {} {} {} {}\n".format(item, region, workspacefile, histname))
+				hist = frames[item][region].Histo1D(model, variable)
+				hist.SetName(histname)
+				hist.Write()
+		file.Write()
+		file.Close()
 
 
 	

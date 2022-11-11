@@ -395,6 +395,8 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	filesUsed = ["Data2018BFirst_MVA", "SignalOfficialMC50M_MVA", "BkgDstarDsMultipleTau_MVA", "BkgBtoDstarDsstar_MVA", "BkgBtoDstar3piNonres_MVA"] #, "DstarDsMCfirst", "Data2018BFirst"
 
+	filemap = {"data":"Data2018BFirst_MVA", "MC":"SignalOfficialMC50M_MVA", "DstarDs":"BkgDstarDsMultipleTau_MVA", "DstarDsstar":"BkgBtoDstarDsstar_MVA", "Dstar3pi":"BkgBtoDstar3piNonres_MVA"}
+
 	colors = {	"Data2018BFirst_MVA": ROOT.kBlue, 
 				"SignalOfficialMC50M_MVA": ROOT.kRed, 
 				"BkgDstarDsMultipleTau_MVA": ROOT.kGreen, 
@@ -691,6 +693,86 @@ for quantity in ["Rhomass2Dunrolled"]:
 		file.Write()
 		file.Close()
 
+
+	# Deriving the background shape in the SB 
+	region = "SB" # we work in the sideband for now
+	MC = ["SignalOfficialMC50M_MVA", "BkgDstarDsMultipleTau_MVA"]
+	background = frames["Data2018BFirst_MVA"][region].Histo1D(model, variable).Clone("backgroundModel") # Works (does not change initial histo)
+	for item in MC: 
+		hist = frames[item][region].Histo1D(model, variable)
+		normfactor = norm[item][region]/hist.Integral()
+		background.Add(hist.GetPtr(), -1.*normfactor)
+
+	histograms = collections.defaultdict(dict)
+	for region in regions: 
+		for item in MC+["Data2018BFirst_MVA"]: 
+			histograms[item][region] = frames[item][region].Histo1D(model, variable)
+
+	for region in regions: 
+		histograms["bkg"][region] = background.Clone()
+
+	# Now we use it to fit the data in the CR
+	regions = ["CR"]
+	with open("datacard.txt", "w") as datacard: 
+		datacard.write("# Datacard generated automatically with {}{} on {}.\n".format(os.getcwd(), __file__, datetime.today().strftime("%d.%m.%y %H:%M:%S")))
+		datacard.write("# Rhomass fit in CR with DstarDs component and bacgkround model from SB\n\n")
+
+		datacard.write("imax {}\n".format(len(regions)))
+		datacard.write("jmax {}\n".format(len(MC)))
+		datacard.write("kmax {}\n".format(0))
+
+		datacard.write("\n#Observed events (data)\n")
+		regionstring = "bin "
+		for item in regions: 
+			regionstring += (item+" ")
+		regionstring+="\n"
+		datacard.write(regionstring)
+
+		observationstring = "observation "
+		for item in regions: 
+			observationstring += ("{} ".format(frames["Data2018BFirst_MVA"][item].Count().GetValue()))
+		datacard.write(observationstring+"\n")
+
+		MC.append("bkg")
+		# We want to leave a few components floating 
+		localnorm = copy.deepcopy(norm)
+		localnorm["BkgDstarDsMultipleTau_MVA"]["CR"] = "-"
+		localnorm["bkg"]["CR"] = "-"
+		datacard.write("\n#Expected events (MC/model)\n")
+		binstring = "bins "
+		labelstring = "process "
+		indexstring = "process "
+		expectedstring = "rate "
+		count = 0
+		for region in regions: 
+			for item in MC: 
+				binstring += "{} ".format(region)
+				labelstring += "{} ".format(item)
+				indexstring += "{} ".format(count)
+				expectedstring += "{} ".format(localnorm[item][region])
+				count += 1
+		datacard.write(binstring+"\n")
+		datacard.write(labelstring+"\n")
+		datacard.write(indexstring+"\n")
+		datacard.write(expectedstring+"\n")
+
+		datacard.write("\n#Shapes and RooFit workspace\n")
+		workspacefile = "workspace.root"
+		workspacename = "workspace"
+		file = ROOT.TFile.Open(workspacefile, "RECREATE")
+		#workspace = ROOT.RooWorkspace(workspacename)
+		datacard.write("shapes data_obs {} {} {}\n".format(region, workspacefile, "data_ob_CR"))
+		histograms["Data2018BFirst_MVA"][region].SetName("data_obs_CR")
+		histograms["Data2018BFirst_MVA"][region].Write()
+		for region in regions: 
+			for item in MC: 
+				histname = item+"_"+region
+				datacard.write("shapes {} {} {} {}\n".format(item, region, workspacefile, histname))
+				hist = histograms[item][region] #TODO: fix availablility of histos
+				hist.SetName(histname)
+				hist.Write()
+		file.Write()
+		file.Close()
 
 	
 

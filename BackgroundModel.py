@@ -698,15 +698,19 @@ for quantity in ["Rhomass2Dunrolled"]:
 	region = "SB" # we work in the sideband for now
 	MC = ["SignalOfficialMC50M_MVA", "BkgDstarDsMultipleTau_MVA"]
 	background = frames["Data2018BFirst_MVA"][region].Histo1D(model, variable).Clone("backgroundModel") # Works (does not change initial histo)
+	background.Sumw2()
 	for item in MC: 
 		hist = frames[item][region].Histo1D(model, variable)
+		hist.Sumw2()
 		normfactor = norm[item][region]/hist.Integral()
 		background.Add(hist.GetPtr(), -1.*normfactor)
 
 	histograms = collections.defaultdict(dict)
 	for region in regions: 
 		for item in MC+["Data2018BFirst_MVA"]: 
-			histograms[item][region] = frames[item][region].Histo1D(model, variable)
+			hist = frames[item][region].Histo1D(model, variable)
+			hist.Sumw2()
+			histograms[item][region] = hist
 
 	for region in regions: 
 		histograms["bkg"][region] = background.Clone()
@@ -719,7 +723,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 		datacard.write("imax {}\n".format(len(regions)))
 		datacard.write("jmax {}\n".format(len(MC)))
-		datacard.write("kmax {}\n".format(0))
+		datacard.write("kmax {}\n".format(0)) # For now no systematics
 
 		datacard.write("\n#Observed events (data)\n")
 		regionstring = "bin "
@@ -736,10 +740,10 @@ for quantity in ["Rhomass2Dunrolled"]:
 		MC.append("bkg")
 		# We want to leave a few components floating 
 		localnorm = copy.deepcopy(norm)
-		localnorm["BkgDstarDsMultipleTau_MVA"]["CR"] = "-"
-		localnorm["bkg"]["CR"] = "-"
+		localnorm["BkgDstarDsMultipleTau_MVA"]["CR"] = 1. #"Ds_norm"
+		localnorm["bkg"]["CR"] = 1. #"bkg_norm"
 		datacard.write("\n#Expected events (MC/model)\n")
-		binstring = "bins "
+		binstring = "bin "
 		labelstring = "process "
 		indexstring = "process "
 		expectedstring = "rate "
@@ -771,6 +775,8 @@ for quantity in ["Rhomass2Dunrolled"]:
 				hist = histograms[item][region] #TODO: fix availablility of histos
 				hist.SetName(histname)
 				hist.Write()
+		datacard.write("Ds_norm rateParam CR BkgDstarDsMultipleTau_MVA {} [{}, {}]".format(norm["BkgDstarDsMultipleTau_MVA"]["CR"], 0, norm["BkgDstarDsMultipleTau_MVA"]["CR"]*5.))
+		datacard.write("bkg_norm rateParam CR bkg {} [{}, {}]".format(norm["Data2018BFirst_MVA"]["CR"]/2., 0., norm["Data2018BFirst_MVA"]["CR"]))
 		file.Write()
 		file.Close()
 

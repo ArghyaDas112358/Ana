@@ -659,7 +659,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 		observationstring = "observation "
 		for item in frames["Data2018BFirst_MVA"]: 
-			observationstring += ("{} ".format(frames["Data2018BFirst_MVA"][item].Count().GetValue()))
+			observationstring += ("{} ".format(frames["Data2018BFirst_MVA"]["CR"].Count().GetValue()))
 		datacard.write(observationstring+"\n")
 
 		datacard.write("\n#Expected events (MC/model)\n")
@@ -699,7 +699,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 	# Deriving the background shape in the SB 
 	region = "SB" # we work in the sideband for now
 	MC = ["SignalOfficialMC50M_MVA", "BkgDstarDsMultipleTau_MVA"]
-	background = frames["Data2018BFirst_MVA"][region].Histo1D(model, variable).Clone("backgroundModel") # Works (does not change initial histo)
+	background = ROOT.convertHisto(frames["Data2018BFirst_MVA"][region].Histo1D(model, variable).Clone("backgroundModel")) # Works (does not change initial histo)
 	background.Sumw2()
 	for item in MC: 
 		hist = frames[item][region].Histo1D(model, variable)
@@ -710,7 +710,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 	histograms = collections.defaultdict(dict)
 	for region in regions: 
 		for item in MC+["Data2018BFirst_MVA"]: 
-			hist = ROOT.convertHisto(frames[item][region].Histo1D(model, variable).GetPtr())
+			hist = ROOT.convertHisto(frames[item][region].Histo1D(model, variable).GetPtr()) #ROOT.convertHisto(frames[item][region].Histo1D(model, variable).GetPtr())
 			hist.Sumw2()
 			histograms[item][region] = hist
 
@@ -727,7 +727,29 @@ for quantity in ["Rhomass2Dunrolled"]:
 		datacard.write("jmax {}\n".format(len(MC)))
 		datacard.write("kmax {}\n".format(0)) # For now no systematics
 
-		datacard.write("\n#Observed events (data)\n")
+		MC.append("bkg")
+		datacard.write("\n"+"-"*50+"\n")
+		datacard.write("# Shapes and RooFit workspace\n")
+		workspacefile = "workspace.root"
+		workspacename = "workspace"
+		file = ROOT.TFile.Open(workspacefile, "RECREATE")
+		#workspace = ROOT.RooWorkspace(workspacename)
+		datacard.write("shapes data_obs {} {} {}\n".format("CR", workspacefile, "data_obs_CR"))
+		histograms["Data2018BFirst_MVA"][region].SetName("data_obs_CR")
+		histograms["Data2018BFirst_MVA"][region].Write()
+		print histograms["Data2018BFirst_MVA"][region].Integral()
+		for region in regions: 
+			for item in MC: 
+				histname = item+"_"+region
+				datacard.write("shapes {} {} {} {}\n".format(item, region, workspacefile, histname))
+				hist = histograms[item][region] #TODO: fix availablility of histos
+				hist.SetName(histname)
+				hist.Write()
+		file.Write()
+		file.Close()
+
+		datacard.write("\n"+"-"*50+"\n")
+		datacard.write("# Observed events (data)\n")
 		regionstring = "bin "
 		for item in regions: 
 			regionstring += (item+" ")
@@ -736,15 +758,16 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 		observationstring = "observation "
 		for item in regions: 
+			print frames["Data2018BFirst_MVA"][item].Count().GetValue()
 			observationstring += ("{} ".format(frames["Data2018BFirst_MVA"][item].Count().GetValue()))
 		datacard.write(observationstring+"\n")
 
-		MC.append("bkg")
 		# We want to leave a few components floating 
 		localnorm = copy.deepcopy(norm)
 		localnorm["BkgDstarDsMultipleTau_MVA"]["CR"] = 1. #"Ds_norm"
 		localnorm["bkg"]["CR"] = 1. #"bkg_norm"
-		datacard.write("\n#Expected events (MC/model)\n")
+		datacard.write("\n"+"-"*50+"\n")
+		datacard.write("# Expected events (MC/model)\n")
 		binstring = "bin "
 		labelstring = "process "
 		indexstring = "process "
@@ -762,25 +785,12 @@ for quantity in ["Rhomass2Dunrolled"]:
 		datacard.write(indexstring+"\n")
 		datacard.write(expectedstring+"\n")
 
-		datacard.write("\n#Shapes and RooFit workspace\n")
-		workspacefile = "workspace.root"
-		workspacename = "workspace"
-		file = ROOT.TFile.Open(workspacefile, "RECREATE")
-		#workspace = ROOT.RooWorkspace(workspacename)
-		#datacard.write("shapes data_obs {} {} {}\n".format(region, workspacefile, "data_ob_CR"))
-		histograms["Data2018BFirst_MVA"][region].SetName("data_obs_CR")
-		histograms["Data2018BFirst_MVA"][region].Write()
-		for region in regions: 
-			for item in MC: 
-				histname = item+"_"+region
-				datacard.write("shapes {} {} {} {}\n".format(item, region, workspacefile, histname))
-				hist = histograms[item][region] #TODO: fix availablility of histos
-				hist.SetName(histname)
-				hist.Write()
-		datacard.write("Ds_norm rateParam CR BkgDstarDsMultipleTau_MVA {} [{}, {}]".format(norm["BkgDstarDsMultipleTau_MVA"]["CR"], 0, norm["BkgDstarDsMultipleTau_MVA"]["CR"]*5.))
-		datacard.write("bkg_norm rateParam CR bkg {} [{}, {}]".format(norm["Data2018BFirst_MVA"]["CR"]/2., 0., norm["Data2018BFirst_MVA"]["CR"]))
-		file.Write()
-		file.Close()
+		#datacard.write("\n"+"-"*50+"\n")
+		#datacard.write("lumi     lnN    1.10       1.0 		1.0\n")
+
+		datacard.write("\n"+"-"*50+"\n")
+		datacard.write("Ds_norm rateParam CR BkgDstarDsMultipleTau_MVA {} [{},{}]\n".format(norm["BkgDstarDsMultipleTau_MVA"]["CR"], 0, norm["BkgDstarDsMultipleTau_MVA"]["CR"]*5.))
+		datacard.write("bkg_norm rateParam CR bkg {} [{},{}]\n".format(norm["Data2018BFirst_MVA"]["CR"]/2., 0., norm["Data2018BFirst_MVA"]["CR"]))
 
 	
 

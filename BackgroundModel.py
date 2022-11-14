@@ -712,6 +712,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 		for item in MC+["Data2018BFirst_MVA"]: 
 			hist = frames[item][region].Histo1D(model, variable) #ROOT.convertHisto(frames[item][region].Histo1D(model, variable).GetPtr())
 			hist.Sumw2()
+			print hist.Integral()
 			histograms[item][region] = hist
 
 	for region in regions: 
@@ -735,9 +736,9 @@ for quantity in ["Rhomass2Dunrolled"]:
 		file = ROOT.TFile.Open(workspacefile, "RECREATE")
 		#workspace = ROOT.RooWorkspace(workspacename)
 		datacard.write("shapes data_obs {} {} {}\n".format("CR", workspacefile, "data_obs_CR"))
-		histograms["Data2018BFirst_MVA"][region].SetName("data_obs_CR")
-		histograms["Data2018BFirst_MVA"][region].Write()
-		print histograms["Data2018BFirst_MVA"][region].Integral()
+		histograms["Data2018BFirst_MVA"]["CR"].SetName("data_obs_CR")
+		histograms["Data2018BFirst_MVA"]["CR"].Write()
+		print histograms["Data2018BFirst_MVA"]["CR"].Integral()
 		for region in regions: 
 			for item in MC: 
 				histname = item+"_"+region

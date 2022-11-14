@@ -319,6 +319,8 @@ def AtomicDraw(histo, name, options = ""):
 	canv.Draw()
 	canv.Print(name)
 
+ROOT.gInterpreter.Declare("TH1F * convertHisto(TH1D *histo) { TH1F *newHisto; newHisto = new TH1F(); histo->Copy(*newHisto); return newHisto; } ") #"TH1F * convertHisto(TH1D *histo) { return static_cast<TH1F*>(histo); } "
+
 def SuperimposeRegions(frames, sample, variable, outputname, model=("model", "", 50, 0., 2.)): # TODO: make histo stack
 	count = 0
 	shapes = {}
@@ -708,7 +710,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 	histograms = collections.defaultdict(dict)
 	for region in regions: 
 		for item in MC+["Data2018BFirst_MVA"]: 
-			hist = frames[item][region].Histo1D(model, variable)
+			hist = ROOT.convertHisto(frames[item][region].Histo1D(model, variable).GetPtr())
 			hist.Sumw2()
 			histograms[item][region] = hist
 
@@ -765,7 +767,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 		workspacename = "workspace"
 		file = ROOT.TFile.Open(workspacefile, "RECREATE")
 		#workspace = ROOT.RooWorkspace(workspacename)
-		datacard.write("shapes data_obs {} {} {}\n".format(region, workspacefile, "data_ob_CR"))
+		#datacard.write("shapes data_obs {} {} {}\n".format(region, workspacefile, "data_ob_CR"))
 		histograms["Data2018BFirst_MVA"][region].SetName("data_obs_CR")
 		histograms["Data2018BFirst_MVA"][region].Write()
 		for region in regions: 

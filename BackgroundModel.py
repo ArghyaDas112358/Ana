@@ -699,7 +699,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 	# Deriving the background shape in the SB 
 	region = "SB" # we work in the sideband for now
 	MC = ["SignalOfficialMC50M_MVA", "BkgDstarDsMultipleTau_MVA"]
-	background = ROOT.convertHisto(frames["Data2018BFirst_MVA"][region].Histo1D(model, variable).Clone("backgroundModel")) # Works (does not change initial histo)
+	background = frames["Data2018BFirst_MVA"][region].Histo1D(model, variable).Clone("backgroundModel") # Works (does not change initial histo)
 	background.Sumw2()
 	for item in MC: 
 		hist = frames[item][region].Histo1D(model, variable)
@@ -710,7 +710,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 	histograms = collections.defaultdict(dict)
 	for region in regions: 
 		for item in MC+["Data2018BFirst_MVA"]: 
-			hist = ROOT.convertHisto(frames[item][region].Histo1D(model, variable).GetPtr()) #ROOT.convertHisto(frames[item][region].Histo1D(model, variable).GetPtr())
+			hist = frames[item][region].Histo1D(model, variable) #ROOT.convertHisto(frames[item][region].Histo1D(model, variable).GetPtr())
 			hist.Sumw2()
 			histograms[item][region] = hist
 

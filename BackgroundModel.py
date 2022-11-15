@@ -739,11 +739,15 @@ for quantity in ["Rhomass2Dunrolled"]:
 		histograms["Data2018BFirst_MVA"]["CR"].SetName("data_obs_CR")
 		histograms["Data2018BFirst_MVA"]["CR"].Write()
 		print histograms["Data2018BFirst_MVA"]["CR"].Integral()
+		localnorm = copy.deepcopy(norm)
+		localnorm["BkgDstarDsMultipleTau_MVA"]["CR"] = 1. #"Ds_norm"
+		localnorm["bkg"]["CR"] = 1. #"bkg_norm"
 		for region in regions: 
 			for item in MC: 
 				histname = item+"_"+region
 				datacard.write("shapes {} {} {} {}\n".format(item, region, workspacefile, histname))
 				hist = histograms[item][region] #TODO: fix availablility of histos
+				hist.Scale(localnorm[item][region]/hist.Integral())
 				hist.SetName(histname)
 				hist.Write()
 		file.Write()
@@ -764,9 +768,6 @@ for quantity in ["Rhomass2Dunrolled"]:
 		datacard.write(observationstring+"\n")
 
 		# We want to leave a few components floating 
-		localnorm = copy.deepcopy(norm)
-		localnorm["BkgDstarDsMultipleTau_MVA"]["CR"] = 1. #"Ds_norm"
-		localnorm["bkg"]["CR"] = 1. #"bkg_norm"
 		datacard.write("\n"+"-"*50+"\n")
 		datacard.write("# Expected events (MC/model)\n")
 		binstring = "bin "

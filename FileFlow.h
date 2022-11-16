@@ -1,13 +1,13 @@
 #ifndef FileFlow_h
 #define FileFlow_h
-#include "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/Ana/plugins/FileManager/CFileManager.C"
+#include "plugins/FileManager/CFileManager.C"
 #include <string>
 #include "TString.h"
 
 
 namespace Ana 
 {
-	
+
 	FileManager filemanager; 
 
 

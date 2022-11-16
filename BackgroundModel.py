@@ -19,6 +19,8 @@ ROOT.gROOT.LoadMacro("FileFlow.h")
 #ROOT.setTDRStyle()
 #import CMS_lumi
 
+from ROOT.Ana import filemanager
+
 
 ROOT.Ana.Init() 
 

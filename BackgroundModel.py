@@ -20,7 +20,7 @@ ROOT.gROOT.LoadMacro("FileFlow.h")
 #import CMS_lumi
 
 
-ROOT.Init() 
+ROOT.Ana.Init() 
 
 
 bkgInSample = 9400000000*0.0000376
@@ -417,7 +417,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	for item in filesUsed: 
 		print "Opening file: {}".format(item) 
-		ROOT.filemanager.OpenItem(item); 
+		ROOT.Ana.filemanager.OpenItem(item); 
 
 
 	canvas = ROOT.RatioCanvas("romassunrolled", "Unrolled 2D distribution of rho mass", 800, 600)
@@ -470,7 +470,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 
 	for item in filesUsed:  
-		samples[item] = ROOT.RDataFrame(ROOT.filemanager.GetItem(item))
+		samples[item] = ROOT.RDataFrame(ROOT.Ana.filemanager.GetItem(item))
 		for region in regions: 
 			frames[item][region] = samples[item].Filter(cut[region])
 			ROOT.SetOwnership(frames[item][region], 0)
@@ -811,7 +811,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 
 
-ROOT.filemanager.CloseAll()
+ROOT.Ana.filemanager.CloseAll()
 
 
 

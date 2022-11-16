@@ -3,12 +3,19 @@
 #include "plugins/FileManager/CFileManager.C"
 #include <string>
 #include "TString.h"
+#include "TCut.h"
 
 
 namespace Ana 
 {
 
 	FileManager filemanager; 
+
+	std::map<std::string, TCut> cut; //std::map<std::string, std::map<std::sting, TCut> > cuts; 
+
+
+	// Constants being defined centrally 
+	Double_t mvaCutSR = 0.9; 
 
 
 	void Init(const TString& cycle = "") 
@@ -104,6 +111,9 @@ namespace Ana
 			filemanager.AddItem("BkgBtoDstar3piNonres", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/B0toDstar3piFirst.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgBtoDstarDsstar", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/BkgDstarDsstarInclPrivateProdFirst.root", "ntuplizer/tree"); 
 		}
+
+		cut.emplace(std::make_pair("base", "(b_Ds_vprob>0.1) && (b_D0_vprob>0.1)")); 
+		cut.emplace(std::make_pair("SR", cut["base"]+TCut(TString::Format("mvaScore>=%f", mvaCutSR)))); 
 
 	}
 

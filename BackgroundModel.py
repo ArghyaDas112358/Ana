@@ -6,6 +6,7 @@ import numpy as np
 import collections
 import copy
 from datetime import datetime
+from ROOT import RooRealVar, RooArgSet, RooDataHist, RooArgList, RooFormulaVar, RooAddition
 
 uproot.default_library = "np"
 
@@ -14,8 +15,9 @@ uproot.default_library = "np"
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/Drawing/ExperimentSpecificLayer.C")
 #ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/FileManager/CFileManager.C")
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/Drawing/CMS/tdrstyle.C")
-ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/Drawing/RatioCanvas.h")
+#ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/Drawing/RatioCanvas.h")
 ROOT.gROOT.LoadMacro("FileFlow.h")
+ROOT.gROOT.LoadMacro("RooParametricHist.h")
 #ROOT.setTDRStyle()
 #import CMS_lumi
 
@@ -95,7 +97,7 @@ def PromptYesNo(answerasbool=False):
 		# Inspired from Fabrice Couderc 
 		rep = ''
 		while not rep in [ 'yes', 'no' ]:
-			rep = raw_input( "(type 'yes' or 'no'): " ).lower()
+			rep = input( "(type 'yes' or 'no'): " ).lower()
 		if (answerasbool): 
 			if (rep == 'yes'): 
 				return True
@@ -137,7 +139,7 @@ def UnrollHist(histo2D, inverted=True):
 
 	unrolled = ROOT.TH1D("unrolled", "unrolled", nTotal, 0, 100)
 
-	print "Nunmber of bins: {}, {}".format(nx, ny)
+	print("Nunmber of bins: {}, {}".format(nx, ny))
 
 	for i in range(0, nx):
 		for j in range(0, ny): # TODO: check overflow is handled properly 
@@ -219,7 +221,7 @@ def BackgroundShapeUnrolled(reference, estimate, additionalhists):
 	histoRatio = estimate.Clone()
 	histoRatio.Divide(reference.Clone())
 
-	canvas.Lower()
+	ratiocanvas = ROOT.TCanvas("ratiocanvas", "ratiocanvas", 800, 600)
 
 	histoRatio.Draw("HIST")
 	histoRatio.SetLineColor(1)
@@ -232,7 +234,7 @@ def BackgroundShapeUnrolled(reference, estimate, additionalhists):
 	#histoRatio.SetMinimum(1.8)
 	histoRatio.GetYaxis().SetRangeUser(0.2, 1.8)
 	histoRatio.GetYaxis().SetNdivisions(5)
-	canvas.RemoveMiddleAxis()
+	#canvas.RemoveMiddleAxis()
 
 	canvas.Update()
 
@@ -303,16 +305,16 @@ def GetEfficiencies(frames):
 	
 	#Credit to: https://stackoverflow.com/questions/35491223/inverting-a-dictionary-with-list-values
 	inv_frames = {}
-	for k,v in frames.items():
+	for k,v in list(frames.items()):
 		for x in v:
 			inv_frames.setdefault(x,[]).append(k)
-	print inv_frames
+	print(inv_frames)
 
-	for key, value in inv_frames.items(): 
-		print key
+	for key, value in list(inv_frames.items()): 
+		print(key)
 		for item in value: 
-			print "\t{}: {}".format(item, frames[item][key].Count().GetValue())
-		print "\n"
+			print("\t{}: {}".format(item, frames[item][key].Count().GetValue()))
+		print("\n")
 
 
 def AtomicDraw(histo, name, options = ""): 
@@ -391,11 +393,12 @@ numEvents = -1
 ROOT.gStyle.SetOptStat(0)
 
 for quantity in ["Rhomass2Dunrolled"]: 
-	print "Plotting {}".format(quantity)
+	print("Plotting {}".format(quantity))
 	#canvas = ROOT.TCanvas("romassunrolled", "Unrolled 2D distribution of rho mass", 800, 600) #ROOT.RatioCanvas(quantity, quantity, 950, 800) #800, 800
 	#canvas.SetMiddleMargin(0.13)
 	#canvas.SetPadDelimitation(0.34)
 	#canvas.SetRightMargin(0.12)
+	ROOT.gROOT.SetBatch(1)
 
 	filesUsed = ["Data2018BFirst_MVA", "SignalOfficialMC50M_MVA", "BkgDstarDsMultipleTau_MVA", "BkgBtoDstarDsstar_MVA", "BkgBtoDstar3piNonres_MVA"] #, "DstarDsMCfirst", "Data2018BFirst"
 
@@ -418,11 +421,11 @@ for quantity in ["Rhomass2Dunrolled"]:
 	regions = ["SR", "CR", "SB"]
 
 	for item in filesUsed: 
-		print "Opening file: {}".format(item) 
+		print("Opening file: {}".format(item)) 
 		ROOT.Ana.filemanager.OpenItem(item); 
 
 
-	canvas = ROOT.RatioCanvas("romassunrolled", "Unrolled 2D distribution of rho mass", 800, 600)
+	canvas = ROOT.TCanvas("romassunrolled", "Unrolled 2D distribution of rho mass", 800, 600)
 
 	# Histo parameters
 	nBins = 6
@@ -468,7 +471,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 	norm["Data2018BFirst_MVA"]["SB"] = 1.
 
 
-	print cut["SR"]
+	print(cut["SR"])
 
 
 	for item in filesUsed:  
@@ -480,7 +483,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 			histos[item][region] = frames[item][region].Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2")
 			histosunrolled[item][region] = UnrollHist(histos[item][region])
 
-	print frames
+	print(frames)
 
 	#print "Number of events (SR, CR, SB): {}, {}, {}".format(histos["data"]["SR"].GetEntries(), histos["data"]["CR"].GetEntries(), histos["data"]["SB"].GetEntries())
 
@@ -493,7 +496,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 
 	variable = "b_tau_rhomass1"
-	model = ("model", "", 50, 0., 2.)
+	model = ("model", "", 10, 0.2, 1.6)
 	datadesc = "Data2018BFirst_MVA"
 
 	data = frames["Data2018BFirst_MVA"]["SR"].Histo1D(model, variable)
@@ -642,9 +645,9 @@ for quantity in ["Rhomass2Dunrolled"]:
 		datacard.write("# Rhomass fit with DstarDs component\n\n")
 
 		innerlengths = []
-		for item, element in frames.iteritems(): 
+		for item, element in frames.items(): 
 			innerlengths.append(len(element))
-		print innerlengths
+		print(innerlengths)
 		assert(len(innerlengths)>=1), "ERROR: No region/channel defined."
 		assert(all(element == innerlengths[0] for element in innerlengths)), "ERROR: Collection with different numbers of regions provided. "
 		imax = innerlengths[0]
@@ -714,14 +717,14 @@ for quantity in ["Rhomass2Dunrolled"]:
 		for item in MC+["Data2018BFirst_MVA"]: 
 			hist = frames[item][region].Histo1D(model, variable) #ROOT.convertHisto(frames[item][region].Histo1D(model, variable).GetPtr())
 			hist.Sumw2()
-			print hist.Integral()
-			histograms[item][region] = hist
+			print(hist.Integral())
+			histograms[item][region] = hist.GetPtr()
 
 	for region in regions: 
 		histograms["bkg"][region] = background.Clone()
 
 	# Now we use it to fit the data in the CR
-	regions = ["CR"]
+	regions = ["CR", "SB"]
 	with open("datacard.txt", "w") as datacard: 
 		datacard.write("# Datacard generated automatically with {}{} on {}.\n".format(os.getcwd(), __file__, datetime.today().strftime("%d.%m.%y %H:%M:%S")))
 		datacard.write("# Rhomass fit in CR with DstarDs component and bacgkround model from SB\n\n")
@@ -730,31 +733,76 @@ for quantity in ["Rhomass2Dunrolled"]:
 		datacard.write("jmax {}\n".format(len(MC)))
 		datacard.write("kmax {}\n".format(0)) # For now no systematics
 
-		MC.append("bkg")
 		datacard.write("\n"+"-"*50+"\n")
 		datacard.write("# Shapes and RooFit workspace\n")
 		workspacefile = "workspace.root"
 		workspacename = "workspace"
 		file = ROOT.TFile.Open(workspacefile, "RECREATE")
-		#workspace = ROOT.RooWorkspace(workspacename)
-		datacard.write("shapes data_obs {} {} {}\n".format("CR", workspacefile, "data_obs_CR"))
+		workspace = ROOT.RooWorkspace(workspacename)
+		# Creating the variable on which we fit
+		var = RooRealVar("rhomass1", "rhomass1", 0., 2.)
+		fitspace = RooArgSet(var)
+		datacard.write("shapes data_obs {} {} {}\n".format("CR", workspacefile, "workspace:data_obs_CR"))
+		datacard.write("shapes data_obs {} {} {}\n".format("SB", workspacefile, "workspace:data_obs_SB"))
 		histograms["Data2018BFirst_MVA"]["CR"].SetName("data_obs_CR")
+		dataCR = RooDataHist("data_obs_CR", "data_obs_CR", fitspace, histograms["Data2018BFirst_MVA"]["CR"])
 		histograms["Data2018BFirst_MVA"]["CR"].Write()
-		print histograms["Data2018BFirst_MVA"]["CR"].Integral()
+		getattr(workspace, "import")(dataCR)
+		histograms["Data2018BFirst_MVA"]["SB"].SetName("data_obs_SB")
+		dataSB = RooDataHist("data_obs_SB", "data_obs_SB", fitspace, histograms["Data2018BFirst_MVA"]["SB"])
+		histograms["Data2018BFirst_MVA"]["SB"].Write()
+		getattr(workspace, "import")(dataSB)
+		histograms["Data2018BFirst_MVA"]["SB"].Write()
+		print(histograms["Data2018BFirst_MVA"]["CR"].Integral())
 		localnorm = copy.deepcopy(norm)
 		localnorm["BkgDstarDsMultipleTau_MVA"]["CR"] = 1. #"Ds_norm"
 		localnorm["bkg"]["CR"] = 1. #"bkg_norm"
+		localnorm["bkg"]["SB"] = 1.
+		localnorm["BkgDstarDsMultipleTau_MVA"]["SB"] = 1.
 		for region in regions: 
 			for item in MC: 
 				histname = item+"_"+region
-				datacard.write("shapes {} {} {} {}\n".format(item, region, workspacefile, histname))
+				datacard.write("shapes {} {} {} {}\n".format(item, region, workspacefile, workspacename+":"+histname))
 				hist = histograms[item][region] #TODO: fix availablility of histos
 				hist.Scale(localnorm[item][region]/hist.Integral())
 				hist.SetName(histname)
+				roohist = ROOT.RooDataHist(histname, histname, fitspace, hist)
 				hist.Write()
+				getattr(workspace, "import")(roohist)
+		bins = RooArgList()
+		binsdest = RooArgList()
+		variables = []
+		variablesdest = []
+		maxval = histograms["Data2018BFirst_MVA"][region].GetMaximum()
+		print(background.GetNbinsX())
+		transferfactor = RooRealVar("bkg_transferfactor_SB_CR", "bkg_transferfactor_SB_CR", 0., 10.)
+		for i in range(background.GetNbinsX()): 
+			# Creating bins for the shape in SB
+			name = "bin_SB_{}".format(i)
+			print("bin {} {} {}".format(i, min(1., background.GetBinContent(i)), name))
+			mybin = RooRealVar(name, name, min(1.,background.GetBinContent(i)), 1., maxval)
+			bins.add(mybin)
+			variables.append(mybin) # needed as the ArgList contains references only 
+			# Creating the destination bins as RooFormulaVar of transferfactor * source bin
+			name = name.replace("SB", "CR")
+			destbin = RooFormulaVar(name, name, "@0*@1", RooArgList(transferfactor, mybin))
+			binsdest.add(destbin)
+			variablesdest.append(destbin)
+		parametricshape = ROOT.RooParametricHist("bkg_SB", "bkg_SB", var, bins, background)
+		getattr(workspace, "import")(parametricshape)
+		bkgNormSB = RooAddition("bkg_SB_norm", "bkg_SB_norm", bins)
+		getattr(workspace, "import")(bkgNormSB)
+		parametricshapefloat =  ROOT.RooParametricHist("bkg_CR", "bkg_CR", var, binsdest, background)
+		getattr(workspace, "import")(parametricshapefloat)
+		bkgNormCR = RooAddition("bkg_CR_norm", "bkg_CR_norm", binsdest)
+		getattr(workspace, "import")(bkgNormCR, ROOT.RooFit.RecycleConflictNodes())
+		datacard.write("shapes {} {} {} {}\n".format("bkg", "CR", workspacefile, workspacename+":"+"bkg_CR"))
+		datacard.write("shapes {} {} {} {}\n".format("bkg", "SB", workspacefile, workspacename+":"+"bkg_SB"))
+		workspace.Write()
 		file.Write()
 		file.Close()
 
+		MC.append("bkg")
 		datacard.write("\n"+"-"*50+"\n")
 		datacard.write("# Observed events (data)\n")
 		regionstring = "bin "
@@ -765,7 +813,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 		observationstring = "observation "
 		for item in regions: 
-			print frames["Data2018BFirst_MVA"][item].Count().GetValue()
+			print(frames["Data2018BFirst_MVA"][item].Count().GetValue())
 			observationstring += ("{} ".format(frames["Data2018BFirst_MVA"][item].Count().GetValue()))
 		datacard.write(observationstring+"\n")
 
@@ -781,7 +829,10 @@ for quantity in ["Rhomass2Dunrolled"]:
 			for item in MC: 
 				binstring += "{} ".format(region)
 				labelstring += "{} ".format(item)
-				indexstring += "{} ".format(count)
+				factor = 1
+				if item == "SignalOfficialMC50M_MVA": 
+					factor = -1 # make signal negative
+				indexstring += "{} ".format(factor*count)
 				expectedstring += "{} ".format(localnorm[item][region])
 				count += 1
 		datacard.write(binstring+"\n")
@@ -793,8 +844,15 @@ for quantity in ["Rhomass2Dunrolled"]:
 		#datacard.write("lumi     lnN    1.10       1.0 		1.0\n")
 
 		datacard.write("\n"+"-"*50+"\n")
-		datacard.write("Ds_norm rateParam CR BkgDstarDsMultipleTau_MVA {} [{},{}]\n".format(norm["BkgDstarDsMultipleTau_MVA"]["CR"], 0, norm["BkgDstarDsMultipleTau_MVA"]["CR"]*5.))
-		datacard.write("bkg_norm rateParam CR bkg {} [{},{}]\n".format(norm["Data2018BFirst_MVA"]["CR"]/2., 0., norm["Data2018BFirst_MVA"]["CR"]))
+		datacard.write("BkgDstarDsMultipleTau_MVA_CR_norm rateParam CR BkgDstarDsMultipleTau_MVA {} [{},{}]\n".format(norm["BkgDstarDsMultipleTau_MVA"]["CR"], 0, norm["BkgDstarDsMultipleTau_MVA"]["CR"]*5.))
+		datacard.write("BkgDstarDsMultipleTau_MVA_SB_norm rateParam SB BkgDstarDsMultipleTau_MVA {} [{},{}]\n".format(norm["BkgDstarDsMultipleTau_MVA"]["SB"], 0, norm["BkgDstarDsMultipleTau_MVA"]["SB"]*5.))
+		datacard.write("bkg_SB_norm rateParam CR bkg {} [{},{}]\n".format(norm["Data2018BFirst_MVA"]["CR"]/2., 0., norm["Data2018BFirst_MVA"]["CR"]))
+		datacard.write("bkg_transferfactor_CR_SB rateParam SB bkg 0.5 [0.0,10]\n")
+		datacard.write("bkg_CR_norm rateParam SB bkg (@0*@1) bkg_SB_norm,bkg_transferfactor_CR_SB\n")
+		datacard.write("\n"+"-"*50+"\n")
+		for item in variables: 
+			datacard.write("{} flatParam\n".format(item.GetName()))
+
 
 	
 

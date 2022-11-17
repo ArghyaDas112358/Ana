@@ -49,7 +49,7 @@ for ftype in ['fit_s', 'fit_b']: #'prefit'
 #for ftype in ['prefit', 'fit_b']:
 
 
-    for cr in ['CR']:
+    for cr in ['CR', 'SB']:
 #    for cr in ['sr', 'sb']:
 #    for cr in ['rJpsi_sr_1_2018']:
 
@@ -91,7 +91,7 @@ for ftype in ['fit_s', 'fit_b']: #'prefit'
         canvas = TCanvas('canvas_' + ftype + '_' + cr)
 #        canvas.SetLogy()
 
-        frame = TH1F('frame_' + ftype + '_' + cr, 'fname_' + ftype + '_' + cr, nbin, 0, nbin)
+        frame = TH1F('frame_' + ftype + '_' + cr, 'fname_' + ftype + '_' + cr, nbin, 0, 2.)
         frame.GetXaxis().SetTitle('Tau rhomasses unrolled bin ID')
         frame.GetYaxis().SetTitle('Events')
   
@@ -114,6 +114,10 @@ for ftype in ['fit_s', 'fit_b']: #'prefit'
         hists['total_background'].SetFillStyle(1)
         hists['total_background'].SetFillColor(10)
         hists['total_background'].Draw('hsame')
+        
+        hists['part_bkg'].SetFillStyle(1)
+        hists['part_bkg'].SetFillColor(8)
+        hists['part_bkg'].Draw('hsame')
         
         hists['total_signal'].Draw('hsame')
         hists['data'].Draw('epzsame')

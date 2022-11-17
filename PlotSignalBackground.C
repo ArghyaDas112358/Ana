@@ -14,6 +14,8 @@ ClassImp(FileManager)
 
 using namespace ROOT; 
 
+using namespace Ana; 
+
 
 void PauseUntilAnyKey() 
 {

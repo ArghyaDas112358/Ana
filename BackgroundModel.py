@@ -850,8 +850,8 @@ for quantity in ["Rhomass2Dunrolled"]:
 		datacard.write("BkgDstarDsMultipleTau_MVA_CR_norm rateParam CR BkgDstarDsMultipleTau_MVA {} [{},{}]\n".format(norm["BkgDstarDsMultipleTau_MVA"]["CR"], 0, norm["BkgDstarDsMultipleTau_MVA"]["CR"]*5.))
 		datacard.write("BkgDstarDsMultipleTau_MVA_SB_norm rateParam SB BkgDstarDsMultipleTau_MVA {} [{},{}]\n".format(norm["BkgDstarDsMultipleTau_MVA"]["SB"], 0, norm["BkgDstarDsMultipleTau_MVA"]["SB"]*5.))
 		datacard.write("bkg_SB_norm rateParam CR bkg {} [{},{}]\n".format(norm["Data2018BFirst_MVA"]["CR"]/2., 0., norm["Data2018BFirst_MVA"]["CR"]))
-		datacard.write("bkg_transferfactor_CR_SB rateParam SB bkg 0.5 [0.0,10]\n")
-		datacard.write("bkg_CR_norm rateParam SB bkg (@0*@1) bkg_SB_norm,bkg_transferfactor_CR_SB\n")
+		datacard.write("bkg_transferfactor_SB_CR rateParam SB bkg 0.5 [0.0,10]\n")
+		datacard.write("bkg_CR_norm rateParam SB bkg (@0*@1) bkg_SB_norm,bkg_transferfactor_SB_CR\n")
 		datacard.write("\n"+"-"*50+"\n")
 		for item in variables: 
 			datacard.write("{} flatParam\n".format(item.GetName()))

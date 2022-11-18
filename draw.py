@@ -124,3 +124,22 @@ for ftype in ['fit_s', 'fit_b']: #'prefit'
 
         canvas.RedrawAxis()                
         canvas.SaveAs('plots/combine/' + ftype + '_' + cr + '.gif')
+
+
+    # Checking consistency of shapes 
+    newcanvas = TCanvas("newcanvas", "newcanvas", 800, 600)
+    legend = TLegend(  canvas.GetLeftMargin()+0.35, 
+                                1-canvas.GetTopMargin()-.2, 
+                                canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
+                                1-canvas.GetTopMargin())
+    histSB = file.Get("shapes_fit_s/SB/bkg").DrawCopy("HIST E")
+    histCR = file.Get("shapes_fit_s/CR/bkg").DrawCopy("HIST E SAME")
+    histCR.SetLineColor(2)
+    histSB.SetLineColor(4)
+    histCR.Scale(1./histCR.Integral())
+    histSB.Scale(1./histSB.Integral())
+    legend.AddEntry(histCR, "CR", "L")
+    legend.AddEntry(histSB, "SB", "L")
+    legend.Draw()
+    newcanvas.Draw()
+    newcanvas.Print("plots/combine/ShapeDstarDs.pdf")

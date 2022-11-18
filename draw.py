@@ -6,6 +6,7 @@ from ROOT import gStyle, TCanvas, TLegend, TH1F, gROOT, TFile
 
 
 gROOT.SetBatch(True)
+gStyle.SetOptStat(False)
 #gROOT.SetBatch(False)
 #officialStyle(gStyle)
 gStyle.SetOptTitle(0)
@@ -128,18 +129,23 @@ for ftype in ['fit_s', 'fit_b']: #'prefit'
 
     # Checking consistency of shapes 
     newcanvas = TCanvas("newcanvas", "newcanvas", 800, 600)
-    legend = TLegend(  canvas.GetLeftMargin()+0.35, 
-                                1-canvas.GetTopMargin()-.2, 
+    legend = TLegend(  canvas.GetLeftMargin()+0.55, 
+                                1-canvas.GetTopMargin()-.15, 
                                 canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
                                 1-canvas.GetTopMargin())
     histSB = file.Get("shapes_fit_s/SB/bkg").DrawCopy("HIST E")
     histCR = file.Get("shapes_fit_s/CR/bkg").DrawCopy("HIST E SAME")
-    histCR.SetLineColor(2)
+    histCR.SetLineColor(3)
     histSB.SetLineColor(4)
     histCR.Scale(1./histCR.Integral())
     histSB.Scale(1./histSB.Integral())
+    histCR.SetFillColor(3)
+    histSB.SetFillColor(4)
+    histCR.SetFillStyle(3003) #3003
+    histSB.SetFillStyle(3356)
     legend.AddEntry(histCR, "CR", "L")
     legend.AddEntry(histSB, "SB", "L")
+    legend.SetTextSize(0.04)
     legend.Draw()
     newcanvas.Draw()
     newcanvas.Print("plots/combine/ShapeDstarDs.pdf")

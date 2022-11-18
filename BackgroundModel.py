@@ -499,7 +499,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 
 	variable = "b_tau_rhomass1"
-	model = ("model", "", 10, 0.2, 1.6)
+	model = ("model", "", 20, 0.2, 1.6)
 	datadesc = "Data2018BFirst_MVA"
 
 	data = frames["Data2018BFirst_MVA"]["SR"].Histo1D(model, variable)

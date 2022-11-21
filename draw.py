@@ -101,6 +101,10 @@ for ftype in ['fit_s', 'fit_b']: #'prefit'
             
         canvas = TCanvas('canvas_' + ftype + '_' + cr)
 #        canvas.SetLogy()
+        legend = TLegend(  canvas.GetLeftMargin()+0.45, 
+                                1-canvas.GetTopMargin()-.25, 
+                                canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
+                                1-canvas.GetTopMargin())
 
         frame = TH1F('frame_' + ftype + '_' + cr, 'fname_' + ftype + '_' + cr, nbin, 15., 100.)
         frame.GetXaxis().SetTitle('Tau rhomasses unrolled bin ID')
@@ -121,20 +125,25 @@ for ftype in ['fit_s', 'fit_b']: #'prefit'
         hs.SetFillColor(colors[0])
         hs.SetLineColor(colors[0])
         hs.Draw('hsame')
+        legend.AddEntry(hists['data'], "data", "P")
+        legend.AddEntry(hs, "Signal", "F")
 
         hists['total_background'].SetFillStyle(1)
         hists['total_background'].SetFillColor(colors[2])
         hists['total_background'].SetLineColor(colors[2])
         hists['total_background'].Draw('hsame')
+        legend.AddEntry(hists['total_background'], "Background from estimate", "F")
         
         hists['part_bkg'].SetFillStyle(1)
         hists['part_bkg'].SetFillColor(colors[6])
         hists['part_bkg'].SetLineColor(colors[6])
         hists['part_bkg'].Draw('hsame')
+        legend.AddEntry(hists['part_bkg'], "B#rightarrowD*D_{s}", "F")
         
         #hists['total_signal'].SetLineColor(colors[0])
         hists['total_signal'].Draw('hsame')
         hists['data'].Draw('epzsame')
+        legend.Draw()
 
         canvas.RedrawAxis()                
         canvas.SaveAs('plots/combine/' + ftype + '_' + cr + '.gif')

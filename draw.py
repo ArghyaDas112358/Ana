@@ -1,5 +1,5 @@
 import os, copy
-from ROOT import gStyle, TCanvas, TLegend, TH1F, gROOT, TFile
+from ROOT import gStyle, TCanvas, TLegend, TH1F, gROOT, TFile, TColor
 #from common.officialStyle import officialStyle
 #from common.DisplayManager_postfit import DisplayManager
 #from common.DataMCPlot import *
@@ -21,6 +21,14 @@ def ensureDir(directory):
 #file_shape = TFile(shape_file)
 #data_sb = file_shape.Get('sb/data_obs')
 #nbin = data_sb.GetXaxis().GetNbins()
+
+# Color blind friendly palette
+# https://colorbrewer2.org/?type=diverging&scheme=RdYlBu&n=7 
+mycolors = [TColor(215,48,39), TColor(252,141,89), TColor(254,224,144), TColor(255,255,191), TColor(224,243,248), TColor(145,191,219), TColor(69,117,180)]
+#[red, oragnge, dark yellow, yellow, pale blue, blue, darker blue] # TODO: make an enum for them
+colors = []
+for color in mycolors: 
+    colors.append(color.GetNumber())
 
 
 
@@ -77,7 +85,7 @@ for ftype in ['fit_s', 'fit_b']: #'prefit'
 
             if ii.find('signal')!=-1:
                 hist.SetLineColor(2)
-                hist.SetLineStyle(2)
+                #hist.SetLineStyle(2)
             elif ii.find('data')!=-1:
                 hist.SetMarkerStyle(20)
                 hist.SetMarkerSize(1)
@@ -86,7 +94,9 @@ for ftype in ['fit_s', 'fit_b']: #'prefit'
         
             hists[ii] = copy.deepcopy(hist)
 
-            if ymax < hist.GetMaximum(): ymax = hist.GetMaximum()
+            print hist.GetMaximum()
+
+            if ymax < hist.GetMaximum()*1.1: ymax = hist.GetMaximum()*1.1
 
             
         canvas = TCanvas('canvas_' + ftype + '_' + cr)
@@ -108,18 +118,21 @@ for ftype in ['fit_s', 'fit_b']: #'prefit'
         hs = copy.deepcopy(hists['total_background'])
         hs.Add(copy.deepcopy(hists['total_signal']))
         hs.SetFillStyle(1)
-        hs.SetFillColor(2)
-        hs.SetLineColor(2)
+        hs.SetFillColor(colors[0])
+        hs.SetLineColor(colors[0])
         hs.Draw('hsame')
 
         hists['total_background'].SetFillStyle(1)
-        hists['total_background'].SetFillColor(10)
+        hists['total_background'].SetFillColor(colors[2])
+        hists['total_background'].SetLineColor(colors[2])
         hists['total_background'].Draw('hsame')
         
         hists['part_bkg'].SetFillStyle(1)
-        hists['part_bkg'].SetFillColor(8)
+        hists['part_bkg'].SetFillColor(colors[6])
+        hists['part_bkg'].SetLineColor(colors[6])
         hists['part_bkg'].Draw('hsame')
         
+        #hists['total_signal'].SetLineColor(colors[0])
         hists['total_signal'].Draw('hsame')
         hists['data'].Draw('epzsame')
 

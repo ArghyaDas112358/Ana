@@ -92,7 +92,7 @@ for ftype in ['fit_s', 'fit_b']: #'prefit'
         canvas = TCanvas('canvas_' + ftype + '_' + cr)
 #        canvas.SetLogy()
 
-        frame = TH1F('frame_' + ftype + '_' + cr, 'fname_' + ftype + '_' + cr, nbin, 0, 2.)
+        frame = TH1F('frame_' + ftype + '_' + cr, 'fname_' + ftype + '_' + cr, nbin, 15., 100.)
         frame.GetXaxis().SetTitle('Tau rhomasses unrolled bin ID')
         frame.GetYaxis().SetTitle('Events')
   

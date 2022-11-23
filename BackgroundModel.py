@@ -494,7 +494,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	GetEfficiencies(frames)
 
-	BackgroundShapeUnrolled(histosunrolled["Data2018BFirst_MVA"]["SR"], histosunrolled["Data2018BFirst_MVA"]["CR"], [histosunrolled["SignalOfficialMC50M_MVA"]["SR"], histosunrolled["BkgDstarDsMultipleTau_MVA"]["SR"]])
+	#BackgroundShapeUnrolled(histosunrolled["Data2018BFirst_MVA"]["SR"], histosunrolled["Data2018BFirst_MVA"]["CR"], [histosunrolled["SignalOfficialMC50M_MVA"]["SR"], histosunrolled["BkgDstarDsMultipleTau_MVA"]["SR"]])
 
 
 
@@ -707,21 +707,21 @@ for quantity in ["Rhomass2Dunrolled"]:
 	# Deriving the background shape in the SB 
 	region = "SB" # we work in the sideband for now
 	MC = ["SignalOfficialMC50M_MVA", "BkgDstarDsMultipleTau_MVA"]
-	background = frames["Data2018BFirst_MVA"][region].Histo1D(model, variable).Clone("backgroundModel") # Works (does not change initial histo)
+	background = histosunrolled["Data2018BFirst_MVA"][region].Clone("backgroundModel") # Works (does not change initial histo)
 	background.Sumw2()
 	for item in MC: 
-		hist = frames[item][region].Histo1D(model, variable)
+		hist = histosunrolled[item][region]
 		hist.Sumw2()
 		normfactor = norm[item][region]/hist.Integral()
-		background.Add(hist.GetPtr(), -1.*normfactor)
+		background.Add(hist, -1.*normfactor)
 
 	histograms = collections.defaultdict(dict)
 	for region in regions: 
 		for item in MC+["Data2018BFirst_MVA"]: 
-			hist = frames[item][region].Histo1D(model, variable) #ROOT.convertHisto(frames[item][region].Histo1D(model, variable).GetPtr())
+			hist = histosunrolled[item][region] #ROOT.convertHisto(frames[item][region].Histo1D(model, variable).GetPtr())
 			hist.Sumw2()
 			print(hist.Integral())
-			histograms[item][region] = hist.GetPtr()
+			histograms[item][region] = hist
 
 	for region in regions: 
 		histograms["bkg"][region] = background.Clone()
@@ -743,7 +743,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 		file = ROOT.TFile.Open(workspacefile, "RECREATE")
 		workspace = ROOT.RooWorkspace(workspacename)
 		# Creating the variable on which we fit
-		var = RooRealVar("rhomass1", "rhomass1", 0., 2.)
+		var = RooRealVar("rhomass1", "rhomass1", 0., 100.)
 		fitspace = RooArgSet(var)
 		datacard.write("shapes data_obs {} {} {}\n".format("CR", workspacefile, "workspace:data_obs_CR"))
 		datacard.write("shapes data_obs {} {} {}\n".format("SB", workspacefile, "workspace:data_obs_SB"))

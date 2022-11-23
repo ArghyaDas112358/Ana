@@ -7,6 +7,7 @@ from ROOT import RDataFrame, TFile
 from uncertainties import ufloat
 from uncertainties.umath import * 
 
+
 def getEff(n, N): 
 	eff = float(n)/float(N)
 	#print eff
@@ -14,6 +15,16 @@ def getEff(n, N):
 	#print err
 	#return eff, err
 	return ufloat(eff, err)
+
+def getEffFromInfo(tree): 
+	frame = RDataFrame(tree)
+
+	n = frame.Sum("numSelected").GetValue()
+
+	N = frame.Sum("numTotal").GetValue()
+
+	eff = getEff(n, N)
+	return eff
 
 
 if __name__ == "__main__": 
@@ -30,13 +41,7 @@ if __name__ == "__main__":
 
 	file = TFile.Open(options.filename, "READ")
 
-	frame = RDataFrame(file.Get(options.object))
-
-	n = frame.Sum("numSelected").GetValue()
-
-	N = frame.Sum("numTotal").GetValue()
-
-	eff = getEff(n, N)
+	eff = getEffFromInfo(file.Get(options.object))
 
 	#print("Number of selected events: {}/{}".format(n, N))
 

@@ -4,6 +4,16 @@ from __future__ import division, print_function
 
 import os
 from ROOT import RDataFrame, TFile
+from uncertainties import ufloat
+from uncertainties.umath import * 
+
+def getEff(n, N): 
+	eff = float(n)/float(N)
+	#print eff
+	err = sqrt(eff*(1.-eff)/float(N))
+	#print err
+	#return eff, err
+	return ufloat(eff, err)
 
 
 if __name__ == "__main__": 
@@ -26,7 +36,9 @@ if __name__ == "__main__":
 
 	N = frame.Sum("numTotal").GetValue()
 
-	print("Number of selected events: {}/{}".format(n, N))
+	eff = getEff(n, N)
 
-	print("Efficiency: {}".format(n/N))
+	#print("Number of selected events: {}/{}".format(n, N))
+
+	print("Efficiency: {}".format(eff))
 

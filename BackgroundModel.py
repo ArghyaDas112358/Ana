@@ -817,7 +817,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 		observationstring = "observation "
 		for item in regions: 
 			print(frames["Data2018BFirst_MVA"][item].Count().GetValue())
-			observationstring += ("{} ".format(frames["Data2018BFirst_MVA"][item].Count().GetValue()))
+			observationstring += ("-1 ") # "{} ".format(frames["Data2018BFirst_MVA"][item].Count().GetValue()) # TODO: fix
 		datacard.write(observationstring+"\n")
 
 		# We want to leave a few components floating 

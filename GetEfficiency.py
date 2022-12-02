@@ -41,7 +41,12 @@ if __name__ == "__main__":
 
 	file = TFile.Open(options.filename, "READ")
 
-	eff = getEffFromInfo(file.Get(options.object))
+	info = file.Get(options.object)
+
+	if not info: 
+		raise ValueError("ERROR: No efficiency info found in file. Are you sure this file should contain efficiency information at {} ?".format(options.object))
+
+	eff = getEffFromInfo(info)
 
 	#print("Number of selected events: {}/{}".format(n, N))
 

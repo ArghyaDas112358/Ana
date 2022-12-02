@@ -19,6 +19,7 @@ ClassImp(FileManager)
 
 
 using namespace ROOT; 
+using namespace Ana; 
 
 
 // To run this macro, the python class TFEvaluation.py needs to be loaded into root prior to execution. e.g.:

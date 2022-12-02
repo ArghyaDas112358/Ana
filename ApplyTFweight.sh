@@ -17,8 +17,9 @@ elif [[ $# > 3 ]]; then
 #elif [[ $# == 2 ]]; 
 fi 
 
-INITIALREF=${1}
-FINALREF="${INITIALREF}_tf" # Adding suffix to the ref
+INITIALREF=${1}_ntuple
+VERSION=""
+FINALREF="${1}_tf" # Adding suffix to the ref
 #Remove suffix from string
 #FINALREF=${INITIALREF%".root"}
 STARTEVT=0
@@ -28,10 +29,13 @@ OUTPATH=./submit/ # FIXME
 #	FINALREF=${2}
 #fi
 if [[ $# -ge 2 ]]; then
-	STOPEVT=${2}
+	VERSION=${2}
 fi
 if [[ $# -ge 3 ]]; then
-	STARTEVT=${3}
+	STOPEVT=${3}
+fi
+if [[ $# -ge 4 ]]; then
+	STARTEVT=${4}
 	OUTPATH="${OUTPATH}${STARTEVT}-${STOPEVT}/"
 fi
 

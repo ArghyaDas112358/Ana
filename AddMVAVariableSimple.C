@@ -40,9 +40,9 @@ struct TMVAWeightfileVariables
 };
 
 
-void AddMVAVariableSimple(const TString& inIdentifier, const TString& outIndentifier, const TString& weightfile = "newtest/model_optimized/weights.xml", const TString& branchName = "mvaScore", const TString& suffix = "_mva") 
+void AddMVAVariableSimple(const TString& inIdentifier, const TString& outIndentifier, const TString& cycle, const TString& weightfile = "newtest/model_optimized/weights.xml", const TString& branchName = "mvaScore", const TString& suffix = "_mva") 
 {
-	Init(); 
+	Init(cycle); 
 
 	filemanager.OpenItem(inIdentifier); 
 

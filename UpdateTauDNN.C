@@ -254,14 +254,14 @@ float extractFirstElement(const ROOT::VecOps::RVec<float>& vec)
 
  
 
-void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier) 
+void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, const TString& cycle) 
 {
 	ROOT::DisableImplicitMT(); 
 	//ROOT::EnableImplicitMT(); //ROOT::DisableImplicitMT(); 
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C"); 
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C+");
 	//gSystem->Load("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.so"); 
-	Init(); 
+	Init(cycle); 
 
 	std::cout << "Starting processing" << std::endl; 
 

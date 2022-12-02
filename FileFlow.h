@@ -25,16 +25,15 @@ namespace Ana
 
 			TString folder = "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/"+cycle+"/"; 
 
-			filemanager.AddItem("SignalOfficialMC50M", folder+"SignalOfficialMC50M.root", "ntuplizer/tree"); 
-			filemanager.AddItem("SignalOfficialMC50M_tf", folder+"SignalOfficialMC50M_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("SignalOfficialMC50M_DNN", folder+"SignalOfficialMC50M_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("SignalOfficialMC50M_MVA", folder+"SignalOfficialMC50M_tauDNN_mva.root", "tree"); 
-			filemanager.AddItem("SignalOfficialMC50M_test", folder+"SignalOfficialMC50MwithTFweightTest.root", "ntuplizer/tree"); // TODO: drop? 
+			filemanager.AddItem("Sig_ntuple", folder+"SignalOfficialMC50M.root", "ntuplizer/tree"); 
+			filemanager.AddItem("Sig_tf", folder+"SignalOfficialMC50M_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("Sig_DNN", folder+"SignalOfficialMC50M_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("Sig", folder+"SignalOfficialMC50M_tauDNN_mva.root", "tree"); 
 
-			filemanager.AddItem("BkgDstarDsMMultipleTau", folder+"firstDstarDsMultipleTau.root", "ntuplizer/tree"); 
-			filemanager.AddItem("BkgDstarDsMMultipleTau_tf", folder+"firstDstarDsMultipleTau_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("BkgDstarDsMMultipleTau_DNN", folder+"firstDstarDsMultipleTau_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("BkgDstarDsMultipleTau_MVA", folder+"firstDstarDsMultipleTau_tauDNN_mva.root", "tree"); 
+			filemanager.AddItem("BkgDstarDs_ntuple", folder+"BkgDstarDsIncl.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstarDs_tf", folder+"BkgDstarDsIncl_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstarDs_DNN", folder+"BkgDstarDsIncl_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstarDs", folder+"BkgDstarDsIncl_tauDNN_mva.root", "tree"); 
 
 			filemanager.AddItem("Data2018BFirst", folder+"prod2018BFirst.root", "ntuplizer/tree"); 
 			filemanager.AddItem("Data2018BFirst_tf", folder+"prod2018BFirst_withTFweight.root", "ntuplizer/tree"); 
@@ -78,7 +77,7 @@ namespace Ana
 			filemanager.AddItem("SignalOfficialMC50M_MVA", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_tauDNN_mva.root", "tree"); 
 			filemanager.AddItem("SignalOfficialMC50M_test", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50MwithTFweightTest.root", "ntuplizer/tree"); // TODO: drop? 
 
-			filemanager.AddItem("BkgDstarDsMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstarDs", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstarDsMMultipleTau_tf", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstarDsMMultipleTau_DNN", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstarDsMultipleTau_MVA", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau_tauDNN_mva.root", "tree"); 

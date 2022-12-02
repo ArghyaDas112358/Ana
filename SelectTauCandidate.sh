@@ -12,4 +12,4 @@ echo $INITIALREF
 echo $FINALREF
 
 . clean_tau.sh
-root -e ".L Tau.h+"  'UpdateTauDNN.C("'$INITIALREF'", "'$FINALREF'", "'$VERSION'")'
+root -q -e ".L Tau.h+"  'UpdateTauDNN.C("'$INITIALREF'", "'$FINALREF'", "'$VERSION'")'

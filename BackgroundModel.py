@@ -739,7 +739,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 		datacard.write("\n"+"-"*50+"\n")
 		datacard.write("# Shapes and RooFit workspace\n")
 		workspacefile = "workspace.root"
-		workspacename = "workspace"
+		workspacename = "w"
 		file = ROOT.TFile.Open(workspacefile, "RECREATE")
 		workspace = ROOT.RooWorkspace(workspacename)
 		# Creating the variable on which we fit

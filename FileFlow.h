@@ -30,17 +30,30 @@ namespace Ana
 			filemanager.AddItem("Sig_DNN", folder+"SignalOfficialMC50M_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("Sig", folder+"SignalOfficialMC50M_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("SigPart_ntuple", folder+"SignalOfficialMC50MNoGenMatch.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigPart_tf", folder+"SignalOfficialMC50MNoGenMatch_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigPart_DNN", folder+"SignalOfficialMC50MNoGenMatch_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigPart", folder+"SignalOfficialMC50MNoGenMatch_tauDNN_mva.root", "tree"); 
+
 			filemanager.AddItem("BkgDstarDs_ntuple", folder+"BkgDstarDsIncl.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstarDs_tf", folder+"BkgDstarDsIncl_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstarDs_DNN", folder+"BkgDstarDsIncl_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstarDs", folder+"BkgDstarDsIncl_tauDNN_mva.root", "tree"); 
 
-			filemanager.AddItem("Data2018BFirst", folder+"prod2018BFirst.root", "ntuplizer/tree"); 
-			filemanager.AddItem("Data2018BFirst_tf", folder+"prod2018BFirst_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("Data2018BFirst_DNN", folder+"prod2018BFirst_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("Data2018BFirst_MVA", folder+"prod2018BFirst_tauDNN_mva.root", "tree"); 
-			filemanager.AddItem("Data2018BFirst10k_tf", folder+"prod2018BFirst_withTFweight10k.root", "ntuplizer/tree"); 
-			filemanager.AddItem("Data2018BFirst10k_DNN", folder+"prod2018BFirst_tauDNN10k.root", "ntuplizer/tree"); // Fixme 
+			filemanager.AddItem("BkgDstarDsstar_ntuple", folder+"BkgDstarDsstarIncl.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstarDsstar_tf", folder+"BkgDstarDsstarIncl_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstarDsstar_DNN", folder+"BkgDstarDsstarIncl_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstarDsstar", folder+"BkgDstarDsstarIncl_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("BkgDstar3pi_ntuple", folder+"BkgDstar3piNonres.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstar3pi_tf", folder+"BkgDstar3piNonres_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstar3pi_DNN", folder+"BkgDstar3piNonres_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstar3pi", folder+"BkgDstar3piNonres_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("dataB2_ntuple", folder+"DataBPH2Run2018B.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataB2_tf", folder+"DataBPH2Run2018B_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataB2_DNN", folder+"DataBPH2Run2018B_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataB2", folder+"DataBPH2Run2018B_tauDNN_mva.root", "tree"); 
 
 		}
 

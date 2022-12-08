@@ -745,8 +745,8 @@ for quantity in ["Rhomass2Dunrolled"]:
 		# Creating the variable on which we fit
 		var = RooRealVar("rhomass1", "rhomass1", 0., 100.)
 		fitspace = RooArgSet(var)
-		datacard.write("shapes data_obs {} {} {}\n".format("CR", workspacefile, "workspace:data_obs_CR"))
-		datacard.write("shapes data_obs {} {} {}\n".format("SB", workspacefile, "workspace:data_obs_SB"))
+		datacard.write("shapes data_obs {} {} {}\n".format("CR", workspacefile, workspacename+":data_obs_CR"))
+		datacard.write("shapes data_obs {} {} {}\n".format("SB", workspacefile, workspacename+":data_obs_SB"))
 		histograms["Data2018BFirst_MVA"]["CR"].SetName("data_obs_CR")
 		dataCR = RooDataHist("data_obs_CR", "data_obs_CR", fitspace, histograms["Data2018BFirst_MVA"]["CR"])
 		histograms["Data2018BFirst_MVA"]["CR"].Write()

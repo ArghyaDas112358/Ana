@@ -135,7 +135,7 @@ class PythonInterface
         npy_intp dims[1] = { static_cast<npy_intp>(vec.size()) };
         PyObject *py_array;
 
-        std::cout << "Inside Evaluate function " << std::endl; 
+        //std::cout << "Inside Evaluate function " << std::endl; 
 
         
 
@@ -147,13 +147,13 @@ class PythonInterface
 
         PyErr_Print();
 
-        std::cout << "Before function export " << std::endl; 
+        //std::cout << "Before function export " << std::endl; 
 
         pFunc = PyObject_GetAttrString (object, (char*)"Eval"); 
 
         PyErr_Print();
 
-        std::cout << "After function export " << std::endl; 
+        //std::cout << "After function export " << std::endl; 
 
         if (PyCallable_Check (pFunc))
         {
@@ -175,7 +175,7 @@ class PythonInterface
 
         for (int i=0; i<3*20; i++) 
         {
-            std::cout << *(response + i) << ", "; 
+            //std::cout << *(response + i) << ", "; 
             float value = static_cast<float>(*(response + i)); 
             returnvec.push_back(value); 
             if ((i%3) == 1) 
@@ -188,7 +188,7 @@ class PythonInterface
             }
             //response++; 
         }
-        std::cout << std::endl; 
+        //std::cout << std::endl; 
 
         //PyObject* myResult = PyObject_CallMethod(object, "Add2toNumber", "(d)", a); 
 

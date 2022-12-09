@@ -16,6 +16,8 @@ class PyTFEval:
 
         self.initCheck = False 
 
+        self.debug = False
+
         #np.__config__.show()
 
         #os.environ['OPENBLAS_NUM_THREADS'] = '1'
@@ -49,19 +51,19 @@ class PyTFEval:
         return [1., 2., 3., 4., 5] #a.data_as(ctypes.POINTER(ctypes.c_double))
 
     def Eval(self, data): 
-        print("Evaluation called")
+        #print("Evaluation called")
 
-        print(data.shape)
+        #print(data.shape)
 
         data = np.transpose(data.reshape(13, 20))
 
-        print(data.shape)
+        #print(data.shape)
 
-        print(data)
+        #print(data)
 
         data = np.expand_dims(data, 0)
 
-        print(data.shape)
+        #print(data.shape)
 
         data[:, :, 2] = np.log(data[:, :, 2], out=np.zeros_like(data[:, :, 2]), where=(data[:, :, 2]!=0)) # taking log of pT 
 
@@ -73,40 +75,40 @@ class PyTFEval:
 
 
     def Evaluate(self, data): 
-        print("In eval")
+        #print("In eval")
         shape = data.shape
 
         batchsize = shape[0]
         numpoints = shape[1]
         numvars = shape[2]
 
-        print(shape)
+        #print(shape)
 
         assert(batchsize == 1), "ERROR: The fuction requires a single event!"
         if (numpoints > self.NUM_POINT): 
             data = data[:, 0:self.NUM_POINT, :]
 
-        print(shape)
+        #print(shape)
 
         # update the shape after the consistency checks 
         shape = data.shape
 
-        print("{}, {}, {}".format(batchsize, numpoints, numvars))
+        #print("{}, {}, {}".format(batchsize, numpoints, numvars))
 
         placeholder = np.zeros(shape)
 
         dim = self.BATCHSIZE - 1
 
-        print(placeholder)
-        print(placeholder.shape)
+        #print(placeholder)
+        #print(placeholder.shape)
 
         placeholder = np.repeat(placeholder, dim, axis=0)
 
-        print(placeholder.shape)
+        #print(placeholder.shape)
 
         batch = np.concatenate((data, placeholder))
 
-        print(batch.shape)
+        #print(batch.shape)
 
         response = self.NN_response(batch)
 
@@ -115,17 +117,17 @@ class PyTFEval:
 
         #response = [1., 2., 3., 4., 5]
 
-        print(response.shape)
+        #print(response.shape)
 
-        print(response)
+        #print(response)
 
         result = response[0,:, :]
 
         #result = np.asarray(result, "d")
 
-        print(result)
+        if (self.debug): print(result)
 
-        print(result.shape)
+        #print(result.shape)
 
         return result
 
@@ -137,10 +139,10 @@ class PyTFEval:
         # to distinguish if a track in short_data_set is found to be signal or background, read in the NN response (array of array of as many arrays as there are tracks. All of the event-arrays contain 3 probabilities, the first one tells you how likely it is a bg-track, the second if it's a signal-track and the third if it's a muon track.)  
 
         size = data.shape
-        print('input_size =', size)
+        #print('input_size =', size)
 
 
-        print(data[0,1,:])
+        #print(data[0,1,:])
         
         
             
@@ -164,13 +166,13 @@ class PyTFEval:
                 print('feed_dict size of placeholder 0 different:', feed_dict['Placeholder:0'].shape)
             '''
 
-        print("Before running prediction")
+        #print("Before running prediction")
 
         predictions = self.sess.run(self.output, feed_dict)
 
-        print("After running prediction")
+        #print("After running prediction")
 
-        print(predictions)
+        #print(predictions)
               
         #predictions store 1 value per particle. The shape is [1,100,2]. The probability as coming from the B decay is stored at position 2, for example, the probability for the first particle come from the B decay is stored at predictions[0,0,1], while for the second is stored at predictions[0,1,1] and so on.
         for pred in predictions:

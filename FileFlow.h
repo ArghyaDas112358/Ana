@@ -55,6 +55,11 @@ namespace Ana
 			filemanager.AddItem("dataB2_DNN", folder+"DataBPH2Run2018B_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataB2", folder+"DataBPH2Run2018B_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("Test_ntuple", folder+"Test.root", "ntuplizer/tree"); 
+			filemanager.AddItem("Test_tf", folder+"Test_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("Test_DNN", folder+"Test_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("Test", folder+"Test_tauDNN_mva.root", "tree"); 
+
 		}
 
 		else 

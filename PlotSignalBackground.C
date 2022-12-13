@@ -47,15 +47,15 @@ TLorentzVector LV(double pt, double eta, double phi, double m)
 }
 
 
-void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/") 
+void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNormFix/") 
 {
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C"); 
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C+");
 	//gSystem->Load("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.so"); 
 
-	Init(); 
+	Init("v1"); 
 
-	std::vector<TString> filesUsed = {"Data2018BFirst_MVA", "SignalOfficialMC50M_MVA", "BkgDstarDsMultipleTau_MVA", "BkgBtoDstarDsstar_MVA", "BkgBtoDstar3piNonres_MVA", "DstarDsMCfirst", "Data2018BFirst"}; 
+	std::vector<TString> filesUsed = {"dataD2", "Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgDstar3pi"}; //"DstarDsMCfirst", "Data2018BFirst"
 
 
 	for (auto item : filesUsed) 
@@ -67,9 +67,9 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 	gStyle->SetOptStat(0); 
 
 
-	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>("DstarDsMCfirst")); // tree100k
+	//auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>("DstarDsMCfirst")); // tree100k
 
-	auto sampleMC = RDataFrame(*filemanager.GetItem<TTree*>("Data2018BFirst")); 
+	//auto sampleMC = RDataFrame(*filemanager.GetItem<TTree*>("Data2018BFirst")); 
 	
 
 	// Defining the delta
@@ -125,51 +125,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 
 	// overloading lambdas: if constexpr (std::is_same_v<T, int>) 
 
-
-	auto frame2 = dataframe.Define("P_D0", P_v, {"BsDstarTauNu_D0_pt", "BsDstarTauNu_D0_eta", "BsDstarTauNu_D0_phi", "BsDstarTauNu_D0_mass"}) // auto frame2 = dataframe.Define("LV_D0", "TLorentzVector LV_D0; LV_D0.SetPtEtaPhiM(BsDstarTauNu_D0_pt, BsDstarTauNu_D0_eta, BsDstarTauNu_D0_phi, BsDstarTauNu_D0_mass); return LV_D0"); 
-					.Define("P_Ds", P_v, {"BsDstarTauNu_Ds_pt", "BsDstarTauNu_Ds_eta", "BsDstarTauNu_Ds_phi", "BsDstarTauNu_Ds_mass"})
-					.Define("P_tau", P_v, {"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_mass"})
-					.Define("B_mass", invMass_v, {"P_Ds", "P_tau"}); 
-
-	
-
-	auto histo1 = frame2.Histo1D("B_mass"); 
-
-	auto histo2 = frame2.Histo2D({"Bmass_vs_Dmass", "Correlation plot between B and D masses", 100, 0., 7000., 100, 0., 5000.}, "BsDstarTauNu_B_mass", "BsDstarTauNu_D0_unfit_mass"); 
-
-
-	//std::map<TString, TString> quantitiesToPlot2D = {{"BsDstarTauNu_B_mass", "BsDstarTauNu_D0_unfit_mass"}, {"BsDstarTauNu_B_mass", "BsDstarTauNu_Ds_unfit_mass"}, {"BsDstarTauNu_B_mass", "BsDstarTauNu_tau_mass"}, {"BsDstarTauNu_Ds_unfit_mass", "BsDstarTauNu_tau_mass"}}; 
-	std::vector<std::pair<TString, TString> > quantitiesToPlot2D = {{"BsDstarTauNu_B_mass", "BsDstarTauNu_D0_unfit_mass"}, {"BsDstarTauNu_B_mass", "BsDstarTauNu_Ds_unfit_mass"}, {"BsDstarTauNu_B_mass", "BsDstarTauNu_tau_mass"}, {"BsDstarTauNu_tau_mass", "BsDstarTauNu_Ds_unfit_mass"}}; 
-
-
-	std::vector<TString> quantitiesToPlot = {"BsDstarTauNu_D0_pt[1]", "BsDstarTauNu_D0_eta[1]", "BsDstarTauNu_D0_phi", "BsDstarTauNu_D0_unfit_mass", "BsDstarTauNu_D0_mass", 
-											"BsDstarTauNu_Ds_pt", "BsDstarTauNu_Ds_eta", "BsDstarTauNu_Ds_phi", "BsDstarTauNu_Ds_unfit_mass", "BsDstarTauNu_Ds_mass", 
-											"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_mass", //"BsDstarTauNu_tau_unfit_mass",
-											"BsDstarTauNu_B_pt", "BsDstarTauNu_B_eta", "BsDstarTauNu_B_phi", "BsDstarTauNu_B_mass"}; //"BsDstarTauNu_B_unfit_mass",  "BsDstarTauNu_Ds_unfit_mass-BsDstarTauNu_D0_unfit_mass"
-
-	quantitiesToPlot = {}; 
-
-	std::vector<TString> quantitiesToPlotFromTree = {"BsDstarTauNu_D0_pt>>h(50, 0., 30.)", "BsDstarTauNu_D0_eta>>h(50, -3., 3.)", "BsDstarTauNu_D0_phi>>h(50, -3.5, 3.5)", "BsDstarTauNu_D0_unfit_mass>>h(100, 1.7, 2.)", "BsDstarTauNu_D0_mass>>h(50, 1.5, 2.5.)", 
-											"BsDstarTauNu_Ds_pt>>h(50, 0., 50.)", "BsDstarTauNu_Ds_eta>>h(50, -3., 3.)", "BsDstarTauNu_Ds_phi>>h(50, -3.5, 3.5)", "BsDstarTauNu_Ds_unfit_mass>>h(50, 1.9, 2.1)", "BsDstarTauNu_Ds_mass>>h(50, 1.5, 2.5)", 
-											"BsDstarTauNu_tau_pt>>h(100, 0., 50.)", "BsDstarTauNu_tau_eta>>h(100, -3., 3.)", "BsDstarTauNu_tau_phi>>h(100, -3.5, 3.5)", "BsDstarTauNu_tau_mass>>h(100, 0., 30.)", //"BsDstarTauNu_tau_unfit_mass",
-											//"tau_doca>>h(100, -7., 2.)", "tau_docaerror>>h(100, 0., 1.)", "tau_docasigma>>h(100, -40., 20.)", "tau_tracks_dR_Dstar", 
-											"BsDstarTauNu_B_q2>>h(100, 0., 5.)", "BsDstarTauNu_B_mm2>>h(100, -0.01, 0.005)", 
-											"BsDstarTauNu_B_pt>>h(100, 0., 80.)", "BsDstarTauNu_B_eta>>h(100, -3., 3.)", "BsDstarTauNu_B_phi>>h(100, -3.5, 3.5)", "BsDstarTauNu_B_mass>>h(100, 0., 30.)", "BsDstarTauNu_Ds_unfit_mass-BsDstarTauNu_D0_unfit_mass>>h(200, 0.1, 0.2)", 
-											"BsDstarTauNu_D0_fl3d>>h(200, -2., 5.)", "BsDstarTauNu_D0_fls3d>>h(200, 0., 10.)", "BsDstarTauNu_D0_pvip>>h(200, -1., 1.)", "BsDstarTauNu_D0_pvips>>h(200, -1., 10.)", "BsDstarTauNu_D0_lip>>h(200, -1., 1.)", "BsDstarTauNu_D0_lips>>h(200, -1., 10.)", 
-											"BsDstarTauNu_Ds_fl3d>>h(200, -2., 5.)", "BsDstarTauNu_Ds_fls3d>>h(100, -0.01, 10.)", "BsDstarTauNu_Ds_pvip>>h(200, -1., 1.)", "BsDstarTauNu_Ds_pvips>>h(200, -1., 10.)", "BsDstarTauNu_Ds_lip>>h(200, -1., 1.)", "BsDstarTauNu_Ds_lips>>h(200, -0.5, 0.5)", 
-											"BsDstarTauNu_tau_fl3d>>h(200, -0.5, 0.5)", "BsDstarTauNu_tau_fls3d>>h(200, -0.5, 10.)", "BsDstarTauNu_tau_pvip>>h(200, -0.5, 0.5)", "BsDstarTauNu_tau_pvips>>h(200, -1., 20.)", "BsDstarTauNu_tau_lip>>h(200, -1., 1.)", "BsDstarTauNu_tau_lips>>h(200, -1., 10.)", 
-											"track_genmatched_doca>>h(100, -1.5, 0.5)", "track_genmatched_docaerror>>h(100, -1., 2.)", "track_genmatched_docasigma>>h(100, -5., 10.)", "track_genmatched_dR_Dstar>>h(200, -1., 10.)", "track_genmatched_doca2D>>h(200, -2., 2.)", "track_genmatched_doca2Derror>>h(200, -1., 2.)", "track_genmatched_doca2Dsigma>>h(200, -100., 100.)", "track_genmatched_pvAssociationQuality>>h(200, -100., 100.)", 
-											"track_genmatched_pt>>h(100, -1., 30.)", "track_genmatched_eta>>h(100, -3., 3.)", "track_genmatched_phi>>h(100, -3.5, 3.5)", "track_genmatched_isAssociatedToPV>>h(200, -1., 2.)", "track_genmatched_dzToPV>>h(100, -1., 1.)",
-											"BsDstarTauNu_tau_sumofdnn>>h(200, -0.5, 3.5)", "max(max(BsDstarTauNu_tau_pfidx1, BsDstarTauNu_tau_pfidx2), BsDstarTauNu_tau_pfidx3)>>h(200, -0.5, 15.)", "min(min(BsDstarTauNu_tau_pfidx1, BsDstarTauNu_tau_pfidx2), BsDstarTauNu_tau_pfidx3)>>h(200, -0.5, 15.)", "BsDstarTauNu_tau_max_dr_3prong>>h(100, 0., 1.)"
-											}; //"BsDstarTauNu_B_unfit_mass",  "BsDstarTauNu_Ds_unfit_mass-BsDstarTauNu_Ds_unfit_mass" 
-
-	std::vector<TString> quantitiesNew = { "b_tau_rhomass1>>h(100, 0., 3.)", "b_tau_rhomass2>>h(100, 0., 3.)" }; // "BsDstarTauNu_B_mass>>h(100, 2., 6.)", "b_tau_mass>>h(100, 0., 2.)"
-
-	/*quantitiesToPlot2D*/ quantitiesToPlotFromTree = quantitiesNew; 
-
-
-	//quantitiesToPlotFromTree = {}; 
-	quantitiesToPlot2D = {}; 
+	std::vector<TString> quantitiesToPlotFromTree = { "b_tau_rhomass1>>h(100, 0., 3.)", "b_tau_rhomass2>>h(100, 0., 3.)" }; // "BsDstarTauNu_B_mass>>h(100, 2., 6.)", "b_tau_mass>>h(100, 0., 2.)"
 
 
 	TTree *tree = filemanager.GetItem<TTree*>("DstarDsMCfirst"); 
@@ -217,146 +173,6 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 		if (gSystem->AccessPathName(webfolder)) gSystem->Exec("mkdir -p "+webfolder); 
 	}
 
-
-	for (auto quantity : quantitiesToPlot) 
-	{
-		TCanvas *canvas = new TCanvas(quantity, quantity, 800, 600); 
-
-		Double_t minVal = 0, maxVal = 100.; 
-
-		if (quantity.Contains("_pt")) 
-		{
-			minVal = 0.; 
-			maxVal = 100.; 
-		}
-		else if (quantity.Contains("_eta")) 
-		{
-			minVal = -3.; 
-			maxVal = 3.; 
-		}
-		else if (quantity.Contains("_phi")) 
-		{
-			minVal = -3.5; 
-			maxVal = 3.5; 
-		}
-		else if (quantity.Contains("_mass")) 
-		{
-			minVal = 0.; 
-			maxVal = 20.; 
-		}
-		if ((quantity.Contains("D0") or quantity.Contains("Ds")) and quantity.Contains("_mass")) 
-		{
-			minVal = 1.; 
-			maxVal = 2.; 
-		}
-
-		TH1D modelhisto(quantity, quantity, 200, minVal, maxVal); 
-
-		//auto histo = dataframe.Histo1D(quantity.Data()); 
-
-		//auto histMC = sampleMC.Histo1D(quantity.Data()); 
-
-		//auto histoData = histo.GetPtr(); 
-
-		//auto histoMC = histMC.GetPtr(); 
-
-		//TODO: edit histogram 
-
-
-		
-		TH1D *histoData = new TH1D("histoData", "histoData", 200, minVal, maxVal); 
-		filemanager.GetItem<TTree*>("prodlatest")->Draw(TString::Format("%s>>histoData", quantity.Data())); 
-		histoData->GetYaxis()->SetTitleOffset(0.9); 
-		TH1D *histoMC = new TH1D("histoMC", "histoMC", 200, minVal, maxVal); 
-		filemanager.GetItem<TTree*>("MC")->Draw(TString::Format("%s>>histoMC", quantity.Data())); 
-
-		histoMC->Scale(histoData->Integral()/histoMC->Integral()); 
-
-		histoData->SetLineColor(kBlue); 
-		histoMC->SetLineColor(kRed); 
-
-		histoData->SetLineWidth(2); 
-		histoMC->SetLineWidth(2); 
-
-
-		TLegend *legend= new TLegend( canvas->GetLeftMargin(), 
-                                    1-canvas->GetTopMargin()-.15, 
-                                    //canvas->GetLeftMargin()+.4, 
-                                    canvas->GetLeftMargin()+(1.-(canvas->GetLeftMargin()+canvas->GetRightMargin())),
-                                    1-canvas->GetTopMargin() );
-      	legend->SetFillStyle(1);
-      	legend->AddEntry(histoData,"data","F");
-      	legend->AddEntry(histoMC,"signal MC","F");
-      	legend->SetBorderSize(1);
-      	legend->SetMargin( 0.3 );
-      	legend->SetTextSize(0.04);
-
-      	histoData->SetLineColor(kBlue); 
-      	histoMC->SetLineColor(kRed); 
-
-      	Float_t sc = 1.3;
-      	histoData->SetMaximum( TMath::Max(histoData->GetMaximum(), histoMC->GetMaximum())*sc );
-
-
-		//histo->GetXaxis()->SetRangeUser(0., 100.); 
-
-		canvas->Draw(); 
-
-		for (auto format : formatsToPlot) 
-		{
-			canvas->Print(outfolder+quantity+format); 
-		}
-
-		delete canvas; 
-	}
-
-	for (auto quantity : quantitiesToPlot2D) 
-	{
-		TString name = quantity.first+"_vs_"+quantity.second; 
-
-		std::cout << "Plotting: " << name << std::endl; 
-
-		TCanvas *canvas = new TCanvas(name, name, 800, 600); 
-
-		//Double_t minHvalue = *(dataframe.Min<Double_t>(quantity.first.Data())); 
-
-		//Double_t maxHvalue = *(dataframe.Max<Double_t>(quantity.first.Data())); 
-
-		TH2D modelhisto(name, name, 100, 0., 7., 100, 1.5, 2.2); 
-
-		auto histo = dataframe.Histo2D(modelhisto, quantity.first.Data(), quantity.second.Data()); 
-
-		TGraph2D *graph = new TGraph2D(histo.GetPtr()); 
-
-		//TODO: edit histogram 
-
-		//histo->SetBinContent(0, 0, -1.); 
-		Int_t j = 0; 
-		for (unsigned int i=0; i<histo->GetNbinsX(); i++) 
-		{
-			for (unsigned int j=0; j<histo->GetNbinsY(); j++) 
-			{
-				auto value = histo->GetBinContent(i, j); 
-				//std::cout << "Value: " << value << std::endl; 
-				if (value <= 0.) 
-				{
-					histo->SetBinContent(i, j, 0.01); 
-				}
-			}
-		}
-
-		histo->Draw("COLZ"); 
-
-		canvas->Draw(); 
-
-		for (auto format : formatsToPlot) 
-		{
-			canvas->Print(outfolder+name+format); 
-		}
-
-		delete canvas; 
-	}
-
 	for (auto region : regions) 
 	{
 		for (auto quantity : quantitiesToPlotFromTree) 
@@ -398,26 +214,26 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 			if (region == "SR") 
 			{
 				cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1) && (mvaScore >0.9)"; // && (mvaScore > 0.0) && (mvaScore <= 0.9)
-				normSig = 183; 
-				normDs = 411; 
-				norm3pi = 2.95; 
-				normDsstar = 693; 
+				normSig = 638; 
+				normDs = 615; 
+				norm3pi = 1.1; 
+				normDsstar = 1430; 
 			}
 			else if (region == "CR") 
 			{
 				cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1) && (mvaScore > 0.0) && (mvaScore <= 0.9)"; 
-				normSig = 59.3; 
-				normDs = 389.; 
-				norm3pi = 2.06; 
-				normDsstar = 288.; 
+				normSig = 300.; 
+				normDs = 607.; 
+				norm3pi = 1.1; 
+				normDsstar = 800.; 
 			}
 			else if (region == "SB") 
 			{
 				cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1) && (mvaScore > -0.5) && (mvaScore <= 0.0)"; // && (mvaScore > 0.0) && (mvaScore <= 0.9)
-				normSig = 6.77; 
-				normDs = 111.;
-				norm3pi = 0.568; 
-				normDsstar = 88.7;  
+				normSig = 62.8; 
+				normDs = 186.;
+				norm3pi = 1.1; 
+				normDsstar = 188.;  
 			}
 			else 
 			{
@@ -427,31 +243,31 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNorm/
 
 			std::cout << cut << std::endl; 
 
-			filemanager.GetItem<TTree*>("SignalOfficialMC50M_MVA")->Draw(">>eventlist", "1", "goff"); 
+			filemanager.GetItem<TTree*>("Sig")->Draw(">>eventlist", "1", "goff"); 
 			TEventList *eventlist = static_cast<TEventList*>(gDirectory->Get("eventlist")); 
 			Int_t numberBeforeMC = eventlist->GetN(); 
-			filemanager.GetItem<TTree*>("BkgDstarDsMultipleTau_MVA")->Draw(">>eventlist", "1", "goff"); 
+			filemanager.GetItem<TTree*>("BkgDstarDs")->Draw(">>eventlist", "1", "goff"); 
 			Int_t numberBeforeDs = eventlist->GetN();
-			filemanager.GetItem<TTree*>("BkgBtoDstar3piNonres_MVA")->Draw(">>eventlist", "1", "goff"); 
+			filemanager.GetItem<TTree*>("BkgDstar3pi")->Draw(">>eventlist", "1", "goff"); 
 			Int_t numberBefore3pi = eventlist->GetN();
-			filemanager.GetItem<TTree*>("BkgBtoDstarDsstar_MVA")->Draw(">>eventlist", "1", "goff"); 
+			filemanager.GetItem<TTree*>("BkgDstarDsstar")->Draw(">>eventlist", "1", "goff"); 
 			Int_t numberBeforeDsstar = eventlist->GetN();
 			std::cout << "Number of events: " << numberBeforeMC << std::endl; 
 
-			filemanager.GetItem<TTree*>("Data2018BFirst_MVA")->Draw(quantityData.ReplaceAll(">>h", ">>h1"), cut); 
+			filemanager.GetItem<TTree*>("dataD2")->Draw(quantityData.ReplaceAll(">>h", ">>h1"), cut); 
 			TH1 *histoData = static_cast<TH1*>(canvas->GetPrimitive("h1")); 
 			histoData->GetYaxis()->SetTitleOffset(0.9); 
 			histoData->SetTitle(""); 
-			filemanager.GetItem<TTree*>("SignalOfficialMC50M_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h2"), cut); 
+			filemanager.GetItem<TTree*>("Sig")->Draw(TString(quantity).ReplaceAll(">>h", ">>h2"), cut); 
 			TH1 *histoMC = static_cast<TH1*>(canvas->GetPrimitive("h2")); 
 			histoMC->SetTitle(""); 
-			filemanager.GetItem<TTree*>("BkgDstarDsMultipleTau_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h3"), cut); 
+			filemanager.GetItem<TTree*>("BkgDstarDs")->Draw(TString(quantity).ReplaceAll(">>h", ">>h3"), cut); 
 			TH1 *histoBkgDs = static_cast<TH1*>(canvas->GetPrimitive("h3")); 
 			histoBkgDs->SetTitle(""); 
-			filemanager.GetItem<TTree*>("BkgBtoDstarDsstar_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h4"), cut); 
+			filemanager.GetItem<TTree*>("BkgDstarDsstar")->Draw(TString(quantity).ReplaceAll(">>h", ">>h4"), cut); 
 			TH1 *histoBkgDsstar = static_cast<TH1*>(canvas->GetPrimitive("h4")); 
 			histoBkgDsstar->SetTitle(""); 
-			filemanager.GetItem<TTree*>("BkgBtoDstar3piNonres_MVA")->Draw(TString(quantity).ReplaceAll(">>h", ">>h5"), cut); 
+			filemanager.GetItem<TTree*>("BkgDstar3pi")->Draw(TString(quantity).ReplaceAll(">>h", ">>h5"), cut); 
 			TH1 *histoBkg3Pi = static_cast<TH1*>(canvas->GetPrimitive("h5")); 
 			histoBkg3Pi->SetTitle(""); 
 

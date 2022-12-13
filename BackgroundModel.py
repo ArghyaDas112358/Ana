@@ -27,7 +27,7 @@ ROOT.gROOT.LoadMacro("RooParametricHist.h")
 from ROOT.Ana import filemanager
 
 
-ROOT.Ana.Init() 
+ROOT.Ana.Init("v1") 
 
 
 bkgInSample = 9400000000*0.0000376
@@ -403,22 +403,22 @@ for quantity in ["Rhomass2Dunrolled"]:
 	#canvas.SetRightMargin(0.12)
 	ROOT.gROOT.SetBatch(1)
 
-	filesUsed = ["Data2018BFirst_MVA", "SignalOfficialMC50M_MVA", "BkgDstarDsMultipleTau_MVA", "BkgBtoDstarDsstar_MVA", "BkgBtoDstar3piNonres_MVA"] #, "DstarDsMCfirst", "Data2018BFirst"
+	filesUsed = ["dataD2", "Sig", "BkgDstarDs", "BkgDstar3pi", "BkgDstarDsstar"] #, "DstarDsMCfirst", "Data2018BFirst"
 
-	filemap = {"data":"Data2018BFirst_MVA", "MC":"SignalOfficialMC50M_MVA", "DstarDs":"BkgDstarDsMultipleTau_MVA", "DstarDsstar":"BkgBtoDstarDsstar_MVA", "Dstar3pi":"BkgBtoDstar3piNonres_MVA"}
+	filemap = {"data":"dataD2", "MC":"Sig", "DstarDs":"BkgDstarDs", "DstarDsstar":"BkgDstar3pi", "Dstar3pi":"BkgDstarDsstar"}
 
-	colors = {	"Data2018BFirst_MVA": ROOT.kBlue, 
-				"SignalOfficialMC50M_MVA": ROOT.kRed, 
-				"BkgDstarDsMultipleTau_MVA": ROOT.kGreen, 
-				"BkgBtoDstarDsstar_MVA": ROOT.kGreen+3, 
-				"BkgBtoDstar3piNonres_MVA": ROOT.kOrange+2
+	colors = {	"dataD2": ROOT.kBlue, 
+				"Sig": ROOT.kRed, 
+				"BkgDstarDs": ROOT.kGreen, 
+				"BkgDstar3pi": ROOT.kGreen+3, 
+				"BkgDstarDsstar": ROOT.kOrange+2
 			}
 
-	legends = {	"Data2018BFirst_MVA": "data", 
-				"SignalOfficialMC50M_MVA": "signal MC (genmatched)", 
-				"BkgDstarDsMultipleTau_MVA": "B^{0}#rightarrow D*D_{s} Inclusive", 
-				"BkgBtoDstarDsstar_MVA": "B^{0}#rightarrow D*D_{s}* Inclusive", 
-				"BkgBtoDstar3piNonres_MVA": "B^{0}#rightarrow D*3#pi Nonresonant"
+	legends = {	"dataD2": "data", 
+				"Sig": "signal MC (genmatched)", 
+				"BkgDstarDs": "B^{0}#rightarrow D*D_{s} Inclusive", 
+				"BkgDstar3pi": "B^{0}#rightarrow D*D_{s}* Inclusive", 
+				"BkgDstarDsstar": "B^{0}#rightarrow D*3#pi Nonresonant"
 			}
 
 	regions = ["SR", "CR", "SB"]
@@ -453,25 +453,25 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	
 	norm = collections.defaultdict(dict)
-	norm["SignalOfficialMC50M_MVA"]["SR"] = 183. # TODO: load from json
-	norm["SignalOfficialMC50M_MVA"]["CR"] = 59.3
-	norm["SignalOfficialMC50M_MVA"]["SB"] = 6.77
+	norm["Sig"]["SR"] = 638. # TODO: load from json
+	norm["Sig"]["CR"] = 300.
+	norm["Sig"]["SB"] = 62.8
 
-	norm["BkgDstarDsMultipleTau_MVA"]["SR"] = 411.
-	norm["BkgDstarDsMultipleTau_MVA"]["CR"] = 389.
-	norm["BkgDstarDsMultipleTau_MVA"]["SB"] = 111.
+	norm["BkgDstarDs"]["SR"] = 615.
+	norm["BkgDstarDs"]["CR"] = 607.
+	norm["BkgDstarDs"]["SB"] = 186.
 
-	norm["BkgBtoDstar3piNonres_MVA"]["SR"] = 2.95
-	norm["BkgBtoDstar3piNonres_MVA"]["CR"] = 2.06
-	norm["BkgBtoDstar3piNonres_MVA"]["SB"] = 0.568
+	norm["BkgDstarDsstar"]["SR"] = 1.1
+	norm["BkgDstarDsstar"]["CR"] = 1.1
+	norm["BkgDstarDsstar"]["SB"] = 1.1
 
-	norm["BkgBtoDstarDsstar_MVA"]["SR"] = 693.
-	norm["BkgBtoDstarDsstar_MVA"]["CR"] = 288.
-	norm["BkgBtoDstarDsstar_MVA"]["SB"] = 88.7
+	norm["BkgDstar3pi"]["SR"] = 1430.
+	norm["BkgDstar3pi"]["CR"] = 800.
+	norm["BkgDstar3pi"]["SB"] = 188.
 
-	norm["Data2018BFirst_MVA"]["SR"] = 1.
-	norm["Data2018BFirst_MVA"]["CR"] = 1.
-	norm["Data2018BFirst_MVA"]["SB"] = 1.
+	norm["dataD2"]["SR"] = 1.
+	norm["dataD2"]["CR"] = 1.
+	norm["dataD2"]["SB"] = 1.
 
 
 	print(cut["SR"])
@@ -490,20 +490,20 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	#print "Number of events (SR, CR, SB): {}, {}, {}".format(histos["data"]["SR"].GetEntries(), histos["data"]["CR"].GetEntries(), histos["data"]["SB"].GetEntries())
 
-	#BackgroundShapeUnrolled(histos["Data2018BFirst_MVA"]["SR"], histos["Data2018BFirst_MVA"]["CR"], [histos["SignalOfficialMC50M_MVA"]["SR"], histos["BkgDstarDsMultipleTau_MVA"]["SR"]])
+	#BackgroundShapeUnrolled(histos["dataD2"]["SR"], histos["dataD2"]["CR"], [histos["Sig"]["SR"], histos["BkgDstarDs"]["SR"]])
 
 	GetEfficiencies(frames)
 
-	#BackgroundShapeUnrolled(histosunrolled["Data2018BFirst_MVA"]["SR"], histosunrolled["Data2018BFirst_MVA"]["CR"], [histosunrolled["SignalOfficialMC50M_MVA"]["SR"], histosunrolled["BkgDstarDsMultipleTau_MVA"]["SR"]])
+	#BackgroundShapeUnrolled(histosunrolled["dataD2"]["SR"], histosunrolled["dataD2"]["CR"], [histosunrolled["Sig"]["SR"], histosunrolled["BkgDstarDs"]["SR"]])
 
 
 
 	variable = "b_tau_rhomass1"
 	model = ("model", "", 20, 0.2, 1.6)
-	datadesc = "Data2018BFirst_MVA"
+	datadesc = "dataD2"
 
-	data = frames["Data2018BFirst_MVA"]["SR"].Histo1D(model, variable)
-	bkg = frames["BkgDstarDsMultipleTau_MVA"]["SR"].Histo1D(model, variable)
+	data = frames["dataD2"]["SR"].Histo1D(model, variable)
+	bkg = frames["BkgDstarDs"]["SR"].Histo1D(model, variable)
 
 	AtomicDraw(data, outputfolder+"data_before.pdf")
 
@@ -561,8 +561,8 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 		canv.cd()
 		background = reference.Clone("backgroundModel{}".format(count)) # Works (does not change initial histo)
-		bkg = frames["BkgBtoDstarDsstar_MVA"][region].Histo1D(model, variable)
-		normfactor = norm["BkgBtoDstarDsstar_MVA"][region]/bkg.Integral()
+		bkg = frames["BkgDstar3pi"][region].Histo1D(model, variable)
+		normfactor = norm["BkgDstar3pi"][region]/bkg.Integral()
 		background.Add(bkg.GetPtr(), -1.*normfactor)
 		background.SetLineColor(ROOT.kOrange+1+count)
 		currenthist = background.DrawCopy("HIST SAME")
@@ -576,17 +576,17 @@ for quantity in ["Rhomass2Dunrolled"]:
 	canv.Print(outputfolder+"BackgroundModel.pdf")
 
 
-	SuperimposeRegions(frames, "BkgDstarDsMultipleTau_MVA", variable, outputfolder+"DstarDsShapesTest.pdf", model)
+	SuperimposeRegions(frames, "BkgDstarDs", variable, outputfolder+"DstarDsShapesTest.pdf", model)
 
 	count = 0
 	shapes = {}
 	maxes=[]
 	drawn = {}
 	for region in regions: 
-		background = frames["Data2018BFirst_MVA"][region].Histo1D(model, variable) #.Clone("backgroundModel{}".format(count)) # Works (does not change initial histo)
+		background = frames["dataD2"][region].Histo1D(model, variable) #.Clone("backgroundModel{}".format(count)) # Works (does not change initial histo)
 		background.Sumw2()
-		bkg = frames["BkgDstarDsMultipleTau_MVA"][region].Histo1D(model, variable)
-		normfactor = norm["BkgDstarDsMultipleTau_MVA"][region]/bkg.Integral()
+		bkg = frames["BkgDstarDs"][region].Histo1D(model, variable)
+		normfactor = norm["BkgDstarDs"][region]/bkg.Integral()
 		background.Add(bkg.GetPtr(), -1.*normfactor)
 		background.SetLineColor(ROOT.kOrange+1+count)
 		shapes[region] = background
@@ -617,7 +617,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 	maxes=[]
 	drawn = {}
 	for region in regions: 
-		shapes[region] = frames["BkgDstarDsMultipleTau_MVA"][region].Histo1D(model, variable)
+		shapes[region] = frames["BkgDstarDs"][region].Histo1D(model, variable)
 		shapes[region].Sumw2()
 		shapes[region].SetLineColor(ROOT.kAzure+1+count)
 		shapes[region].SetLineWidth(2)
@@ -666,8 +666,8 @@ for quantity in ["Rhomass2Dunrolled"]:
 		datacard.write(regionstring)
 
 		observationstring = "observation "
-		for item in frames["Data2018BFirst_MVA"]: 
-			observationstring += ("{} ".format(frames["Data2018BFirst_MVA"]["CR"].Count().GetValue()))
+		for item in frames["dataD2"]: 
+			observationstring += ("{} ".format(frames["dataD2"]["CR"].Count().GetValue()))
 		datacard.write(observationstring+"\n")
 
 		datacard.write("\n#Expected events (MC/model)\n")
@@ -706,8 +706,8 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	# Deriving the background shape in the SB 
 	region = "SB" # we work in the sideband for now
-	MC = ["SignalOfficialMC50M_MVA", "BkgDstarDsMultipleTau_MVA"]
-	background = histosunrolled["Data2018BFirst_MVA"][region].Clone("backgroundModel") # Works (does not change initial histo)
+	MC = ["Sig", "BkgDstarDs"]
+	background = histosunrolled["dataD2"][region].Clone("backgroundModel") # Works (does not change initial histo)
 	background.Sumw2()
 	for item in MC: 
 		hist = histosunrolled[item][region]
@@ -717,7 +717,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	histograms = collections.defaultdict(dict)
 	for region in regions: 
-		for item in MC+["Data2018BFirst_MVA"]: 
+		for item in MC+["dataD2"]: 
 			hist = histosunrolled[item][region] #ROOT.convertHisto(frames[item][region].Histo1D(model, variable).GetPtr())
 			hist.Sumw2()
 			print(hist.Integral())
@@ -747,21 +747,21 @@ for quantity in ["Rhomass2Dunrolled"]:
 		fitspace = RooArgSet(var)
 		datacard.write("shapes data_obs {} {} {}\n".format("CR", workspacefile, workspacename+":data_obs_CR"))
 		datacard.write("shapes data_obs {} {} {}\n".format("SB", workspacefile, workspacename+":data_obs_SB"))
-		histograms["Data2018BFirst_MVA"]["CR"].SetName("data_obs_CR")
-		dataCR = RooDataHist("data_obs_CR", "data_obs_CR", fitspace, histograms["Data2018BFirst_MVA"]["CR"])
-		histograms["Data2018BFirst_MVA"]["CR"].Write()
+		histograms["dataD2"]["CR"].SetName("data_obs_CR")
+		dataCR = RooDataHist("data_obs_CR", "data_obs_CR", fitspace, histograms["dataD2"]["CR"])
+		histograms["dataD2"]["CR"].Write()
 		getattr(workspace, "import")(dataCR)
-		histograms["Data2018BFirst_MVA"]["SB"].SetName("data_obs_SB")
-		dataSB = RooDataHist("data_obs_SB", "data_obs_SB", fitspace, histograms["Data2018BFirst_MVA"]["SB"])
-		histograms["Data2018BFirst_MVA"]["SB"].Write()
+		histograms["dataD2"]["SB"].SetName("data_obs_SB")
+		dataSB = RooDataHist("data_obs_SB", "data_obs_SB", fitspace, histograms["dataD2"]["SB"])
+		histograms["dataD2"]["SB"].Write()
 		getattr(workspace, "import")(dataSB)
-		histograms["Data2018BFirst_MVA"]["SB"].Write()
-		print(histograms["Data2018BFirst_MVA"]["CR"].Integral())
+		histograms["dataD2"]["SB"].Write()
+		print(histograms["dataD2"]["CR"].Integral())
 		localnorm = copy.deepcopy(norm)
-		localnorm["BkgDstarDsMultipleTau_MVA"]["CR"] = 1. #"Ds_norm"
+		localnorm["BkgDstarDs"]["CR"] = 1. #"Ds_norm"
 		localnorm["bkg"]["CR"] = 1. #"bkg_norm"
 		localnorm["bkg"]["SB"] = 1.
-		localnorm["BkgDstarDsMultipleTau_MVA"]["SB"] = 1.
+		localnorm["BkgDstarDs"]["SB"] = 1.
 		for region in regions: 
 			for item in MC: 
 				histname = item+"_"+region
@@ -776,7 +776,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 		binsdest = RooArgList()
 		variables = []
 		variablesdest = []
-		maxval = histograms["Data2018BFirst_MVA"][region].GetMaximum()
+		maxval = histograms["dataD2"][region].GetMaximum()
 		print(background.GetNbinsX())
 		transferfactor = RooRealVar("bkg_transferfactor_SB_CR", "bkg_transferfactor_SB_CR", 0., 10.)
 		for i in range(background.GetNbinsX()): 
@@ -816,8 +816,8 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 		observationstring = "observation "
 		for item in regions: 
-			print(frames["Data2018BFirst_MVA"][item].Count().GetValue())
-			observationstring += ("-1 ") # "{} ".format(frames["Data2018BFirst_MVA"][item].Count().GetValue()) # TODO: fix
+			print(frames["dataD2"][item].Count().GetValue())
+			observationstring += ("-1 ") # "{} ".format(frames["dataD2"][item].Count().GetValue()) # TODO: fix
 		datacard.write(observationstring+"\n")
 
 		# We want to leave a few components floating 
@@ -833,7 +833,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 				binstring += "{} ".format(region)
 				labelstring += "{} ".format(item)
 				factor = 1
-				if item == "SignalOfficialMC50M_MVA": 
+				if item == "Sig": 
 					factor = -1 # make signal negative
 				indexstring += "{} ".format(factor*count)
 				expectedstring += "{} ".format(localnorm[item][region])
@@ -847,9 +847,9 @@ for quantity in ["Rhomass2Dunrolled"]:
 		#datacard.write("lumi     lnN    1.10       1.0 		1.0\n")
 
 		datacard.write("\n"+"-"*50+"\n")
-		datacard.write("BkgDstarDsMultipleTau_MVA_CR_norm rateParam CR BkgDstarDsMultipleTau_MVA {} [{},{}]\n".format(norm["BkgDstarDsMultipleTau_MVA"]["CR"], 0, norm["BkgDstarDsMultipleTau_MVA"]["CR"]*5.))
-		datacard.write("BkgDstarDsMultipleTau_MVA_SB_norm rateParam SB BkgDstarDsMultipleTau_MVA {} [{},{}]\n".format(norm["BkgDstarDsMultipleTau_MVA"]["SB"], 0, norm["BkgDstarDsMultipleTau_MVA"]["SB"]*5.))
-		datacard.write("bkg_SB_norm rateParam CR bkg {} [{},{}]\n".format(norm["Data2018BFirst_MVA"]["CR"]/2., 0., norm["Data2018BFirst_MVA"]["CR"]))
+		datacard.write("BkgDstarDs_CR_norm rateParam CR BkgDstarDs {} [{},{}]\n".format(norm["BkgDstarDs"]["CR"], 0, norm["BkgDstarDs"]["CR"]*5.))
+		datacard.write("BkgDstarDs_SB_norm rateParam SB BkgDstarDs {} [{},{}]\n".format(norm["BkgDstarDs"]["SB"], 0, norm["BkgDstarDs"]["SB"]*5.))
+		datacard.write("bkg_SB_norm rateParam CR bkg {} [{},{}]\n".format(norm["dataD2"]["CR"]/2., 0., norm["dataD2"]["CR"]))
 		datacard.write("bkg_transferfactor_SB_CR rateParam SB bkg 0.5 [0.0,10]\n")
 		datacard.write("bkg_CR_norm rateParam SB bkg (@0*@1) bkg_SB_norm,bkg_transferfactor_SB_CR\n")
 		datacard.write("\n"+"-"*50+"\n")
@@ -860,7 +860,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 	
 
 	canv = ROOT.TCanvas("canv", "canv", 800, 600)
-	hist = frames["SignalOfficialMC50M_MVA"]["SR"].Histo2D(("rhomass1", "rhomass2", 15, rangeMin, rangeMax, 15, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2")
+	hist = frames["Sig"]["SR"].Histo2D(("rhomass1", "rhomass2", 15, rangeMin, rangeMax, 15, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2")
 	hist.SetTitle("m(#rho_{1}) vs m(#rho_{2})")
 	hist.DrawCopy("COLZ")
 	canv.Draw()

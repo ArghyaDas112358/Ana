@@ -432,8 +432,8 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	# Histo parameters
 	nBins = 6
-	rangeMin = 0.2
-	rangeMax = 1.5
+	rangeMin = 0.37
+	rangeMax = 1.43
 
 	samples = {}
 	frames = collections.defaultdict(dict)

@@ -40,10 +40,10 @@ print file
 
 process = {
     'data':{'name':'data'},
-    'total_signal':{'name':'SignalOfficialMC50M_MVA'},
+    'total_signal':{'name':'Sig'},
     'total_background':{'name':'total_background'}, 
     'comb_bkg':{'name':'bkg'},
-    'part_bkg':{'name':'BkgDstarDsMultipleTau_MVA'},
+    'part_bkg':{'name':'BkgDstarDs'},
 }
 
 #for ibin in range(1, nbin+1):

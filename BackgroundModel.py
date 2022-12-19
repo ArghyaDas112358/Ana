@@ -403,12 +403,13 @@ for quantity in ["Rhomass2Dunrolled"]:
 	#canvas.SetRightMargin(0.12)
 	ROOT.gROOT.SetBatch(1)
 
-	filesUsed = ["dataD2", "Sig", "BkgDstarDs", "BkgDstar3pi", "BkgDstarDsstar"] #, "DstarDsMCfirst", "Data2018BFirst"
+	filesUsed = ["dataD2", "Sig", "SigPart", "BkgDstarDs", "BkgDstar3pi", "BkgDstarDsstar"] #, "DstarDsMCfirst", "Data2018BFirst"
 
 	filemap = {"data":"dataD2", "MC":"Sig", "DstarDs":"BkgDstarDs", "DstarDsstar":"BkgDstar3pi", "Dstar3pi":"BkgDstarDsstar"}
 
 	colors = {	"dataD2": ROOT.kBlue, 
 				"Sig": ROOT.kRed, 
+				"SigPart": ROOT.kRed+2, # TODO: add color scheme to FileFlow.h
 				"BkgDstarDs": ROOT.kGreen, 
 				"BkgDstar3pi": ROOT.kGreen+3, 
 				"BkgDstarDsstar": ROOT.kOrange+2
@@ -416,6 +417,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	legends = {	"dataD2": "data", 
 				"Sig": "signal MC (genmatched)", 
+				"SigPart": "partially reconstructed signal",
 				"BkgDstarDs": "B^{0}#rightarrow D*D_{s} Inclusive", 
 				"BkgDstar3pi": "B^{0}#rightarrow D*D_{s}* Inclusive", 
 				"BkgDstarDsstar": "B^{0}#rightarrow D*3#pi Nonresonant"
@@ -457,6 +459,10 @@ for quantity in ["Rhomass2Dunrolled"]:
 	norm["Sig"]["CR"] = 300.
 	norm["Sig"]["SB"] = 62.8
 
+	norm["SigPart"]["SR"] = 638.
+	norm["SigPart"]["CR"] = 300.
+	norm["SigPart"]["SB"] = 62.8
+
 	norm["BkgDstarDs"]["SR"] = 615.
 	norm["BkgDstarDs"]["CR"] = 607.
 	norm["BkgDstarDs"]["SB"] = 186.
@@ -472,6 +478,8 @@ for quantity in ["Rhomass2Dunrolled"]:
 	norm["dataD2"]["SR"] = 1.
 	norm["dataD2"]["CR"] = 1.
 	norm["dataD2"]["SB"] = 1.
+
+	partFraction = norm["SigPart"]["CR"]/norm["Sig"]["CR"]
 
 
 	print(cut["SR"])
@@ -706,10 +714,11 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	# Deriving the background shape in the SB 
 	region = "SB" # we work in the sideband for now
-	MC = ["Sig", "BkgDstarDs"]
+	MC = ["Sig", "SigPart", "BkgDstarDs", "BkgDstarDsstar"]
+	BKG = ["BkgDstarDs", "BkgDstarDsstar"]
 	background = histosunrolled["dataD2"][region].Clone("backgroundModel") # Works (does not change initial histo)
 	background.Sumw2()
-	for item in MC: 
+	for item in BKG: 
 		hist = histosunrolled[item][region]
 		hist.Sumw2()
 		normfactor = norm[item][region]/hist.Integral()
@@ -833,7 +842,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 				binstring += "{} ".format(region)
 				labelstring += "{} ".format(item)
 				factor = 1
-				if item == "Sig": 
+				if "Sig" == item: 
 					factor = -1 # make signal negative
 				indexstring += "{} ".format(factor*count)
 				expectedstring += "{} ".format(localnorm[item][region])
@@ -852,6 +861,9 @@ for quantity in ["Rhomass2Dunrolled"]:
 		datacard.write("bkg_SB_norm rateParam CR bkg {} [{},{}]\n".format(norm["dataD2"]["CR"]/2., 0., norm["dataD2"]["CR"]))
 		datacard.write("bkg_transferfactor_SB_CR rateParam SB bkg 0.5 [0.0,10]\n")
 		datacard.write("bkg_CR_norm rateParam SB bkg (@0*@1) bkg_SB_norm,bkg_transferfactor_SB_CR\n")
+		#datacard.write("Sig_CR_norm rateParam CR Sig {} [{},{}]\n".format(norm["Sig"]["CR"], 0, norm["Sig"]["CR"]*5.))
+		datacard.write("SigPart_CR_fraction rateParam CR SigPart {}\n".format(partFraction))
+		datacard.write("SigPart_CR_norm rateParam CR SigPart (@0*@1) r,SigPart_CR_fraction\n")
 		datacard.write("\n"+"-"*50+"\n")
 		for item in variables: 
 			datacard.write("{} flatParam\n".format(item.GetName()))

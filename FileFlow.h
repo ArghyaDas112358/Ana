@@ -25,10 +25,15 @@ namespace Ana
 
 			TString folder = "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/"+cycle+"/"; 
 
-			filemanager.AddItem("Sig_ntuple", folder+"SignalOfficialMC50M.root", "ntuplizer/tree"); 
-			filemanager.AddItem("Sig_tf", folder+"SignalOfficialMC50M_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("Sig_DNN", folder+"SignalOfficialMC50M_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("Sig", folder+"SignalOfficialMC50M_tauDNN_mva.root", "tree"); 
+			filemanager.AddItem("Sig_ntuple", folder+"SignalOfficialMC100MTest.root", "ntuplizer/tree"); 
+			filemanager.AddItem("Sig_tf", folder+"SignalOfficialMC100MTest_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("Sig_DNN", folder+"SignalOfficialMC100MTest_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("Sig", folder+"SignalOfficialMC100MTest_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("SigTrain_ntuple", folder+"SignalOfficialMC50and100MTrain.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigTrain_tf", folder+"SignalOfficialMC50and100MTrain_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigTrain_DNN", folder+"SignalOfficialMC50and100MTrain_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigTrain", folder+"SignalOfficialMC50and100MTrain_tauDNN_mva.root", "tree"); 
 
 			filemanager.AddItem("SigPart_ntuple", folder+"SignalOfficialMC50MNoGenMatch.root", "ntuplizer/tree"); 
 			filemanager.AddItem("SigPart_tf", folder+"SignalOfficialMC50MNoGenMatch_withTFweight.root", "ntuplizer/tree"); 
@@ -59,6 +64,11 @@ namespace Ana
 			filemanager.AddItem("dataD2_tf", folder+"DataBPH2Run2018D_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataD2_DNN", folder+"DataBPH2Run2018D_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataD2", folder+"DataBPH2Run2018D_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("dataD2WS_ntuple", folder+"ParkingBPH2Run2018DWS.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2WS_tf", folder+"ParkingBPH2Run2018DWS_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2WS_DNN", folder+"ParkingBPH2Run2018DWS_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2WS", folder+"ParkingBPH2Run2018DWS_tauDNN_mva.root", "tree"); 
 
 			filemanager.AddItem("Test_ntuple", folder+"Test.root", "ntuplizer/tree"); 
 			filemanager.AddItem("Test_tf", folder+"Test_withTFweight.root", "ntuplizer/tree"); 

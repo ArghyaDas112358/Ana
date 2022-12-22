@@ -46,6 +46,10 @@ class Tau : public TObject
 	float rhomass1; 
 	float rhomass2; 
 
+	bool match1 = false; 
+	bool match2 = false; 
+	bool match3 = false; 
+
 	//float maxdaupt; 
 	//float mindaupt; 
 	//float maxdaueta; 
@@ -131,6 +135,20 @@ class Tau : public TObject
   	{
   		rhomass1 = m12; 
   		rhomass2 = m23; 
+  	}
+
+  	void SetMatch(const bool genMatch1, const bool genMatch2, const bool genMatch3) 
+  	{
+  		match1 = genMatch1; 
+  		match2 = genMatch2; 
+  		match3 = genMatch3; 
+  	}
+
+  	void SetMatch(const int genMatch1, const int genMatch2, const int genMatch3) 
+  	{
+  		match1 = static_cast<bool>(genMatch1); 
+  		match2 = static_cast<bool>(genMatch2); 
+  		match3 = static_cast<bool>(genMatch3); 
   	}
 
 
@@ -290,6 +308,16 @@ class Tau : public TObject
 	static float WriteRhomass2(const Tau& tau) 
 	{
 		return tau.rhomass2; 
+	}; 
+
+	static int WriteMatch(const Tau& tau) 
+	{
+		return static_cast<int>(tau.match1 || tau.match2 || tau.match3); 
+	}; 
+
+	static int WriteSumMatch(const Tau& tau) 
+	{
+		return static_cast<int>(tau.match1) + static_cast<int>(tau.match2) + static_cast<int>(tau.match3); 
 	}; 
 
 }; 

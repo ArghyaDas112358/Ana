@@ -75,6 +75,13 @@ namespace Ana
 			filemanager.AddItem("Test_DNN", folder+"Test_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("Test", folder+"Test_tauDNN_mva.root", "tree"); 
 
+			const TString specialRunFileName = "SignalOfficialMC50MMatchedTauMatchInfo"; // Hack to run on given file
+
+			filemanager.AddItem("SpecialRun_ntuple", folder+specialRunFileName+".root", "ntuplizer/tree"); 
+			filemanager.AddItem("SpecialRun_tf", folder+specialRunFileName+"_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SpecialRun_DNN", folder+specialRunFileName+"_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SpecialRun", folder+specialRunFileName+"_tauDNN_mva.root", "tree"); 
+
 		}
 
 		else 

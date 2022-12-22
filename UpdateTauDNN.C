@@ -249,6 +249,7 @@ Tau SelectGenmatchedTauCandidate(std::vector<Tau> collection) // For taking expl
 		}
 	}
 
+	return Tau(); 
 }
 
 
@@ -366,7 +367,7 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 
 	auto BuildTauCandidatesWithCount = [&count](ROOT::VecOps::RVec<float> taupt, ROOT::VecOps::RVec<float> taueta, ROOT::VecOps::RVec<float> tauphi, ROOT::VecOps::RVec<int> taucharge, ROOT::VecOps::RVec<float> taumass, ROOT::VecOps::RVec<float> tauVprob, ROOT::VecOps::RVec<float> taufsig, ROOT::VecOps::RVec<float> taulip, ROOT::VecOps::RVec<int> idx1, ROOT::VecOps::RVec<int> idx2, ROOT::VecOps::RVec<int> idx3, ROOT::VecOps::RVec<float> dnn1, ROOT::VecOps::RVec<float> dnn2, ROOT::VecOps::RVec<float> dnn3, std::vector<float> sumdnn, 
 										ROOT::VecOps::RVec<float> alpha, ROOT::VecOps::RVec<float> maxDr, ROOT::VecOps::RVec<float> taufl, ROOT::VecOps::RVec<float> pvip, ROOT::VecOps::RVec<float> pvips, ROOT::VecOps::RVec<float> dau1pt, ROOT::VecOps::RVec<float> dau1eta, ROOT::VecOps::RVec<float> dau1phi, ROOT::VecOps::RVec<float> dau2pt, ROOT::VecOps::RVec<float> dau2eta, ROOT::VecOps::RVec<float> dau2phi, ROOT::VecOps::RVec<float> dau3pt, ROOT::VecOps::RVec<float> dau3eta, ROOT::VecOps::RVec<float> dau3phi, ROOT::VecOps::RVec<float> rhomass1, ROOT::VecOps::RVec<float> rhomass2, 
-										ROOT::VecOps::RVec<float> match1, ROOT::VecOps::RVec<float> match2, ROOT::VecOps::RVec<float> match3) // TODO: set to int  
+										ROOT::VecOps::RVec<int> match1, ROOT::VecOps::RVec<int> match2, ROOT::VecOps::RVec<int> match3) // TODO: set to int  
 	{
 		std::vector<Tau> mytaus; 
 		for (unsigned int i=0; i<taupt.size(); i++) 

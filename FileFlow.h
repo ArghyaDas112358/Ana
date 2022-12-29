@@ -35,10 +35,10 @@ namespace Ana
 			filemanager.AddItem("SigTrain_DNN", folder+"SignalOfficialMC50and100MTrain_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("SigTrain", folder+"SignalOfficialMC50and100MTrain_tauDNN_mva.root", "tree"); 
 
-			filemanager.AddItem("SigPart_ntuple", folder+"SignalOfficialMC50MNoGenMatch.root", "ntuplizer/tree"); 
-			filemanager.AddItem("SigPart_tf", folder+"SignalOfficialMC50MNoGenMatch_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("SigPart_DNN", folder+"SignalOfficialMC50MNoGenMatch_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("SigPart", folder+"SignalOfficialMC50MNoGenMatch_tauDNN_mva.root", "tree"); 
+			filemanager.AddItem("SigPart_ntuple", folder+"SignalOfficialMC100MTestNoGenMatch.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigPart_tf", folder+"SignalOfficialMC100MTestNoGenMatch_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigPart_DNN", folder+"SignalOfficialMC100MTestNoGenMatch_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigPart", folder+"SignalOfficialMC100MTestNoGenMatch_tauDNN_mva.root", "tree"); 
 
 			filemanager.AddItem("BkgDstarDs_ntuple", folder+"BkgDstarDsIncl.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstarDs_tf", folder+"BkgDstarDsIncl_withTFweight.root", "ntuplizer/tree"); 
@@ -87,6 +87,11 @@ namespace Ana
 			filemanager.AddItem("SigOld_tf", folder+"SignalOfficialMC50M_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("SigOld_DNN", folder+"SignalOfficialMC50M_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("SigOld", folder+"SignalOfficialMC50M_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("SigPartOld_ntuple", folder+"SignalOfficialMC50MNoGenMatch.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigPartOld_tf", folder+"SignalOfficialMC50MNoGenMatch_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigPartOld_DNN", folder+"SignalOfficialMC50MNoGenMatch_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigPartOld", folder+"SignalOfficialMC50MNoGenMatch_tauDNN_mva.root", "tree"); 
 
 
 		}

@@ -714,7 +714,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	# Deriving the background shape in the SB 
 	region = "SB" # we work in the sideband for now
-	MC = ["Sig", "SigPart", "BkgDstarDs", "BkgDstarDsstar"]
+	MC = ["SigPart", "BkgDstarDs", "BkgDstarDsstar"] #"Sig", 
 	BKG = ["BkgDstarDs", "BkgDstarDsstar"]
 	background = histosunrolled["dataD2"][region].Clone("backgroundModel") # Works (does not change initial histo)
 	background.Sumw2()
@@ -842,7 +842,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 				binstring += "{} ".format(region)
 				labelstring += "{} ".format(item)
 				factor = 1
-				if "Sig" == item: 
+				if "Sig" in item: 
 					factor = -1 # make signal negative
 				indexstring += "{} ".format(factor*count)
 				expectedstring += "{} ".format(localnorm[item][region])

@@ -403,7 +403,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 	#canvas.SetRightMargin(0.12)
 	ROOT.gROOT.SetBatch(1)
 
-	filesUsed = ["dataD2", "Sig", "SigOld", "SigPart", "BkgDstarDs", "BkgDstar3pi", "BkgDstarDsstar"] #, "DstarDsMCfirst", "Data2018BFirst"
+	filesUsed = ["dataD2", "Sig", "SigOld", "SigPart", "BkgDstarDs", "BkgDstar3pi", "BkgDstarDsstar", "dataD2WS"] #, "DstarDsMCfirst", "Data2018BFirst"
 
 	filemap = {"data":"dataD2", "MC":"Sig", "DstarDs":"BkgDstarDs", "DstarDsstar":"BkgDstar3pi", "Dstar3pi":"BkgDstarDsstar"}
 
@@ -479,6 +479,10 @@ for quantity in ["Rhomass2Dunrolled"]:
 	norm["dataD2"]["CR"] = 1.
 	norm["dataD2"]["SB"] = 1.
 
+	norm["dataD2WS"]["SR"] = 1.
+	norm["dataD2WS"]["CR"] = 1.
+	norm["dataD2WS"]["SB"] = 1.
+
 	partFraction = norm["SigPart"]["CR"]/norm["Sig"]["CR"]
 
 
@@ -530,6 +534,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 	maxes = []
 	refhist = 0
 	# Plot the different regions
+	"""
 	for region in regions: 
 		canvas = ROOT.TCanvas("canvas", "canvas", 800, 600)
 		legend = ROOT.TLegend(	canvas.GetLeftMargin()+0.35, 
@@ -582,6 +587,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 	refhist.SetMaximum(max(maxes)*1.3)
 	canv.Draw()
 	canv.Print(outputfolder+"BackgroundModel.pdf")
+	"""
 
 
 	SuperimposeRegions(frames, "BkgDstarDs", variable, outputfolder+"DstarDsShapesTest.pdf", model)
@@ -651,6 +657,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 
 	# Making datacards 
+	"""
 	with open("datacard.txt", "w") as datacard: 
 		datacard.write("# Datacard generated automatically with {}{} on {}.\n".format(os.getcwd(), __file__, datetime.today().strftime("%d.%m.%y %H:%M:%S")))
 		datacard.write("# Rhomass fit with DstarDs component\n\n")
@@ -710,12 +717,13 @@ for quantity in ["Rhomass2Dunrolled"]:
 				hist.Write()
 		file.Write()
 		file.Close()
+	"""
 
 
 	# Deriving the background shape in the SB 
 	region = "SB" # we work in the sideband for now
-	MC = ["SigPart", "BkgDstarDs", "BkgDstarDsstar"] #"Sig", 
-	BKG = ["BkgDstarDs", "BkgDstarDsstar"]
+	MC = ["SigPart", "dataD2WS"] #"Sig", 
+	BKG = ["dataD2WS"]
 	background = histosunrolled["dataD2"][region].Clone("backgroundModel") # Works (does not change initial histo)
 	background.Sumw2()
 	for item in BKG: 
@@ -742,7 +750,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 		datacard.write("# Rhomass fit in CR with DstarDs component and bacgkround model from SB\n\n")
 
 		datacard.write("imax {}\n".format(len(regions)))
-		datacard.write("jmax {}\n".format(len(MC)))
+		datacard.write("jmax {}\n".format(len(BKG)))
 		datacard.write("kmax {}\n".format(0)) # For now no systematics
 
 		datacard.write("\n"+"-"*50+"\n")
@@ -814,7 +822,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 		file.Write()
 		file.Close()
 
-		MC.append("bkg")
+		#MC.append("bkg")
 		datacard.write("\n"+"-"*50+"\n")
 		datacard.write("# Observed events (data)\n")
 		regionstring = "bin "
@@ -856,11 +864,11 @@ for quantity in ["Rhomass2Dunrolled"]:
 		#datacard.write("lumi     lnN    1.10       1.0 		1.0\n")
 
 		datacard.write("\n"+"-"*50+"\n")
-		datacard.write("BkgDstarDs_CR_norm rateParam CR BkgDstarDs {} [{},{}]\n".format(norm["BkgDstarDs"]["CR"], 0, norm["BkgDstarDs"]["CR"]*5.))
-		datacard.write("BkgDstarDs_SB_norm rateParam SB BkgDstarDs {} [{},{}]\n".format(norm["BkgDstarDs"]["SB"], 0, norm["BkgDstarDs"]["SB"]*5.))
-		datacard.write("bkg_SB_norm rateParam CR bkg {} [{},{}]\n".format(norm["dataD2"]["CR"]/2., 0., norm["dataD2"]["CR"]))
-		datacard.write("bkg_transferfactor_SB_CR rateParam SB bkg 0.5 [0.0,10]\n")
-		datacard.write("bkg_CR_norm rateParam SB bkg (@0*@1) bkg_SB_norm,bkg_transferfactor_SB_CR\n")
+		#datacard.write("BkgDstarDs_CR_norm rateParam CR BkgDstarDs {} [{},{}]\n".format(norm["BkgDstarDs"]["CR"], 0, norm["BkgDstarDs"]["CR"]*5.))
+		#datacard.write("BkgDstarDs_SB_norm rateParam SB BkgDstarDs {} [{},{}]\n".format(norm["BkgDstarDs"]["SB"], 0, norm["BkgDstarDs"]["SB"]*5.))
+		#datacard.write("bkg_SB_norm rateParam CR bkg {} [{},{}]\n".format(norm["dataD2"]["CR"]/2., 0., norm["dataD2"]["CR"]))
+		#datacard.write("bkg_transferfactor_SB_CR rateParam SB bkg 0.5 [0.0,10]\n")
+		#datacard.write("bkg_CR_norm rateParam SB bkg (@0*@1) bkg_SB_norm,bkg_transferfactor_SB_CR\n")
 		#datacard.write("Sig_CR_norm rateParam CR Sig {} [{},{}]\n".format(norm["Sig"]["CR"], 0, norm["Sig"]["CR"]*5.))
 		#datacard.write("SigPart_CR_fraction rateParam CR SigPart {}\n".format(partFraction))
 		#datacard.write("SigPart_CR_norm rateParam CR SigPart (@0*@1) r,SigPart_CR_fraction\n")

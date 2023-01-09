@@ -795,6 +795,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 		variablesdest = []
 		maxval = histograms["dataD2"][region].GetMaximum()
 		print(background.GetNbinsX())
+		"""
 		transferfactor = RooRealVar("bkg_transferfactor_SB_CR", "bkg_transferfactor_SB_CR", 0., 10.)
 		for i in range(background.GetNbinsX()): 
 			# Creating bins for the shape in SB
@@ -818,6 +819,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 		getattr(workspace, "import")(bkgNormCR, ROOT.RooFit.RecycleConflictNodes())
 		datacard.write("shapes {} {} {} {}\n".format("bkg", "CR", workspacefile, workspacename+":"+"bkg_CR"))
 		datacard.write("shapes {} {} {} {}\n".format("bkg", "SB", workspacefile, workspacename+":"+"bkg_SB"))
+		"""
 		workspace.Write()
 		file.Write()
 		file.Close()

@@ -862,8 +862,8 @@ for quantity in ["Rhomass2Dunrolled"]:
 		datacard.write("bkg_transferfactor_SB_CR rateParam SB bkg 0.5 [0.0,10]\n")
 		datacard.write("bkg_CR_norm rateParam SB bkg (@0*@1) bkg_SB_norm,bkg_transferfactor_SB_CR\n")
 		#datacard.write("Sig_CR_norm rateParam CR Sig {} [{},{}]\n".format(norm["Sig"]["CR"], 0, norm["Sig"]["CR"]*5.))
-		datacard.write("SigPart_CR_fraction rateParam CR SigPart {}\n".format(partFraction))
-		datacard.write("SigPart_CR_norm rateParam CR SigPart (@0*@1) r,SigPart_CR_fraction\n")
+		#datacard.write("SigPart_CR_fraction rateParam CR SigPart {}\n".format(partFraction))
+		#datacard.write("SigPart_CR_norm rateParam CR SigPart (@0*@1) r,SigPart_CR_fraction\n")
 		datacard.write("\n"+"-"*50+"\n")
 		for item in variables: 
 			datacard.write("{} flatParam\n".format(item.GetName()))

@@ -47,7 +47,7 @@ TLorentzVector LV(double pt, double eta, double phi, double m)
 }
 
 
-void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNormFix/") 
+void PlotSignalBackground(TString campaignName = "PlotsBackgroundWithWS/") 
 {
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C"); 
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C+");
@@ -55,7 +55,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNormF
 
 	Init("v1"); 
 
-	std::vector<TString> filesUsed = {"dataD2", "Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgDstar3pi"}; //"DstarDsMCfirst", "Data2018BFirst"
+	std::vector<TString> filesUsed = {"dataD2", "Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgDstar3pi", "dataD2WS"}; //"DstarDsMCfirst", "Data2018BFirst"
 
 
 	for (auto item : filesUsed) 
@@ -252,6 +252,8 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNormF
 			Int_t numberBefore3pi = eventlist->GetN();
 			filemanager.GetItem<TTree*>("BkgDstarDsstar")->Draw(">>eventlist", "1", "goff"); 
 			Int_t numberBeforeDsstar = eventlist->GetN();
+			filemanager.GetItem<TTree*>("dataD2WS")->Draw(">>eventlist", "1", "goff"); 
+			Int_t numberBeforeWS = eventlist->GetN();
 			std::cout << "Number of events: " << numberBeforeMC << std::endl; 
 
 			filemanager.GetItem<TTree*>("dataD2")->Draw(quantityData.ReplaceAll(">>h", ">>h1"), cut); 
@@ -270,6 +272,9 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNormF
 			filemanager.GetItem<TTree*>("BkgDstar3pi")->Draw(TString(quantity).ReplaceAll(">>h", ">>h5"), cut); 
 			TH1 *histoBkg3Pi = static_cast<TH1*>(canvas->GetPrimitive("h5")); 
 			histoBkg3Pi->SetTitle(""); 
+			filemanager.GetItem<TTree*>("dataD2WS")->Draw(TString(quantity).ReplaceAll(">>h", ">>h6"), cut); 
+			TH1 *histoDataWS = static_cast<TH1*>(canvas->GetPrimitive("h6")); 
+			histoDataWS->SetTitle(""); 
 
 			// Plot roc curve here 
 			//if (name == "track_genmatched_doca") 
@@ -291,10 +296,12 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNormF
 			Int_t numberAfterDs = histoBkgDs->GetEntries(); 
 			Int_t numberAfter3pi = histoBkg3Pi->GetEntries(); 
 			Int_t numberAfterDsstar = histoBkgDsstar->GetEntries(); 
+			Int_t numberAfterWS = histoDataWS->GetEntries(); 
 			std::cout << "Efficiency of SR for MC: " << static_cast<float>(numberAfterMC)/static_cast<float>(numberBeforeMC) << std::endl; 
 			std::cout << "Efficiency of SR for Ds bkg: " << static_cast<float>(numberAfterDs)/static_cast<float>(numberBeforeDs) << std::endl; 
 			std::cout << "Efficiency of SR for 3pi bkg: " << static_cast<float>(numberAfter3pi)/static_cast<float>(numberBefore3pi) << std::endl; 
 			std::cout << "Efficiency of SR for Dsstar bkg: " << static_cast<float>(numberAfterDsstar)/static_cast<float>(numberBeforeDsstar) << std::endl; 
+			std::cout << "Efficiency of SR for WS bkg: " << static_cast<float>(numberAfterWS)/static_cast<float>(numberBeforeWS) << std::endl; 
 
 
 			std::cout << "Number of MC events: " << histoMC->Integral() << std::endl; 
@@ -314,12 +321,15 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNormF
 			histoBkgDs->SetLineColor(kGreen); 
 			histoBkgDsstar->SetLineColor(kGreen+3); 
 			histoBkg3Pi->SetLineColor(kOrange+2); 
+			histoDataWS->SetLineColor(kMagenta+3); 
+
 
 			histoData->SetLineWidth(2); 
 			histoMC->SetLineWidth(2); 
 			histoBkgDs->SetLineWidth(2); 
 			histoBkgDsstar->SetLineWidth(2); 
 			histoBkg3Pi->SetLineWidth(2); 
+			histoDataWS->SetLineWidth(2); 
 
 			std::vector<double> maxes = { histoData->GetMaximum(), histoMC->GetMaximum(), histoBkgDs->GetMaximum() }; 
 
@@ -336,6 +346,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNormF
 	      	legend->AddEntry(histoBkgDs, "B^{0}#rightarrow D*D_{s} Inclusive"); 
 	      	legend->AddEntry(histoBkgDsstar, "B^{0}#rightarrow D*D_{s}* Inclusive"); 
 	      	legend->AddEntry(histoBkg3Pi, "B^{0}#rightarrow D*3#pi Nonresonant"); 
+	      	legend->AddEntry(histoDataWS, "WS (wrong sign) data"); 
 	      	legend->SetBorderSize(1);
 	      	legend->SetMargin( 0.3 );
 	      	legend->SetTextSize(0.04);
@@ -357,6 +368,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundComponentsNormF
 	      	histoBkgDs->Draw("HISTSAME"); 
 	      	histoBkgDsstar->Draw("HISTSAME"); 
 	      	histoBkg3Pi->Draw("HISTSAME"); 
+	      	histoDataWS->Draw("HISTSAME"); 
 
 	      	legend->Draw(); 
 

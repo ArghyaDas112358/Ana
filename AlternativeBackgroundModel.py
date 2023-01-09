@@ -479,9 +479,9 @@ for quantity in ["Rhomass2Dunrolled"]:
 	norm["dataD2"]["CR"] = 1.
 	norm["dataD2"]["SB"] = 1.
 
-	norm["dataD2WS"]["SR"] = 1.
-	norm["dataD2WS"]["CR"] = 1.
-	norm["dataD2WS"]["SB"] = 1.
+	norm["dataD2WS"]["SR"] = 549.
+	norm["dataD2WS"]["CR"] = 1772.
+	norm["dataD2WS"]["SB"] = 1263.
 
 	partFraction = norm["SigPart"]["CR"]/norm["Sig"]["CR"]
 
@@ -874,6 +874,8 @@ for quantity in ["Rhomass2Dunrolled"]:
 		#datacard.write("Sig_CR_norm rateParam CR Sig {} [{},{}]\n".format(norm["Sig"]["CR"], 0, norm["Sig"]["CR"]*5.))
 		#datacard.write("SigPart_CR_fraction rateParam CR SigPart {}\n".format(partFraction))
 		#datacard.write("SigPart_CR_norm rateParam CR SigPart (@0*@1) r,SigPart_CR_fraction\n")
+		datacard.write("dataD2WS_CR_norm rateParam CR dataD2WS {} [{},{}]\n".format(norm["dataD2WS"]["CR"], 0., norm["dataD2WS"]["CR"]*2.))
+		datacard.write("dataD2WS_SB_norm rateParam SB dataD2WS {} [{},{}]\n".format(norm["dataD2WS"]["SB"], 0., norm["dataD2WS"]["SB"]*2.))
 		datacard.write("\n"+"-"*50+"\n")
 		for item in variables: 
 			datacard.write("{} flatParam\n".format(item.GetName()))

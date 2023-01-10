@@ -70,6 +70,11 @@ namespace Ana
 			filemanager.AddItem("dataD2WS_DNN", folder+"ParkingBPH2Run2018DWS_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataD2WS", folder+"ParkingBPH2Run2018DWS_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("dataD2TauWS_ntuple", folder+"ParkingBPH2Run2018DTauWS.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2TauWS_tf", folder+"ParkingBPH2Run2018DTauWS_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2TauWS_DNN", folder+"ParkingBPH2Run2018DTauWS_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2TauWS", folder+"ParkingBPH2Run2018DTauWS_tauDNN_mva.root", "tree"); 
+
 			filemanager.AddItem("Test_ntuple", folder+"Test.root", "ntuplizer/tree"); 
 			filemanager.AddItem("Test_tf", folder+"Test_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("Test_DNN", folder+"Test_tauDNN.root", "ntuplizer/tree"); 

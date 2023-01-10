@@ -394,6 +394,34 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 		return mytaus; 
 	};
 
+	// For legacy processing of v1 files 
+	auto BuildTauCandidatesWithCount_v1 = [&count](ROOT::VecOps::RVec<float> taupt, ROOT::VecOps::RVec<float> taueta, ROOT::VecOps::RVec<float> tauphi, ROOT::VecOps::RVec<int> taucharge, ROOT::VecOps::RVec<float> taumass, ROOT::VecOps::RVec<float> tauVprob, ROOT::VecOps::RVec<float> taufsig, ROOT::VecOps::RVec<float> taulip, ROOT::VecOps::RVec<int> idx1, ROOT::VecOps::RVec<int> idx2, ROOT::VecOps::RVec<int> idx3, ROOT::VecOps::RVec<float> dnn1, ROOT::VecOps::RVec<float> dnn2, ROOT::VecOps::RVec<float> dnn3, std::vector<float> sumdnn, 
+										ROOT::VecOps::RVec<float> alpha, ROOT::VecOps::RVec<float> maxDr, ROOT::VecOps::RVec<float> taufl, ROOT::VecOps::RVec<float> pvip, ROOT::VecOps::RVec<float> pvips, ROOT::VecOps::RVec<float> dau1pt, ROOT::VecOps::RVec<float> dau1eta, ROOT::VecOps::RVec<float> dau1phi, ROOT::VecOps::RVec<float> dau2pt, ROOT::VecOps::RVec<float> dau2eta, ROOT::VecOps::RVec<float> dau2phi, ROOT::VecOps::RVec<float> dau3pt, ROOT::VecOps::RVec<float> dau3eta, ROOT::VecOps::RVec<float> dau3phi, ROOT::VecOps::RVec<float> rhomass1, ROOT::VecOps::RVec<float> rhomass2) // TODO: set to int  
+	{
+		std::vector<Tau> mytaus; 
+		for (unsigned int i=0; i<taupt.size(); i++) 
+		{
+			Tau tau(taupt.at(i), taueta.at(i), tauphi.at(i), taucharge.at(i), taumass.at(i)); 
+			//tau.pt = taupt.at(i); 
+
+			tau.SetKinematics(tauVprob.at(i), taufsig.at(i), taulip.at(i)); 
+			tau.SetIndices(idx1.at(i), idx2.at(i), idx3.at(i)); 
+			tau.SetDNN(dnn1.at(i), dnn2.at(i), dnn3.at(i), sumdnn.at(i)); 
+
+			tau.SetEventKinematics(alpha.at(i), maxDr.at(i), taufl.at(i), pvip.at(i), pvips.at(i)); 
+			tau.SetDau1Kin(dau1pt.at(i), dau1eta.at(i), dau1phi.at(i)); 
+			tau.SetDau2Kin(dau2pt.at(i), dau2eta.at(i), dau2phi.at(i)); 
+			tau.SetDau3Kin(dau3pt.at(i), dau3eta.at(i), dau3phi.at(i)); 
+			tau.SetRhoMasses(rhomass1.at(i), rhomass2.at(i)); 
+
+			mytaus.push_back(tau); 
+		}
+		count++; 
+		std::cout << "Built tau candidates for event " << count << std::endl; 
+		assert(mytaus.size() == taupt.size()); 
+		return mytaus; 
+	};
+
 	auto withDNN = dataframe.Define("v_tau_dnn_1", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx1", "TFscore"}).Define("v_tau_dnn_2", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx2", "TFscore"}).Define("v_tau_dnn_3", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx3", "TFscore"}); 
 
 	std::cout << "Added DNN variables" << std::endl; 
@@ -402,6 +430,7 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 
 	withDNN = withDNN.Define("v_taucandidates", BuildTauCandidatesWithCount, {"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_q", "BsDstarTauNu_tau_mass", "BsDstarTauNu_tau_vprob", "BsDstarTauNu_tau_fls3d", "BsDstarTauNu_tau_lip", "BsDstarTauNu_tau_pfidx1", "BsDstarTauNu_tau_pfidx2", "BsDstarTauNu_tau_pfidx3", "v_tau_dnn_1", "v_tau_dnn_2", "v_tau_dnn_3", "v_tau_sumdnn", 
 																		"BsDstarTauNu_tau_alpha", "BsDstarTauNu_tau_fl3d", "BsDstarTauNu_tau_pvip", "BsDstarTauNu_tau_pvips", "BsDstarTauNu_tau_max_dr_3prong", "BsDstarTauNu_tau_pi1_pt", "BsDstarTauNu_tau_pi1_eta", "BsDstarTauNu_tau_pi1_phi", "BsDstarTauNu_tau_pi2_pt", "BsDstarTauNu_tau_pi2_eta", "BsDstarTauNu_tau_pi2_phi", "BsDstarTauNu_tau_pi3_pt", "BsDstarTauNu_tau_pi3_eta", "BsDstarTauNu_tau_pi3_phi", "BsDstarTauNu_tau_rhomass1", "BsDstarTauNu_tau_rhomass2", "v_tau_match1", "v_tau_match2", "v_tau_match3"});
+																		//"BsDstarTauNu_tau_alpha", "BsDstarTauNu_tau_fl3d", "BsDstarTauNu_tau_pvip", "BsDstarTauNu_tau_pvips", "BsDstarTauNu_tau_max_dr_3prong", "BsDstarTauNu_tau_pi1_pt", "BsDstarTauNu_tau_pi1_eta", "BsDstarTauNu_tau_pi1_phi", "BsDstarTauNu_tau_pi2_pt", "BsDstarTauNu_tau_pi2_eta", "BsDstarTauNu_tau_pi2_phi", "BsDstarTauNu_tau_pi3_pt", "BsDstarTauNu_tau_pi3_eta", "BsDstarTauNu_tau_pi3_phi", "BsDstarTauNu_tau_rhomass1", "BsDstarTauNu_tau_rhomass2"});
 	
 	withDNN = withDNN.Define("b_tau", SelectTauCandidate, {"v_taucandidates"})
 				.Define("b_tau_pt", Tau::WritePt, {"b_tau"})

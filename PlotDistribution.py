@@ -176,6 +176,12 @@ textsize = 0.04
 
 numEvents = -1 
 
+def AtomicDraw(histo, name, options = ""): 
+	canv = ROOT.TCanvas("canv", "canv", 800, 600)
+	histo.DrawCopy(options)
+	canv.Draw()
+	canv.Print(name)
+
 
 
 #ROOT.gInterpreter.Declare("""
@@ -388,6 +394,8 @@ for quantity in ["Rhomass2Dunrolled"]:
 	#canvas.Write()
 	#f.Write()
 	#f.Close()
+
+	AtomicDraw(SR["MC"].Histo1D("b_tau_rhomass1"), outputfolder+"/SignalFromOld.png")
 
 
 

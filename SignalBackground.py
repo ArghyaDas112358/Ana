@@ -341,11 +341,11 @@ if __name__ == "__main__":
 
 	parser = ArgumentParser(description="SignalBackground")
 	#parser.add_argument('path', action="store", type=str, help="Which time list you want to analyse")
-	parser.add_argument("--out", dest="out", action="store", type=str, default="./plots/BackgroundEstimateUpdate/", help="Directory where the plots shuld go")
+	parser.add_argument("--out", dest="out", action="store", type=str, default="BackgroundEstimateUpdate/", help="Directory where the plots shuld go")
 	parser.add_argument("--name", dest="name", action="store", type=str, default="test", help="Turn on debug output")
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v1", help="Which version (cycle) of files to run on")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
-	parser.add_argument("--force", dest="force", action="store_true", default=False, help="Turn on debug output")
+	parser.add_argument("-f", "--forcepath", dest="forcepath", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
 	parser.add_argument("--stats", dest="stats", action="store_true", default=False, help="Show stats box in ROOT")
 
@@ -361,13 +361,16 @@ if __name__ == "__main__":
 		# Don't plot stats box
 		ROOT.gStyle.SetOptStat(0) 
 
-	outputfolder = options.out
+	outputfolder = "./plots/"+options.out+"/"
+	if (options.forcepath): 
+		print("WARNING: You have used option '-f' or '--forcepath'. Files will be written to: {}".format(options.out))
+		outputfolder = options.out+"/"
 
 	os.system("mkdir -p "+outputfolder)
 
 
 	# Global initialisations
-	Ana.Init("v1")
+	Ana.Init(options.version)
 
 
 	filesUsed = ["dataD2", "Sig", "BkgDstarDs"]

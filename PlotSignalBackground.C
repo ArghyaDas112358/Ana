@@ -55,7 +55,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundWithWS/")
 
 	Init("v1"); 
 
-	std::vector<TString> filesUsed = {"dataD2", "Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgDstar3pi", "dataD2WS"}; //"DstarDsMCfirst", "Data2018BFirst"
+	std::vector<TString> filesUsed = {"dataD2", "Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgDstar3pi", "dataD2WS", "dataD2TauWS"}; //"DstarDsMCfirst", "Data2018BFirst"
 
 
 	for (auto item : filesUsed) 
@@ -211,6 +211,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundWithWS/")
 			Double_t normDs = 1.; 
 			Double_t norm3pi = 1.; 
 			Double_t normDsstar = 1.; 
+			Double_t factorTauWS = 1.84; 
 			if (region == "SR") 
 			{
 				cut = "(BsDstarTauNu_D0_vprob>0.1) && (BsDstarTauNu_Ds_vprob>0.1) && (mvaScore >0.9)"; // && (mvaScore > 0.0) && (mvaScore <= 0.9)
@@ -275,6 +276,9 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundWithWS/")
 			filemanager.GetItem<TTree*>("dataD2WS")->Draw(TString(quantity).ReplaceAll(">>h", ">>h6"), cut); 
 			TH1 *histoDataWS = static_cast<TH1*>(canvas->GetPrimitive("h6")); 
 			histoDataWS->SetTitle(""); 
+			filemanager.GetItem<TTree*>("dataD2TauWS")->Draw(TString(quantity).ReplaceAll(">>h", ">>h7"), cut); 
+			TH1 *histoDataTauWS = static_cast<TH1*>(canvas->GetPrimitive("h7")); 
+			histoDataTauWS->SetTitle(""); 
 
 			// Plot roc curve here 
 			//if (name == "track_genmatched_doca") 
@@ -314,6 +318,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundWithWS/")
 				histoBkgDs->Scale(normDs/histoBkgDs->Integral());
 				histoBkgDsstar->Scale(normDsstar/histoBkgDsstar->Integral()); 
 				histoBkg3Pi->Scale(norm3pi/histoBkg3Pi->Integral()); 
+				histoDataTauWS->Scale(factorTauWS); 
 			}
 
 			histoData->SetLineColor(kBlue); 
@@ -322,6 +327,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundWithWS/")
 			histoBkgDsstar->SetLineColor(kGreen+3); 
 			histoBkg3Pi->SetLineColor(kOrange+2); 
 			histoDataWS->SetLineColor(kMagenta+3); 
+			histoDataTauWS->SetLineColor(kCyan-7); 
 
 
 			histoData->SetLineWidth(2); 
@@ -330,6 +336,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundWithWS/")
 			histoBkgDsstar->SetLineWidth(2); 
 			histoBkg3Pi->SetLineWidth(2); 
 			histoDataWS->SetLineWidth(2); 
+			histoDataTauWS->SetLineWidth(2); 
 
 			std::vector<double> maxes = { histoData->GetMaximum(), histoMC->GetMaximum(), histoBkgDs->GetMaximum() }; 
 
@@ -347,6 +354,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundWithWS/")
 	      	legend->AddEntry(histoBkgDsstar, "B^{0}#rightarrow D*D_{s}* Inclusive"); 
 	      	legend->AddEntry(histoBkg3Pi, "B^{0}#rightarrow D*3#pi Nonresonant"); 
 	      	legend->AddEntry(histoDataWS, "WS (wrong sign) data"); 
+	      	legend->AddEntry(histoDataTauWS, "tau WS (|q| = 3) data"); 
 	      	legend->SetBorderSize(1);
 	      	legend->SetMargin( 0.3 );
 	      	legend->SetTextSize(0.04);
@@ -369,6 +377,7 @@ void PlotSignalBackground(TString campaignName = "PlotsBackgroundWithWS/")
 	      	histoBkgDsstar->Draw("HISTSAME"); 
 	      	histoBkg3Pi->Draw("HISTSAME"); 
 	      	histoDataWS->Draw("HISTSAME"); 
+	      	histoDataTauWS->Draw("HISTSAME"); 
 
 	      	legend->Draw(); 
 

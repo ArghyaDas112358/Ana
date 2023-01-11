@@ -346,22 +346,32 @@ def PlotOverlay(frames, dataname, components, regions, variables, outfolder, dra
 	                           	1.-canvas.GetTopMargin() )
 
 			data = frames[dataname][region].Histo1D(variable)
-			data.Draw()
+			data.SetMarkerStyle(8) # Large scalable dot
+			data.SetMarkerSize(0.5)
+			data.SetLineColor(ROOT.kBlack)
+			#data.SetFillColor(ROOT.kBlack)
+			legend.AddEntry(data.GetPtr(), "data", "PE")
+			data.Draw("E")
 
 			maxes = [data.GetMaximum()]
 
+			i = 0
 			for component in components: 
 				histo = frames[component][region].Histo1D(variable)
 				ROOT.SetOwnership(histo, 0)
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
-				#histo.SetLineColor(Ana.color[component])
+				histo.SetLineColor(colors[i])
 				#histo.SetMarkerColor(Ana.color[component])
 				histo.Draw("HIST SAME")
 				maxes.append(histo.GetMaximum())
 				legend.AddEntry(histo.GetPtr(), component)
+				i+=1
 
 			legend.Draw()
+			legend.SetBorderSize(1);
+			legend.SetMargin(0.3);
+			legend.SetTextSize(0.04);
 
 			data.SetMaximum(factor*max(maxes))
 			canvas.Draw()
@@ -458,6 +468,7 @@ if __name__ == "__main__":
 
 	AtomicDraw(frames["Sig"]["SR"].Histo1D("b_tau_rhomass1"), outputfolder+"/SignalFromNew.png")
 
+	colors = [4, 3, 6, 7, 9]
 
 	files = filesUsed
 	PlotOverlay(frames, "dataD2", files, regions, variables, outputfolder)

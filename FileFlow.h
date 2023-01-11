@@ -13,6 +13,12 @@ namespace Ana
 
 	std::map<std::string, TCut> cut; //std::map<std::string, std::map<std::sting, TCut> > cuts; 
 
+	std::vector<TColor*> colors; 
+
+	std::vector<Int_t> mycolors; 
+
+	std::unordered_map<std::string, Int_t> color; 
+
 
 	// Constants being defined centrally 
 	Double_t mvaCutSR = 0.9; 
@@ -174,6 +180,17 @@ namespace Ana
 		cut.emplace(std::make_pair("SR", cut["base"]+TCut(TString::Format("mvaScore>=%f", mvaCutSR)))); 
 		cut.emplace(std::make_pair("SB", cut["base"]+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutSB, mvaCutSR)))); 
 		cut.emplace(std::make_pair("CR", cut["base"]+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutCR, mvaCutSB)))); 
+
+		// https://colorbrewer2.org/?type=diverging&scheme=RdYlBu&n=7 
+		colors = {new TColor(TColor::GetFreeColorIndex(), 215,48,39), new TColor(TColor::GetFreeColorIndex(), 252,141,89), new TColor(TColor::GetFreeColorIndex(), 254,224,144), new TColor(TColor::GetFreeColorIndex(), 255,255,191), new TColor(TColor::GetFreeColorIndex(), 224,243,248), new TColor(TColor::GetFreeColorIndex(), 145,191,219), new TColor(TColor::GetFreeColorIndex(), 69,117,180)}; 
+
+		mycolors.reserve(colors.size()); 
+		for (auto color : colors) 
+		{
+			mycolors.push_back(color->GetNumber()); 
+		}
+
+		color = {{"Sig", mycolors[0]}, {"SigPart", mycolors[1]}, {"BkgDstarDs", mycolors[2]}, {"BkgDstarDsstar", mycolors[3]}, {"WS", mycolors[6]}, {"WSTau", mycolors[5]}, {"dataD2WS", mycolors[6]}, {"dataD2TauWS", mycolors[5]}}; 
 
 	}
 

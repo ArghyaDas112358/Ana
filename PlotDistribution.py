@@ -10,47 +10,16 @@ uproot.default_library = "np"
 
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/libFunctions.C+")#ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/libFunctions.C")
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/Drawing/ExperimentSpecificLayer.C")
-ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/FileManager/CFileManager.C")
+#ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/FileManager/CFileManager.C")
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/Drawing/CMS/tdrstyle.C")
+ROOT.gROOT.LoadMacro("FileFlow.h")
 ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/Drawing/RatioCanvas.h")
 #ROOT.setTDRStyle()
 #import CMS_lumi
 
 
-filemanager = ROOT.FileManager()
+ROOT.Ana.Init("v1")
 
-
-
-filemanager.AddItem("cutflowRef", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/TauCutflowReference.root", "ntuplizer/Taucutflow")
-filemanager.AddItem("cutflowRefEff", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/TauCutflowReference.root", "ntuplizer/Taucutflow_eff")
-
-filemanager.AddItem("cutflowGen", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/TauCutflowGen.root", "ntuplizer/Taucutflow")
-filemanager.AddItem("cutflowGenEff", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/TauCutflowGen.root", "ntuplizer/Taucutflow_eff")
-
-filemanager.AddItem("TMVAROC", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/trainingLarge/plots.root", "xgboOptimized/TMVA-like_ROC")
-filemanager.AddItem("bkgEff", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/trainingLarge/plots.root", "xgboOptimized/bkgEff(sigEff)")
-filemanager.AddItem("bkgEffEval", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/ROCsummary.root", "bkgEff(sigEff)")
-
-filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted_mva.root", "tree")
-filemanager.AddItem("ParkingBPHAllRun2018B", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPHRun2018B_converted_mva.root", "tree")
-
-filemanager.AddItem("SignalOfficialMC50M", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted_mva.root", "tree")
-filemanager.AddItem("ParkingBPH4-6Run2018B", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPH4-6Run2018B_converted_mva.root", "tree")
-
-filemanager.AddItem("signalTest", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "signalTest")
-filemanager.AddItem("backgroundTrain", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "backgroundTrain")
-filemanager.AddItem("backgroundTest", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "backgroundTest")
-filemanager.AddItem("DataBackground", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/DataVeryLarge_converted.root", "tree")
-
-filemanager.AddItem("ParkingBPH1Run2018D", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPH1Run2018D_converted_mva.root", "tree")
-
-filemanager.AddItem("MCSignalMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_tauDNN_mva.root", "tree"); 
-filemanager.AddItem("Data2018BFirst", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_tauDNN_mva.root", "tree"); 
-filemanager.AddItem("BkgDstarDsMMultipleTau", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau_tauDNN_mva.root", "tree"); 
-
-
-
-filemanager.OpenAllItems()
 
 bkgInSample = 9400000000*0.0000376
 sigInSample = 1130
@@ -58,13 +27,19 @@ sigInSample = 1130
 
 graphcollection = ROOT.vector('std::pair<TGraph*,TString>')()
 
+filesUsed = ["dataD2", "Sig", "BkgDstarDs"]
+
+
+for file in filesUsed: 
+	ROOT.Ana.filemanager.OpenItem(file)
+
 
 plotstats = False
 
 webpublication =False
 
 
-outputfolder = "./plots/BackgroundEstimateNew/"
+outputfolder = "./plots/BackgroundEstimateUpdate/"
 
 os.system("mkdir -p "+outputfolder)
 
@@ -182,7 +157,7 @@ if plotstats:
 
 # Web publication
 if (webpublication): 
-	webfolder = "/eos/home-m/mhuwiler/www/Analysis/BackgroundModellingNew/"
+	webfolder = "/eos/home-m/mhuwiler/www/Analysis/BackgroundModellingUpdate/"
 	os.system("mkdir -p "+webfolder)
 	webenginesource = "/eos/home-m/mhuwiler/software/php-plots/"
 	os.system("cp -r "+webenginesource+"res "+webfolder)
@@ -234,10 +209,10 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	dataframes = {}
 	histos = collections.defaultdict(dict)
-	dataframes["data"] = ROOT.RDataFrame(filemanager.GetItem("Data2018BFirst"))
+	dataframes["data"] = ROOT.RDataFrame(ROOT.Ana.filemanager.GetItem("dataD2"))
 	#data = ROOT.RDataFrame(filemanager.GetItem("ParkingBPH1Run2018D")) #"ParkingBPH4-6Run2018B"
-	dataframes["MC"] = ROOT.RDataFrame(filemanager.GetItem("MCSignalMMultipleTau"))
-	dataframes["DstarDs"] = ROOT.RDataFrame(filemanager.GetItem("BkgDstarDsMMultipleTau"))
+	dataframes["MC"] = ROOT.RDataFrame(ROOT.Ana.filemanager.GetItem("Sig"))
+	dataframes["DstarDs"] = ROOT.RDataFrame(ROOT.Ana.filemanager.GetItem("BkgDstarDs"))
 
 	SR = {}
 	CR = {}
@@ -417,7 +392,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 
 
-filemanager.CloseAll()
+ROOT.Ana.filemanager.CloseAll()
 
 
 

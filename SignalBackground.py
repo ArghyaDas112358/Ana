@@ -7,6 +7,7 @@ import math
 import collections
 import copy
 from argparse import ArgumentParser
+from ROOT import TCanvas, TH1D, TPad, TLegend
 
 
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/libFunctions.C+")#ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/libFunctions.C")
@@ -328,6 +329,48 @@ def AtomicDraw(histo, name, options = ""):
 	canv.Print(name)
 
 
+def PlotOverlay(frames, dataname, components, regions, variables, outfolder, drawlegend=True): 
+	# Plotting distributions over each other 
+	outfolder+="/overlay/"
+	os.system("mkdir -p "+outfolder)
+	factor = 1.1 # how much overhead to add to the histos 
+	components.remove(dataname)
+	for region in regions: 
+		for variable in variables: 
+			name = "{}_{}".format(variable, region)
+			canvas = TCanvas(name, "{} in {}".format(variable, region), 800, 600)
+
+			legend = TLegend(canvas.GetLeftMargin()+0.35, 
+	                         	1.-canvas.GetTopMargin()-.2, 
+	                            canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
+	                           	1.-canvas.GetTopMargin() )
+
+			data = frames[dataname][region].Histo1D(variable)
+			data.Draw()
+
+			maxes = [data.GetMaximum()]
+
+			for component in components: 
+				histo = frames[component][region].Histo1D(variable)
+				ROOT.SetOwnership(histo, 0)
+				histo.SetLineStyle(1) # plain
+				histo.SetLineWidth(2)
+				#histo.SetLineColor(Ana.color[component])
+				#histo.SetMarkerColor(Ana.color[component])
+				histo.Draw("HIST SAME")
+				maxes.append(histo.GetMaximum())
+				legend.AddEntry(histo.GetPtr(), component)
+
+			legend.Draw()
+
+			data.SetMaximum(factor*max(maxes))
+			canvas.Draw()
+
+			canvas.Print(outfolder+name+".png")
+			canvas.Print(outfolder+name+".pdf")
+
+
+
 
 #ROOT.gInterpreter.Declare("""
 #	double Rhomass2DUnrolled(Float_t rhomass1, Float_t rhomass2)
@@ -340,7 +383,7 @@ def AtomicDraw(histo, name, options = ""):
 if __name__ == "__main__":
 
 	parser = ArgumentParser(description="SignalBackground")
-	#parser.add_argument('path', action="store", type=str, help="Which time list you want to analyse")
+	#parser.add_argument("tool", action="store", type=str, help="Which time list you want to analyse")
 	parser.add_argument("--out", dest="out", action="store", type=str, default="BackgroundEstimateUpdate/", help="Directory where the plots shuld go")
 	parser.add_argument("--name", dest="name", action="store", type=str, default="test", help="Turn on debug output")
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v1", help="Which version (cycle) of files to run on")
@@ -377,7 +420,7 @@ if __name__ == "__main__":
 
 	regions = ["SR", "CR", "SB"]
 
-	variables = ["Rhomass2Dunrolled"]
+	variables = ["b_tau_rhomass1", "b_tau_rhomass2"]
 
 
 	nBins = 6
@@ -414,6 +457,10 @@ if __name__ == "__main__":
 	BackgroundShapeUnrolled(histosunrolled["dataD2"]["SR"], histosunrolled["dataD2"]["SB"], [histosunrolled["Sig"]["SR"], histosunrolled["BkgDstarDs"]["SR"]], outputfolder+"UnrolledRhoMass")
 
 	AtomicDraw(frames["Sig"]["SR"].Histo1D("b_tau_rhomass1"), outputfolder+"/SignalFromNew.png")
+
+
+	files = filesUsed
+	PlotOverlay(frames, "dataD2", files, regions, variables, outputfolder)
 
 	
 

@@ -7,7 +7,7 @@ import math
 import collections
 import copy
 from argparse import ArgumentParser
-from ROOT import TCanvas, TH1D, TPad, TLegend
+from ROOT import TCanvas, TH1D, TPad, TLegend, THStack
 
 
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/libFunctions.C+")#ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/libFunctions.C")
@@ -329,12 +329,13 @@ def AtomicDraw(histo, name, options = ""):
 	canv.Print(name)
 
 
-def PlotOverlay(frames, dataname, components, regions, variables, outfolder, drawlegend=True): 
+def PlotOverlay(frames, dataname, initialcomponents, regions, variables, outfolder, drawlegend=True): 
 	# Plotting distributions over each other 
 	outfolder+="/overlay/"
 	os.system("mkdir -p "+outfolder)
 	factor = 1.1 # how much overhead to add to the histos 
-	components.remove(dataname)
+	components = copy.deepcopy(initialcomponents)
+	if (dataname in components): components.remove(dataname)
 	for region in regions: 
 		for variable in variables: 
 			name = "{}_{}".format(variable, region)
@@ -368,10 +369,65 @@ def PlotOverlay(frames, dataname, components, regions, variables, outfolder, dra
 				legend.AddEntry(histo.GetPtr(), component)
 				i+=1
 
-			legend.Draw()
-			legend.SetBorderSize(1);
-			legend.SetMargin(0.3);
-			legend.SetTextSize(0.04);
+			if (drawlegend): legend.Draw()
+			legend.SetBorderSize(1)
+			legend.SetMargin(0.3)
+			legend.SetTextSize(0.04)
+
+			data.SetMaximum(factor*max(maxes))
+			canvas.Draw()
+
+			canvas.Print(outfolder+name+".png")
+			canvas.Print(outfolder+name+".pdf")
+
+
+def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder, drawlegend=True): 
+	# Plotting distributions over each other 
+	outfolder+="/stacked/"
+	os.system("mkdir -p "+outfolder)
+	factor = 1.1 # how much overhead to add to the histos 
+	components = copy.deepcopy(initialcomponents)
+	if (dataname in components): components.remove(dataname)
+	examplehist = ("hist", "hist", 100, 0., 1.5)
+	for region in regions: 
+		for variable in variables: 
+			name = "{}_{}".format(variable, region)
+			canvas = TCanvas(name, "{} in {}".format(variable, region), 800, 600)
+
+			legend = TLegend(canvas.GetLeftMargin()+0.35, 
+	                         	1.-canvas.GetTopMargin()-.2, 
+	                            canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
+	                           	1.-canvas.GetTopMargin() )
+
+			data = frames[dataname][region].Histo1D(examplehist, variable)
+			data.SetMarkerStyle(8) # Large scalable dot
+			data.SetMarkerSize(0.5)
+			data.SetLineColor(ROOT.kBlack)
+			#data.SetFillColor(ROOT.kBlack)
+			legend.AddEntry(data.GetPtr(), "data", "PE")
+			data.Draw("E")
+
+			stack = THStack("stack", "Background modelling")
+			for component in components: 
+				histo = frames[component][region].Histo1D(examplehist, variable)
+				ROOT.SetOwnership(histo, 0)
+				histo.SetLineStyle(1) # plain
+				histo.SetLineWidth(2)
+				histo.SetLineColor(Ana.color[component])
+				#histo.SetMarkerColor(Ana.color[component])
+				histo.SetFillStyle(1)
+				histo.SetFillColor(Ana.color[component])
+				stack.Add(histo.GetPtr())
+				legend.AddEntry(histo.GetPtr(), component, "F")
+
+			stack.Draw() #"SAME"
+			data.Draw("E SAME")
+			if (drawlegend): legend.Draw()
+			legend.SetBorderSize(1)
+			legend.SetMargin(0.3)
+			legend.SetTextSize(0.04)
+
+			maxes = [data.GetMaximum(), stack.GetMaximum()]
 
 			data.SetMaximum(factor*max(maxes))
 			canvas.Draw()
@@ -464,14 +520,16 @@ if __name__ == "__main__":
 	if options.debug: print(frames)
 
 
-	BackgroundShapeUnrolled(histosunrolled["dataD2"]["SR"], histosunrolled["dataD2"]["SB"], [histosunrolled["Sig"]["SR"], histosunrolled["BkgDstarDs"]["SR"]], outputfolder+"UnrolledRhoMass")
+	#BackgroundShapeUnrolled(histosunrolled["dataD2"]["SR"], histosunrolled["dataD2"]["SB"], [histosunrolled["Sig"]["SR"], histosunrolled["BkgDstarDs"]["SR"]], outputfolder+"UnrolledRhoMass")
 
-	AtomicDraw(frames["Sig"]["SR"].Histo1D("b_tau_rhomass1"), outputfolder+"/SignalFromNew.png")
+	#AtomicDraw(frames["Sig"]["SR"].Histo1D("b_tau_rhomass1"), outputfolder+"/SignalFromNew.png")
 
 	colors = [4, 3, 6, 7, 9]
 
 	files = filesUsed
 	PlotOverlay(frames, "dataD2", files, regions, variables, outputfolder)
+
+	PlotStack(frames, "dataD2", files, regions, variables, outputfolder)
 
 	
 

@@ -297,7 +297,10 @@ def GetEfficiencies(frames):
 	for key, value in list(inv_frames.items()): 
 		print(key)
 		for item in value: 
-			print(("\t{}: {}".format(item, frames[item][key].Count().GetValue())))
+			n = frames[item][key].Count().GetValue()
+			N = frames[item]["all"].Count().GetValue()
+			eff = n/N
+			print(("\t{}: {} ({}/{})".format(item, eff, n, N)))
 		print("\n")
 
 
@@ -331,7 +334,7 @@ def AtomicDraw(histo, name, options = ""):
 
 def PlotOverlay(frames, dataname, initialcomponents, regions, variables, outfolder, drawlegend=True): 
 	# Plotting distributions over each other 
-	outfolder+="/overlay/"
+	outfolder+="overlay/"
 	os.system("mkdir -p "+outfolder)
 	factor = 1.1 # how much overhead to add to the histos 
 	components = copy.deepcopy(initialcomponents)
@@ -383,13 +386,14 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, outfold
 
 def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder, drawlegend=True): 
 	# Plotting distributions over each other 
-	outfolder+="/stacked/"
+	outfolder+="stacked/"
 	os.system("mkdir -p "+outfolder)
 	factor = 1.1 # how much overhead to add to the histos 
 	components = copy.deepcopy(initialcomponents)
-	components.reverse()
 	if (dataname in components): components.remove(dataname)
-	examplehist = ("hist", "hist", 100, 0., 1.5)
+	components.reverse()
+	notYetDrawn = True
+	examplehist = ("hist", "hist", 40, 0., 1.5)
 	for region in regions: 
 		for variable in variables: 
 			name = "{}_{}".format(variable, region)
@@ -412,7 +416,10 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder
 			for component in components: 
 				histo = frames[component][region].Histo1D(examplehist, variable)
 				ROOT.SetOwnership(histo, 0)
-				histo.Scale(dirtynorm[component][region]/histo.Integral())
+				if "data" in component: 
+					histo.Scale(dirtynorm[component][region])
+				else: 
+					histo.Scale(dirtynorm[component][region]/histo.Integral())
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
 				histo.SetLineColor(Ana.color[component])
@@ -436,6 +443,18 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder
 
 			canvas.Print(outfolder+name+".png")
 			canvas.Print(outfolder+name+".pdf")
+
+			if ((not drawlegend) and notYetDrawn): 
+				canv = TCanvas("legendCanvas", "legenCanvas", 800, 600)
+				legend.SetX1(0.)
+				legend.SetY1(0.)
+				legend.SetX2(1.)
+				legend.SetY2(1.)
+				legend.Draw()
+				canv.Draw()
+				canv.Print(outfolder+"legend.png")
+				canv.Print(outfolder+"legend.pdf")
+				notYetDrawn = False
 
 
 
@@ -484,7 +503,7 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	filesUsed = ["dataD2", "Sig", "BkgDstarDs"]
+	filesUsed = ["dataD2", "SigPart", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"]
 
 	regions = ["SR", "CR", "SB"]
 
@@ -510,6 +529,7 @@ if __name__ == "__main__":
 
 	for item in filesUsed:  
 		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
+		frames[item]["all"] = samples[item]
 		for region in regions: 
 			cut = Ana.cut[region].GetTitle()
 			if (options.debug): print("Using following cut string (from TCut): {}".format(cut))
@@ -528,7 +548,9 @@ if __name__ == "__main__":
 
 	colors = [4, 3, 6, 7, 9]
 
-	dirtynorm = { "Sig":{"SR": 638., "SB": 300., "CR": 62.8}, "BkgDstarDs":{"SR": 615., "SB": 607., "CR": 186.}, "BkgDstarDsstar":{"SR": 1430., "SB": 800., "CR": 188.}, "dataD2WS":{"SR": 1., "SB": 1., "CR": 1.}, "dataD2TauWS":{"SR": 1., "SB": 1., "CR": 1.}} #TODO: properly get normalisation 
+	dirtynorm = { "Sig":{"SR": 638., "SB": 300., "CR": 62.8}, "SigPart":{"SR": 413., "SB": 262., "CR": 68.4}, "BkgDstarDs":{"SR": 615., "SB": 607., "CR": 186.}, "BkgDstarDsstar":{"SR": 1430., "SB": 800., "CR": 188.}, "dataD2WS":{"SR": 1., "SB": 1., "CR": 1.}, "dataD2TauWS":{"SR": 1.84, "SB": 1.84, "CR": 1.84}} #TODO: properly get normalisation 
+
+	GetEfficiencies(frames)
 
 	files = filesUsed
 	PlotOverlay(frames, "dataD2", files, regions, variables, outputfolder)

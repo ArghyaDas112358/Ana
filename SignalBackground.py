@@ -387,6 +387,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder
 	os.system("mkdir -p "+outfolder)
 	factor = 1.1 # how much overhead to add to the histos 
 	components = copy.deepcopy(initialcomponents)
+	components.reverse()
 	if (dataname in components): components.remove(dataname)
 	examplehist = ("hist", "hist", 100, 0., 1.5)
 	for region in regions: 
@@ -411,6 +412,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder
 			for component in components: 
 				histo = frames[component][region].Histo1D(examplehist, variable)
 				ROOT.SetOwnership(histo, 0)
+				histo.Scale(dirtynorm[component][region]/histo.Integral())
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
 				histo.SetLineColor(Ana.color[component])
@@ -420,8 +422,8 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder
 				stack.Add(histo.GetPtr())
 				legend.AddEntry(histo.GetPtr(), component, "F")
 
-			stack.Draw() #"SAME"
-			data.Draw("E SAME")
+			stack.Draw("HIST SAME") #"SAME"
+			data.Draw("E SAME") # Plot on top
 			if (drawlegend): legend.Draw()
 			legend.SetBorderSize(1)
 			legend.SetMargin(0.3)
@@ -526,10 +528,12 @@ if __name__ == "__main__":
 
 	colors = [4, 3, 6, 7, 9]
 
+	dirtynorm = { "Sig":{"SR": 638., "SB": 300., "CR": 62.8}, "BkgDstarDs":{"SR": 615., "SB": 607., "CR": 186.}, "BkgDstarDsstar":{"SR": 1430., "SB": 800., "CR": 188.}, "dataD2WS":{"SR": 1., "SB": 1., "CR": 1.}, "dataD2TauWS":{"SR": 1., "SB": 1., "CR": 1.}} #TODO: properly get normalisation 
+
 	files = filesUsed
 	PlotOverlay(frames, "dataD2", files, regions, variables, outputfolder)
 
-	PlotStack(frames, "dataD2", files, regions, variables, outputfolder)
+	PlotStack(frames, "dataD2", files, regions, variables, outputfolder, False)
 
 	
 

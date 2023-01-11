@@ -16,6 +16,8 @@ namespace Ana
 
 	// Constants being defined centrally 
 	Double_t mvaCutSR = 0.9; 
+	Double_t mvaCutSB = 0.0; 
+	Double_t mvaCutCR = -0.5; 
 
 
 	void Init(const TString& cycle = "") 
@@ -170,6 +172,8 @@ namespace Ana
 
 		cut.emplace(std::make_pair("base", "(b_Ds_vprob>0.1) && (b_D0_vprob>0.1)")); 
 		cut.emplace(std::make_pair("SR", cut["base"]+TCut(TString::Format("mvaScore>=%f", mvaCutSR)))); 
+		cut.emplace(std::make_pair("SB", cut["base"]+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutSB, mvaCutSR)))); 
+		cut.emplace(std::make_pair("CR", cut["base"]+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutCR, mvaCutSB)))); 
 
 	}
 

@@ -1,11 +1,12 @@
 #!/usr/bin/env python
-#from __future__ import division, print_function
+from __future__ import division, print_function
 
 import ROOT
 import os
 import math
 import collections
 import copy
+from argparse import ArgumentParser
 
 
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/libFunctions.C+")#ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/libFunctions.C")
@@ -19,38 +20,15 @@ ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/Drawing/RatioCanvas.h")
 from ROOT import Ana
 
 
-Ana.Init("v1")
-
-
-filesUsed = ["dataD2", "Sig", "BkgDstarDs"]
-
-regions = ["SR", "CR", "SB"]
-
-variables = ["Rhomass2Dunrolled"]
-
-
-nBins = 6
-rangeMin = 0.2 #0.37
-rangeMax = 1.5 #1.43
-
-
-for file in filesUsed: 
-	Ana.filemanager.OpenItem(file)
-
-
-plotstats = False
 
 webpublication =False
 
 
-outputfolder = "./plots/BackgroundEstimateUpdate/"
-
-os.system("mkdir -p "+outputfolder)
 
 def LoadFiles(filesUsed, cycle="v1"): # TODO: add into common python include 
 	Ana.Init(cycle)
 	for item in filesUsed: 
-		print("Opening file: {}".format(item)) 
+		print("Opening file: {}".format(item))
 		Ana.filemanager.OpenItem(item); 
 	return Ana.filemanager
 
@@ -94,7 +72,7 @@ def PromptYesNo(answerasbool=False):
 		# Inspired from Fabrice Couderc 
 		rep = ''
 		while not rep in [ 'yes', 'no' ]:
-			rep = raw_input( "(type 'yes' or 'no'): " ).lower()
+			rep = input( "(type 'yes' or 'no'): " ).lower()
 		if (answerasbool): 
 			if (rep == 'yes'): 
 				return True
@@ -134,9 +112,10 @@ def UnrollHist(histo2D, inverted=True):
 
 	nTotal = nx*ny
 
-	unrolled = ROOT.TH1D("unrolled", "unrolled", nTotal, 0, 100)
+	name = "unrolled"+histo2D.GetName()
+	unrolled = ROOT.TH1D(name, name, nTotal, 0, 100)
 
-	print "Nunmber of bins: {}, {}".format(nx, ny)
+	print("Nunmber of bins: {}, {}".format(nx, ny))
 
 	for i in range(0, nx):
 		for j in range(0, ny): # TODO: check overflow is handled properly 
@@ -148,7 +127,7 @@ def UnrollHist(histo2D, inverted=True):
 
 	return unrolled
 
-def BackgroundShapeUnrolled(reference, estimate, additionalhists): 
+def BackgroundShapeUnrolled(reference, estimate, additionalhists, filename): # Works as in PlotDistributions
 	#estimate = histos["data"]["CR"]
 	#reference = histos["data"]["SR"]
 	#additionalhists = [histos["MC"]["SR"], histos["DstarDs"]["SR"]]
@@ -290,8 +269,8 @@ def BackgroundShapeUnrolled(reference, estimate, additionalhists):
    
 	canvas.Update()
 
-	canvas.Print(outputfolder+quantity+".pdf")
-	if (webpublication): canvas.Print(webfolder+quantity+".png")
+	canvas.Print(filename+".pdf")
+	if (webpublication): canvas.Print(filename+".png")
 
 
 	#f = ROOT.TFile.Open(presentationfolder, "Update")
@@ -317,12 +296,9 @@ def GetEfficiencies(frames):
 	for key, value in list(inv_frames.items()): 
 		print(key)
 		for item in value: 
-			print("\t{}: {}".format(item, frames[item][key].Count().GetValue()))
+			print(("\t{}: {}".format(item, frames[item][key].Count().GetValue())))
 		print("\n")
 
-
-if plotstats: 
-	ROOT.gStyle.SetOptStat(1111111)
 
 # Web publication
 if (webpublication): 
@@ -360,13 +336,57 @@ def AtomicDraw(histo, name, options = ""):
 #	}
 #""")
 
-# Don't plot stats box
-ROOT.gStyle.SetOptStat(0) # TODO: ad option for stats
-ROOT.gROOT.SetBatch(1) # TODO: add option for batch processing
 
-for quantity in variables: 
-	print "Plotting {}".format(quantity)
+if __name__ == "__main__":
 
+	parser = ArgumentParser(description="SignalBackground")
+	#parser.add_argument('path', action="store", type=str, help="Which time list you want to analyse")
+	parser.add_argument("--out", dest="out", action="store", type=str, default="./plots/BackgroundEstimateUpdate/", help="Directory where the plots shuld go")
+	parser.add_argument("--name", dest="name", action="store", type=str, default="test", help="Turn on debug output")
+	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v1", help="Which version (cycle) of files to run on")
+	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
+	parser.add_argument("--force", dest="force", action="store_true", default=False, help="Turn on debug output")
+	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
+	parser.add_argument("--stats", dest="stats", action="store_true", default=False, help="Show stats box in ROOT")
+
+	options = parser.parse_args()
+
+	
+	if (options.batch): 
+		ROOT.gROOT.SetBatch(1) 
+
+	if (options.stats): 
+		ROOT.gStyle.SetOptStat(1111111)
+	else: 
+		# Don't plot stats box
+		ROOT.gStyle.SetOptStat(0) 
+
+	outputfolder = options.out
+
+	os.system("mkdir -p "+outputfolder)
+
+
+	# Global initialisations
+	Ana.Init("v1")
+
+
+	filesUsed = ["dataD2", "Sig", "BkgDstarDs"]
+
+	regions = ["SR", "CR", "SB"]
+
+	variables = ["Rhomass2Dunrolled"]
+
+
+	nBins = 6
+	rangeMin = 0.2 #0.37
+	rangeMax = 1.5 #1.43
+	
+
+	for file in filesUsed: 
+		Ana.filemanager.OpenItem(file)
+
+
+	# Starting script 
 	canvas = ROOT.RatioCanvas("romassunrolled", "Unrolled 2D distribution of rho mass", 800, 600)
 
 	samples = {}
@@ -378,24 +398,24 @@ for quantity in variables:
 		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
 		for region in regions: 
 			cut = Ana.cut[region].GetTitle()
-			print "Using following cut string (from TCut): {}".format(cut)
+			if (options.debug): print("Using following cut string (from TCut): {}".format(cut))
 			frames[item][region] = samples[item].Filter(cut)
 			ROOT.SetOwnership(frames[item][region], 0)
 			# For histogram legacy compatibility
 			histos[item][region] = frames[item][region].Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2")
 			histosunrolled[item][region] = UnrollHist(histos[item][region])
 
-	print(frames)
+	if options.debug: print(frames)
 
 
-	BackgroundShapeUnrolled(histosunrolled["dataD2"]["SR"], histosunrolled["dataD2"]["SB"], [histosunrolled["Sig"]["SR"], histosunrolled["BkgDstarDs"]["SR"]])
+	BackgroundShapeUnrolled(histosunrolled["dataD2"]["SR"], histosunrolled["dataD2"]["SB"], [histosunrolled["Sig"]["SR"], histosunrolled["BkgDstarDs"]["SR"]], outputfolder+"UnrolledRhoMass")
 
 	AtomicDraw(frames["Sig"]["SR"].Histo1D("b_tau_rhomass1"), outputfolder+"/SignalFromNew.png")
 
 	
 
 
-ROOT.Ana.filemanager.CloseAll()
+	Ana.filemanager.CloseAll()
 
 
 

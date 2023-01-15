@@ -457,6 +457,56 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder
 				notYetDrawn = False
 
 
+def PlotComparison(frames, referencename, comparisonname, regions, variables, outfolder, normalise=False): 
+	# Plotting distributions over each other 
+	outfolder+="comparisons/"
+	os.system("mkdir -p "+outfolder)
+	factor = 1.3 # how much overhead to add to the histos 
+	examplehist = ("hist", "hist", 40, 0., 1.5)
+	for region in regions: 
+		for variable in variables: 
+			name = "{}_{}".format(variable, region)
+			canvas = TCanvas(name, "{} in {}".format(variable, region), 800, 600)
+
+			legend = TLegend(canvas.GetLeftMargin()+0.55, 
+	                         	1.-canvas.GetTopMargin()-.11, 
+	                            canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
+	                           	1.-canvas.GetTopMargin() )
+
+			reference = frames[referencename][region].Histo1D(examplehist, variable)
+			reference.SetTitle("{}_{}".format(variable, region))
+			#reference.SetMarkerStyle(8) # Large scalable dot
+			#reference.SetMarkerSize(0.5)
+			reference.SetLineWidth(2)
+			reference.SetLineColor(ROOT.kBlue)
+			#reference.SetFillColor(ROOT.kBlack)
+			legend.AddEntry(reference.GetPtr(), referencename, "L")
+			reference.Draw("HIST E")
+
+			comparison = frames[comparisonname][region].Histo1D(examplehist, variable)
+			comparison.SetLineWidth(2)
+			comparison.SetLineColor(ROOT.kRed)
+			legend.AddEntry(comparison.GetPtr(), comparisonname, "L")
+			if normalise: 
+				comparison.Scale(dirtynorm[comparisonname][region])
+			else: 
+				comparison.Scale(reference.Integral()/comparison.Integral())
+
+			comparison.Draw("HIST SAME E") #"SAME"
+			legend.Draw()
+			legend.SetBorderSize(1)
+			legend.SetMargin(0.3)
+			legend.SetTextSize(0.04)
+
+			maxes = [reference.GetMaximum(), comparison.GetMaximum()]
+
+			reference.SetMaximum(factor*max(maxes))
+			canvas.Draw()
+
+			canvas.Print(outfolder+name+".png")
+			canvas.Print(outfolder+name+".pdf")
+
+
 
 
 #ROOT.gInterpreter.Declare("""
@@ -503,7 +553,7 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	filesUsed = ["dataD2", "SigPart", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"]
+	filesUsed = ["dataD2", "SigPart", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS", "Sig"]
 
 	regions = ["SR", "CR", "SB"]
 
@@ -529,7 +579,7 @@ if __name__ == "__main__":
 
 	for item in filesUsed:  
 		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
-		frames[item]["all"] = samples[item]
+		frames[item]["all"] = samples[item].Filter(Ana.cut["base"].GetTitle())
 		for region in regions: 
 			cut = Ana.cut[region].GetTitle()
 			if (options.debug): print("Using following cut string (from TCut): {}".format(cut))
@@ -553,9 +603,11 @@ if __name__ == "__main__":
 	GetEfficiencies(frames)
 
 	files = filesUsed
-	PlotOverlay(frames, "dataD2", files, regions, variables, outputfolder)
+	#PlotOverlay(frames, "dataD2", files, regions, variables, outputfolder)
 
-	PlotStack(frames, "dataD2", files, regions, variables, outputfolder, False)
+	#PlotStack(frames, "dataD2", files, regions, variables, outputfolder, False)
+
+	PlotComparison(frames, "dataD2", "Sig", regions, variables, outputfolder, False) #["t_B_mu_alpha", "t_B_m", "t_tau_m"]
 
 	
 

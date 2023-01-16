@@ -366,6 +366,12 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, outfold
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
 				histo.SetLineColor(colors[i])
+				#histo.SetFillStyle(3003)
+				#histo.SetFillColorAlpha(Ana.color[component], 0.4)
+				if "data" in component: 
+					histo.Scale(dirtynorm[component][region])
+				else: 
+					histo.Scale(dirtynorm[component][region]/histo.Integral())
 				#histo.SetMarkerColor(Ana.color[component])
 				histo.Draw("HIST SAME")
 				maxes.append(histo.GetMaximum())
@@ -446,10 +452,17 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder
 
 			if ((not drawlegend) and notYetDrawn): 
 				canv = TCanvas("legendCanvas", "legenCanvas", 800, 600)
+				data.SetMarkerSize(4.)
+				data.SetLineWidth(4)
 				legend.SetX1(0.)
 				legend.SetY1(0.)
 				legend.SetX2(1.)
 				legend.SetY2(1.)
+				legend.SetBorderSize(0)
+  				legend.SetFillColor(0)
+  				legend.SetFillStyle(0)
+				legend.SetTextFont(43)
+				legend.SetTextSize(canv.GetWh()/(2*stack.GetNhists()))
 				legend.Draw()
 				canv.Draw()
 				canv.Print(outfolder+"legend.png")
@@ -479,16 +492,22 @@ def PlotComparison(frames, referencename, comparisonname, regions, variables, ou
 			#reference.SetMarkerSize(0.5)
 			reference.SetLineWidth(2)
 			reference.SetLineColor(ROOT.kBlue)
-			#reference.SetFillColor(ROOT.kBlack)
+			reference.SetFillStyle(3356)
+			reference.SetFillColor(ROOT.kBlack)
 			legend.AddEntry(reference.GetPtr(), referencename, "L")
 			reference.Draw("HIST E")
 
 			comparison = frames[comparisonname][region].Histo1D(examplehist, variable)
 			comparison.SetLineWidth(2)
 			comparison.SetLineColor(ROOT.kRed)
+			comparison.SetFillStyle(3003)
+			comparison.SetFillColor(ROOT.kRed)
 			legend.AddEntry(comparison.GetPtr(), comparisonname, "L")
 			if normalise: 
-				comparison.Scale(dirtynorm[comparisonname][region])
+				if "data" in comparisonname: 
+					comparison.Scale(dirtynorm[comparisonname][region])
+				else: 
+					comparison.Scale(dirtynorm[comparisonname][region]/comparison.Integral())
 			else: 
 				comparison.Scale(reference.Integral()/comparison.Integral())
 
@@ -596,16 +615,16 @@ if __name__ == "__main__":
 
 	#AtomicDraw(frames["Sig"]["SR"].Histo1D("b_tau_rhomass1"), outputfolder+"/SignalFromNew.png")
 
-	colors = [4, 3, 6, 7, 9]
+	colors = [2, 3, 8, 4, 7, 6, 9, 1] #4, 3, 6, 7, 9
 
 	dirtynorm = { "Sig":{"SR": 638., "SB": 300., "CR": 62.8}, "SigPart":{"SR": 413., "SB": 262., "CR": 68.4}, "BkgDstarDs":{"SR": 615., "SB": 607., "CR": 186.}, "BkgDstarDsstar":{"SR": 1430., "SB": 800., "CR": 188.}, "dataD2WS":{"SR": 1., "SB": 1., "CR": 1.}, "dataD2TauWS":{"SR": 1.84, "SB": 1.84, "CR": 1.84}} #TODO: properly get normalisation 
 
 	GetEfficiencies(frames)
 
 	files = filesUsed
-	#PlotOverlay(frames, "dataD2", files, regions, variables, outputfolder)
+	PlotOverlay(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"], regions, variables, outputfolder)
 
-	#PlotStack(frames, "dataD2", files, regions, variables, outputfolder, False)
+	PlotStack(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"], regions, variables, outputfolder, False)
 
 	PlotComparison(frames, "dataD2", "Sig", regions, variables, outputfolder, False) #["t_B_mu_alpha", "t_B_m", "t_tau_m"]
 

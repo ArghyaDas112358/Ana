@@ -339,6 +339,7 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, outfold
 	factor = 1.1 # how much overhead to add to the histos 
 	components = copy.deepcopy(initialcomponents)
 	if (dataname in components): components.remove(dataname)
+	examplehist = ("hist", "hist", 40, 0., 1.5)
 	for region in regions: 
 		for variable in variables: 
 			name = "{}_{}".format(variable, region)
@@ -349,10 +350,11 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, outfold
 	                            canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
 	                           	1.-canvas.GetTopMargin() )
 
-			data = frames[dataname][region].Histo1D(variable)
+			data = frames[dataname][region].Histo1D(examplehist, variable)
 			data.SetMarkerStyle(8) # Large scalable dot
 			data.SetMarkerSize(0.5)
 			data.SetLineColor(ROOT.kBlack)
+			data.SetTitle("{}_{}".format(variable, region)) # TODO: Delete once the binning is centralised
 			#data.SetFillColor(ROOT.kBlack)
 			legend.AddEntry(data.GetPtr(), "data", "PE")
 			data.Draw("E")
@@ -414,6 +416,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder
 			data.SetMarkerStyle(8) # Large scalable dot
 			data.SetMarkerSize(0.5)
 			data.SetLineColor(ROOT.kBlack)
+			data.SetTitle("{}_{}".format(variable, region))
 			#data.SetFillColor(ROOT.kBlack)
 			legend.AddEntry(data.GetPtr(), "data", "PE")
 			data.Draw("E")
@@ -494,6 +497,7 @@ def PlotComparison(frames, referencename, comparisonname, regions, variables, ou
 			reference.SetLineColor(ROOT.kBlue)
 			reference.SetFillStyle(3356)
 			reference.SetFillColor(ROOT.kBlack)
+			reference.SetTitle("{}_{}".format(variable, region))
 			legend.AddEntry(reference.GetPtr(), referencename, "L")
 			reference.Draw("HIST E")
 
@@ -615,7 +619,7 @@ if __name__ == "__main__":
 
 	#AtomicDraw(frames["Sig"]["SR"].Histo1D("b_tau_rhomass1"), outputfolder+"/SignalFromNew.png")
 
-	colors = [2, 3, 8, 4, 7, 6, 9, 1] #4, 3, 6, 7, 9
+	colors = [2, 3, 8, 4, 6, 7, 9, 1] #4, 3, 6, 7, 9
 
 	dirtynorm = { "Sig":{"SR": 638., "SB": 300., "CR": 62.8}, "SigPart":{"SR": 413., "SB": 262., "CR": 68.4}, "BkgDstarDs":{"SR": 615., "SB": 607., "CR": 186.}, "BkgDstarDsstar":{"SR": 1430., "SB": 800., "CR": 188.}, "dataD2WS":{"SR": 1., "SB": 1., "CR": 1.}, "dataD2TauWS":{"SR": 1.84, "SB": 1.84, "CR": 1.84}} #TODO: properly get normalisation 
 

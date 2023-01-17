@@ -56,7 +56,7 @@ for color in mycolors:
 
 
 
-filename = 'fitDiagnosticsTest.root'
+filename = 'FitRegularNoSigCR.root'
 
 file = TFile(filename)
 
@@ -64,7 +64,7 @@ print file
 
 process = {
     'data':{'name':'data'},
-    'total_signal':{'name':'Sig'},
+    'total_signal':{'name':'SigPart'},
     'total_background':{'name':'total_background'}, 
     'comb_bkg':{'name':'bkg'},
     'part_bkg':{'name':'BkgDstarDs'},
@@ -94,6 +94,10 @@ for ftype in ['fit_s', 'fit_b']: #'prefit'
         for ii, var in process.iteritems():
     
             hist = file.Get('shapes_' + ftype + '/' + cr + '/' + var['name'])
+
+            if ((ii.find('signal')!=-1) and (cr == "SB")):
+                hist = file.Get('shapes_' + ftype + '/' + "CR" + '/' + var['name'])
+                hist.Scale(0.)
             
             print hist, 'shapes_' + ftype + '/' + cr + '/' + var['name']
 

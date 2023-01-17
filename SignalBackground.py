@@ -7,7 +7,7 @@ import math
 import collections
 import copy
 from argparse import ArgumentParser
-from ROOT import TCanvas, TH1D, TPad, TLegend, THStack
+from ROOT import TCanvas, TH1D, TPad, TLegend, THStack, RDataFrame
 
 
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/libFunctions.C+")#ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/libFunctions.C")
@@ -495,7 +495,7 @@ def PlotComparison(frames, referencename, comparisonname, regions, variables, ou
 			#reference.SetMarkerSize(0.5)
 			reference.SetLineWidth(2)
 			reference.SetLineColor(ROOT.kBlue)
-			reference.SetFillStyle(3356)
+			reference.SetFillStyle(3003)
 			reference.SetFillColor(ROOT.kBlack)
 			reference.SetTitle("{}_{}".format(variable, region))
 			legend.AddEntry(reference.GetPtr(), referencename, "L")
@@ -504,7 +504,7 @@ def PlotComparison(frames, referencename, comparisonname, regions, variables, ou
 			comparison = frames[comparisonname][region].Histo1D(examplehist, variable)
 			comparison.SetLineWidth(2)
 			comparison.SetLineColor(ROOT.kRed)
-			comparison.SetFillStyle(3003)
+			comparison.SetFillStyle(3356)
 			comparison.SetFillColor(ROOT.kRed)
 			legend.AddEntry(comparison.GetPtr(), comparisonname, "L")
 			if normalise: 
@@ -530,6 +530,31 @@ def PlotComparison(frames, referencename, comparisonname, regions, variables, ou
 			canvas.Print(outfolder+name+".pdf")
 
 
+from ROOT import TFile
+def LoadFile(filename, treename="ntuplizer/tree"): 
+	globals()[filename] = TFile.Open(filename, "READ")
+	tree = globals()[filename].Get(treename)
+	return tree
+
+
+def PrepareCustomFiles(dictf, regions): 
+	frames = collections.defaultdict(dict)
+	histos = collections.defaultdict(dict)
+	histosunrolled = collections.defaultdict(dict)
+	for key, item in dictf.iteritems(): 
+		frame = RDataFrame(item)
+		frames[key]["all"] = frame.Filter(Ana.cut["base"].GetTitle())
+		allregions = copy.deepcopy(regions)
+		allregions.append("all")
+		for region in regions: 
+			cut = Ana.cut[region].GetTitle()
+			if (options.debug): print("Using following cut string (from TCut): {}".format(cut))
+			frames[key][region] = frames[key]["all"].Filter(cut)
+			ROOT.SetOwnership(frames[key][region], 0)
+			# For histogram legacy compatibility
+			histos[key][region] = frames[key][region].Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2")
+			histosunrolled[key][region] = UnrollHist(histos[key][region])
+	return frames, histos, histosunrolled
 
 
 #ROOT.gInterpreter.Declare("""

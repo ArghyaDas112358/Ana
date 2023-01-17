@@ -403,7 +403,9 @@ for quantity in ["Rhomass2Dunrolled"]:
 	#canvas.SetRightMargin(0.12)
 	ROOT.gROOT.SetBatch(1)
 
-	filesUsed = ["dataD2", "Sig", "SigOld", "SigPart", "BkgDstarDs", "BkgDstar3pi", "BkgDstarDsstar"] #, "DstarDsMCfirst", "Data2018BFirst"
+	filesUsed = ["dataD2", "Sig", "SigPart", "BkgDstarDs", "BkgDstar3pi", "BkgDstarDsstar"] #, "DstarDsMCfirst", "Data2018BFirst"
+
+	mapping = {"dataD2":"dataD2", "Sig":"SigOld", "SigPart":"SigPartOld", "BkgDstarDs":"BkgDstarDs", "BkgDstar3pi":"BkgDstar3pi", "BkgDstarDsstar":"BkgDstarDsstar"}
 
 	filemap = {"data":"dataD2", "MC":"Sig", "DstarDs":"BkgDstarDs", "DstarDsstar":"BkgDstar3pi", "Dstar3pi":"BkgDstarDsstar"}
 
@@ -427,7 +429,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	for item in filesUsed: 
 		print("Opening file: {}".format(item)) 
-		filemanager.OpenItem(item); 
+		filemanager.OpenItem(mapping[item]); 
 
 
 	canvas = ROOT.TCanvas("romassunrolled", "Unrolled 2D distribution of rho mass", 800, 600)
@@ -486,7 +488,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 
 	for item in filesUsed:  
-		samples[item] = ROOT.RDataFrame(filemanager.GetItem(item))
+		samples[item] = ROOT.RDataFrame(filemanager.GetItem(mapping[item]))
 		for region in regions: 
 			frames[item][region] = samples[item].Filter(cut[region])
 			ROOT.SetOwnership(frames[item][region], 0)

@@ -33,6 +33,7 @@ class PyTFEval:
         self.Init()
 
     def Init(self): 
+        print("Using the following model: {}".format(self.savedmodel))
         self.sess = tf.Session(graph=tf.Graph())
         print("Inside session")
 

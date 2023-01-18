@@ -8,7 +8,7 @@
 class PythonInterface 
 {
 	public: 
-	PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *python_class, *object, *result;
+	PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *python_class, *object, *result, *initFunc;
 
 	PythonInterface(const std::string& moduleName) 
 	{
@@ -197,6 +197,29 @@ class PythonInterface
 
 
         return probSig;
+    }
+
+    void Initialise(std::string modelname,int givenbatchsize, int givennumpoints) 
+    {
+        initFunc = PyObject_GetAttrString (object, (char*)"Initialise");
+
+        PyObject *model = PyUnicode_FromStringAndSize(modelname.data(), modelname.size()); 
+        PyObject *batchsize = PyLong_FromLong(static_cast<long>(givenbatchsize)); 
+        PyObject *numpoints = PyLong_FromLong(static_cast<long>(givennumpoints)); 
+
+        PyObject *localArgs = PyTuple_New (3);
+        PyTuple_SetItem (localArgs, 0, model);
+        PyTuple_SetItem (localArgs, 1, batchsize);
+        PyTuple_SetItem (localArgs, 2, numpoints);
+
+        if (PyCallable_Check (initFunc))
+        {
+            result = PyObject_CallObject(initFunc, localArgs);
+        } 
+        else
+        {
+            cout << "Function is not callable !" << endl;
+        }
     }
 
     std::vector<double> castVector(std::vector<float> vec) 

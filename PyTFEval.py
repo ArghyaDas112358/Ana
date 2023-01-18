@@ -23,6 +23,16 @@ class PyTFEval:
         #os.environ['OPENBLAS_NUM_THREADS'] = '1'
         #os.environ['NUMEXPR_NUM_THREADS=1']
 
+        self.Init()        
+
+    def Initialise(self, model, batchsize, numpoints): 
+        self.savedmodel = model
+        self.BATCHSIZE = batchsize
+        self.NUM_POINT = numpoints
+
+        self.Init()
+
+    def Init(self): 
         self.sess = tf.Session(graph=tf.Graph())
         print("Inside session")
 
@@ -32,11 +42,6 @@ class PyTFEval:
         #mock_data = np.ones((BATCHSIZE,NUM_POINT,NFEATURES),dtype=float)
         self.mock_label = np.ones((self.BATCHSIZE,self.NUM_POINT),dtype=float)
         #mock_glob = np.ones((self.BATCHSIZE,NGLOB),dtype=float)
-
-    def Initialise(model, batchsize, numpoints): 
-        self.savedmodel = model
-        self.BATCHSIZE = batchsize
-        self.NUM_POINT = numpoints
         
     def pyArray (self, a):
         print ("Contents of a :")

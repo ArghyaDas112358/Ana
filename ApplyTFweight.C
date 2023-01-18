@@ -152,6 +152,8 @@ void ApplyTFweight(const TString& inIdentifier, const TString& outIndentifier, c
 
     //std::cout << "After making class" << std::endl; 
 
+    pyEvaluation.Initialise(std::string("./data/tautagger/"+Ana::model[version.Data()]+"/serialized"), 10, 20);
+
     int counter = 0; 
 
 	//auto histo1 = frame2.Histo1D("B_mass"); 

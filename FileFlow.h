@@ -19,6 +19,8 @@ namespace Ana
 
 	std::unordered_map<std::string, Int_t> color; 
 
+	std::unordered_map<std::string, std::string> model; 
+
 
 	// Constants being defined centrally 
 	Double_t mvaCutSR = 0.9; 
@@ -191,6 +193,8 @@ namespace Ana
 		}
 
 		color = {{"Sig", mycolors[0]}, {"SigPart", mycolors[1]}, {"BkgDstarDs", mycolors[2]}, {"BkgDstarDsstar", mycolors[3]}, {"WS", mycolors[6]}, {"WSTau", mycolors[5]}, {"dataD2WS", mycolors[6]}, {"dataD2TauWS", mycolors[5]}}; 
+
+		model = {{"v1", "batchsize_10"}, {"v2", "FirstTopUp"}, {"v3", "FirstTopUp"}}; 
 
 	}
 

@@ -252,6 +252,34 @@ Tau SelectGenmatchedTauCandidate(std::vector<Tau> collection) // For taking expl
 	return Tau(); 
 }
 
+double deltaR(double eta1, double phi1, double eta2, double phi2) 
+{
+	double deta = eta1 - eta2;
+    double dphi = std::abs(phi1 - phi2);
+    if (dphi > double(M_PI))
+      dphi -= double(2 * M_PI);
+    double dr2 = deta * deta + dphi * dphi;
+	return std::sqrt(dr2); 
+}
+
+std::vector<double> ComputeAlpha(ROOT::VecOps::RVec<float> muEta, ROOT::VecOps::RVec<float> muPhi, ROOT::VecOps::RVec<float> candidateEta, ROOT::VecOps::RVec<float> candidatePhi) // TODO: change to double 
+{
+	std::vector<double> result; 
+	result.reserve(candidateEta.size()); 
+	assert(muEta.size() > 0); 
+	assert(muEta.size() == muPhi.size()); 
+	assert(candidateEta.size() == candidatePhi.size()); 
+	double refEta = muEta.at(0); 
+	double refPhi = muPhi.at(0); 
+
+	for (unsigned int i=0; i<candidateEta.size(); i++) 
+	{
+		result.push_back(deltaR(refEta, refPhi, candidateEta.at(i), candidateEta.at(i))); 
+	}
+
+	return result; 
+}
+
 
 float findMin(const float& pt1, const float& pt2, const float& pt3)
 {
@@ -423,6 +451,8 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 	};
 
 	auto withDNN = dataframe.Define("v_tau_dnn_1", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx1", "TFscore"}).Define("v_tau_dnn_2", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx2", "TFscore"}).Define("v_tau_dnn_3", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx3", "TFscore"}); 
+
+	withDNN = withDNN.Define("v_B_mu_alpha", ComputeAlpha, {"BsDstarTauNu_mu1_eta", "BsDstarTauNu_mu1_phi", "BsDstarTauNu_B_eta", "BsDstarTauNu_B_phi"}).Define("v_tau_mu_alpha", ComputeAlpha, {"BsDstarTauNu_mu1_eta", "BsDstarTauNu_mu1_phi", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi"}).Define("v_Dstar_mu_alpha", ComputeAlpha, {"BsDstarTauNu_mu1_eta", "BsDstarTauNu_mu1_phi", "BsDstarTauNu_Ds_eta", "BsDstarTauNu_Ds_phi"}); // TODO: Remove once in ntuplizer
 
 	std::cout << "Added DNN variables" << std::endl; 
 

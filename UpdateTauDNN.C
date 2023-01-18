@@ -422,15 +422,15 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 		return mytaus; 
 	};
 
-	auto withDNN = dataframe.Define("v_tau_dnn_1", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx1", "TFscore"}).Define("v_tau_dnn_2", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx2", "TFscore"}).Define("v_tau_dnn_3", FillTauDNNscore, {"BsDstarTauNu_tau_pfidx3", "TFscore"}); 
+	auto withDNN = dataframe.Define("v_tau_dnn_1", FillTauDNNscore, {"v_tau_idx1", "TFscore"}).Define("v_tau_dnn_2", FillTauDNNscore, {"v_tau_idx2", "TFscore"}).Define("v_tau_dnn_3", FillTauDNNscore, {"v_tau_idx3", "TFscore"}); 
 
 	std::cout << "Added DNN variables" << std::endl; 
 
 	withDNN = withDNN.Define("v_tau_sumdnn", FillSumDNN, {"v_tau_dnn_1", "v_tau_dnn_2", "v_tau_dnn_3"}); 
 
-	withDNN = withDNN.Define("v_taucandidates", BuildTauCandidatesWithCount, {"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_q", "BsDstarTauNu_tau_mass", "BsDstarTauNu_tau_vprob", "BsDstarTauNu_tau_fls3d", "BsDstarTauNu_tau_lip", "BsDstarTauNu_tau_pfidx1", "BsDstarTauNu_tau_pfidx2", "BsDstarTauNu_tau_pfidx3", "v_tau_dnn_1", "v_tau_dnn_2", "v_tau_dnn_3", "v_tau_sumdnn", 
-																		"BsDstarTauNu_tau_alpha", "BsDstarTauNu_tau_fl3d", "BsDstarTauNu_tau_pvip", "BsDstarTauNu_tau_pvips", "BsDstarTauNu_tau_max_dr_3prong", "BsDstarTauNu_tau_pi1_pt", "BsDstarTauNu_tau_pi1_eta", "BsDstarTauNu_tau_pi1_phi", "BsDstarTauNu_tau_pi2_pt", "BsDstarTauNu_tau_pi2_eta", "BsDstarTauNu_tau_pi2_phi", "BsDstarTauNu_tau_pi3_pt", "BsDstarTauNu_tau_pi3_eta", "BsDstarTauNu_tau_pi3_phi", "BsDstarTauNu_tau_rhomass1", "BsDstarTauNu_tau_rhomass2", "v_tau_match1", "v_tau_match2", "v_tau_match3"});
-																		//"BsDstarTauNu_tau_alpha", "BsDstarTauNu_tau_fl3d", "BsDstarTauNu_tau_pvip", "BsDstarTauNu_tau_pvips", "BsDstarTauNu_tau_max_dr_3prong", "BsDstarTauNu_tau_pi1_pt", "BsDstarTauNu_tau_pi1_eta", "BsDstarTauNu_tau_pi1_phi", "BsDstarTauNu_tau_pi2_pt", "BsDstarTauNu_tau_pi2_eta", "BsDstarTauNu_tau_pi2_phi", "BsDstarTauNu_tau_pi3_pt", "BsDstarTauNu_tau_pi3_eta", "BsDstarTauNu_tau_pi3_phi", "BsDstarTauNu_tau_rhomass1", "BsDstarTauNu_tau_rhomass2"});
+	withDNN = withDNN.Define("v_taucandidates", BuildTauCandidatesWithCount, {"v_tau_pt", "v_tau_eta", "v_tau_phi", "v_tau_q", "v_tau_m", "v_tau_vprob", "v_tau_fsig", "v_tau_lip", "v_tau_idx1", "v_tau_idx2", "v_tau_idx3", "v_tau_dnn_1", "v_tau_dnn_2", "v_tau_dnn_3", "v_tau_sumdnn", 
+																		"v_tau_alpha", "v_tau_fl", "v_tau_pvip", "v_tau_pvipsig", "v_tau_legacyMaxdr", "v_tau_pi1pt", "v_tau_pi1eta", "v_tau_pi1phi", "v_tau_pi2pt", "v_tau_pi2eta", "v_tau_pi2phi", "v_tau_pi3pt", "v_tau_pi3eta", "v_tau_pi3phi", "v_tau_rhomass1", "v_tau_rhomass2", "v_tau_match1", "v_tau_match2", "v_tau_match3"});
+																		//"v_tau_alpha", "v_tau_fl3d", "v_tau_pvip", "v_tau_pvips", "v_tau_max_dr_3prong", "v_tau_pi1_pt", "v_tau_pi1_eta", "v_tau_pi1_phi", "v_tau_pi2_pt", "v_tau_pi2_eta", "v_tau_pi2_phi", "v_tau_pi3_pt", "v_tau_pi3_eta", "v_tau_pi3_phi", "v_tau_rhomass1", "v_tau_rhomass2"});
 	
 	withDNN = withDNN.Define("b_tau", SelectTauCandidate, {"v_taucandidates"})
 				.Define("b_tau_pt", Tau::WritePt, {"b_tau"})

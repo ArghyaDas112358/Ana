@@ -378,9 +378,38 @@ def InitialEffs(lumi):
 
 	expected = {}
 	for key, eff in effs.iteritems(): 
-	 	expected[key]= bbxsec*fB0*2.*Br_Dstar_D0pi*Br_D0_KPI*eff["br"]*eff["geneff"]*eff["eff"]
+	 	expected[key]= lumi*bbxsec*fB0*2.*Br_Dstar_D0pi*Br_D0_KPI*1000.*eff["br"]*eff["geneff"] #*eff["eff"]
 
 	return expected
+
+
+def getEff(n, N): 
+	eff = float(n)/float(N)
+	#print eff
+	err = sqrt(eff*(1.-eff)/float(N))
+	#print err
+	#return eff, err
+	return ufloat(eff, err)
+
+def getEffFromInfo(tree): 
+	frame = RDataFrame(tree)
+
+	n = frame.Sum("numSelected").GetValue()
+
+	N = frame.Sum("numTotal").GetValue()
+
+	eff = getEff(n, N)
+	return eff
+
+def CompleteEffsFromFile(effs, version, filemanager): 
+	for key, eff in effs.iteritems(): 
+		print(key)
+		file = TFile.Open(filemanager.GetFile(key+"_ntuple"), "READ")
+		efftree = file.Get("ntuplizer/EffCalc")
+		print(efftree)
+		effs[key] = eff*getEffFromInfo(efftree)
+		file.Close()
+	return effs
 	
 
 
@@ -745,6 +774,10 @@ if __name__ == "__main__":
 	value = InitialEffs(40.)
 
 	print(value)
+
+	selectioneffs = CompleteEffsFromFile(value, "v3", Ana.filemanager)
+
+	print(selectioneffs)
 
 	files = filesUsed
 	PlotOverlay(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"], regions, variables, outputfolder)

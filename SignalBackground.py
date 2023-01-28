@@ -6,8 +6,11 @@ import os
 import math
 import collections
 import copy
+import json
 from argparse import ArgumentParser
 from ROOT import TCanvas, TH1D, TPad, TLegend, THStack, RDataFrame
+from uncertainties import ufloat
+from uncertainties.umath import * 
 
 
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/libFunctions.C+")#ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/libFunctions.C")
@@ -304,6 +307,83 @@ def GetEfficiencies(frames):
 		print("\n")
 
 
+def getEff(n, N): 
+	eff = float(n)/float(N)
+	#print eff
+	err = sqrt(eff*(1.-eff)/float(N))
+	#print err
+	#return eff, err
+	return ufloat(eff, err)
+
+
+def ComputeEfficiencies(frames): 
+	efficiencies = collections.defaultdict(dict)
+	for item, content in frames.iteritems(): 
+		#print("{}:".format(item))
+		for key, value in content.iteritems(): 
+			n = frames[item][key].Count().GetValue()
+			N = frames[item]["all"].Count().GetValue()
+			# see: chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://indico.cern.ch/event/66256/contributions/2071577/attachments/1017176/1447814/EfficiencyErrors.pdf
+			ne = ufloat(n, sqrt(n))
+			NE = ufloat(N, sqrt(N))
+			efferr = ne/NE
+			#print(efferr)
+			#print(("\t{}: {} ({}/{})".format(key, eff, n, N)))
+			efficiencies[item][key] = getEff(n, N) #ufloat(eff, err)
+	return efficiencies
+
+
+def PrintEfficiencies(effs): 
+	for item, content in effs.iteritems(): 
+		print("{}:".format(item))
+		for key, value in content.iteritems(): 
+			print(("\t{}: {}".format(key, value)))
+
+
+def DumpEffs(effs, path): 
+	effsForWrite = collections.defaultdict(dict)
+	for item, content in effs.iteritems(): 
+		for key, value in content.iteritems(): 
+			eff = effs[item][key]
+			effsForWrite[item][key] = (eff.n, eff.s)
+	with open(path, "w") as file: 
+		json.dump(effsForWrite, file, ensure_ascii=False, encoding="utf8", sort_keys=False)
+
+
+def ReadEffs(path): 
+	effs = collections.defaultdict(dict)
+	with open(path, "r") as file: 
+		effsFromFile = json.load(file, encoding="utf8")
+		for item, content in effsFromFile.iteritems(): 
+			for key, value in content.iteritems(): 
+				eff = effsFromFile[item][key]
+				assert(len(eff)==2)
+				effs[item][key] = ufloat(eff[0], eff[1])
+	return effs
+
+
+def InitialEffs(lumi): 
+	# Computing the initial efficiencies 
+	#effs = collections.defaultdict(dict)
+	# Efficiencies relative to the 
+	effs = { "Sig": {"br":ufloat(1.84e-2, 2.2e-3), "geneff":ufloat(3.72e-4, 0.), "eff":ufloat(1.4e-3, 0.)},
+		"BkgDstarDs": {"br":ufloat(8e-3, 1.1e-3), "geneff":ufloat(1.458e-3, 0.), "eff":ufloat(1.4e-3, 0.)},
+		"BkgDstarDsstar": {"br":ufloat(1.77e-2, 1.4e-3), "geneff":ufloat(5.38e-4, 0.), "eff":ufloat(1.4e-3, 0.)}, 
+		"BkgDstar3pir": {"br":ufloat(7.21e-3, 2.9e-4), "geneff":ufloat(2.e-5, 0.), "eff":ufloat(1.4e-3, 0.)} # TODO: obtain ana eff from other script
+	}
+	bbxsec = ufloat(4.72e8, 0.)
+	fB0 = fB = ufloat(0.404, 0.006)
+	Br_Dstar_D0pi = ufloat(6.77e-1, 0.)
+	Br_D0_KPI = ufloat(3.88e-2, 0.)
+
+	expected = {}
+	for key, eff in effs.iteritems(): 
+	 	expected[key]= bbxsec*fB0*2.*Br_Dstar_D0pi*Br_D0_KPI*eff["br"]*eff["geneff"]*eff["eff"]
+
+	return expected
+	
+
+
 # Web publication
 if (webpublication): 
 	webfolder = "/eos/home-m/mhuwiler/www/Analysis/BackgroundModellingUpdate/"
@@ -374,6 +454,7 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, outfold
 					histo.Scale(dirtynorm[component][region])
 				else: 
 					histo.Scale(dirtynorm[component][region]/histo.Integral())
+					print("normfactor: {} {}".format(dirtynorm[component][region]/histo.Integral(), histo.Integral()))
 				#histo.SetMarkerColor(Ana.color[component])
 				histo.Draw("HIST SAME")
 				maxes.append(histo.GetMaximum())
@@ -429,6 +510,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder
 					histo.Scale(dirtynorm[component][region])
 				else: 
 					histo.Scale(dirtynorm[component][region]/histo.Integral())
+					print("normfactor: {} {}".format(dirtynorm[component][region]/histo.Integral(), histo.Integral()))
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
 				histo.SetLineColor(Ana.color[component])
@@ -649,6 +731,20 @@ if __name__ == "__main__":
 	dirtynorm = { "Sig":{"SR": 638., "SB": 300., "CR": 62.8}, "SigPart":{"SR": 413., "SB": 262., "CR": 68.4}, "BkgDstarDs":{"SR": 615., "SB": 607., "CR": 186.}, "BkgDstarDsstar":{"SR": 1430., "SB": 800., "CR": 188.}, "dataD2WS":{"SR": 1., "SB": 1., "CR": 1.}, "dataD2TauWS":{"SR": 1.84, "SB": 1.84, "CR": 1.84}} #TODO: properly get normalisation 
 
 	GetEfficiencies(frames)
+
+	effs = ComputeEfficiencies(frames)
+
+	PrintEfficiencies(effs)
+
+	DumpEffs(effs, "efficienciesTest.json")
+
+	newEffs = ReadEffs("efficienciesTest.json")
+
+	PrintEfficiencies(newEffs)
+
+	value = InitialEffs(40.)
+
+	print(value)
 
 	files = filesUsed
 	PlotOverlay(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"], regions, variables, outputfolder)

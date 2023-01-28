@@ -369,7 +369,7 @@ def InitialEffs(lumi):
 	effs = { "Sig": {"br":ufloat(1.84e-2, 2.2e-3), "geneff":ufloat(3.72e-4, 0.), "eff":ufloat(1.4e-3, 0.)},
 		"BkgDstarDs": {"br":ufloat(8e-3, 1.1e-3), "geneff":ufloat(1.458e-3, 0.), "eff":ufloat(1.4e-3, 0.)},
 		"BkgDstarDsstar": {"br":ufloat(1.77e-2, 1.4e-3), "geneff":ufloat(5.38e-4, 0.), "eff":ufloat(1.4e-3, 0.)}, 
-		"BkgDstar3pir": {"br":ufloat(7.21e-3, 2.9e-4), "geneff":ufloat(2.e-5, 0.), "eff":ufloat(1.4e-3, 0.)} # TODO: obtain ana eff from other script
+		"BkgDstar3pi": {"br":ufloat(7.21e-3, 2.9e-4), "geneff":ufloat(2.e-5, 0.), "eff":ufloat(1.4e-3, 0.)} # TODO: obtain ana eff from other script
 	}
 	bbxsec = ufloat(4.72e8, 0.)
 	fB0 = fB = ufloat(0.404, 0.006)
@@ -402,13 +402,20 @@ def getEffFromInfo(tree):
 	return eff
 
 def CompleteEffsFromFile(effs, version, filemanager): 
+	anaeffs = {"Sig":ufloat(1.4e-3, 0.), "BkgDstarDs":ufloat(1.44e-3, 0.), "BkgDstarDsstar":ufloat(2.26e-3, 0.), "BkgDstar3pi":ufloat(5.3e-4, 0.)}
 	for key, eff in effs.iteritems(): 
 		print(key)
-		file = TFile.Open(filemanager.GetFile(key+"_ntuple"), "READ")
-		efftree = file.Get("ntuplizer/EffCalc")
-		print(efftree)
-		effs[key] = eff*getEffFromInfo(efftree)
-		file.Close()
+		
+		efficiency = 1.
+		try: 
+			file = TFile.Open(filemanager.GetFile(key+"_ntuple"), "READ")
+			efftree = file.Get("ntuplizer/EffCalc")
+			print(efftree)
+			efficiency = getEffFromInfo(efftree)
+			file.Close()
+		except: 
+			efficiency = anaeffs[key]
+		effs[key] = eff*efficiency
 	return effs
 	
 

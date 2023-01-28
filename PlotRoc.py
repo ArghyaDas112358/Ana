@@ -22,7 +22,7 @@ plotstats = False
 webpublication =False
 
 
-outputfolder = "./plots/MVAFigures/"
+outputfolder = "./plots/MVAFiguresUpdate/"
 
 os.system("mkdir -p "+outputfolder)
 
@@ -259,8 +259,8 @@ if __name__ == "__main__":
 	bottommargin = 0.15
 	topmargin = 0.1
 
-	cut1 = 0.9
-	cut2 = 0.0
+	cut1 = 0.5
+	cut2 = -0.2
 	cut3 = -0.5
 
 	ROOT.gStyle.SetPadTickY(0) # Disactivate axes on both sides
@@ -354,9 +354,10 @@ if __name__ == "__main__":
 	#line3.SetLineStyle(7)
 	line3.Draw()
 
-	label1 = ROOT.TPaveText(0.35, 0.6, 0.45, 0.7)
-	label1.AddText("modelling")
+	label1 = ROOT.TPaveText(0.33, 0.55, 0.4, 0.75)
+	label1.AddText("control")
 	label1.AddText("region")
+	label1.AddText("(CR)")
 	label1.SetBorderSize(0)
   	label1.SetFillColor(0)
   	label1.SetFillColorAlpha(ROOT.kWhite, 0.); 
@@ -364,9 +365,9 @@ if __name__ == "__main__":
   	label1.SetTextColor(ROOT.kGray+2)
 	label1.Draw()
 
-	label2 = ROOT.TPaveText(0.6, 0.5, 0.75, 0.6)
-	label2.AddText("control")
-	label2.AddText("region")
+	label2 = ROOT.TPaveText(0.5, 0.63, 0.6, 0.7)
+	label2.AddText("sideband (SB)")
+	#label2.AddText("region")
 	label2.SetBorderSize(0)
   	label2.SetFillColor(0)
   	label2.SetFillColorAlpha(ROOT.kWhite, 0.); 
@@ -374,18 +375,32 @@ if __name__ == "__main__":
   	label2.SetTextColor(ROOT.kGray+2)
 	label2.Draw()
 
-	label3 = ROOT.TPaveText(0.83, 0.7, 0.93, 0.8)  
-	text = label3.AddText("signal region")
+	label3 = ROOT.TPaveText(0.7, 0.6, 0.86, 0.7)  
+	text = label3.AddText("signal")
+	label3.AddText("region (SR)")
 	#label3.AddText("signal")
 	#label3.AddText("region")
 	#label3.SetAllWith("Angle", 90)
-	text.SetTextAngle(90)
+	#text.SetTextAngle(90)
 	label3.SetBorderSize(0)
   	label3.SetFillColor(0)
   	label3.SetFillColorAlpha(ROOT.kWhite, 0.); 
   	label3.SetTextSize(0.04)
   	label3.SetTextColor(ROOT.kGray+2)
 	label3.Draw()
+
+	#label3 = ROOT.TPaveText(0.83, 0.7, 0.93, 0.8)  
+	#text = label3.AddText("signal region")
+	##label3.AddText("signal")
+	##label3.AddText("region")
+	##label3.SetAllWith("Angle", 90)
+	#text.SetTextAngle(90)
+	#label3.SetBorderSize(0)
+ 	#label3.SetFillColor(0)
+ 	#label3.SetFillColorAlpha(ROOT.kWhite, 0.); 
+ 	#label3.SetTextSize(0.04)
+ 	#label3.SetTextColor(ROOT.kGray+2)
+	#label3.Draw()
 
 	fomcanvas.Update()
 	fomcanvas.Print(outputfolder+"Fom.pdf")

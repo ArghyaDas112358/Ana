@@ -417,6 +417,17 @@ def CompleteEffsFromFile(effs, version, filemanager):
 			efficiency = anaeffs[key]
 		effs[key] = eff*efficiency
 	return effs
+
+
+def MultiplyFinalEffs(effs, regioneffs):
+	for item, content in regioneffs.iteritems(): 
+		print("{}:".format(item))
+		for key, value in content.iteritems(): 
+			try:
+				regioneffs[item][key] = effs[item]*regioneffs[item][key]
+			except:
+				regioneffs[item][key] = -1.
+	return regioneffs
 	
 
 
@@ -448,7 +459,7 @@ def AtomicDraw(histo, name, options = ""):
 	canv.Print(name)
 
 
-def PlotOverlay(frames, dataname, initialcomponents, regions, variables, outfolder, drawlegend=True): 
+def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields, outfolder, drawlegend=True): 
 	# Plotting distributions over each other 
 	outfolder+="overlay/"
 	os.system("mkdir -p "+outfolder)
@@ -486,11 +497,8 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, outfold
 				histo.SetLineColor(colors[i])
 				#histo.SetFillStyle(3003)
 				#histo.SetFillColorAlpha(Ana.color[component], 0.4)
-				if "data" in component: 
-					histo.Scale(dirtynorm[component][region])
-				else: 
-					histo.Scale(dirtynorm[component][region]/histo.Integral())
-					print("normfactor: {} {}".format(dirtynorm[component][region]/histo.Integral(), histo.Integral()))
+				if not (yields[component][region] == -1.): 
+					histo.Scale(yields[component][region].nominal_value/histo.Integral())
 				#histo.SetMarkerColor(Ana.color[component])
 				histo.Draw("HIST SAME")
 				maxes.append(histo.GetMaximum())
@@ -509,7 +517,7 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, outfold
 			canvas.Print(outfolder+name+".pdf")
 
 
-def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder, drawlegend=True): 
+def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, outfolder, drawlegend=True): 
 	# Plotting distributions over each other 
 	outfolder+="stacked/"
 	os.system("mkdir -p "+outfolder)
@@ -542,11 +550,8 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder
 			for component in components: 
 				histo = frames[component][region].Histo1D(examplehist, variable)
 				ROOT.SetOwnership(histo, 0)
-				if "data" in component: 
-					histo.Scale(dirtynorm[component][region])
-				else: 
-					histo.Scale(dirtynorm[component][region]/histo.Integral())
-					print("normfactor: {} {}".format(dirtynorm[component][region]/histo.Integral(), histo.Integral()))
+				if not (yields[component][region] == -1.): 
+					histo.Scale(yields[component][region].nominal_value/histo.Integral())
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
 				histo.SetLineColor(Ana.color[component])
@@ -764,8 +769,6 @@ if __name__ == "__main__":
 
 	colors = [2, 3, 8, 4, 6, 7, 9, 1] #4, 3, 6, 7, 9
 
-	dirtynorm = { "Sig":{"SR": 638., "SB": 300., "CR": 62.8}, "SigPart":{"SR": 413., "SB": 262., "CR": 68.4}, "BkgDstarDs":{"SR": 615., "SB": 607., "CR": 186.}, "BkgDstarDsstar":{"SR": 1430., "SB": 800., "CR": 188.}, "dataD2WS":{"SR": 1., "SB": 1., "CR": 1.}, "dataD2TauWS":{"SR": 1.84, "SB": 1.84, "CR": 1.84}} #TODO: properly get normalisation 
-
 	GetEfficiencies(frames)
 
 	effs = ComputeEfficiencies(frames)
@@ -786,10 +789,14 @@ if __name__ == "__main__":
 
 	print(selectioneffs)
 
-	files = filesUsed
-	PlotOverlay(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"], regions, variables, outputfolder)
+	regioneffs = MultiplyFinalEffs(selectioneffs, effs)
 
-	PlotStack(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"], regions, variables, outputfolder, False)
+	PrintEfficiencies(regioneffs)
+
+	files = filesUsed
+	PlotOverlay(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"], regions, variables, regioneffs, outputfolder)
+
+	PlotStack(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"], regions, variables, regioneffs, outputfolder, False)
 
 	PlotComparison(frames, "dataD2", "Sig", regions, variables, outputfolder, False) #["t_B_mu_alpha", "t_B_m", "t_tau_m"]
 

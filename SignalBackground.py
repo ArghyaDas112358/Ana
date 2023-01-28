@@ -366,10 +366,11 @@ def InitialEffs(lumi):
 	# Computing the initial efficiencies 
 	#effs = collections.defaultdict(dict)
 	# Efficiencies relative to the 
-	effs = { "Sig": {"br":ufloat(1.84e-2, 2.2e-3), "geneff":ufloat(3.72e-4, 0.), "eff":ufloat(1.4e-3, 0.)},
+	effs = { "Sig": {"br":ufloat(1.84e-2, 2.2e-3), "geneff":ufloat(3.72e-4, 0.), "eff":ufloat(1.4e-3, 0.)}, # TODO: group these with the others into another file 
 		"BkgDstarDs": {"br":ufloat(8e-3, 1.1e-3), "geneff":ufloat(1.458e-3, 0.), "eff":ufloat(1.4e-3, 0.)},
 		"BkgDstarDsstar": {"br":ufloat(1.77e-2, 1.4e-3), "geneff":ufloat(5.38e-4, 0.), "eff":ufloat(1.4e-3, 0.)}, 
-		"BkgDstar3pi": {"br":ufloat(7.21e-3, 2.9e-4), "geneff":ufloat(2.e-5, 0.), "eff":ufloat(1.4e-3, 0.)} # TODO: obtain ana eff from other script
+		"BkgDstar3pi": {"br":ufloat(7.21e-3, 2.9e-4), "geneff":ufloat(2.e-5, 0.), "eff":ufloat(1.4e-3, 0.)}, # TODO: obtain ana eff from other script
+		"SigPart": {"br":ufloat(1.84e-2, 2.2e-3), "geneff":ufloat(3.72e-4, 0.), "eff":ufloat(1.4e-3, 0.)},
 	}
 	bbxsec = ufloat(4.72e8, 0.)
 	fB0 = fB = ufloat(0.404, 0.006)
@@ -402,7 +403,7 @@ def getEffFromInfo(tree):
 	return eff
 
 def CompleteEffsFromFile(effs, version, filemanager): 
-	anaeffs = {"Sig":ufloat(1.4e-3, 0.), "BkgDstarDs":ufloat(1.44e-3, 0.), "BkgDstarDsstar":ufloat(2.26e-3, 0.), "BkgDstar3pi":ufloat(5.3e-4, 0.)}
+	anaeffs = {"Sig":ufloat(1.4e-3, 0.), "BkgDstarDs":ufloat(1.44e-3, 0.), "BkgDstarDsstar":ufloat(2.26e-3, 0.), "BkgDstar3pi":ufloat(5.3e-4, 0.), "SigPart":ufloat(1.27e-3, 0.)}
 	for key, eff in effs.iteritems(): 
 		print(key)
 		
@@ -781,7 +782,7 @@ if __name__ == "__main__":
 
 	PrintEfficiencies(newEffs)
 
-	value = InitialEffs(40.)
+	value = InitialEffs(14.5)
 
 	print(value)
 

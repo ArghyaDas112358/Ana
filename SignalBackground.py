@@ -533,7 +533,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 	if (dataname in components): components.remove(dataname)
 	components.reverse()
 	notYetDrawn = True
-	examplehist = ("hist", "hist", 40, 0., 1.5)
+	examplehist = ("hist", "hist", 20, 0., 1.5)
 	for region in regions: 
 		for variable in variables: 
 			name = "{}_{}".format(variable, region)

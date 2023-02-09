@@ -22,7 +22,7 @@ plotstats = False
 webpublication =False
 
 
-outputfolder = "./plots/MVAFigures/"
+outputfolder = "./plots/MVAFiguresUpdate/"
 
 os.system("mkdir -p "+outputfolder)
 
@@ -251,7 +251,7 @@ if __name__ == "__main__":
 	print sigeffcorr 
 	print bkgeffcorr
 
-	fom = GetFom(sigeffcorr, bkgeffcorr, 626, 2698) #626, 2698 updated values from Oct. 2022
+	fom = GetFom(sigeffcorr, bkgeffcorr, 118, 1296-118) #626, 2698 updated values from Oct. 2022
 
 	# Margins 
 	leftmargin = 0.1
@@ -259,8 +259,8 @@ if __name__ == "__main__":
 	bottommargin = 0.15
 	topmargin = 0.1
 
-	cut1 = 0.9
-	cut2 = 0.0
+	cut1 = 0.5
+	cut2 = -0.2
 	cut3 = -0.5
 
 	ROOT.gStyle.SetPadTickY(0) # Disactivate axes on both sides
@@ -276,14 +276,15 @@ if __name__ == "__main__":
 
 	fomcanvas = ROOT.TCanvas("fomcanvas", "fomcanvas", 800, 600)
 	fomcanvas.SetMargin(leftmargin, rightmargin, bottommargin, topmargin); 
-	signalDist = ROOT.RDataFrame(filemanager.GetItem("signal")).Filter("mvaScore>-1").Histo1D(("signalDist", "signalDist", 100, -1., 1.), "mvaScore") # TODO: use cut >= -1.
-	bkgDist = ROOT.RDataFrame(filemanager.GetItem("background")).Filter("mvaScore>-1").Histo1D(("bkgDist", "bkgDist", 100, -1., 1.), "mvaScore")
+	signalDist = ROOT.RDataFrame(filemanager.GetItem("signal")).Filter("mvaScore>-1").Histo1D(("signalDist", "signalDist", 30, -1., 1.), "mvaScore") # TODO: use cut >= -1.
+	bkgDist = ROOT.RDataFrame(filemanager.GetItem("background")).Filter("mvaScore>-1").Histo1D(("bkgDist", "bkgDist", 30, -1., 1.), "mvaScore")
 	fomcanvas.cd()
 	fompad = ROOT.TPad("fompad", "fompad", 0., 0., 1., 1.)
 	fompad.SetMargin(leftmargin, rightmargin, bottommargin, topmargin); 
 	fompad.SetBorderSize(0)
 	fompad.SetFrameLineWidth(0)
 	fompad.SetFrameBorderMode(0)
+	fompad.SetLogy()
 	fompad.cd()
 	fom.Draw("E")
 	fom.GetXaxis().SetRangeUser(-1., 1.)
@@ -320,7 +321,7 @@ if __name__ == "__main__":
 	#fom.SetMarkerSize(2)
 	fomcanvas.Draw()
 
-	fomlegend = ROOT.TLegend(0.125, 0.7, 0.305, 0.85)
+	fomlegend = ROOT.TLegend(0.17, 0.7, 0.37, 0.85) #0.125, 0.7, 0.305, 0.85
 	fomlegend.AddEntry(fom, "significance")
 	fomlegend.AddEntry(signalDist.GetPtr(), "signal")
 	fomlegend.AddEntry(bkgDist.GetPtr(), "background")
@@ -354,9 +355,10 @@ if __name__ == "__main__":
 	#line3.SetLineStyle(7)
 	line3.Draw()
 
-	label1 = ROOT.TPaveText(0.35, 0.6, 0.45, 0.7)
-	label1.AddText("modelling")
+	label1 = ROOT.TPaveText(0.33, 0.4, 0.4, 0.6)
+	label1.AddText("control")
 	label1.AddText("region")
+	label1.AddText("(CR)")
 	label1.SetBorderSize(0)
   	label1.SetFillColor(0)
   	label1.SetFillColorAlpha(ROOT.kWhite, 0.); 
@@ -364,9 +366,9 @@ if __name__ == "__main__":
   	label1.SetTextColor(ROOT.kGray+2)
 	label1.Draw()
 
-	label2 = ROOT.TPaveText(0.6, 0.5, 0.75, 0.6)
-	label2.AddText("control")
-	label2.AddText("region")
+	label2 = ROOT.TPaveText(0.5, 0.5, 0.6, 0.55)
+	label2.AddText("sideband (SB)")
+	#label2.AddText("region")
 	label2.SetBorderSize(0)
   	label2.SetFillColor(0)
   	label2.SetFillColorAlpha(ROOT.kWhite, 0.); 
@@ -374,18 +376,43 @@ if __name__ == "__main__":
   	label2.SetTextColor(ROOT.kGray+2)
 	label2.Draw()
 
-	label3 = ROOT.TPaveText(0.83, 0.7, 0.93, 0.8)  
-	text = label3.AddText("signal region")
+	label3 = ROOT.TPaveText(0.7, 0.6, 0.86, 0.7)  
+	text = label3.AddText("signal")
+	label3.AddText("region (SR)")
 	#label3.AddText("signal")
 	#label3.AddText("region")
 	#label3.SetAllWith("Angle", 90)
-	text.SetTextAngle(90)
+	#text.SetTextAngle(90)
 	label3.SetBorderSize(0)
   	label3.SetFillColor(0)
   	label3.SetFillColorAlpha(ROOT.kWhite, 0.); 
   	label3.SetTextSize(0.04)
   	label3.SetTextColor(ROOT.kGray+2)
 	label3.Draw()
+	fomlegend.Draw()
+
+	#label3 = ROOT.TPaveText(0.83, 0.7, 0.93, 0.8)  
+	#text = label3.AddText("signal region")
+	##label3.AddText("signal")
+	##label3.AddText("region")
+	##label3.SetAllWith("Angle", 90)
+	#text.SetTextAngle(90)
+	#label3.SetBorderSize(0)
+ 	#label3.SetFillColor(0)
+ 	#label3.SetFillColorAlpha(ROOT.kWhite, 0.); 
+ 	#label3.SetTextSize(0.04)
+ 	#label3.SetTextColor(ROOT.kGray+2)
+	#label3.Draw()
+	textsize = 0.05
+	fom.GetXaxis().SetTitle("BDT score")
+	fom.GetXaxis().SetTitleSize(textsize)
+	fom.GetYaxis().SetTitle("significance")
+	fom.GetYaxis().SetTitleSize(textsize)
+	fom.GetXaxis().SetTitleOffset(1.2)
+	signalDist.GetYaxis().SetTitle("N events")
+	signalDist.GetYaxis().SetTitleSize(textsize)
+	signalDist.GetYaxis().SetTitleOffset(0.8)
+	fom.GetYaxis().SetTitleOffset(1.)
 
 	fomcanvas.Update()
 	fomcanvas.Print(outputfolder+"Fom.pdf")

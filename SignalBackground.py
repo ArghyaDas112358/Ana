@@ -6,8 +6,11 @@ import os
 import math
 import collections
 import copy
+import json
 from argparse import ArgumentParser
 from ROOT import TCanvas, TH1D, TPad, TLegend, THStack, RDataFrame
+from uncertainties import ufloat
+from uncertainties.umath import * 
 
 
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/libFunctions.C+")#ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/libFunctions.C")
@@ -304,6 +307,136 @@ def GetEfficiencies(frames):
 		print("\n")
 
 
+def getEff(n, N): 
+	eff = float(n)/float(N)
+	#print eff
+	err = sqrt(eff*(1.-eff)/float(N))
+	#print err
+	#return eff, err
+	return ufloat(eff, err)
+
+
+def ComputeEfficiencies(frames): 
+	efficiencies = collections.defaultdict(dict)
+	for item, content in frames.iteritems(): 
+		#print("{}:".format(item))
+		for key, value in content.iteritems(): 
+			n = frames[item][key].Count().GetValue()
+			N = frames[item]["all"].Count().GetValue()
+			# see: chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://indico.cern.ch/event/66256/contributions/2071577/attachments/1017176/1447814/EfficiencyErrors.pdf
+			ne = ufloat(n, sqrt(n))
+			NE = ufloat(N, sqrt(N))
+			efferr = ne/NE
+			#print(efferr)
+			#print(("\t{}: {} ({}/{})".format(key, eff, n, N)))
+			efficiencies[item][key] = getEff(n, N) #ufloat(eff, err)
+	return efficiencies
+
+
+def PrintEfficiencies(effs): 
+	for item, content in effs.iteritems(): 
+		print("{}:".format(item))
+		for key, value in content.iteritems(): 
+			print(("\t{}: {}".format(key, value)))
+
+
+def DumpEffs(effs, path): 
+	effsForWrite = collections.defaultdict(dict)
+	for item, content in effs.iteritems(): 
+		for key, value in content.iteritems(): 
+			eff = effs[item][key]
+			effsForWrite[item][key] = (eff.n, eff.s)
+	with open(path, "w") as file: 
+		json.dump(effsForWrite, file, ensure_ascii=False, encoding="utf8", sort_keys=False)
+
+
+def ReadEffs(path): 
+	effs = collections.defaultdict(dict)
+	with open(path, "r") as file: 
+		effsFromFile = json.load(file, encoding="utf8")
+		for item, content in effsFromFile.iteritems(): 
+			for key, value in content.iteritems(): 
+				eff = effsFromFile[item][key]
+				assert(len(eff)==2)
+				effs[item][key] = ufloat(eff[0], eff[1])
+	return effs
+
+
+def InitialEffs(lumi): 
+	# Computing the initial efficiencies 
+	#effs = collections.defaultdict(dict)
+	# Efficiencies relative to the 
+	effs = { "Sig": {"br":ufloat(1.84e-2, 2.2e-3), "geneff":ufloat(3.72e-4, 0.), "eff":ufloat(1.4e-3, 0.)}, # TODO: group these with the others into another file 
+		"BkgDstarDs": {"br":ufloat(8e-3, 1.1e-3), "geneff":ufloat(1.458e-3, 0.), "eff":ufloat(1.4e-3, 0.)},
+		"BkgDstarDsstar": {"br":ufloat(1.77e-2, 1.4e-3), "geneff":ufloat(5.38e-4, 0.), "eff":ufloat(1.4e-3, 0.)}, 
+		"BkgDstar3pi": {"br":ufloat(7.21e-3, 2.9e-4), "geneff":ufloat(2.e-5, 0.), "eff":ufloat(1.4e-3, 0.)}, # TODO: obtain ana eff from other script
+		"SigPart": {"br":ufloat(1.84e-2, 2.2e-3), "geneff":ufloat(3.72e-4, 0.), "eff":ufloat(1.4e-3, 0.)},
+		"BkgDstara1": {"br":ufloat(1.3e-2, 2.7e-3), "geneff":ufloat(3.800e-04, 0.), "eff":ufloat(1.4e-3, 0.)},
+	}
+	bbxsec = ufloat(4.72e8, 0.)
+	fB0 = fB = ufloat(0.404, 0.006)
+	Br_Dstar_D0pi = ufloat(6.77e-1, 0.)
+	Br_D0_KPI = ufloat(3.88e-2, 0.)
+
+	expected = {}
+	for key, eff in effs.iteritems(): 
+	 	expected[key]= lumi*bbxsec*fB0*2.*Br_Dstar_D0pi*Br_D0_KPI*1000.*eff["br"]*eff["geneff"] #*eff["eff"]
+
+	return expected
+
+
+def getEff(n, N): 
+	eff = float(n)/float(N)
+	#print eff
+	err = sqrt(eff*(1.-eff)/float(N))
+	#print err
+	#return eff, err
+	return ufloat(eff, err)
+
+def getEffFromInfo(tree): 
+	frame = RDataFrame(tree)
+
+	n = frame.Sum("numSelected").GetValue()
+
+	N = frame.Sum("numTotal").GetValue()
+
+	eff = getEff(n, N)
+	return eff
+
+def CompleteEffsFromFile(effs, version, filemanager): 
+	anaeffs = {"Sig":ufloat(1.4e-3, 0.), "BkgDstarDs":ufloat(1.44e-3, 0.), "BkgDstarDsstar":ufloat(2.26e-3, 0.), "BkgDstar3pi":ufloat(5.3e-4, 0.), "SigPart":ufloat(1.27e-3, 0.), "dataD2WS":ufloat(-0.392, 0.), "dataD21TauWS": ufloat(-0.53, 0.)}
+	for key, eff in effs.iteritems(): 
+		print(key)
+		
+		efficiency = 1.
+		try: 
+			file = TFile.Open(filemanager.GetFile(key+"_ntuple"), "READ")
+			efftree = file.Get("ntuplizer/EffCalc")
+			print(efftree)
+			efficiency = getEffFromInfo(efftree)
+			file.Close()
+		except: 
+			efficiency = anaeffs[key]
+		effs[key] = eff*efficiency
+		#if anaeffs[key].nominal_value < 0.: 
+			#effs[key] = anaeffs[key]
+	return effs
+
+
+def MultiplyFinalEffs(effs, regioneffs):
+	for item, content in regioneffs.iteritems(): 
+		print("{}:".format(item))
+		for key, value in content.iteritems(): 
+			try:
+				regioneffs[item][key] = effs[item]*regioneffs[item][key]
+				if (effs[item].nominal_value < 0.): 
+					regioneffs[item][key]=effs[item]
+			except:
+				regioneffs[item][key] = -1.
+	return regioneffs
+	
+
+
 # Web publication
 if (webpublication): 
 	webfolder = "/eos/home-m/mhuwiler/www/Analysis/BackgroundModellingUpdate/"
@@ -332,7 +465,7 @@ def AtomicDraw(histo, name, options = ""):
 	canv.Print(name)
 
 
-def PlotOverlay(frames, dataname, initialcomponents, regions, variables, outfolder, drawlegend=True): 
+def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields, outfolder, drawlegend=True): 
 	# Plotting distributions over each other 
 	outfolder+="overlay/"
 	os.system("mkdir -p "+outfolder)
@@ -363,17 +496,17 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, outfold
 
 			i = 0
 			for component in components: 
-				histo = frames[component][region].Histo1D(variable)
+				histo = frames[component][region].Histo1D(examplehist, variable)
 				ROOT.SetOwnership(histo, 0)
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
 				histo.SetLineColor(colors[i])
 				#histo.SetFillStyle(3003)
 				#histo.SetFillColorAlpha(Ana.color[component], 0.4)
-				if "data" in component: 
-					histo.Scale(dirtynorm[component][region])
-				else: 
-					histo.Scale(dirtynorm[component][region]/histo.Integral())
+				if (yields[component][region].nominal_value > 0.): 
+					histo.Scale(yields[component][region].nominal_value/histo.Integral())
+				elif (yields[component][region].nominal_value != -1.):
+					histo.Scale(-yields[component][region].nominal_value*histo.Integral())
 				#histo.SetMarkerColor(Ana.color[component])
 				histo.Draw("HIST SAME")
 				maxes.append(histo.GetMaximum())
@@ -392,7 +525,7 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, outfold
 			canvas.Print(outfolder+name+".pdf")
 
 
-def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder, drawlegend=True): 
+def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, outfolder, drawlegend=True): 
 	# Plotting distributions over each other 
 	outfolder+="stacked/"
 	os.system("mkdir -p "+outfolder)
@@ -401,7 +534,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder
 	if (dataname in components): components.remove(dataname)
 	components.reverse()
 	notYetDrawn = True
-	examplehist = ("hist", "hist", 40, 0., 1.5)
+	examplehist = ("hist", "hist", 20, 0., 1.5)
 	for region in regions: 
 		for variable in variables: 
 			name = "{}_{}".format(variable, region)
@@ -416,7 +549,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder
 			data.SetMarkerStyle(8) # Large scalable dot
 			data.SetMarkerSize(0.5)
 			data.SetLineColor(ROOT.kBlack)
-			data.SetTitle("{}_{}".format(variable, region))
+			data.SetTitle("") #data.SetTitle("{}_{}".format(variable, region))
 			#data.SetFillColor(ROOT.kBlack)
 			legend.AddEntry(data.GetPtr(), "data", "PE")
 			data.Draw("E")
@@ -425,10 +558,10 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder
 			for component in components: 
 				histo = frames[component][region].Histo1D(examplehist, variable)
 				ROOT.SetOwnership(histo, 0)
-				if "data" in component: 
-					histo.Scale(dirtynorm[component][region])
-				else: 
-					histo.Scale(dirtynorm[component][region]/histo.Integral())
+				if (yields[component][region] > 0. ): 
+					histo.Scale(yields[component][region].nominal_value/histo.Integral())
+				elif (yields[component][region].nominal_value != -1.):
+					histo.Scale(-yields[component][region].nominal_value*histo.Integral())
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
 				histo.SetLineColor(Ana.color[component])
@@ -436,7 +569,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder
 				histo.SetFillStyle(1)
 				histo.SetFillColor(Ana.color[component])
 				stack.Add(histo.GetPtr())
-				legend.AddEntry(histo.GetPtr(), component, "F")
+				#legend.AddEntry(histo.GetPtr(), Ana.legends[component], "F")
 
 			stack.Draw("HIST SAME") #"SAME"
 			data.Draw("E SAME") # Plot on top
@@ -444,6 +577,17 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder
 			legend.SetBorderSize(1)
 			legend.SetMargin(0.3)
 			legend.SetTextSize(0.04)
+
+			data.GetXaxis().SetTitle("Invariant m_{#rho}")
+			data.GetXaxis().SetTitleSize(0.06)
+			data.GetXaxis().SetLabelSize(0.06)
+			data.GetYaxis().SetLabelSize(0.06)
+			data.GetYaxis().SetTitle("Counts")
+			data.GetYaxis().SetTitleSize(0.06)
+			data.GetXaxis().SetTitleOffset(1.2)
+			canvas.SetBottomMargin(0.15)
+			canvas.SetTopMargin(0.01)
+			canvas.SetLeftMargin(0.15)
 
 			maxes = [data.GetMaximum(), stack.GetMaximum()]
 
@@ -454,7 +598,20 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, outfolder
 			canvas.Print(outfolder+name+".pdf")
 
 			if ((not drawlegend) and notYetDrawn): 
-				canv = TCanvas("legendCanvas", "legenCanvas", 800, 600)
+				#components.reverse()
+				canv = TCanvas("legendCanvas", "legenCanvas", 800, 1200)
+				dummy = TCanvas("dummy", "dummy", 800, 600)
+				#legend.AddEntry(data.GetPtr(), "data", "PE")
+				for component in initialcomponents: 
+					histo = frames[component][region].Histo1D(examplehist, variable)
+					ROOT.SetOwnership(histo, 0)
+					histo.SetLineStyle(1) # plain
+					histo.SetLineWidth(2)
+					histo.SetLineColor(Ana.color[component])
+					histo.SetFillStyle(1)
+					histo.SetFillColor(Ana.color[component])
+					legend.AddEntry(histo.GetPtr(), Ana.legends[component], "F")
+				canv.cd()
 				data.SetMarkerSize(4.)
 				data.SetLineWidth(4)
 				legend.SetX1(0.)
@@ -601,7 +758,7 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	filesUsed = ["dataD2", "SigPart", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS", "Sig"]
+	filesUsed = ["dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1", "dataD2WS", "dataD2TauWS", "Sig"] #"SigPart", 
 
 	regions = ["SR", "CR", "SB"]
 
@@ -627,9 +784,11 @@ if __name__ == "__main__":
 
 	for item in filesUsed:  
 		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
-		frames[item]["all"] = samples[item].Filter(Ana.cut["base"].GetTitle())
+		frames[item]["all"] = samples[item].Filter("1.") #Ana.cut["base"].GetTitle()
 		for region in regions: 
 			cut = Ana.cut[region].GetTitle()
+			if "WS" in item: 
+				cut = Ana.cutstandalone[region].GetTitle()
 			if (options.debug): print("Using following cut string (from TCut): {}".format(cut))
 			frames[item][region] = samples[item].Filter(cut)
 			ROOT.SetOwnership(frames[item][region], 0)
@@ -646,14 +805,37 @@ if __name__ == "__main__":
 
 	colors = [2, 3, 8, 4, 6, 7, 9, 1] #4, 3, 6, 7, 9
 
-	dirtynorm = { "Sig":{"SR": 638., "SB": 300., "CR": 62.8}, "SigPart":{"SR": 413., "SB": 262., "CR": 68.4}, "BkgDstarDs":{"SR": 615., "SB": 607., "CR": 186.}, "BkgDstarDsstar":{"SR": 1430., "SB": 800., "CR": 188.}, "dataD2WS":{"SR": 1., "SB": 1., "CR": 1.}, "dataD2TauWS":{"SR": 1.84, "SB": 1.84, "CR": 1.84}} #TODO: properly get normalisation 
-
 	GetEfficiencies(frames)
 
-	files = filesUsed
-	PlotOverlay(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"], regions, variables, outputfolder)
+	effs = ComputeEfficiencies(frames)
 
-	PlotStack(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"], regions, variables, outputfolder, False)
+	PrintEfficiencies(effs)
+
+	DumpEffs(effs, "efficienciesTest.json")
+
+	newEffs = ReadEffs("efficienciesTest.json")
+
+	PrintEfficiencies(newEffs)
+
+	value = InitialEffs(11.4)
+
+	print(value)
+
+	selectioneffs = CompleteEffsFromFile(value, "v3", Ana.filemanager)
+
+	print(selectioneffs)
+
+	selectioneffs["dataD2WS"] = ufloat(-0.0003, 0.)  #29
+	selectioneffs["dataD2TauWS"] = ufloat(-0.0005, 0.) #21.5
+
+	regioneffs = MultiplyFinalEffs(selectioneffs, effs)
+
+	PrintEfficiencies(regioneffs)
+
+	files = filesUsed
+	PlotOverlay(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"], regions, variables, regioneffs, outputfolder)
+
+	PlotStack(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"], regions, variables, regioneffs, outputfolder, False)
 
 	PlotComparison(frames, "dataD2", "Sig", regions, variables, outputfolder, False) #["t_B_mu_alpha", "t_B_m", "t_tau_m"]
 

@@ -833,9 +833,9 @@ if __name__ == "__main__":
 	PrintEfficiencies(regioneffs)
 
 	files = filesUsed
-	PlotOverlay(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"], regions, variables, regioneffs, outputfolder)
+	PlotOverlay(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1", "dataD2WS", "dataD2TauWS"], regions, variables, regioneffs, outputfolder) 
 
-	PlotStack(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"], regions, variables, regioneffs, outputfolder, False)
+	PlotStack(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1", "dataD2TauWS", "dataD2WS"], regions, variables, regioneffs, outputfolder, False) 
 
 	PlotComparison(frames, "dataD2", "Sig", regions, variables, outputfolder, False) #["t_B_mu_alpha", "t_B_m", "t_tau_m"]
 

@@ -548,7 +548,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 			data.SetMarkerStyle(8) # Large scalable dot
 			data.SetMarkerSize(0.5)
 			data.SetLineColor(ROOT.kBlack)
-			data.SetTitle("{}_{}".format(variable, region))
+			data.SetTitle("") #data.SetTitle("{}_{}".format(variable, region))
 			#data.SetFillColor(ROOT.kBlack)
 			legend.AddEntry(data.GetPtr(), "data", "PE")
 			data.Draw("E")
@@ -568,7 +568,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 				histo.SetFillStyle(1)
 				histo.SetFillColor(Ana.color[component])
 				stack.Add(histo.GetPtr())
-				legend.AddEntry(histo.GetPtr(), component, "F")
+				#legend.AddEntry(histo.GetPtr(), Ana.legends[component], "F")
 
 			stack.Draw("HIST SAME") #"SAME"
 			data.Draw("E SAME") # Plot on top
@@ -576,6 +576,17 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 			legend.SetBorderSize(1)
 			legend.SetMargin(0.3)
 			legend.SetTextSize(0.04)
+
+			data.GetXaxis().SetTitle("Invariant m_{#rho}")
+			data.GetXaxis().SetTitleSize(0.06)
+			data.GetXaxis().SetLabelSize(0.06)
+			data.GetYaxis().SetLabelSize(0.06)
+			data.GetYaxis().SetTitle("Counts")
+			data.GetYaxis().SetTitleSize(0.06)
+			data.GetXaxis().SetTitleOffset(1.2)
+			canvas.SetBottomMargin(0.15)
+			canvas.SetTopMargin(0.01)
+			canvas.SetLeftMargin(0.15)
 
 			maxes = [data.GetMaximum(), stack.GetMaximum()]
 
@@ -586,7 +597,20 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 			canvas.Print(outfolder+name+".pdf")
 
 			if ((not drawlegend) and notYetDrawn): 
-				canv = TCanvas("legendCanvas", "legenCanvas", 800, 600)
+				#components.reverse()
+				canv = TCanvas("legendCanvas", "legenCanvas", 800, 1200)
+				dummy = TCanvas("dummy", "dummy", 800, 600)
+				#legend.AddEntry(data.GetPtr(), "data", "PE")
+				for component in initialcomponents: 
+					histo = frames[component][region].Histo1D(examplehist, variable)
+					ROOT.SetOwnership(histo, 0)
+					histo.SetLineStyle(1) # plain
+					histo.SetLineWidth(2)
+					histo.SetLineColor(Ana.color[component])
+					histo.SetFillStyle(1)
+					histo.SetFillColor(Ana.color[component])
+					legend.AddEntry(histo.GetPtr(), Ana.legends[component], "F")
+				canv.cd()
 				data.SetMarkerSize(4.)
 				data.SetLineWidth(4)
 				legend.SetX1(0.)

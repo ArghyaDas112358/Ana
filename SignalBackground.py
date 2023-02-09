@@ -491,7 +491,7 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 
 			i = 0
 			for component in components: 
-				histo = frames[component][region].Histo1D(variable)
+				histo = frames[component][region].Histo1D(examplehist, variable)
 				ROOT.SetOwnership(histo, 0)
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)

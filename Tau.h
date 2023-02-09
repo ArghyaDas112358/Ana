@@ -50,6 +50,9 @@ class Tau : public TObject
 	bool match2 = false; 
 	bool match3 = false; 
 
+	float B_m = -999.; 
+	float B_q2 = -999.; 
+
 	//float maxdaupt; 
 	//float mindaupt; 
 	//float maxdaueta; 
@@ -149,6 +152,12 @@ class Tau : public TObject
   		match1 = static_cast<bool>(genMatch1); 
   		match2 = static_cast<bool>(genMatch2); 
   		match3 = static_cast<bool>(genMatch3); 
+  	}
+
+  	void SetBQuantities(const float mass, const float q2) 
+  	{
+  		B_m = mass; 
+  		B_q2 = q2; 
   	}
 
 
@@ -318,6 +327,16 @@ class Tau : public TObject
 	static int WriteSumMatch(const Tau& tau) 
 	{
 		return static_cast<int>(tau.match1) + static_cast<int>(tau.match2) + static_cast<int>(tau.match3); 
+	}; 
+
+	static float WriteBmass(const Tau& tau) 
+	{
+		return tau.B_m; 
+	}; 
+
+	static float WriteBq2(const Tau& tau) 
+	{
+		return tau.B_q2; 
 	}; 
 
 }; 

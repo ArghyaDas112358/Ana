@@ -395,7 +395,7 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 
 	auto BuildTauCandidatesWithCount = [&count](ROOT::VecOps::RVec<float> taupt, ROOT::VecOps::RVec<float> taueta, ROOT::VecOps::RVec<float> tauphi, ROOT::VecOps::RVec<int> taucharge, ROOT::VecOps::RVec<float> taumass, ROOT::VecOps::RVec<float> tauVprob, ROOT::VecOps::RVec<float> taufsig, ROOT::VecOps::RVec<float> taulip, ROOT::VecOps::RVec<int> idx1, ROOT::VecOps::RVec<int> idx2, ROOT::VecOps::RVec<int> idx3, ROOT::VecOps::RVec<float> dnn1, ROOT::VecOps::RVec<float> dnn2, ROOT::VecOps::RVec<float> dnn3, std::vector<float> sumdnn, 
 										ROOT::VecOps::RVec<float> alpha, ROOT::VecOps::RVec<float> maxDr, ROOT::VecOps::RVec<float> taufl, ROOT::VecOps::RVec<float> pvip, ROOT::VecOps::RVec<float> pvips, ROOT::VecOps::RVec<float> dau1pt, ROOT::VecOps::RVec<float> dau1eta, ROOT::VecOps::RVec<float> dau1phi, ROOT::VecOps::RVec<float> dau2pt, ROOT::VecOps::RVec<float> dau2eta, ROOT::VecOps::RVec<float> dau2phi, ROOT::VecOps::RVec<float> dau3pt, ROOT::VecOps::RVec<float> dau3eta, ROOT::VecOps::RVec<float> dau3phi, ROOT::VecOps::RVec<float> rhomass1, ROOT::VecOps::RVec<float> rhomass2, 
-										ROOT::VecOps::RVec<int> match1, ROOT::VecOps::RVec<int> match2, ROOT::VecOps::RVec<int> match3) // TODO: set to int  
+										ROOT::VecOps::RVec<int> match1, ROOT::VecOps::RVec<int> match2, ROOT::VecOps::RVec<int> match3, ROOT::VecOps::RVec<float> Bm, ROOT::VecOps::RVec<float> Bq2) // TODO: set to int  
 	{
 		std::vector<Tau> mytaus; 
 		for (unsigned int i=0; i<taupt.size(); i++) 
@@ -413,6 +413,7 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 			tau.SetDau3Kin(dau3pt.at(i), dau3eta.at(i), dau3phi.at(i)); 
 			tau.SetRhoMasses(rhomass1.at(i), rhomass2.at(i)); 
 			tau.SetMatch(static_cast<bool>(match1.at(i)), static_cast<bool>(match2.at(i)), static_cast<bool>(match3.at(i))); 
+			tau.SetBQuantities(Bm.at(i), Bq2.at(i)); 
 
 			mytaus.push_back(tau); 
 		}
@@ -452,14 +453,14 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 
 	auto withDNN = dataframe.Define("v_tau_dnn_1", FillTauDNNscore, {"v_tau_idx1", "TFscore"}).Define("v_tau_dnn_2", FillTauDNNscore, {"v_tau_idx2", "TFscore"}).Define("v_tau_dnn_3", FillTauDNNscore, {"v_tau_idx3", "TFscore"}); 
 
-	withDNN = withDNN.Define("v_B_mu_alpha", ComputeAlpha, {"BsDstarTauNu_mu1_eta", "BsDstarTauNu_mu1_phi", "BsDstarTauNu_B_eta", "BsDstarTauNu_B_phi"}).Define("v_tau_mu_alpha", ComputeAlpha, {"BsDstarTauNu_mu1_eta", "BsDstarTauNu_mu1_phi", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi"}).Define("v_Dstar_mu_alpha", ComputeAlpha, {"BsDstarTauNu_mu1_eta", "BsDstarTauNu_mu1_phi", "BsDstarTauNu_Ds_eta", "BsDstarTauNu_Ds_phi"}); // TODO: Remove once in ntuplizer
+	//withDNN = withDNN.Define("v_B_mu_alpha", ComputeAlpha, {"BsDstarTauNu_mu1_eta", "BsDstarTauNu_mu1_phi", "BsDstarTauNu_B_eta", "BsDstarTauNu_B_phi"}).Define("v_tau_mu_alpha", ComputeAlpha, {"BsDstarTauNu_mu1_eta", "BsDstarTauNu_mu1_phi", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi"}).Define("v_Dstar_mu_alpha", ComputeAlpha, {"BsDstarTauNu_mu1_eta", "BsDstarTauNu_mu1_phi", "BsDstarTauNu_Ds_eta", "BsDstarTauNu_Ds_phi"}); // TODO: Remove once in ntuplizer
 
 	std::cout << "Added DNN variables" << std::endl; 
 
 	withDNN = withDNN.Define("v_tau_sumdnn", FillSumDNN, {"v_tau_dnn_1", "v_tau_dnn_2", "v_tau_dnn_3"}); 
 
 	withDNN = withDNN.Define("v_taucandidates", BuildTauCandidatesWithCount, {"v_tau_pt", "v_tau_eta", "v_tau_phi", "v_tau_q", "v_tau_m", "v_tau_vprob", "v_tau_fsig", "v_tau_lip", "v_tau_idx1", "v_tau_idx2", "v_tau_idx3", "v_tau_dnn_1", "v_tau_dnn_2", "v_tau_dnn_3", "v_tau_sumdnn", 
-																		"v_tau_alpha", "v_tau_fl", "v_tau_pvip", "v_tau_pvipsig", "v_tau_legacyMaxdr", "v_tau_pi1pt", "v_tau_pi1eta", "v_tau_pi1phi", "v_tau_pi2pt", "v_tau_pi2eta", "v_tau_pi2phi", "v_tau_pi3pt", "v_tau_pi3eta", "v_tau_pi3phi", "v_tau_rhomass1", "v_tau_rhomass2", "v_tau_match1", "v_tau_match2", "v_tau_match3"});
+																		"v_tau_alpha", "v_tau_fl", "v_tau_pvip", "v_tau_pvipsig", "v_tau_legacyMaxdr", "v_tau_pi1pt", "v_tau_pi1eta", "v_tau_pi1phi", "v_tau_pi2pt", "v_tau_pi2eta", "v_tau_pi2phi", "v_tau_pi3pt", "v_tau_pi3eta", "v_tau_pi3phi", "v_tau_rhomass1", "v_tau_rhomass2", "v_tau_match1", "v_tau_match2", "v_tau_match3", "v_B_m", "v_B_q2"});
 																		//"v_tau_alpha", "v_tau_fl3d", "v_tau_pvip", "v_tau_pvips", "v_tau_max_dr_3prong", "v_tau_pi1_pt", "v_tau_pi1_eta", "v_tau_pi1_phi", "v_tau_pi2_pt", "v_tau_pi2_eta", "v_tau_pi2_phi", "v_tau_pi3_pt", "v_tau_pi3_eta", "v_tau_pi3_phi", "v_tau_rhomass1", "v_tau_rhomass2"});
 	
 	withDNN = withDNN.Define("b_tau", SelectTauCandidate, {"v_taucandidates"})
@@ -495,7 +496,9 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 				.Define("b_tau_rhomass1", Tau::WriteRhomass1, {"b_tau"})
 				.Define("b_tau_rhomass2", Tau::WriteRhomass2, {"b_tau"})
 				.Define("b_tau_match", Tau::WriteMatch, {"b_tau"})
-				.Define("b_tau_sumMatch", Tau::WriteSumMatch, {"b_tau"}); 
+				.Define("b_tau_sumMatch", Tau::WriteSumMatch, {"b_tau"})
+				.Define("b_B_m", Tau::WriteBmass, {"b_tau"})
+				.Define("b_B_q2", Tau::WriteBq2, {"b_tau"}); 
 
 	withDNN = withDNN.Define("b_D0_pt", extractFirstElement, {"BsDstarTauNu_D0_pt"})
 				.Define("b_D0_eta", extractFirstElement, {"BsDstarTauNu_D0_eta"})

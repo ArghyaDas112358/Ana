@@ -784,9 +784,11 @@ if __name__ == "__main__":
 
 	for item in filesUsed:  
 		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
-		frames[item]["all"] = samples[item].Filter(Ana.cut["base"].GetTitle())
+		frames[item]["all"] = samples[item].Filter("1.") #Ana.cut["base"].GetTitle()
 		for region in regions: 
 			cut = Ana.cut[region].GetTitle()
+			if "WS" in item: 
+				cut = Ana.cutstandalone[region].GetTitle()
 			if (options.debug): print("Using following cut string (from TCut): {}".format(cut))
 			frames[item][region] = samples[item].Filter(cut)
 			ROOT.SetOwnership(frames[item][region], 0)

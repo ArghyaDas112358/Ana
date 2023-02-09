@@ -23,6 +23,8 @@ namespace Ana
 
 	std::unordered_map<std::string, std::string> legends; 
 
+	std::unordered_map<std::string, ROOT::RDF::TH1DModel> binning; 
+
 
 	std::map<std::string, TCut> cutstandalone;
 
@@ -213,6 +215,11 @@ namespace Ana
 		model = {{"v1", "./data/tautagger/batchsize_10/serialized"}, {"v2", "./data/tautagger/FirstTopUp/serialized"}, {"v3", "./data/tautagger/FirstTopUp/serialized"}}; 
 
 		legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 
+
+		binning = {{"tau_rhomass1", {"", ";#rho_{12} mass [GeV]", 20, 0., 1.5}},
+				{"tau_rhomass2", {"", ";#rho_{12} mass [GeV]", 20, 0., 1.5}},
+				{"B_m", {"", ";B mass [GeV]", 40, 0., 6.}},
+		}; 
 
 	}
 

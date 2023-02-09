@@ -472,7 +472,6 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 	factor = 1.1 # how much overhead to add to the histos 
 	components = copy.deepcopy(initialcomponents)
 	if (dataname in components): components.remove(dataname)
-	examplehist = ("hist", "hist", 40, 0., 1.5)
 	for region in regions: 
 		for variable in variables: 
 			name = "{}_{}".format(variable, region)
@@ -483,6 +482,7 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 	                            canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
 	                           	1.-canvas.GetTopMargin() )
 
+			examplehist = Ana.binning[variable]
 			data = frames[dataname][region].Histo1D(examplehist, variable)
 			data.SetMarkerStyle(8) # Large scalable dot
 			data.SetMarkerSize(0.5)
@@ -635,7 +635,6 @@ def PlotComparison(frames, referencename, comparisonname, regions, variables, ou
 	outfolder+="comparisons/"
 	os.system("mkdir -p "+outfolder)
 	factor = 1.3 # how much overhead to add to the histos 
-	examplehist = ("hist", "hist", 40, 0., 1.5)
 	for region in regions: 
 		for variable in variables: 
 			name = "{}_{}".format(variable, region)
@@ -646,6 +645,7 @@ def PlotComparison(frames, referencename, comparisonname, regions, variables, ou
 	                            canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
 	                           	1.-canvas.GetTopMargin() )
 
+			examplehist = Ana.binning[variable]
 			reference = frames[referencename][region].Histo1D(examplehist, variable)
 			reference.SetTitle("{}_{}".format(variable, region))
 			#reference.SetMarkerStyle(8) # Large scalable dot
@@ -700,17 +700,17 @@ def PrepareCustomFiles(dictf, regions):
 	histosunrolled = collections.defaultdict(dict)
 	for key, item in dictf.iteritems(): 
 		frame = RDataFrame(item)
-		frames[key]["all"] = frame.Filter(Ana.cut["base"].GetTitle())
+		frames[key]["all"] = frame.Filter("(B_mu_alpha > 1.)") #Ana.cut["base"].GetTitle()
 		allregions = copy.deepcopy(regions)
 		allregions.append("all")
 		for region in regions: 
-			cut = Ana.cut[region].GetTitle()
+			cut = "(B_mu_alpha > 1.)" #Ana.cut[region].GetTitle()
 			if (options.debug): print("Using following cut string (from TCut): {}".format(cut))
 			frames[key][region] = frames[key]["all"].Filter(cut)
 			ROOT.SetOwnership(frames[key][region], 0)
 			# For histogram legacy compatibility
-			histos[key][region] = frames[key][region].Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2")
-			histosunrolled[key][region] = UnrollHist(histos[key][region])
+			#histos[key][region] = frames[key][region].Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2")
+			#histosunrolled[key][region] = UnrollHist(histos[key][region])
 	return frames, histos, histosunrolled
 
 
@@ -837,7 +837,12 @@ if __name__ == "__main__":
 
 	PlotStack(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1", "dataD2TauWS", "dataD2WS"], regions, variables, regioneffs, outputfolder, False) 
 
-	PlotComparison(frames, "dataD2", "Sig", regions, variables, outputfolder, False) #["t_B_mu_alpha", "t_B_m", "t_tau_m"]
+	files = {"Sig":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/Sig.root"), "BkgDstara1":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/BkgDstara1.root") }
+	newframes, histos, histisunrolled = PrepareCustomFiles(files, regions)
+
+	print(newframes)
+
+	PlotComparison(newframes, "BkgDstara1", "Sig", ["all"], ["tau_rhomass1", "tau_rhomass2", "B_m"], outputfolder, False) #["t_B_mu_alpha", "t_B_m", "t_tau_m"]
 
 	
 

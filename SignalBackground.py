@@ -371,6 +371,7 @@ def InitialEffs(lumi):
 		"BkgDstarDsstar": {"br":ufloat(1.77e-2, 1.4e-3), "geneff":ufloat(5.38e-4, 0.), "eff":ufloat(1.4e-3, 0.)}, 
 		"BkgDstar3pi": {"br":ufloat(7.21e-3, 2.9e-4), "geneff":ufloat(2.e-5, 0.), "eff":ufloat(1.4e-3, 0.)}, # TODO: obtain ana eff from other script
 		"SigPart": {"br":ufloat(1.84e-2, 2.2e-3), "geneff":ufloat(3.72e-4, 0.), "eff":ufloat(1.4e-3, 0.)},
+		"BkgDstara1": {"br":ufloat(1.3e-2, 2.7e-3), "geneff":ufloat(3.800e-04, 0.), "eff":ufloat(1.4e-3, 0.)},
 	}
 	bbxsec = ufloat(4.72e8, 0.)
 	fB0 = fB = ufloat(0.404, 0.006)
@@ -757,7 +758,7 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	filesUsed = ["dataD2", "SigPart", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS", "Sig"]
+	filesUsed = ["dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1", "dataD2WS", "dataD2TauWS", "Sig"] #"SigPart", 
 
 	regions = ["SR", "CR", "SB"]
 

@@ -403,7 +403,7 @@ def getEffFromInfo(tree):
 	return eff
 
 def CompleteEffsFromFile(effs, version, filemanager): 
-	anaeffs = {"Sig":ufloat(1.4e-3, 0.), "BkgDstarDs":ufloat(1.44e-3, 0.), "BkgDstarDsstar":ufloat(2.26e-3, 0.), "BkgDstar3pi":ufloat(5.3e-4, 0.), "SigPart":ufloat(1.27e-3, 0.)}
+	anaeffs = {"Sig":ufloat(1.4e-3, 0.), "BkgDstarDs":ufloat(1.44e-3, 0.), "BkgDstarDsstar":ufloat(2.26e-3, 0.), "BkgDstar3pi":ufloat(5.3e-4, 0.), "SigPart":ufloat(1.27e-3, 0.), "dataD2WS":ufloat(-0.392, 0.), "dataD21TauWS": ufloat(-0.53, 0.)}
 	for key, eff in effs.iteritems(): 
 		print(key)
 		
@@ -417,6 +417,8 @@ def CompleteEffsFromFile(effs, version, filemanager):
 		except: 
 			efficiency = anaeffs[key]
 		effs[key] = eff*efficiency
+		#if anaeffs[key].nominal_value < 0.: 
+			#effs[key] = anaeffs[key]
 	return effs
 
 
@@ -426,6 +428,8 @@ def MultiplyFinalEffs(effs, regioneffs):
 		for key, value in content.iteritems(): 
 			try:
 				regioneffs[item][key] = effs[item]*regioneffs[item][key]
+				if (effs[item].nominal_value < 0.): 
+					regioneffs[item][key]=effs[item]
 			except:
 				regioneffs[item][key] = -1.
 	return regioneffs
@@ -498,8 +502,10 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 				histo.SetLineColor(colors[i])
 				#histo.SetFillStyle(3003)
 				#histo.SetFillColorAlpha(Ana.color[component], 0.4)
-				if not (yields[component][region] == -1.): 
+				if (yields[component][region].nominal_value > 0.): 
 					histo.Scale(yields[component][region].nominal_value/histo.Integral())
+				elif (yields[component][region].nominal_value != -1.):
+					histo.Scale(-yields[component][region].nominal_value*histo.Integral())
 				#histo.SetMarkerColor(Ana.color[component])
 				histo.Draw("HIST SAME")
 				maxes.append(histo.GetMaximum())
@@ -551,8 +557,10 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 			for component in components: 
 				histo = frames[component][region].Histo1D(examplehist, variable)
 				ROOT.SetOwnership(histo, 0)
-				if not (yields[component][region] == -1.): 
+				if (yields[component][region] > 0. ): 
 					histo.Scale(yields[component][region].nominal_value/histo.Integral())
+				elif (yields[component][region].nominal_value != -1.):
+					histo.Scale(-yields[component][region].nominal_value*histo.Integral())
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
 				histo.SetLineColor(Ana.color[component])
@@ -789,6 +797,9 @@ if __name__ == "__main__":
 	selectioneffs = CompleteEffsFromFile(value, "v3", Ana.filemanager)
 
 	print(selectioneffs)
+
+	selectioneffs["dataD2WS"] = ufloat(-0.0003, 0.)  #29
+	selectioneffs["dataD2TauWS"] = ufloat(-0.0005, 0.) #21.5
 
 	regioneffs = MultiplyFinalEffs(selectioneffs, effs)
 

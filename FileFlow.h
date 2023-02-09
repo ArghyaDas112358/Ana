@@ -21,10 +21,15 @@ namespace Ana
 
 	std::unordered_map<std::string, std::string> model; 
 
+	std::unordered_map<std::string, std::string> legends; 
+
+
+	std::map<std::string, TCut> cutstandalone;
+
 
 	// Constants being defined centrally 
-	Double_t mvaCutSR = 0.9; 
-	Double_t mvaCutSB = 0.0; 
+	Double_t mvaCutSR = 0.5; 
+	Double_t mvaCutSB = -0.2; 
 	Double_t mvaCutCR = -0.5; 
 
 
@@ -35,10 +40,10 @@ namespace Ana
 
 			TString folder = "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/"+cycle+"/"; 
 
-			filemanager.AddItem("Sig_ntuple", folder+"SignalOfficialMC100MTest.root", "ntuplizer/tree"); 
-			filemanager.AddItem("Sig_tf", folder+"SignalOfficialMC100MTest_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("Sig_DNN", folder+"SignalOfficialMC100MTest_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("Sig", folder+"SignalOfficialMC100MTest_tauDNN_mva.root", "tree"); 
+			filemanager.AddItem("Sig_ntuple", folder+"Sig.root", "ntuplizer/tree"); 
+			filemanager.AddItem("Sig_tf", folder+"Sig_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("Sig_DNN", folder+"Sig_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("Sig", folder+"Sig_tauDNN_mva.root", "tree"); 
 
 			filemanager.AddItem("SigTrain_ntuple", folder+"SignalOfficialMC50and100MTrain.root", "ntuplizer/tree"); 
 			filemanager.AddItem("SigTrain_tf", folder+"SignalOfficialMC50and100MTrain_withTFweight.root", "ntuplizer/tree"); 
@@ -50,40 +55,47 @@ namespace Ana
 			filemanager.AddItem("SigPart_DNN", folder+"SignalOfficialMC100MTestNoGenMatch_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("SigPart", folder+"SignalOfficialMC100MTestNoGenMatch_tauDNN_mva.root", "tree"); 
 
-			filemanager.AddItem("BkgDstarDs_ntuple", folder+"BkgDstarDsIncl.root", "ntuplizer/tree"); 
-			filemanager.AddItem("BkgDstarDs_tf", folder+"BkgDstarDsIncl_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("BkgDstarDs_DNN", folder+"BkgDstarDsIncl_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("BkgDstarDs", folder+"BkgDstarDsIncl_tauDNN_mva.root", "tree"); 
+			filemanager.AddItem("BkgDstarDs_ntuple", folder+"BkgDstarDs.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstarDs_tf", folder+"BkgDstarDs_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstarDs_DNN", folder+"BkgDstarDs_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstarDs", folder+"BkgDstarDs_tauDNN_mva.root", "tree"); 
 
-			filemanager.AddItem("BkgDstarDsstar_ntuple", folder+"BkgDstarDsstarIncl.root", "ntuplizer/tree"); 
-			filemanager.AddItem("BkgDstarDsstar_tf", folder+"BkgDstarDsstarIncl_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("BkgDstarDsstar_DNN", folder+"BkgDstarDsstarIncl_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("BkgDstarDsstar", folder+"BkgDstarDsstarIncl_tauDNN_mva.root", "tree"); 
+			filemanager.AddItem("BkgDstarDsstar_ntuple", folder+"BkgDstarDsstar.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstarDsstar_tf", folder+"BkgDstarDsstar_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstarDsstar_DNN", folder+"BkgDstarDsstar_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstarDsstar", folder+"BkgDstarDsstar_tauDNN_mva.root", "tree"); 
 
 			filemanager.AddItem("BkgDstar3pi_ntuple", folder+"BkgDstar3piNonres.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstar3pi_tf", folder+"BkgDstar3piNonres_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstar3pi_DNN", folder+"BkgDstar3piNonres_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstar3pi", folder+"BkgDstar3piNonres_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("BkgDstara1_ntuple", folder+"BkgDstara1.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstara1_tf", folder+"BkgDstara1_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstara1_DNN", folder+"BkgDstara1_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstara1", folder+"BkgDstara1_tauDNN_mva.root", "tree"); 
+
 			filemanager.AddItem("dataB2_ntuple", folder+"DataBPH2Run2018B.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataB2_tf", folder+"DataBPH2Run2018B_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataB2_DNN", folder+"DataBPH2Run2018B_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataB2", folder+"DataBPH2Run2018B_tauDNN_mva.root", "tree"); 
 
-			filemanager.AddItem("dataD2_ntuple", folder+"DataBPH2Run2018D.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD2_tf", folder+"DataBPH2Run2018D_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD2_DNN", folder+"DataBPH2Run2018D_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD2", folder+"DataBPH2Run2018D_tauDNN_mva.root", "tree"); 
+			filemanager.AddItem("dataD2_ntuple", folder+"ParkingBPHULD1.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2_tf", folder+"ParkingBPHULD1_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2_DNN", folder+"ParkingBPHULD1_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2", folder+"ParkingBPHULD1_tauDNN_mva.root", "tree"); 
 
-			filemanager.AddItem("dataD2WS_ntuple", folder+"ParkingBPH2Run2018DWS.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD2WS_tf", folder+"ParkingBPH2Run2018DWS_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD2WS_DNN", folder+"ParkingBPH2Run2018DWS_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD2WS", folder+"ParkingBPH2Run2018DWS_tauDNN_mva.root", "tree"); 
+			filemanager.AddItem("dataD2WS_ntuple", folder+"ParkingBPHULA2WS.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2WS_tf", folder+"ParkingBPHULA2WS_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2WS_DNN", folder+"ParkingBPHULA2WS_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2WS", folder+"ParkingBPH2Run2018DWS_tauDNN_mva.root", "tree"); //ParkingBPH2Run2018DWS
+			//filemanager.AddItem("dataD2WS", folder+"ParkingBPHULA2WS_tauDNN_mva.root", "tree"); //ParkingBPH2Run2018DWS
 
-			filemanager.AddItem("dataD2TauWS_ntuple", folder+"ParkingBPH2Run2018DTauWS.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD2TauWS_tf", folder+"ParkingBPH2Run2018DTauWS_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD2TauWS_DNN", folder+"ParkingBPH2Run2018DTauWS_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD2TauWS", folder+"ParkingBPH2Run2018DTauWS_tauDNN_mva.root", "tree"); 
+			filemanager.AddItem("dataD2TauWS_ntuple", folder+"ParkingBPHULA2WSTau.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2TauWS_tf", folder+"ParkingBPHULA2WSTau_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2TauWS_DNN", folder+"ParkingBPHULA2WSTau_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2TauWS", folder+"ParkingBPH2Run2018DTauWS_tauDNN_mva.root", "tree"); //ParkingBPH2Run2018DTauWS
+			//filemanager.AddItem("dataD2TauWS", folder+"ParkingBPHULA2WSTau_tauDNN_mva.root", "tree"); //ParkingBPH2Run2018DTauWS
 
 			filemanager.AddItem("Test_ntuple", folder+"Test.root", "ntuplizer/tree"); 
 			filemanager.AddItem("Test_tf", folder+"Test_withTFweight.root", "ntuplizer/tree"); 
@@ -178,10 +190,14 @@ namespace Ana
 			filemanager.AddItem("BkgBtoDstarDsstar", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/BkgDstarDsstarInclPrivateProdFirst.root", "ntuplizer/tree"); 
 		}
 
-		cut.emplace(std::make_pair("base", "(b_Ds_vprob>0.1) && (b_D0_vprob>0.1) && (mvaScore>-2.)")); 
+		cut.emplace(std::make_pair("base", "(b_Ds_vprob>0.1) && (b_D0_vprob>0.1) && (mvaScore>-2.) && (B_mu_alpha > 1.)")); 
 		cut.emplace(std::make_pair("SR", cut["base"]+TCut(TString::Format("mvaScore>=%f", mvaCutSR)))); 
 		cut.emplace(std::make_pair("SB", cut["base"]+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutSB, mvaCutSR)))); 
 		cut.emplace(std::make_pair("CR", cut["base"]+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutCR, mvaCutSB)))); 
+
+		cutstandalone.emplace(std::make_pair("SR", TCut("base", "(b_Ds_vprob>0.1) && (b_D0_vprob>0.1) && (mvaScore>-2.)")+TCut(TString::Format("mvaScore>=%f", mvaCutSR)))); 
+		cutstandalone.emplace(std::make_pair("SB", TCut("base", "(b_Ds_vprob>0.1) && (b_D0_vprob>0.1) && (mvaScore>-2.)")+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutSB, mvaCutSR)))); 
+		cutstandalone.emplace(std::make_pair("CR", TCut("base", "(b_Ds_vprob>0.1) && (b_D0_vprob>0.1) && (mvaScore>-2.)")+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutCR, mvaCutSB)))); 
 
 		// https://colorbrewer2.org/?type=diverging&scheme=RdYlBu&n=7 
 		colors = {new TColor(TColor::GetFreeColorIndex(), 215,48,39), new TColor(TColor::GetFreeColorIndex(), 252,141,89), new TColor(TColor::GetFreeColorIndex(), 254,224,144), new TColor(TColor::GetFreeColorIndex(), 255,255,191), new TColor(TColor::GetFreeColorIndex(), 224,243,248), new TColor(TColor::GetFreeColorIndex(), 145,191,219), new TColor(TColor::GetFreeColorIndex(), 69,117,180)}; 
@@ -192,9 +208,11 @@ namespace Ana
 			mycolors.push_back(color->GetNumber()); 
 		}
 
-		color = {{"Sig", mycolors[0]}, {"SigPart", mycolors[1]}, {"BkgDstarDs", mycolors[2]}, {"BkgDstarDsstar", mycolors[3]}, {"WS", mycolors[6]}, {"WSTau", mycolors[5]}, {"dataD2WS", mycolors[6]}, {"dataD2TauWS", mycolors[5]}}; 
+		color = {{"Sig", mycolors[0]}, {"SigPart", mycolors[1]}, {"BkgDstarDs", mycolors[2]}, {"BkgDstarDsstar", mycolors[3]}, {"BkgDstara1", mycolors[4]},{"WS", mycolors[6]}, {"WSTau", mycolors[5]}, {"dataD2WS", mycolors[6]}, {"dataD2TauWS", mycolors[5]}}; 
 
 		model = {{"v1", "./data/tautagger/batchsize_10/serialized"}, {"v2", "./data/tautagger/FirstTopUp/serialized"}, {"v3", "./data/tautagger/FirstTopUp/serialized"}}; 
+
+		legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 
 
 	}
 

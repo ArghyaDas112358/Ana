@@ -814,7 +814,7 @@ if __name__ == "__main__":
 
 	PrintEfficiencies(newEffs)
 
-	value = InitialEffs(14.5)
+	value = InitialEffs(11.4)
 
 	print(value)
 

@@ -434,6 +434,11 @@ def MultiplyFinalEffs(effs, regioneffs):
 			except:
 				regioneffs[item][key] = -1.
 	return regioneffs
+
+
+def MakeDatacardSimple(frames, yields, name=""): 
+	region = "SB"
+	control = "CR"
 	
 
 
@@ -833,16 +838,16 @@ if __name__ == "__main__":
 	PrintEfficiencies(regioneffs)
 
 	files = filesUsed
-	PlotOverlay(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1", "dataD2WS", "dataD2TauWS"], regions, variables, regioneffs, outputfolder) 
+	#PlotOverlay(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1", "dataD2WS", "dataD2TauWS"], regions, variables, regioneffs, outputfolder) 
 
-	PlotStack(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1", "dataD2TauWS", "dataD2WS"], regions, variables, regioneffs, outputfolder, False) 
+	#PlotStack(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1", "dataD2TauWS", "dataD2WS"], regions, variables, regioneffs, outputfolder, False) 
 
 	files = {"Sig":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/Sig.root"), "BkgDstara1":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/BkgDstara1.root") }
 	newframes, histos, histisunrolled = PrepareCustomFiles(files, regions)
 
 	print(newframes)
 
-	PlotComparison(newframes, "BkgDstara1", "Sig", ["all"], ["tau_rhomass1", "tau_rhomass2", "B_m"], outputfolder, False) #["t_B_mu_alpha", "t_B_m", "t_tau_m"]
+	PlotComparison(newframes, "BkgDstara1", "Sig", ["all"], ["tau_rhomass1", "tau_rhomass2", "B_m", "B_q2"], outputfolder, False) #["t_B_mu_alpha", "t_B_m", "t_tau_m"]
 
 	
 

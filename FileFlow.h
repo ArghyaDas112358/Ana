@@ -219,6 +219,7 @@ namespace Ana
 		binning = {{"tau_rhomass1", {"", ";#rho_{12} mass [GeV]", 20, 0., 1.5}},
 				{"tau_rhomass2", {"", ";#rho_{12} mass [GeV]", 20, 0., 1.5}},
 				{"B_m", {"", ";B mass [GeV]", 40, 0., 6.}},
+				{"B_q2", {"", ";B mass [GeV]", 40, 0., 20.}},
 		}; 
 
 	}

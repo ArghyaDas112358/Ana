@@ -1,0 +1,495 @@
+static float WritePt(const Tau& tau)
+{
+	 return tau.pt;
+};
+
+static float WriteEta(const Tau& tau)
+{
+	 return tau.eta;
+};
+
+static float WritePhi(const Tau& tau)
+{
+	 return tau.phi;
+};
+
+static int WriteQ(const Tau& tau)
+{
+	 return tau.q;
+};
+
+static float WriteM(const Tau& tau)
+{
+	 return tau.m;
+};
+
+static float WritePrefit_Pt(const Tau& tau)
+{
+	 return tau.prefit_pt;
+};
+
+static float WritePrefit_Eta(const Tau& tau)
+{
+	 return tau.prefit_eta;
+};
+
+static float WritePrefit_Phi(const Tau& tau)
+{
+	 return tau.prefit_phi;
+};
+
+static float WritePrefit_M(const Tau& tau)
+{
+	 return tau.prefit_m;
+};
+
+static float WriteVprob(const Tau& tau)
+{
+	 return tau.vprob;
+};
+
+static float WriteFsig(const Tau& tau)
+{
+	 return tau.fsig;
+};
+
+static float WriteLip(const Tau& tau)
+{
+	 return tau.lip;
+};
+
+static float WriteLipsig(const Tau& tau)
+{
+	 return tau.lipsig;
+};
+
+static int WriteIdx1(const Tau& tau)
+{
+	 return tau.idx1;
+};
+
+static int WriteIdx2(const Tau& tau)
+{
+	 return tau.idx2;
+};
+
+static int WriteIdx3(const Tau& tau)
+{
+	 return tau.idx3;
+};
+
+static float WriteNtuplizer_Sumdnn(const Tau& tau)
+{
+	 return tau.ntuplizer_sumdnn;
+};
+
+static float WriteNtuplizer_Dnn1(const Tau& tau)
+{
+	 return tau.ntuplizer_dnn1;
+};
+
+static float WriteNtuplizer_Dnn2(const Tau& tau)
+{
+	 return tau.ntuplizer_dnn2;
+};
+
+static float WriteNtuplizer_Dnn3(const Tau& tau)
+{
+	 return tau.ntuplizer_dnn3;
+};
+
+static float WriteAlpha(const Tau& tau)
+{
+	 return tau.alpha;
+};
+
+static float WriteFl(const Tau& tau)
+{
+	 return tau.fl;
+};
+
+static float WritePvip(const Tau& tau)
+{
+	 return tau.pvip;
+};
+
+static float WritePvipsig(const Tau& tau)
+{
+	 return tau.pvipsig;
+};
+
+static float WriteDr(const Tau& tau)
+{
+	 return tau.dr;
+};
+
+static float WritePi1Pt(const Tau& tau)
+{
+	 return tau.pi1pt;
+};
+
+static float WritePi2Pt(const Tau& tau)
+{
+	 return tau.pi2pt;
+};
+
+static float WritePi3Pt(const Tau& tau)
+{
+	 return tau.pi3pt;
+};
+
+static float WritePi1Eta(const Tau& tau)
+{
+	 return tau.pi1eta;
+};
+
+static float WritePi2Eta(const Tau& tau)
+{
+	 return tau.pi2eta;
+};
+
+static float WritePi3Eta(const Tau& tau)
+{
+	 return tau.pi3eta;
+};
+
+static float WritePi1Phi(const Tau& tau)
+{
+	 return tau.pi1phi;
+};
+
+static float WritePi2Phi(const Tau& tau)
+{
+	 return tau.pi2phi;
+};
+
+static float WritePi3Phi(const Tau& tau)
+{
+	 return tau.pi3phi;
+};
+
+static float WritePi1M(const Tau& tau)
+{
+	 return tau.pi1m;
+};
+
+static float WritePi2M(const Tau& tau)
+{
+	 return tau.pi2m;
+};
+
+static float WritePi3M(const Tau& tau)
+{
+	 return tau.pi3m;
+};
+
+static float WritePi1Q(const Tau& tau)
+{
+	 return tau.pi1q;
+};
+
+static float WritePi2Q(const Tau& tau)
+{
+	 return tau.pi2q;
+};
+
+static float WritePi3Q(const Tau& tau)
+{
+	 return tau.pi3q;
+};
+
+static float WriteRhomass1(const Tau& tau)
+{
+	 return tau.rhomass1;
+};
+
+static float WriteRhomass2(const Tau& tau)
+{
+	 return tau.rhomass2;
+};
+
+static bool WriteMatch1(const Tau& tau)
+{
+	 return tau.match1;
+};
+
+static bool WriteMatch2(const Tau& tau)
+{
+	 return tau.match2;
+};
+
+static bool WriteMatch3(const Tau& tau)
+{
+	 return tau.match3;
+};
+
+static bool WriteMatch(const Tau& tau)
+{
+	 return tau.match;
+};
+
+static float WriteVchi2(const Tau& tau)
+{
+	 return tau.vChi2;
+};
+
+static float WriteVchi2Ndof(const Tau& tau)
+{
+	 return tau.vChi2Ndof;
+};
+
+static float WriteVx(const Tau& tau)
+{
+	 return tau.vx;
+};
+
+static float WriteVy(const Tau& tau)
+{
+	 return tau.vy;
+};
+
+static float WriteVz(const Tau& tau)
+{
+	 return tau.vz;
+};
+
+static float WriteR(const Tau& tau)
+{
+	 return tau.r;
+};
+
+static float WriteLegacymaxdr(const Tau& tau)
+{
+	 return tau.legacyMaxdr;
+};
+
+static float WriteFitb_Pt(const Tau& tau)
+{
+	 return tau.fitB_pt;
+};
+
+static float WriteFitb_Eta(const Tau& tau)
+{
+	 return tau.fitB_eta;
+};
+
+static float WriteFitb_Phi(const Tau& tau)
+{
+	 return tau.fitB_phi;
+};
+
+static float WriteVtx4Trkprob(const Tau& tau)
+{
+	 return tau.vtx4trkProb;
+};
+
+static float WriteVtx4Trkchi2(const Tau& tau)
+{
+	 return tau.vtx4trkChi2;
+};
+
+static float WriteVtx4Trkchi2Ndof(const Tau& tau)
+{
+	 return tau.vtx4trkChi2ndof;
+};
+
+static int WriteNpi0(const Tau& tau)
+{
+	 return tau.npi0;
+};
+
+static int WriteNgamma(const Tau& tau)
+{
+	 return tau.ngamma;
+};
+
+static float WriteVtx4Trkdeltachi2(const Tau& tau)
+{
+	 return tau.vtx4trkDeltaChi2;
+};
+
+static float WriteVtx4Trkdeltachi2Ndof(const Tau& tau)
+{
+	 return tau.vtx4trkDeltaChi2Ndof;
+};
+
+static float WriteDrfit(const Tau& tau)
+{
+	 return tau.drFit;
+};
+
+static float WriteDrfitb(const Tau& tau)
+{
+	 return tau.drFitB;
+};
+
+static float WriteDeltaptfit(const Tau& tau)
+{
+	 return tau.deltaPtFit;
+};
+
+static float WriteDeltaptfitb(const Tau& tau)
+{
+	 return tau.deltaPtFitB;
+};
+
+static float WriteMu_Alpha(const Tau& tau)
+{
+	 return tau.mu_alpha;
+};
+
+static float WriteB_Pt(const Tau& tau)
+{
+	 return tau.B_pt;
+};
+
+static float WriteB_Eta(const Tau& tau)
+{
+	 return tau.B_eta;
+};
+
+static float WriteB_Phi(const Tau& tau)
+{
+	 return tau.B_phi;
+};
+
+static float WriteB_M(const Tau& tau)
+{
+	 return tau.B_m;
+};
+
+static float WriteB_Prefit_Pt(const Tau& tau)
+{
+	 return tau.B_prefit_pt;
+};
+
+static float WriteB_Prefit_Eta(const Tau& tau)
+{
+	 return tau.B_prefit_eta;
+};
+
+static float WriteB_Prefit_Phi(const Tau& tau)
+{
+	 return tau.B_prefit_phi;
+};
+
+static float WriteB_Prefit_M(const Tau& tau)
+{
+	 return tau.B_prefit_m;
+};
+
+static float WriteB_Vprob(const Tau& tau)
+{
+	 return tau.B_vprob;
+};
+
+static float WriteB_Vchi2(const Tau& tau)
+{
+	 return tau.B_vChi2;
+};
+
+static float WriteB_Vchi2Ndof(const Tau& tau)
+{
+	 return tau.B_vChi2Ndof;
+};
+
+static float WriteB_Fl(const Tau& tau)
+{
+	 return tau.B_fl;
+};
+
+static float WriteB_Fsig(const Tau& tau)
+{
+	 return tau.B_fsig;
+};
+
+static float WriteB_Lip(const Tau& tau)
+{
+	 return tau.B_lip;
+};
+
+static float WriteB_Lipsig(const Tau& tau)
+{
+	 return tau.B_lipsig;
+};
+
+static float WriteB_Pvip(const Tau& tau)
+{
+	 return tau.B_pvip;
+};
+
+static float WriteB_Pvipsig(const Tau& tau)
+{
+	 return tau.B_pvipsig;
+};
+
+static float WriteB_Alpha(const Tau& tau)
+{
+	 return tau.B_alpha;
+};
+
+static bool WriteB_Match(const Tau& tau)
+{
+	 return tau.B_match;
+};
+
+static float WriteB_Vx(const Tau& tau)
+{
+	 return tau.B_vx;
+};
+
+static float WriteB_Vy(const Tau& tau)
+{
+	 return tau.B_vy;
+};
+
+static float WriteB_Vz(const Tau& tau)
+{
+	 return tau.B_vz;
+};
+
+static float WriteB_Q2(const Tau& tau)
+{
+	 return tau.B_q2;
+};
+
+static float WriteB_Mm2(const Tau& tau)
+{
+	 return tau.B_mm2;
+};
+
+static float WriteB_Mcorr_Pt(const Tau& tau)
+{
+	 return tau.B_mcorr_pt;
+};
+
+static float WriteB_Mcorr_Eta(const Tau& tau)
+{
+	 return tau.B_mcorr_eta;
+};
+
+static float WriteB_Mcorr_Phi(const Tau& tau)
+{
+	 return tau.B_mcorr_phi;
+};
+
+static float WriteB_Proper_Tau_E(const Tau& tau)
+{
+	 return tau.B_proper_tau_E;
+};
+
+static float WriteB_Mu_Alpha(const Tau& tau)
+{
+	 return tau.B_mu_alpha;
+};
+
+static float WriteB_Proper_Dr_Tau_Mu(const Tau& tau)
+{
+	 return tau.B_proper_dr_tau_mu;
+};
+
+static float WriteB_Proper_Alpha_Tau_Mu(const Tau& tau)
+{
+	 return tau.B_proper_alpha_tau_mu;
+};
+

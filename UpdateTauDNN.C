@@ -184,29 +184,34 @@ struct Basictau
 }; 
 
 
-std::vector<Tau> BuildTauCandidates(ROOT::VecOps::RVec<float> taupt, ROOT::VecOps::RVec<float> taueta, ROOT::VecOps::RVec<float> tauphi, ROOT::VecOps::RVec<int> taucharge, ROOT::VecOps::RVec<float> taumass, ROOT::VecOps::RVec<float> tauVprob, ROOT::VecOps::RVec<float> taufsig, ROOT::VecOps::RVec<float> taulip, ROOT::VecOps::RVec<int> idx1, ROOT::VecOps::RVec<int> idx2, ROOT::VecOps::RVec<int> idx3, ROOT::VecOps::RVec<float> dnn1, ROOT::VecOps::RVec<float> dnn2, ROOT::VecOps::RVec<float> dnn3, std::vector<float> sumdnn, 
-										ROOT::VecOps::RVec<float> alpha, ROOT::VecOps::RVec<float> maxDr, ROOT::VecOps::RVec<float> taufl, ROOT::VecOps::RVec<float> pvip, ROOT::VecOps::RVec<float> pvips, ROOT::VecOps::RVec<float> dau1pt, ROOT::VecOps::RVec<float> dau1eta, ROOT::VecOps::RVec<float> dau1phi, ROOT::VecOps::RVec<float> dau2pt, ROOT::VecOps::RVec<float> dau2eta, ROOT::VecOps::RVec<float> dau2phi, ROOT::VecOps::RVec<float> dau3pt, ROOT::VecOps::RVec<float> dau3eta, ROOT::VecOps::RVec<float> dau3phi, ROOT::VecOps::RVec<float> rhomass1, ROOT::VecOps::RVec<float> rhomass2) 
+std::vector<Tau> BuildTauCandidates(//ROOT::VecOps::RVec<float> taupt, ROOT::VecOps::RVec<float> taueta, ROOT::VecOps::RVec<float> tauphi, ROOT::VecOps::RVec<int> taucharge, ROOT::VecOps::RVec<float> taumass, ROOT::VecOps::RVec<float> tauVprob, ROOT::VecOps::RVec<float> taufsig, ROOT::VecOps::RVec<float> taulip, ROOT::VecOps::RVec<int> idx1, ROOT::VecOps::RVec<int> idx2, ROOT::VecOps::RVec<int> idx3, ROOT::VecOps::RVec<float> dnn1, ROOT::VecOps::RVec<float> dnn2, ROOT::VecOps::RVec<float> dnn3, std::vector<float> sumdnn, 
+										//ROOT::VecOps::RVec<float> alpha, ROOT::VecOps::RVec<float> maxDr, ROOT::VecOps::RVec<float> taufl, ROOT::VecOps::RVec<float> pvip, ROOT::VecOps::RVec<float> pvips, ROOT::VecOps::RVec<float> dau1pt, ROOT::VecOps::RVec<float> dau1eta, ROOT::VecOps::RVec<float> dau1phi, ROOT::VecOps::RVec<float> dau2pt, ROOT::VecOps::RVec<float> dau2eta, ROOT::VecOps::RVec<float> dau2phi, ROOT::VecOps::RVec<float> dau3pt, ROOT::VecOps::RVec<float> dau3eta, ROOT::VecOps::RVec<float> dau3phi, ROOT::VecOps::RVec<float> rhomass1, ROOT::VecOps::RVec<float> rhomass2
+		#include "tauvariableargs.gcf"
+) 
 {
 	std::vector<Tau> mytaus; 
-	for (unsigned int i=0; i<taupt.size(); i++) 
+	for (unsigned int i=0; i<init_pt.size(); i++) 
 	{
-		Tau tau(taupt.at(i), taueta.at(i), tauphi.at(i), taucharge.at(i), taumass.at(i)); 
-		//tau.pt = taupt.at(i); 
+		Tau tau; 
+		//Tau tau(taupt.at(i), taueta.at(i), tauphi.at(i), taucharge.at(i), taumass.at(i)); 
+		////tau.pt = taupt.at(i); 
 
-		tau.SetKinematics(tauVprob.at(i), taufsig.at(i), taulip.at(i)); 
-		tau.SetIndices(idx1.at(i), idx2.at(i), idx3.at(i)); 
-		tau.SetDNN(dnn1.at(i), dnn2.at(i), dnn3.at(i), sumdnn.at(i)); 
+		//tau.SetKinematics(tauVprob.at(i), taufsig.at(i), taulip.at(i)); 
+		//tau.SetIndices(idx1.at(i), idx2.at(i), idx3.at(i)); 
+		//tau.SetDNN(dnn1.at(i), dnn2.at(i), dnn3.at(i), sumdnn.at(i)); 
 
-		tau.SetEventKinematics(alpha.at(i), maxDr.at(i), taufl.at(i), pvip.at(i), pvips.at(i)); 
-		tau.SetDau1Kin(dau1pt.at(i), dau1eta.at(i), dau1phi.at(i)); 
-		tau.SetDau2Kin(dau2pt.at(i), dau2eta.at(i), dau2phi.at(i)); 
-		tau.SetDau3Kin(dau3pt.at(i), dau3eta.at(i), dau3phi.at(i)); 
-		tau.SetRhoMasses(rhomass1.at(i), rhomass2.at(i)); 
+		//tau.SetEventKinematics(alpha.at(i), maxDr.at(i), taufl.at(i), pvip.at(i), pvips.at(i)); 
+		//tau.SetDau1Kin(dau1pt.at(i), dau1eta.at(i), dau1phi.at(i)); 
+		//tau.SetDau2Kin(dau2pt.at(i), dau2eta.at(i), dau2phi.at(i)); 
+		//tau.SetDau3Kin(dau3pt.at(i), dau3eta.at(i), dau3phi.at(i)); 
+		//tau.SetRhoMasses(rhomass1.at(i), rhomass2.at(i)); 
+
+		#include "tauvariableaffectation.gcf"
 
 		mytaus.push_back(tau); 
 	}
 	std::cout << "Built tau candidates" << std::endl; 
-	assert(mytaus.size() == taupt.size()); 
+	assert(mytaus.size() == init_pt.size()); 
 	return mytaus; 
 }
 
@@ -393,27 +398,40 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 
 	int count = 0; 
 
-	auto BuildTauCandidatesWithCount = [&count](ROOT::VecOps::RVec<float> taupt, ROOT::VecOps::RVec<float> taueta, ROOT::VecOps::RVec<float> tauphi, ROOT::VecOps::RVec<int> taucharge, ROOT::VecOps::RVec<float> taumass, ROOT::VecOps::RVec<float> tauVprob, ROOT::VecOps::RVec<float> taufsig, ROOT::VecOps::RVec<float> taulip, ROOT::VecOps::RVec<int> idx1, ROOT::VecOps::RVec<int> idx2, ROOT::VecOps::RVec<int> idx3, ROOT::VecOps::RVec<float> dnn1, ROOT::VecOps::RVec<float> dnn2, ROOT::VecOps::RVec<float> dnn3, std::vector<float> sumdnn, 
-										ROOT::VecOps::RVec<float> alpha, ROOT::VecOps::RVec<float> maxDr, ROOT::VecOps::RVec<float> taufl, ROOT::VecOps::RVec<float> pvip, ROOT::VecOps::RVec<float> pvips, ROOT::VecOps::RVec<float> dau1pt, ROOT::VecOps::RVec<float> dau1eta, ROOT::VecOps::RVec<float> dau1phi, ROOT::VecOps::RVec<float> dau2pt, ROOT::VecOps::RVec<float> dau2eta, ROOT::VecOps::RVec<float> dau2phi, ROOT::VecOps::RVec<float> dau3pt, ROOT::VecOps::RVec<float> dau3eta, ROOT::VecOps::RVec<float> dau3phi, ROOT::VecOps::RVec<float> rhomass1, ROOT::VecOps::RVec<float> rhomass2, 
-										ROOT::VecOps::RVec<int> match1, ROOT::VecOps::RVec<int> match2, ROOT::VecOps::RVec<int> match3, ROOT::VecOps::RVec<float> Bm, ROOT::VecOps::RVec<float> Bq2) // TODO: set to int  
+	auto BuildTauCandidatesWithCount = [&count](//ROOT::VecOps::RVec<float> taupt, ROOT::VecOps::RVec<float> taueta, ROOT::VecOps::RVec<float> tauphi, ROOT::VecOps::RVec<int> taucharge, ROOT::VecOps::RVec<float> taumass, ROOT::VecOps::RVec<float> tauVprob, ROOT::VecOps::RVec<float> taufsig, ROOT::VecOps::RVec<float> taulip, ROOT::VecOps::RVec<int> idx1, ROOT::VecOps::RVec<int> idx2, ROOT::VecOps::RVec<int> idx3, ROOT::VecOps::RVec<float> dnn1, ROOT::VecOps::RVec<float> dnn2, ROOT::VecOps::RVec<float> dnn3, std::vector<float> sumdnn, 
+										//ROOT::VecOps::RVec<float> alpha, ROOT::VecOps::RVec<float> maxDr, ROOT::VecOps::RVec<float> taufl, ROOT::VecOps::RVec<float> pvip, ROOT::VecOps::RVec<float> pvips, ROOT::VecOps::RVec<float> dau1pt, ROOT::VecOps::RVec<float> dau1eta, ROOT::VecOps::RVec<float> dau1phi, ROOT::VecOps::RVec<float> dau2pt, ROOT::VecOps::RVec<float> dau2eta, ROOT::VecOps::RVec<float> dau2phi, ROOT::VecOps::RVec<float> dau3pt, ROOT::VecOps::RVec<float> dau3eta, ROOT::VecOps::RVec<float> dau3phi, ROOT::VecOps::RVec<float> rhomass1, ROOT::VecOps::RVec<float> rhomass2, 
+										//ROOT::VecOps::RVec<int> match1, ROOT::VecOps::RVec<int> match2, ROOT::VecOps::RVec<int> match3, ROOT::VecOps::RVec<float> Bm, ROOT::VecOps::RVec<float> Bq2
+			#include "tauvariableargs.gcf"
+			, ROOT::VecOps::RVec<float> init_dnn1, ROOT::VecOps::RVec<float> init_dnn2, ROOT::VecOps::RVec<float> init_dnn3, std::vector<float> init_sumdnn // TODO: make consistently use of one type 
+	) // TODO: set to int  
 	{
 		std::vector<Tau> mytaus; 
-		for (unsigned int i=0; i<taupt.size(); i++) 
+		for (unsigned int i=0; i<init_pt.size(); i++) 
 		{
-			Tau tau(taupt.at(i), taueta.at(i), tauphi.at(i), taucharge.at(i), taumass.at(i)); 
+			Tau tau; 
+			//Tau tau(taupt.at(i), taueta.at(i), tauphi.at(i), taucharge.at(i), taumass.at(i)); 
 			//tau.pt = taupt.at(i); 
 
-			tau.SetKinematics(tauVprob.at(i), taufsig.at(i), taulip.at(i)); 
-			tau.SetIndices(idx1.at(i), idx2.at(i), idx3.at(i)); 
-			tau.SetDNN(dnn1.at(i), dnn2.at(i), dnn3.at(i), sumdnn.at(i)); 
+			//tau.SetKinematics(tauVprob.at(i), taufsig.at(i), taulip.at(i)); 
+			//tau.SetIndices(idx1.at(i), idx2.at(i), idx3.at(i)); 
+			//tau.SetDNN(dnn1.at(i), dnn2.at(i), dnn3.at(i), sumdnn.at(i)); 
 
-			tau.SetEventKinematics(alpha.at(i), maxDr.at(i), taufl.at(i), pvip.at(i), pvips.at(i)); 
-			tau.SetDau1Kin(dau1pt.at(i), dau1eta.at(i), dau1phi.at(i)); 
-			tau.SetDau2Kin(dau2pt.at(i), dau2eta.at(i), dau2phi.at(i)); 
-			tau.SetDau3Kin(dau3pt.at(i), dau3eta.at(i), dau3phi.at(i)); 
-			tau.SetRhoMasses(rhomass1.at(i), rhomass2.at(i)); 
-			tau.SetMatch(static_cast<bool>(match1.at(i)), static_cast<bool>(match2.at(i)), static_cast<bool>(match3.at(i))); 
-			tau.SetBQuantities(Bm.at(i), Bq2.at(i)); 
+			//tau.SetEventKinematics(alpha.at(i), maxDr.at(i), taufl.at(i), pvip.at(i), pvips.at(i)); 
+			//tau.SetDau1Kin(dau1pt.at(i), dau1eta.at(i), dau1phi.at(i)); 
+			//tau.SetDau2Kin(dau2pt.at(i), dau2eta.at(i), dau2phi.at(i)); 
+			//tau.SetDau3Kin(dau3pt.at(i), dau3eta.at(i), dau3phi.at(i)); 
+			//tau.SetRhoMasses(rhomass1.at(i), rhomass2.at(i)); 
+			//tau.SetMatch(static_cast<bool>(match1.at(i)), static_cast<bool>(match2.at(i)), static_cast<bool>(match3.at(i))); 
+			//tau.SetBQuantities(Bm.at(i), Bq2.at(i)); 
+
+
+			tau.dnn1 = init_dnn1.at(i); 
+			tau.dnn2 = init_dnn2.at(i); 
+			tau.dnn3 = init_dnn3.at(i); 
+			tau.sumdnn = init_sumdnn.at(i); 
+
+
+			#include "tauvariableaffectation.gcf"
 
 			mytaus.push_back(tau); 
 		}
@@ -435,9 +453,9 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 
 			tau.SetKinematics(tauVprob.at(i), taufsig.at(i), taulip.at(i)); 
 			tau.SetIndices(idx1.at(i), idx2.at(i), idx3.at(i)); 
-			tau.SetDNN(dnn1.at(i), dnn2.at(i), dnn3.at(i), sumdnn.at(i)); 
+			//tau.SetDNN(dnn1.at(i), dnn2.at(i), dnn3.at(i), sumdnn.at(i)); 
 
-			tau.SetEventKinematics(alpha.at(i), maxDr.at(i), taufl.at(i), pvip.at(i), pvips.at(i)); 
+			//tau.SetEventKinematics(alpha.at(i), maxDr.at(i), taufl.at(i), pvip.at(i), pvips.at(i)); 
 			tau.SetDau1Kin(dau1pt.at(i), dau1eta.at(i), dau1phi.at(i)); 
 			tau.SetDau2Kin(dau2pt.at(i), dau2eta.at(i), dau2phi.at(i)); 
 			tau.SetDau3Kin(dau3pt.at(i), dau3eta.at(i), dau3phi.at(i)); 
@@ -451,54 +469,63 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 		return mytaus; 
 	};
 
-	auto withDNN = dataframe.Define("v_tau_dnn_1", FillTauDNNscore, {"v_tau_idx1", "TFscore"}).Define("v_tau_dnn_2", FillTauDNNscore, {"v_tau_idx2", "TFscore"}).Define("v_tau_dnn_3", FillTauDNNscore, {"v_tau_idx3", "TFscore"}); 
+	auto withDNN = dataframe.Define("v_tau_dnn1", FillTauDNNscore, {"v_tau_idx1", "TFscore"}).Define("v_tau_dnn2", FillTauDNNscore, {"v_tau_idx2", "TFscore"}).Define("v_tau_dnn3", FillTauDNNscore, {"v_tau_idx3", "TFscore"}); 
 
 	//withDNN = withDNN.Define("v_B_mu_alpha", ComputeAlpha, {"BsDstarTauNu_mu1_eta", "BsDstarTauNu_mu1_phi", "BsDstarTauNu_B_eta", "BsDstarTauNu_B_phi"}).Define("v_tau_mu_alpha", ComputeAlpha, {"BsDstarTauNu_mu1_eta", "BsDstarTauNu_mu1_phi", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi"}).Define("v_Dstar_mu_alpha", ComputeAlpha, {"BsDstarTauNu_mu1_eta", "BsDstarTauNu_mu1_phi", "BsDstarTauNu_Ds_eta", "BsDstarTauNu_Ds_phi"}); // TODO: Remove once in ntuplizer
 
 	std::cout << "Added DNN variables" << std::endl; 
 
-	withDNN = withDNN.Define("v_tau_sumdnn", FillSumDNN, {"v_tau_dnn_1", "v_tau_dnn_2", "v_tau_dnn_3"}); 
+	withDNN = withDNN.Define("v_tau_sumdnn", FillSumDNN, {"v_tau_dnn1", "v_tau_dnn2", "v_tau_dnn3"}); 
 
-	withDNN = withDNN.Define("v_taucandidates", BuildTauCandidatesWithCount, {"v_tau_pt", "v_tau_eta", "v_tau_phi", "v_tau_q", "v_tau_m", "v_tau_vprob", "v_tau_fsig", "v_tau_lip", "v_tau_idx1", "v_tau_idx2", "v_tau_idx3", "v_tau_dnn_1", "v_tau_dnn_2", "v_tau_dnn_3", "v_tau_sumdnn", 
-																		"v_tau_alpha", "v_tau_fl", "v_tau_pvip", "v_tau_pvipsig", "v_tau_legacyMaxdr", "v_tau_pi1pt", "v_tau_pi1eta", "v_tau_pi1phi", "v_tau_pi2pt", "v_tau_pi2eta", "v_tau_pi2phi", "v_tau_pi3pt", "v_tau_pi3eta", "v_tau_pi3phi", "v_tau_rhomass1", "v_tau_rhomass2", "v_tau_match1", "v_tau_match2", "v_tau_match3", "v_B_m", "v_B_q2"});
-																		//"v_tau_alpha", "v_tau_fl3d", "v_tau_pvip", "v_tau_pvips", "v_tau_max_dr_3prong", "v_tau_pi1_pt", "v_tau_pi1_eta", "v_tau_pi1_phi", "v_tau_pi2_pt", "v_tau_pi2_eta", "v_tau_pi2_phi", "v_tau_pi3_pt", "v_tau_pi3_eta", "v_tau_pi3_phi", "v_tau_rhomass1", "v_tau_rhomass2"});
+	withDNN = withDNN.Define("v_taucandidates", BuildTauCandidatesWithCount, {//"v_tau_pt", "v_tau_eta", "v_tau_phi", "v_tau_q", "v_tau_m", "v_tau_vprob", "v_tau_fsig", "v_tau_lip", "v_tau_idx1", "v_tau_idx2", "v_tau_idx3", "v_tau_dnn_1", "v_tau_dnn_2", "v_tau_dnn_3", "v_tau_sumdnn", 
+																		//"v_tau_alpha", "v_tau_fl", "v_tau_pvip", "v_tau_pvipsig", "v_tau_legacyMaxdr", "v_tau_pi1pt", "v_tau_pi1eta", "v_tau_pi1phi", "v_tau_pi2pt", "v_tau_pi2eta", "v_tau_pi2phi", "v_tau_pi3pt", "v_tau_pi3eta", "v_tau_pi3phi", "v_tau_rhomass1", "v_tau_rhomass2", "v_tau_match1", "v_tau_match2", "v_tau_match3", "v_B_m", "v_B_q2"});
+																		////"v_tau_alpha", "v_tau_fl3d", "v_tau_pvip", "v_tau_pvips", "v_tau_max_dr_3prong", "v_tau_pi1_pt", "v_tau_pi1_eta", "v_tau_pi1_phi", "v_tau_pi2_pt", "v_tau_pi2_eta", "v_tau_pi2_phi", "v_tau_pi3_pt", "v_tau_pi3_eta", "v_tau_pi3_phi", "v_tau_rhomass1", "v_tau_rhomass2"
+		#include "taubranchreading.gcf"
+
+		, "v_tau_dnn1", "v_tau_dnn2", "v_tau_dnn3", "v_tau_sumdnn"
+	});
 	
 	withDNN = withDNN.Define("b_tau", SelectTauCandidate, {"v_taucandidates"})
-				.Define("b_tau_pt", Tau::WritePt, {"b_tau"})
-				.Define("b_tau_eta", Tau::WriteEta, {"b_tau"})
-				.Define("b_tau_phi", Tau::WritePhi, {"b_tau"})
-				.Define("b_tau_q", Tau::WriteCharge, {"b_tau"})
-				.Define("b_tau_m", Tau::WriteMass, {"b_tau"})
-				.Define("b_tau_vprob", Tau::WriteVprob, {"b_tau"})
-				.Define("b_tau_fsig", Tau::WriteFsig, {"b_tau"})
-				.Define("b_tau_lip", Tau::WriteLip, {"b_tau"}) // Add lips
+				// .Define("b_tau_pt", Tau::WritePt, {"b_tau"})
+				// .Define("b_tau_eta", Tau::WriteEta, {"b_tau"})
+				// .Define("b_tau_phi", Tau::WritePhi, {"b_tau"})
+				// .Define("b_tau_q", Tau::WriteCharge, {"b_tau"})
+				// .Define("b_tau_m", Tau::WriteMass, {"b_tau"})
+				// .Define("b_tau_vprob", Tau::WriteVprob, {"b_tau"})
+				// .Define("b_tau_fsig", Tau::WriteFsig, {"b_tau"})
+				// .Define("b_tau_lip", Tau::WriteLip, {"b_tau"}) // Add lips
+				// .Define("b_tau_dnn1", Tau::WriteDNN1, {"b_tau"})
+				// .Define("b_tau_dnn2", Tau::WriteDNN2, {"b_tau"})
+				// .Define("b_tau_dnn3", Tau::WriteDNN3, {"b_tau"})
+				// .Define("b_tau_sumdnn", Tau::WriteSumDNN, {"b_tau"})
+				// .Define("b_tau_idx1", Tau::WriteIdx1, {"b_tau"})
+				// .Define("b_tau_idx2", Tau::WriteIdx2, {"b_tau"})
+				// .Define("b_tau_idx3", Tau::WriteIdx3, {"b_tau"})
+				// .Define("b_tau_fl", Tau::WriteFl, {"b_tau"})
+				// .Define("b_tau_alpha", Tau::WriteAlpha, {"b_tau"})
+				// .Define("b_tau_pvip", Tau::WritePVIP, {"b_tau"})
+				// .Define("b_tau_pvips", Tau::WritePVIPsig, {"b_tau"})
+				// .Define("b_tau_maxdr", Tau::WriteDr, {"b_tau"})
+				// .Define("b_tau_pi1pt", Tau::WriteDau1Pt, {"b_tau"})
+				// .Define("b_tau_pi1eta", Tau::WriteDau1Eta, {"b_tau"})
+				// .Define("b_tau_pi1phi", Tau::WriteDau1Phi, {"b_tau"})
+				// .Define("b_tau_pi2pt", Tau::WriteDau2Pt, {"b_tau"})
+				// .Define("b_tau_pi2eta", Tau::WriteDau2Eta, {"b_tau"})
+				// .Define("b_tau_pi2phi", Tau::WriteDau2Phi, {"b_tau"})
+				// .Define("b_tau_pi3pt", Tau::WriteDau3Pt, {"b_tau"})
+				// .Define("b_tau_pi3eta", Tau::WriteDau3Eta, {"b_tau"})
+				// .Define("b_tau_pi3phi", Tau::WriteDau3Phi, {"b_tau"})
+				// .Define("b_tau_rhomass1", Tau::WriteRhomass1, {"b_tau"})
+				// .Define("b_tau_rhomass2", Tau::WriteRhomass2, {"b_tau"})
+				// .Define("b_tau_match", Tau::WriteMatch, {"b_tau"})
+				// .Define("b_tau_sumMatch", Tau::WriteSumMatch, {"b_tau"})
+				// .Define("b_B_m", Tau::WriteBmass, {"b_tau"})
+				// .Define("b_B_q2", Tau::WriteBq2, {"b_tau"});
+				#include "taubranchcreation.gcf" 
 				.Define("b_tau_dnn1", Tau::WriteDNN1, {"b_tau"})
 				.Define("b_tau_dnn2", Tau::WriteDNN2, {"b_tau"})
 				.Define("b_tau_dnn3", Tau::WriteDNN3, {"b_tau"})
-				.Define("b_tau_sumdnn", Tau::WriteSumDNN, {"b_tau"})
-				.Define("b_tau_idx1", Tau::WriteIdx1, {"b_tau"})
-				.Define("b_tau_idx2", Tau::WriteIdx2, {"b_tau"})
-				.Define("b_tau_idx3", Tau::WriteIdx3, {"b_tau"})
-				.Define("b_tau_fl", Tau::WriteFl, {"b_tau"})
-				.Define("b_tau_alpha", Tau::WriteAlpha, {"b_tau"})
-				.Define("b_tau_pvip", Tau::WritePVIP, {"b_tau"})
-				.Define("b_tau_pvips", Tau::WritePVIPsig, {"b_tau"})
-				.Define("b_tau_maxdr", Tau::WriteDr, {"b_tau"})
-				.Define("b_tau_pi1pt", Tau::WriteDau1Pt, {"b_tau"})
-				.Define("b_tau_pi1eta", Tau::WriteDau1Eta, {"b_tau"})
-				.Define("b_tau_pi1phi", Tau::WriteDau1Phi, {"b_tau"})
-				.Define("b_tau_pi2pt", Tau::WriteDau2Pt, {"b_tau"})
-				.Define("b_tau_pi2eta", Tau::WriteDau2Eta, {"b_tau"})
-				.Define("b_tau_pi2phi", Tau::WriteDau2Phi, {"b_tau"})
-				.Define("b_tau_pi3pt", Tau::WriteDau3Pt, {"b_tau"})
-				.Define("b_tau_pi3eta", Tau::WriteDau3Eta, {"b_tau"})
-				.Define("b_tau_pi3phi", Tau::WriteDau3Phi, {"b_tau"})
-				.Define("b_tau_rhomass1", Tau::WriteRhomass1, {"b_tau"})
-				.Define("b_tau_rhomass2", Tau::WriteRhomass2, {"b_tau"})
-				.Define("b_tau_match", Tau::WriteMatch, {"b_tau"})
-				.Define("b_tau_sumMatch", Tau::WriteSumMatch, {"b_tau"})
-				.Define("b_B_m", Tau::WriteBmass, {"b_tau"})
-				.Define("b_B_q2", Tau::WriteBq2, {"b_tau"}); 
+				.Define("b_tau_sumdnn", Tau::WriteSumDNN, {"b_tau"});
 
 	withDNN = withDNN.Define("b_D0_pt", extractFirstElement, {"BsDstarTauNu_D0_pt"})
 				.Define("b_D0_eta", extractFirstElement, {"BsDstarTauNu_D0_eta"})

@@ -23,6 +23,8 @@ namespace Ana
 
 	std::unordered_map<std::string, std::string> legends; 
 
+	std::unordered_map<std::string, ROOT::RDF::TH1DModel> binning; 
+
 
 	std::map<std::string, TCut> cutstandalone;
 
@@ -195,7 +197,7 @@ namespace Ana
 			filemanager.AddItem("BkgBtoDstarDsstar", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/BkgDstarDsstarInclPrivateProdFirst.root", "ntuplizer/tree"); 
 		}
 
-		cut.emplace(std::make_pair("base", "(b_Ds_vprob>0.1) && (b_D0_vprob>0.1) && (mvaScore>-2.) && (b_B_mu_alpha > 1.)")); 
+		cut.emplace(std::make_pair("base", "(b_Ds_vprob>0.1) && (b_D0_vprob>0.1) && (mvaScore>-2.) && (b_B_mu_alpha > 1.) && (q_B_q2 > 6.)")); // TODO: change from B_mu_alpha to picked B candidate 
 		cut.emplace(std::make_pair("SR", cut["base"]+TCut(TString::Format("mvaScore>=%f", mvaCutSR)))); 
 		cut.emplace(std::make_pair("SB", cut["base"]+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutSB, mvaCutSR)))); 
 		cut.emplace(std::make_pair("CR", cut["base"]+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutCR, mvaCutSB)))); 
@@ -218,6 +220,12 @@ namespace Ana
 		model = {{"v1", "./data/tautagger/batchsize_10/serialized"}, {"v2", "./data/tautagger/FirstTopUp/serialized"}, {"v3", "./data/tautagger/FirstTopUp/serialized"},  {"v3.5", "./data/tautagger/FirstTopUp/serialized"},  {"v4", "./data/tautagger/FirstTopUp/serialized"}}; 
 
 		legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 
+
+		binning = {{"tau_rhomass1", {"", ";#rho_{12} mass [GeV]", 20, 0., 1.5}},
+				{"tau_rhomass2", {"", ";#rho_{12} mass [GeV]", 20, 0., 1.5}},
+				{"B_m", {"", ";B mass [GeV]", 40, 0., 6.}},
+				{"B_q2", {"", ";B mass [GeV]", 40, 0., 12.}},
+		}; 
 
 	}
 

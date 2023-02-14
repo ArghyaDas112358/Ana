@@ -372,6 +372,7 @@ def InitialEffs(lumi):
 		"BkgDstar3pi": {"br":ufloat(7.21e-3, 2.9e-4), "geneff":ufloat(2.e-5, 0.), "eff":ufloat(1.4e-3, 0.)}, # TODO: obtain ana eff from other script
 		"SigPart": {"br":ufloat(1.84e-2, 2.2e-3), "geneff":ufloat(3.72e-4, 0.), "eff":ufloat(1.4e-3, 0.)},
 		"BkgDstara1": {"br":ufloat(1.3e-2, 2.7e-3), "geneff":ufloat(3.800e-04, 0.), "eff":ufloat(1.4e-3, 0.)},
+		"BkgDstara1Part": {"br":ufloat(1.3e-2, 2.7e-3), "geneff":ufloat(3.800e-04, 0.), "eff":ufloat(1.4e-3, 0.)},
 	}
 	bbxsec = ufloat(4.72e8, 0.)
 	fB0 = fB = ufloat(0.404, 0.006)
@@ -380,6 +381,7 @@ def InitialEffs(lumi):
 
 	expected = {}
 	for key, eff in effs.iteritems(): 
+		key.replace("Part", "")
 	 	expected[key]= lumi*bbxsec*fB0*2.*Br_Dstar_D0pi*Br_D0_KPI*1000.*eff["br"]*eff["geneff"] #*eff["eff"]
 
 	return expected
@@ -758,11 +760,11 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	filesUsed = ["dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1", "dataD2WS", "dataD2TauWS", "Sig"] #"SigPart", 
+	filesUsed = ["dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1Part", "Sig"] #"SigPart", "dataD2WS", "dataD2TauWS", 
 
 	regions = ["SR", "CR", "SB"]
 
-	variables = ["b_tau_rhomass1", "b_tau_rhomass2"]
+	variables = ["b_tau_rhomass1", "b_tau_rhomass2", "b_B_q2", "b_B_m"]
 
 
 	nBins = 6
@@ -832,10 +834,10 @@ if __name__ == "__main__":
 
 	PrintEfficiencies(regioneffs)
 
-	files = filesUsed
-	PlotOverlay(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"], regions, variables, regioneffs, outputfolder)
+	files = filesUsed #["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"]
+	PlotOverlay(frames, "dataD2", files, regions, variables, regioneffs, outputfolder)
 
-	PlotStack(frames, "dataD2", ["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"], regions, variables, regioneffs, outputfolder, False)
+	PlotStack(frames, "dataD2", files, regions, variables, regioneffs, outputfolder, False)
 
 	PlotComparison(frames, "dataD2", "Sig", regions, variables, outputfolder, False) #["t_B_mu_alpha", "t_B_m", "t_tau_m"]
 

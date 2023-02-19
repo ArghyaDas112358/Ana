@@ -111,17 +111,6 @@ numLoad = testSize*options.trainEvents
 
 
 
-features = [ "BsDstarTauNu_D0_pt", "BsDstarTauNu_D0_eta", "BsDstarTauNu_D0_phi", "BsDstarTauNu_D0_vprob", "BsDstarTauNu_D0_fl3d", "BsDstarTauNu_D0_fls3d",
-	"BsDstarTauNu_Ds_pt", "BsDstarTauNu_Ds_eta", "BsDstarTauNu_Ds_phi", "BsDstarTauNu_Ds_vprob", "BsDstarTauNu_Ds_fl3d", "BsDstarTauNu_Ds_fls3d",
-	"BsDstarTauNu_D0_lip", "BsDstarTauNu_D0_lips", "BsDstarTauNu_D0_pvip", "BsDstarTauNu_Ds_lip", "BsDstarTauNu_Ds_lips", "BsDstarTauNu_Ds_pvip", 
-	"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_fl3d", "BsDstarTauNu_tau_fls3d", "BsDstarTauNu_tau_vprob", 
-	"BsDstarTauNu_tau_lip", "BsDstarTauNu_tau_lips", "BsDstarTauNu_tau_pvip", "BsDstarTauNu_tau_pvips", "BsDstarTauNu_tau_alpha", "BsDstarTauNu_tau_max_dr_3prong", 
-	"BsDstarTauNu_tau_pi1_pt", "BsDstarTauNu_tau_pi1_eta", "BsDstarTauNu_tau_pi1_phi", 
-	"BsDstarTauNu_tau_pi2_pt", "BsDstarTauNu_tau_pi2_eta", "BsDstarTauNu_tau_pi2_phi", 
-	"BsDstarTauNu_tau_pi3_pt", "BsDstarTauNu_tau_pi3_eta", "BsDstarTauNu_tau_pi3_phi", 
-	"BsDstarTauNu_tau_sumofdnn", 
-	#"BsDstarTauNu_k_charge", "BsDstarTauNu_pi_charge", "BsDstarTauNu_spi_charge", 
-	 ]    # *list* of features (branch names) "BsDstarTauNu_mu1_vx", "BsDstarTauNu_mu1_vy", "BsDstarTauNu_tau_pi1_charge", "BsDstarTauNu_tau_pi2_charge", "BsDstarTauNu_tau_pi3_charge", "BsDstarTauNu_mu1_q", "BsDstarTauNu_tau_q", "BsDstarTauNu_mu1_vz",
 
 features_save = [("b_D0_pt", "F"), ("b_D0_eta", "F"), ("b_D0_phi", "F"), ("b_D0_vprob", "F"), ("b_D0_fl", "F"), ("b_D0_fls", "F"),
 	("b_Ds_pt", "F"), ("b_Ds_eta", "F"), ("b_Ds_phi", "F"), ("b_Ds_vprob", "F"), ("b_Ds_fl", "F"), ("b_Ds_fls", "F"), 

@@ -572,10 +572,10 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 					histo.Scale(-yields[component][region].nominal_value*histo.Integral())
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
-				histo.SetLineColor(Ana.color[component])
+				histo.SetLineColor(Ana.color[component.replace("Part", "")])
 				#histo.SetMarkerColor(Ana.color[component])
 				histo.SetFillStyle(1)
-				histo.SetFillColor(Ana.color[component])
+				histo.SetFillColor(Ana.color[component.replace("Part", "")])
 				stack.Add(histo.GetPtr())
 				#legend.AddEntry(histo.GetPtr(), Ana.legends[component], "F")
 

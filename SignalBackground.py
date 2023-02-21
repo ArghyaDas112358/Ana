@@ -508,7 +508,7 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 				ROOT.SetOwnership(histo, 0)
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
-				histo.SetLineColor(colors[i]) #colors[i]Ana.color[component.replace("Part", "")]
+				histo.SetLineColor(colors[component.replace("Part", "")]) #colors[i]Ana.color[component.replace("Part", "")]
 				#histo.SetFillStyle(3003)
 				#histo.SetFillColorAlpha(Ana.color[component], 0.4)
 				if (yields[component][region].nominal_value > 0.): 
@@ -811,7 +811,7 @@ if __name__ == "__main__":
 
 	#AtomicDraw(frames["Sig"]["SR"].Histo1D("b_tau_rhomass1"), outputfolder+"/SignalFromNew.png")
 
-	colors = [2, 3, 8, 4, 6, 7, 9, 1] #4, 3, 6, 7, 9
+	colors = {"Sig":2, "BkgDstarDs":3, "BkgDstarDsstar":8, "BkgDstara1":4, "dataD2WS":6, "dataD2TauWS":7, "other":9, "yetanother":1} #4, 3, 6, 7, 9 colors = [2, 3, 8, 4, 6, 7, 9, 1]
 
 	GetEfficiencies(frames)
 
@@ -841,7 +841,7 @@ if __name__ == "__main__":
 	PrintEfficiencies(regioneffs)
 
 	files = filesUsed #["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"]
-	PlotOverlay(frames, "dataD2", ["Sig", "dataD2", "BkgDstarDs", "BkgDstarDsstar"], regions, variables, regioneffs, outputfolder)
+	PlotOverlay(frames, "dataD2", ["Sig", "dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1Part"], regions, variables, regioneffs, outputfolder)
 
 	PlotStack(frames, "dataD2", files, regions, variables, regioneffs, outputfolder, False)
 

@@ -478,6 +478,7 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 	os.system("mkdir -p "+outfolder)
 	factor = 1.1 # how much overhead to add to the histos 
 	components = copy.deepcopy(initialcomponents)
+	components.reverse()
 	if (dataname in components): components.remove(dataname)
 	for region in regions: 
 		for variable in variables: 
@@ -507,7 +508,7 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 				ROOT.SetOwnership(histo, 0)
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
-				histo.SetLineColor(colors[i])
+				histo.SetLineColor(colors[i]) #colors[i]Ana.color[component.replace("Part", "")]
 				#histo.SetFillStyle(3003)
 				#histo.SetFillColorAlpha(Ana.color[component], 0.4)
 				if (yields[component][region].nominal_value > 0.): 
@@ -541,7 +542,6 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 	if (dataname in components): components.remove(dataname)
 	components.reverse()
 	notYetDrawn = True
-	examplehist = ("hist", "hist", 20, 0., 1.5)
 	for region in regions: 
 		for variable in variables: 
 			name = "{}_{}".format(variable, region)
@@ -552,6 +552,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 	                            canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
 	                           	1.-canvas.GetTopMargin() )
 
+			examplehist = Ana.binning[variable]
 			data = frames[dataname][region].Histo1D(examplehist, variable)
 			data.SetMarkerStyle(8) # Large scalable dot
 			data.SetMarkerSize(0.5)
@@ -614,10 +615,10 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 					ROOT.SetOwnership(histo, 0)
 					histo.SetLineStyle(1) # plain
 					histo.SetLineWidth(2)
-					histo.SetLineColor(Ana.color[component])
+					histo.SetLineColor(Ana.color[component.replace("Part", "")])
 					histo.SetFillStyle(1)
 					histo.SetFillColor(Ana.color[component])
-					legend.AddEntry(histo.GetPtr(), Ana.legends[component], "F")
+					legend.AddEntry(histo.GetPtr(), Ana.legends[component.replace("Part", "")], "F")
 				canv.cd()
 				data.SetMarkerSize(4.)
 				data.SetLineWidth(4)
@@ -765,7 +766,7 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	filesUsed = ["dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1Part", "Sig"] #"SigPart", "dataD2WS", "dataD2TauWS", 
+	filesUsed = ["Sig", "dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1Part"] #"SigPart", "dataD2WS", "dataD2TauWS", 
 
 	regions = ["SR", "CR", "SB"]
 
@@ -824,7 +825,7 @@ if __name__ == "__main__":
 
 	PrintEfficiencies(newEffs)
 
-	value = InitialEffs(11.4)
+	value = InitialEffs(7.98)
 
 	print(value)
 
@@ -840,7 +841,7 @@ if __name__ == "__main__":
 	PrintEfficiencies(regioneffs)
 
 	files = filesUsed #["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"]
-	PlotOverlay(frames, "dataD2", files, regions, variables, regioneffs, outputfolder)
+	PlotOverlay(frames, "dataD2", ["Sig", "dataD2", "BkgDstarDs", "BkgDstarDsstar"], regions, variables, regioneffs, outputfolder)
 
 	PlotStack(frames, "dataD2", files, regions, variables, regioneffs, outputfolder, False)
 
@@ -849,7 +850,7 @@ if __name__ == "__main__":
 
 	print(newframes)
 
-	PlotComparison(newframes, "BkgDstara1", "Sig", ["all"], ["tau_rhomass1", "tau_rhomass2", "B_m", "B_q2"], outputfolder, False) #["t_B_mu_alpha", "t_B_m", "t_tau_m"]
+	PlotComparison(frames, "BkgDstara1Part", "Sig", regions, variables, outputfolder, False) #["t_B_mu_alpha", "t_B_m", "t_tau_m"]["tau_rhomass1", "tau_rhomass2", "B_m", "B_q2"]
 
 	
 

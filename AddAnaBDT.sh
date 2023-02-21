@@ -8,4 +8,4 @@ if [[ $# -ge 2 ]]; then
 	VERSION=${2}
 fi
 
-root -q -x 'AddMVAVariableSimple.C("'$INITIALREF'", "'$FINALREF'", "'$VERSION'", "anaMVA/FirstNewTraining/model_optimized/weights.xml")'
+root -q -x 'AddMVAVariableSimple.C("'$INITIALREF'", "'$FINALREF'", "'$VERSION'", "anaMVA/NewSelection/model_optimized/weights.xml")'

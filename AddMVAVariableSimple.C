@@ -51,7 +51,7 @@ void AddMVAVariableSimple(const TString& inIdentifier, const TString& outIndenti
 	TTree *tree = filemanager.GetItem<TTree*>(inIdentifier); 
 
 
-	std::vector<TString> variables = {"b_D0_pt/F", "b_D0_eta/F", "b_D0_phi/F", "b_D0_vprob/F", "b_D0_fl/F", "b_D0_fls/F", "b_Ds_pt/F", "b_Ds_eta/F", "b_Ds_phi/F", "b_Ds_vprob/F", "b_Ds_fl/F", "b_Ds_fls/F", "b_D0_lip/F", "b_D0_lips/F", "b_D0_pvip/F", "b_Ds_lip/F", "b_Ds_lips/F", "b_Ds_pvip/F", "b_tau_pt/F", "b_tau_eta/F", "b_tau_phi/F", "b_tau_fl/F", "b_tau_fsig/F", "b_tau_vprob/F", "b_tau_lip/F", "b_tau_pvip/F", "b_tau_pvips/F", "b_tau_alpha/F", "b_tau_maxdr/F", "b_tau_pi1pt/F", "b_tau_pi1eta/F", "b_tau_pi1phi/F", "b_tau_pi2pt/F", "b_tau_pi2eta/F", "b_tau_pi2phi/F", "b_tau_pi3pt/F", "b_tau_pi3eta/F", "b_tau_pi3phi/F", "b_tau_sumdnn/F"}; 
+	std::vector<TString> variables = {"b_D0_pt/F", "b_D0_eta/F", "b_D0_phi/F", "b_D0_vprob/F", "b_D0_fl/F", "b_D0_fsig/F", "b_Ds_pt/F", "b_Ds_eta/F", "b_Ds_phi/F", "b_Ds_vprob/F", "b_Ds_fl/F", "b_Ds_fsig/F", "b_D0_lip/F", "b_D0_lips/F", "b_D0_pvip/F", "b_Ds_lip/F", "b_Ds_lips/F", "b_Ds_pvip/F", "b_tau_pt/F", "b_tau_eta/F", "b_tau_phi/F", "b_tau_fl/F", "b_tau_fsig/F", "b_tau_vprob/F", "b_tau_lip/F", "b_tau_pvip/F", "b_tau_pvipsig/F", "b_tau_alpha/F", "b_tau_legacyMaxdr/F", "b_tau_pi1pt/F", "b_tau_pi1eta/F", "b_tau_pi1phi/F", "b_tau_pi2pt/F", "b_tau_pi2eta/F", "b_tau_pi2phi/F", "b_tau_pi3pt/F", "b_tau_pi3eta/F", "b_tau_pi3phi/F", "b_tau_sumdnn/F"}; 
 
 	std::unique_ptr<TMVA::Reader> reader = std::make_unique<TMVA::Reader>("!Color:Silent"); 
 

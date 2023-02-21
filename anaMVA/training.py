@@ -74,7 +74,7 @@ weighted = False
 from argparse import ArgumentParser
 
 parser = ArgumentParser(description="Training")
-parser.add_argument("-N", "--numEvents", dest="trainEvents", action="store", type=int, default=10000, help="Number of events to be used for training")
+parser.add_argument("-N", "--numEvents", dest="trainEvents", action="store", type=int, default=30000, help="Number of events to be used for training")
 parser.add_argument("-P", "--numPoints", dest="nPoints", action="store", type=int, default=1000, help="Number of points to be tested")
 parser.add_argument("-R", "--numRounds", dest="nRounds", action="store", type=int, default=100, help="Number of rounds to train")
 parser.add_argument("-o", "--outpath", dest="outputpath", action="store", type=str, default="test", help="The utput path")
@@ -112,13 +112,13 @@ numLoad = testSize*options.trainEvents
 
 
 
-features_save = [("b_D0_pt", "F"), ("b_D0_eta", "F"), ("b_D0_phi", "F"), ("b_D0_vprob", "F"), ("b_D0_fl", "F"), ("b_D0_fls", "F"),
-	("b_Ds_pt", "F"), ("b_Ds_eta", "F"), ("b_Ds_phi", "F"), ("b_Ds_vprob", "F"), ("b_Ds_fl", "F"), ("b_Ds_fls", "F"), 
+features_save = [("b_D0_pt", "F"), ("b_D0_eta", "F"), ("b_D0_phi", "F"), ("b_D0_vprob", "F"), ("b_D0_fl", "F"), ("b_D0_fsig", "F"),
+	("b_Ds_pt", "F"), ("b_Ds_eta", "F"), ("b_Ds_phi", "F"), ("b_Ds_vprob", "F"), ("b_Ds_fl", "F"), ("b_Ds_fsig", "F"), 
 	("b_D0_lip", "F"), ("b_D0_lips", "F"), ("b_D0_pvip", "F"), ("b_Ds_lip", "F"), ("b_Ds_lips", "F"), ("b_Ds_pvip", "F"), 
 	("b_tau_pt", "F"), ("b_tau_eta", "F"), ("b_tau_phi", "F"), ("b_tau_fl", "F"), ("b_tau_fsig", "F"), ("b_tau_vprob", "F"), 
 	("b_tau_lip", "F"), 
 	#("b_tau_lips", "F"), 
-	("b_tau_pvip", "F"), ("b_tau_pvips", "F"), ("b_tau_alpha", "F"), ("b_tau_maxdr", "F"), 
+	("b_tau_pvip", "F"), ("b_tau_pvipsig", "F"), ("b_tau_alpha", "F"), ("b_tau_legacyMaxdr", "F"), 
 	("b_tau_pi1pt", "F"), ("b_tau_pi1eta", "F"), ("b_tau_pi1phi", "F"), 
 	("b_tau_pi2pt", "F"), ("b_tau_pi2eta", "F"), ("b_tau_pi2phi", "F"), 
 	("b_tau_pi3pt", "F"), ("b_tau_pi3eta", "F"), ("b_tau_pi3phi", "F"), ("b_tau_sumdnn", "F"), 

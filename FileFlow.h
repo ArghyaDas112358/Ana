@@ -21,6 +21,8 @@ namespace Ana
 
 	std::unordered_map<std::string, std::string> model; 
 
+	std::unordered_map<std::string, std::string> MVA; 
+
 	std::unordered_map<std::string, std::string> legends; 
 
 	std::unordered_map<std::string, ROOT::RDF::TH1DModel> binning; 
@@ -47,10 +49,15 @@ namespace Ana
 			filemanager.AddItem("Sig_DNN", folder+"Sig_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("Sig", folder+"Sig_tauDNN_mva.root", "tree"); 
 
-			filemanager.AddItem("SigTrain_ntuple", folder+"SignalOfficialMC50and100MTrain.root", "ntuplizer/tree"); 
-			filemanager.AddItem("SigTrain_tf", folder+"SignalOfficialMC50and100MTrain_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("SigTrain_DNN", folder+"SignalOfficialMC50and100MTrain_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("SigTrain", folder+"SignalOfficialMC50and100MTrain_tauDNN_mva.root", "tree"); 
+			filemanager.AddItem("SigTrain_ntuple", folder+"SigTrain.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigTrain_tf", folder+"SigTrain_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigTrain_DNN", folder+"SigTrain_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigTrain", folder+"SigTrain_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("SigTest_ntuple", folder+"SigTest.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigTest_tf", folder+"SigTest_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigTest_DNN", folder+"SigTest_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("SigTest", folder+"SigTest_tauDNN_mva.root", "tree"); 
 
 			filemanager.AddItem("SigPart_ntuple", folder+"SignalOfficialMC100MTestNoGenMatch.root", "ntuplizer/tree"); 
 			filemanager.AddItem("SigPart_tf", folder+"SignalOfficialMC100MTestNoGenMatch_withTFweight.root", "ntuplizer/tree"); 
@@ -218,6 +225,8 @@ namespace Ana
 		color = {{"Sig", mycolors[0]}, {"SigPart", mycolors[1]}, {"BkgDstarDs", mycolors[2]}, {"BkgDstarDsstar", mycolors[3]}, {"BkgDstara1", mycolors[4]},{"WS", mycolors[6]}, {"WSTau", mycolors[5]}, {"dataD2WS", mycolors[6]}, {"dataD2TauWS", mycolors[5]}}; 
 
 		model = {{"v1", "./data/tautagger/batchsize_10/serialized"}, {"v2", "./data/tautagger/FirstTopUp/serialized"}, {"v3", "./data/tautagger/FirstTopUp/serialized"},  {"v3.5", "./data/tautagger/FirstTopUp/serialized"},  {"v4", "./data/tautagger/NewSelTopUpNoOverlap/serialized"}}; 
+
+		MVA = {{"v1", "./data/tautagger/batchsize_10/serialized"}, {"v2", "./data/tautagger/FirstTopUp/serialized"}, {"v3", "./data/tautagger/FirstTopUp/serialized"},  {"v3.5", "./data/tautagger/FirstTopUp/serialized"},  {"v4", "./data/tautagger/NewSelTopUpNoOverlap/serialized"}}; 
 
 		legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 
 

@@ -19,6 +19,8 @@ namespace Ana
 
 	std::unordered_map<std::string, Int_t> color; 
 
+	std::unordered_map<std::string, Int_t> colorold; 
+
 	std::unordered_map<std::string, std::string> model; 
 
 	std::unordered_map<std::string, std::string> MVA; 
@@ -223,6 +225,8 @@ namespace Ana
 		}
 
 		color = {{"Sig", mycolors[0]}, {"SigPart", mycolors[1]}, {"BkgDstarDs", mycolors[2]}, {"BkgDstarDsstar", mycolors[3]}, {"BkgDstara1", mycolors[4]},{"WS", mycolors[6]}, {"WSTau", mycolors[5]}, {"dataD2WS", mycolors[6]}, {"dataD2TauWS", mycolors[5]}}; 
+
+		colorold = {{"Sig", 2}, {"BkgDstarDs", 3}, {"BkgDstarDsstar", 8}, {"BkgDstara1", 4}, {"dataD2WS", 6}, {"dataD2TauWS", 7}, {"other", 9}, {"yetanother", 1}}; // Legacy color scheme 
 
 		model = {{"v1", "./data/tautagger/batchsize_10/serialized"}, {"v2", "./data/tautagger/FirstTopUp/serialized"}, {"v3", "./data/tautagger/FirstTopUp/serialized"},  {"v3.5", "./data/tautagger/FirstTopUp/serialized"},  {"v4", "./data/tautagger/NewSelTopUpNoOverlap/serialized"}}; 
 

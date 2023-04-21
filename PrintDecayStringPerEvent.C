@@ -21,6 +21,12 @@ void PrintDecayStringPerEvent()
 	{
 		tree->GetEntry(i);
 
+		for (unsigned int i=0; i<45; i++) 
+		{
+			std::cout << "-"; 
+		}
+		std::cout << endl; 
+
 		std::cout << *decaystring1 << std::endl; 
 		std::cout << *decaystring2 << std::endl; 
 		std::cout << *decaystring3 << std::endl; 

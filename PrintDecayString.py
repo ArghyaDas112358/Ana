@@ -19,9 +19,10 @@ if __name__ == "__main__":
 	parser = ArgumentParser(description="SignalBackground")
 	#parser.add_argument("tool", action="store", type=str, help="Which time list you want to analyse")
 	parser.add_argument("--out", dest="out", action="store", type=str, default="BackgroundEstimateUpdate/", help="Directory where the plots shuld go")
-	parser.add_argument("--name", dest="name", action="store", type=str, default="test", help="Turn on debug output")
+	parser.add_argument("--file", dest="file", action="store", type=str, default="test", help="Turn on debug output")
+	parser.add_argument("--sample", dest="sample", action="store", type=str, default="", help="Turn on debug output")
 	parser.add_argument("--tree", dest="tree", action="store", type=str, default="ntuplizer/tree", help="Turn on debug output")
-	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v1", help="Which version (cycle) of files to run on")
+	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v5", help="Which version (cycle) of files to run on")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument("-f", "--forcepath", dest="forcepath", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
@@ -41,7 +42,7 @@ if __name__ == "__main__":
 
 
 	ROOT.gInterpreter.Declare("""
-	int PrintDecayString(std::string decay)
+	int PrintDecayStringEvtLoop(std::string decay)
 	{
 		std::cout << decay << std::endl; 
 		return 1; 
@@ -50,16 +51,27 @@ if __name__ == "__main__":
 
 	ROOT.gROOT.LoadMacro("FileFlow.h")
 	ROOT.gROOT.LoadMacro("PrintDecayStringPerEvent.C")
+	from ROOT import Ana
 
-	file = TFile.Open(options.name, "READ")
-	tree = file.Get(options.tree)
+	if (options.sample == ""): 
+		file = TFile.Open(options.file, "READ")
+		tree = file.Get(options.tree)
 
-	frame = RDataFrame(tree)
+		ROOT.PrintDecayString(tree)
 
-	#filtered = frame.Filter("pttau_tau_m>1.5").Define("numPrinted", ROOT.PrintDecayString, ("genstring"))
+		file.Close()
 
-	ROOT.PrintDecayString(tree)
+	#frame = RDataFrame(tree)
+
+	else: 
+		Ana.Init(options.version)
+
+		Ana.filemanager.OpenItem(options.sample)
+
+		#filtered = frame.Filter("pttau_tau_m>1.5").Define("numPrinted", ROOT.PrintDecayString, ("genstring"))
+
+		ROOT.PrintDecayString(Ana.filemanager.GetItem(options.sample)) #+"_ntuple"
 
 	print("Done")
-	file.Close()
+	#file.Close()
 

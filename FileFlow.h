@@ -71,6 +71,11 @@ namespace Ana
 			filemanager.AddItem("BkgDstarDs_DNN", folder+"BkgDstarDs_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstarDs", folder+"BkgDstarDs_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("BkgDstarDsPart_ntuple", folder+"BkgDstarDsPart.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstarDsPart_tf", folder+"BkgDstarDsPart_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstarDsPart_DNN", folder+"BkgDstarDsPart_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgDstarDsPart", folder+"BkgDstarDsPart_tauDNN_mva.root", "tree"); 
+
 			filemanager.AddItem("BkgDstarDsstar_ntuple", folder+"BkgDstarDsstar.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstarDsstar_tf", folder+"BkgDstarDsstar_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstarDsstar_DNN", folder+"BkgDstarDsstar_tauDNN.root", "ntuplizer/tree"); 

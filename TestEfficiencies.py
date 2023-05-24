@@ -199,7 +199,7 @@ def DumpEffs(effs, path):
 		json.dump(effsForWrite, file, ensure_ascii=False, encoding="utf8", sort_keys=False)
 
 def ReadEffs(path): 
-	effs = collections.defaultdict(dict)
+	effs = {}
 	with open(path, "r") as file: 
 		effsFromFile = json.load(file, encoding="utf8")
 		for item, content in effsFromFile.iteritems(): 
@@ -364,6 +364,18 @@ DumpEffs(initial, "./testinitialeffs.json")
 read = ReadEffs("./testinitialeffs.json")
 
 anaeffs = ReadEffsFromFile("Sig", "v6", Ana.filemanager)
+
+filtereffs = ReadEffs("../../data/etc/FilterEfficiencies.json")
+
+constants = ReadEffs("../../data/etc/Constants.json")
+
+print(constants)
+
+print(filtereffs)
+
+N = constants["sigmabb"]*constants["fB0"]*constants["BrB02DstarTauNu"]
+
+print("N expected: {}".format(N))
 
 print(read)
 

@@ -379,6 +379,30 @@ N = constants["sigmabb"]*constants["fB0"]*forcedbr["Sig"]
 
 print("N expected: {}".format(N))
 
+expected = {}
+
+lumi = 26.8
+
+samples = ["Sig", "BkgDstarDs", "BkgDstarDsstar"] #, "BkgDstara1Part"
+		
+Ana.Init("v6.7")
+
+print("Expected yields")
+for sample in samples: 
+	# Getting selection efficiency from file 
+	item = sample+"_ntuple"
+	Ana.filemanager.OpenItem(item)
+	file = ROOT.TFile.Open(Ana.filemanager.GetFile(item), "READ")
+	info = file.Get("ntuplizer/EffCalc") #options.object
+
+	if not info: 
+		raise ValueError("ERROR: No efficiency info found in file. Are you sure this file should contain efficiency information at {} ?".format(options.object))
+
+	eff = getEffFromInfo(info)
+
+	N = lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff
+	print("\tN expected for {}: {}".format(sample, N))
+
 print(read)
 
 

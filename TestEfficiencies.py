@@ -369,11 +369,13 @@ filtereffs = ReadEffs("../../data/etc/FilterEfficiencies.json")
 
 constants = ReadEffs("../../data/etc/Constants.json")
 
+forcedbr = ReadEffs("../../data/etc/ForcedBranchingFractions.json")
+
 print(constants)
 
 print(filtereffs)
 
-N = constants["sigmabb"]*constants["fB0"]*constants["BrB02DstarTauNu"]
+N = constants["sigmabb"]*constants["fB0"]*forcedbr["Sig"]
 
 print("N expected: {}".format(N))
 

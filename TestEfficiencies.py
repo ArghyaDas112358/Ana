@@ -355,54 +355,72 @@ def AtomicDraw(histo, name, options = ""):
 	canv.Print(name)
 
 
-initial = InitialEffs(36.7)
 
-print(initial)
+if __name__ == "__main__": 
+	from argparse import ArgumentParser
 
-DumpEffs(initial, "./testinitialeffs.json")
+	parser = ArgumentParser(description="GetEfficiency")
+	#parser.add_argument("filename", action="store", type=str, default="", help="Name of file")
+	#parser.add_argument("-N", "--version", dest="iteration", action="store", type=int, default=0, help="Which iteration of inference")
+	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v6.7", help="Which version (cycle) of files to run on")
+	parser.add_argument("-l", "--lumi", dest="lumi", action="store", type=float, default=41.5, help="Luminostiy processed")
+	parser.add_argument("-o", "--object", dest="object", action="store", type=str, default="ntuplizer/EffCalc", help="Efficiency info object within file")
 
-read = ReadEffs("./testinitialeffs.json")
+	options = parser.parse_args()
 
-anaeffs = ReadEffsFromFile("Sig", "v6", Ana.filemanager)
 
-filtereffs = ReadEffs("../../data/etc/FilterEfficiencies.json")
+	initial = InitialEffs(36.7)
 
-constants = ReadEffs("../../data/etc/Constants.json")
+	print(initial)
 
-forcedbr = ReadEffs("../../data/etc/ForcedBranchingFractions.json")
+	DumpEffs(initial, "./testinitialeffs.json")
 
-print(constants)
+	read = ReadEffs("./testinitialeffs.json")
 
-print(filtereffs)
+	anaeffs = ReadEffsFromFile("Sig", "v6", Ana.filemanager)
 
-N = constants["sigmabb"]*constants["fB0"]*forcedbr["Sig"]
+	filtereffs = ReadEffs("../../data/etc/FilterEfficiencies.json")
 
-print("N expected: {}".format(N))
+	constants = ReadEffs("../../data/etc/Constants.json")
 
-expected = {}
+	forcedbr = ReadEffs("../../data/etc/ForcedBranchingFractions.json")
 
-lumi = 26.8
+	print(constants)
 
-samples = ["Sig", "BkgDstarDs", "BkgDstarDsstar"] #, "BkgDstara1Part"
-		
-Ana.Init("v6.7")
+	print(filtereffs)
 
-print("Expected yields")
-for sample in samples: 
-	# Getting selection efficiency from file 
-	item = sample+"_ntuple"
-	Ana.filemanager.OpenItem(item)
-	file = ROOT.TFile.Open(Ana.filemanager.GetFile(item), "READ")
-	info = file.Get("ntuplizer/EffCalc") #options.object
+	N = constants["sigmabb"]*constants["fB0"]*forcedbr["Sig"]
 
-	if not info: 
-		raise ValueError("ERROR: No efficiency info found in file. Are you sure this file should contain efficiency information at {} ?".format(options.object))
+	print("N expected: {}".format(N))
 
-	eff = getEffFromInfo(info)
+	expected = {}
 
-	N = lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff
-	print("\tN expected for {}: {}".format(sample, N))
+	lumi = 26.8
 
-print(read)
+	samples = ["Sig", "BkgDstarDs", "BkgDstarDsstar"] #, "BkgDstara1Part"
+			
+	Ana.Init(options.version)
+
+
+
+	print("Expected yields")
+	for sample in samples: 
+		# Getting selection efficiency from file 
+		item = sample+"_ntuple"
+		Ana.filemanager.OpenItem(item)
+		file = ROOT.TFile.Open(Ana.filemanager.GetFile(item), "READ")
+		info = file.Get("ntuplizer/EffCalc") #options.object
+
+		if not info: 
+			raise ValueError("ERROR: No efficiency info found in file. Are you sure this file should contain efficiency information at {} ?".format(options.object))
+
+		eff = getEffFromInfo(info)
+
+		N = options.lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff
+		print("\tN expected for {}: {}".format(sample, N))
+
+	Ana.filemanager.CloseAll()
+
+	print(read)
 
 

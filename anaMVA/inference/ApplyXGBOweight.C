@@ -1,0 +1,256 @@
+#include "ROOT/RDataFrame.hxx"
+#include "TFile.h"
+#include "TTree.h"
+#include "TString.h"
+#include "TChain.h"
+#include "TLorentzVector.h"
+#include "TGraph2D.h"
+#include "TH2D.h"
+#include "TLegend.h"
+#include <iostream>
+#include "DrawTMVAHistogram.C"
+#include "GetSeparation.C"
+#include "FileFlow.h"
+#include "Python.h"
+#include "TPython.h"
+#include <numpy/arrayobject.h>
+#include "PythonInterface.h"
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+
+
+using namespace ROOT; 
+using namespace Ana; 
+
+
+// To run this macro, the python class TFEvaluation.py needs to be loaded into root prior to execution. e.g.:
+// root -e 'TPython::LoadMacro("TFEvaluation.py");' ApplyTFweight.C
+
+
+void PauseUntilAnyKey() 
+{
+	std::cout << "Press any key to continue... " << std::endl; 
+	std::cin.get(); 
+}
+
+void PauseUntilEnter() 
+{
+	std::cout << "Press 'enter' to continue..." << std::endl;
+	std::cin.ignore(); 
+	//std::cin.ignore(std::numeric_limits<streamsize>::max(),'\n'); // #include <limits>
+}
+
+void Pause(Int_t timeInSec) 
+{
+	// Better way, taken from: https://stackoverflow.com/questions/23609507/pause-program-execution-for-5-seconds-in-c
+	#include <chrono>
+	#include <thread>
+	//std::this_thread::sleep_for(static_cast<std::chrono::seconds>(timeInSec));
+	sleep(timeInSec); 
+}
+
+TLorentzVector LV(double pt, double eta, double phi, double m) 
+{
+	TLorentzVector V; 
+	V.SetPtEtaPhiM(pt, eta, phi, m); 
+	return V; 
+}
+
+std::vector<float> EvaluateTFresponse(std::vector<float> pt, std::vector<float> eta, std::vector<float> phi, std::vector<float> q, std::vector<float> DOCA2D, std::vector<float> DOCA2DErr, std::vector<float> DOCA3D, std::vector<float> DOCA3DErr, std::vector<float> dzToPV, std::vector<float> dzToClosest, std::vector<float> isAssociate, std::vector<float> assocQualityToPV, std::vector<int> genmatch) 
+{
+	std::vector<float> response; 
+
+
+	response.push_back(-999.); 
+	return response; 
+}
+
+std::vector<float>  extendArray(const std::vector<float>& array, const int dim) 
+{
+	std::vector<float> result; 
+	result.reserve(dim); 
+	if (array.size() > dim) 
+	{
+		result = std::vector<float>(array.begin(), array.begin()+dim); 
+	}
+	else 
+	{
+		result = array; 
+		while(result.size() < dim)
+		{
+			result.push_back(0.); 
+		}
+	}
+	return result; 
+}
+
+// TODO: function that does the same inplace 
+
+template<typename T>
+void PrintArray(const std::vector<T>& vec) 
+{
+	std::cout << "Vector content: "; 
+	for (auto i : vec) 
+	{
+		std::cout << i << ", "; 
+	}
+	std::cout << std::endl; 
+}
+
+std::vector<float> concatenateVectors(const std::vector<std::vector<float>* > vectors) 
+{
+	std::vector<float> result; // TODO: reserve the size 
+	for (auto vec : vectors) 
+	{
+		result.insert(result.end(), vec->begin(), vec->end()); 
+	}
+	return result; 
+}
+
+void extendArray(std::vector<float>*& array, const int dim, std::vector<std::vector<float>* >& garbageCollector) 
+{
+	if (array->size() > dim) 
+	{
+		array = new std::vector<float>(array->begin(), array->begin()+dim); 
+		garbageCollector.push_back(array); 
+	}
+	else 
+	{
+		array->insert(array->end(), dim - array->size(), 0.); 
+	}
+}
+
+std::vector<double> castVector(std::vector<float> vec) 
+{
+	std::vector<double> result; 
+	result.reserve(vec.size()); 
+	for (auto element : vec)
+	{
+		result.push_back(static_cast<double>(element)); 
+	}
+	return result; 
+}
+
+ 
+
+void ApplyXGBOweight(const TString& inIdentifier, const TString& outIndentifier, const TString& version = "", const Int_t Nmax = 0, const Int_t Nmin = 0, const TString& destination = "") 
+{
+	//ROOT::EnableImplicitMT(); //ROOT::DisableImplicitMT(); 
+	Init(version); 
+
+
+	filemanager.OpenItem(inIdentifier); 
+
+	gStyle->SetOptStat(0); 
+
+
+	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>(inIdentifier)); 
+
+
+    //std::cout << "Before making class" << std::endl; 
+
+	PythonInterface pyEvaluation("PyXGBEval"); 
+
+    //std::cout << "After making class" << std::endl; 
+
+    pyEvaluation.Initialise(std::string("/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/scripts/Ana/anaMVA/NewSelection/models/model_optimized.pkcl"));
+
+    int counter = 0; 
+
+	//auto histo1 = frame2.Histo1D("B_mass"); 
+
+	//auto histo2 = frame2.Histo2D({"Bmass_vs_Dmass", "Correlation plot between B and D masses", 100, 0., 7000., 100, 0., 5000.}, "BsDstarTauNu_B_mass", "BsDstarTauNu_D0_unfit_mass"); 
+
+	auto TFresponse = [&pyEvaluation, &counter](double Dstarpt, std::vector<float> Dstareta, double Dstarphi, std::vector<float> Dstarcharge, std::vector<float> pt, std::vector<float> eta, std::vector<float> phi, std::vector<float> q, std::vector<float> DOCA2D, std::vector<float> DOCA2DErr, std::vector<float> DOCA3D, std::vector<float> DOCA3DErr, std::vector<float> dzToPV, std::vector<float> dzToClosest, std::vector<float> isAssociate, std::vector<float> assocQualityToPV, std::vector<int> genmatch) 
+	{
+		std::cout << "Event no: " << counter << std::endl; 
+		counter++; 
+
+		// create vector saying whether it is a Dstar 
+		std::vector<float> flag = {1.}; 
+
+		std::vector<std::vector<float>* > vectors = {&eta, &phi, &pt, &q}; 
+
+		// Hack to fit the trained model 
+		auto fakePVassoc = new std::vector<float>(dzToClosest.begin(), dzToClosest.begin()+dzToClosest.size()); 
+		auto fakeAssoc = new std::vector<float>(dzToClosest.begin(), dzToClosest.begin()+dzToClosest.size()); 
+
+		std::vector<std::vector<float>* > additionalvectors = {fakePVassoc, &DOCA3D, &DOCA2D, &DOCA3DErr, &DOCA2DErr, &dzToPV, fakeAssoc, &dzToClosest}; 
+		// End hack 
+
+		for (auto vec : additionalvectors) 
+		{
+			vec->insert(vec->begin(), 0.); 
+		}
+
+		vectors.insert(vectors.end(), additionalvectors.begin(), additionalvectors.end()); 
+
+		vectors.insert(vectors.end(), &flag); 
+
+		std::vector<std::vector<float>* > garbageCollector; 
+		for (auto& vec : vectors) 
+		{
+			extendArray(vec, 20, garbageCollector); 
+		}
+
+		// Hack to fit the trained model
+		garbageCollector.push_back(fakePVassoc); 
+		garbageCollector.push_back(fakeAssoc); 
+		// End hack 
+
+		auto concatenated = concatenateVectors(vectors); 
+
+		//PrintArray(concatenated); 
+
+		assert(concatenated.size() = 20*12); 
+
+		//auto response = pyEvaluation.EvaluateArray(datavec);
+		auto response = pyEvaluation.Evaluate(concatenated);
+
+		//std::cout << "Response size: " << response.size() << std::endl; 
+
+		response.erase(response.begin()); 
+
+		response.resize(initialSize); 
+
+		//std::cout << "Response size: " << response.size() << std::endl; 
+
+    	//std::cout << "After evaluation" << std::endl; 
+
+    	/*for (auto element : response) 
+    	{
+        	std::cout << element << ", "; 
+    	}
+    	std::cout << std::endl; */
+
+    	for (auto element: garbageCollector) 
+    	{
+    		delete element; 
+    	}
+
+		return response; 
+	};
+
+	auto withWeight = dataframe.Range(0, Nmax).Define("mvaScoreNew", TFresponse, {"b_D0_pt", "b_D0_eta", "b_D0_phi", "b_D0_vprob", "b_D0_fl", "b_D0_fsig",  "b_Ds_pt", "b_Ds_eta", "b_Ds_phi", "b_Ds_vprob", "b_Ds_fl", "b_Ds_fsig", "b_D0_lip", "b_D0_lips", "b_D0_pvip", "b_Ds_lip", "b_Ds_lips", "b_Ds_pvip", "b_tau_pt", "b_tau_eta", "b_tau_phi", "b_tau_fl", "b_tau_fsig", "b_tau_vprob", "b_tau_lip", "b_tau_pvip", "b_tau_pvipsig", "b_tau_alpha", "b_tau_legacyMaxdr", "b_tau_pi1pt", "b_tau_pi1eta", "b_tau_pi1phi", "b_tau_pi2pt", "b_tau_pi2eta", "b_tau_pi2phi", "b_tau_pi3pt", "b_tau_pi3eta", "b_tau_pi3phi", "b_tau_sumdnn"}); 
+
+	TString outfile = filemanager.GetFile(outIndentifier); 
+	
+	if (destination != "") 
+	{
+		auto tokens = outfile.Tokenize("/"); 
+		TString outfilename = static_cast<TObjString*>(tokens->At(tokens->GetEntries()-1))->GetString(); 
+		std::cout << "File name written out: " << outfilename << std::endl; 
+
+		outfile = destination + outfilename; 
+	}
+
+	withWeight.Snapshot(filemanager.GetObject(outIndentifier), outfile.Data()); 
+
+	//Pause(5); 
+
+	//PauseUntilEnter(); //system("pause"); 
+
+	filemanager.CloseAll(); 
+
+
+}
+

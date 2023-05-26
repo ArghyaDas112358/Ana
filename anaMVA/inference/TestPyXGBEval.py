@@ -185,8 +185,16 @@ else:
 	xgtrain = xgb.DMatrix(X_train[features], label=y_train)
 	xgtest  = xgb.DMatrix(X_test[features] , label=y_test)
 
+print(xgtest)
+print(len(X_test))
 
-prediction = classifier.predict(xgtest) #prediction = classifier.predict(xgtest, model="inference")
+
+for i in range(0, len(X_test)): 
+	data = X_test.iloc[i,:]
+	print(len(data))
+	converted = xgb.DMatrix(data, feature_names=features)
+	prediction = classifier.predict(converted) #prediction = classifier.predict(xgtest, model="inference")
+	print prediction
 
 from sklearn import metrics
 if (weighted): 

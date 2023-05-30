@@ -188,19 +188,28 @@ else:
 print(xgtest)
 print(len(X_test))
 
+from PyXGBEval import PyXGBEval
+
+evaluation = PyXGBEval()
+
+evaluation.Initialise(options.model)
+
+
+fullresponse = []
 
 for i in range(0, len(X_test)): 
 	data = X_test.iloc[i,:]
 	print(len(data))
 	converted = xgb.DMatrix(data, feature_names=features)
-	prediction = classifier.predict(converted) #prediction = classifier.predict(xgtest, model="inference")
+	prediction = evaluation.Eval(converted) #prediction = classifier.predict(xgtest, model="inference")
 	print prediction
+	fullresponse.append(prediction)
 
 from sklearn import metrics
 if (weighted): 
-	fpr_default   , tpr_default, _    = metrics.roc_curve(y_test, prediction, pos_label=1, drop_intermediate=False, sample_weight=np.asarray(X_test["weight"], 'd'))
+	fpr_default   , tpr_default, _    = metrics.roc_curve(y_test, fullresponse, pos_label=1, drop_intermediate=False, sample_weight=np.asarray(X_test["weight"], 'd'))
 else: 
-	fpr_default   , tpr_default, _    = metrics.roc_curve(y_test, prediction, pos_label=1, drop_intermediate=False)
+	fpr_default   , tpr_default, _    = metrics.roc_curve(y_test, fullresponse, pos_label=1, drop_intermediate=False)
 
 file = ROOT.TFile.Open(options.outputpath+"/plotsinference.root", "RECREATE")
 classicXGboost = file.mkdir("classicXGboost")

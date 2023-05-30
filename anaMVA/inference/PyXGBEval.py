@@ -37,81 +37,14 @@ class PyXGBEval:
     def Eval(self, data): 
         #print("Evaluation called")
 
-        #print(data.shape)
-
-        data = np.transpose(data.reshape(13, 20))
-
-        #print(data.shape)
-
-        #print(data)
-
-        data = np.expand_dims(data, 0)
-
-        #print(data.shape)
-
-        data[:, :, 2] = np.log(data[:, :, 2], out=np.zeros_like(data[:, :, 2]), where=(data[:, :, 2]!=0)) # taking log of pT 
-
-        np.nan_to_num(data, copy=False)
-
-        #self.CheckInput(data)
-
         return self.Evaluate(data)
 
 
     def Evaluate(self, data): 
-        #print("In eval")
-        shape = data.shape
+        
+        result = self.classifier.predict(data)
 
-        batchsize = shape[0]
-        numpoints = shape[1]
-        numvars = shape[2]
-
-        #print(shape)
-
-        assert(batchsize == 1), "ERROR: The fuction requires a single event!"
-        if (numpoints > self.NUM_POINT): 
-            data = data[:, 0:self.NUM_POINT, :]
-
-        #print(shape)
-
-        # update the shape after the consistency checks 
-        shape = data.shape
-
-        #print("{}, {}, {}".format(batchsize, numpoints, numvars))
-
-        placeholder = np.zeros(shape)
-
-        dim = self.BATCHSIZE - 1
-
-        #print(placeholder)
-        #print(placeholder.shape)
-
-        placeholder = np.repeat(placeholder, dim, axis=0)
-
-        #print(placeholder.shape)
-
-        batch = np.concatenate((data, placeholder))
-
-        #print(batch.shape)
-
-        response = self.NN_response(batch)
-
-        #with open("response.txt", "a") as outfile: 
-        #    outfile.write(response)
-
-        #response = [1., 2., 3., 4., 5]
-
-        #print(response.shape)
-
-        #print(response)
-
-        result = response[0,:, :]
-
-        #result = np.asarray(result, "d")
-
-        if (self.debug): print(result)
-
-        #print(result.shape)
+        #result = response[0,:, :]
 
         return result
 

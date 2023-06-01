@@ -401,7 +401,9 @@ if __name__ == "__main__":
 			
 	Ana.Init(options.version)
 
+	template = "{} & {} & {} & {} & {} \\\\"
 
+	numberafterselection = 10000.
 
 	print("Expected yields")
 	for sample in samples: 
@@ -417,7 +419,9 @@ if __name__ == "__main__":
 		eff = getEffFromInfo(info)
 
 		N = options.lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff
-		print("\tN expected for {}: {}".format(sample, N))
+		#print(10000./eff)
+		print("\tN expected for {}: {} (filter eff: {}, ana eff: {}, number requested: {})".format(sample, N, filtereffs[sample], eff, numberafterselection/eff))
+		print(template.format(sample, filtereffs[sample], eff, N, numberafterselection/eff))
 
 	Ana.filemanager.CloseAll()
 

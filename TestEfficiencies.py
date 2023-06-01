@@ -401,7 +401,7 @@ if __name__ == "__main__":
 			
 	Ana.Init(options.version)
 
-	template = "{} & ${:.3eL}$ & ${:.3eL}$ & ${:fL}$ & ${:eL}$ \\\\\n"
+	template = "{} & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:fL}$ & ${:.1e}$ \\\\\n"
 
 	numberafterselection = 10000.
 
@@ -426,7 +426,9 @@ if __name__ == "__main__":
 			N = options.lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff
 			#print(10000./eff)
 			print("\tN expected for {}: {} (filter eff: {}, ana eff: {}, number requested: {})".format(sample, N, filtereffs[sample], eff, numberafterselection/eff))
-			outfile.write(template.format(namedict[sample], filtereffs[sample], eff, N, numberafterselection/eff))
+			numrequested = numberafterselection/eff
+			n = round(numrequested.n, -3)
+			outfile.write(template.format(namedict[sample], filtereffs[sample], eff, N, n, precision=2))
 
 	Ana.filemanager.CloseAll()
 

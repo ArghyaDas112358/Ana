@@ -401,7 +401,7 @@ if __name__ == "__main__":
 			
 	Ana.Init(options.version)
 
-	template = "{} & {} & {} & {} & {} \\\\"
+	template = "{} & {:.3eL} & {:.3eL} & {:fL} & {:eL} \\\\"
 
 	numberafterselection = 10000.
 

@@ -324,6 +324,17 @@ def MultiplyFinalEffs(effs, regioneffs):
 				regioneffs[item][key] = -1.
 	return regioneffs
 
+
+def FormatLatex(number, precision = 2): 
+	numstring = "{:.{precision}e}".format(number, precision=precision)
+	collection = numstring.split("e")
+	assert(len(collection)==2)
+	num = float(collection[0])
+	err = int(collection[1])
+	#err = err.replace("+", "")
+	latexstring = "{:.{precision}} \\times 10^{{{}}}".format(num, err, precision=precision)
+	return latexstring
+
 	
 
 
@@ -401,14 +412,16 @@ if __name__ == "__main__":
 			
 	Ana.Init(options.version)
 
-	template = "{} & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:fL}$ & ${:.1e}$ \\\\\n"
+	template = "{} & ${}$ & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:fL}$ & ${}$ \\\\\n" #{:.1e} "{} & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:fL}$ & ${}$ \\\\\n"
 
 	numberafterselection = 10000.
 
-	namedict = {"Sig":"$B^0\\rightarrow D^{*-}\\tau^+_{\\nu_\\tau}$", "BkgDstarDs": "$B^0\\rightarrow D^{*-}D_{s}^+$", "BkgDstarDsstar": "$B^0\\rightarrow D^{*-}D_{s}^{*+}$"} #{"Sig":"$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}\tau^\\pm\\myoversetnu{\\brabar}{\\nu}_\\tau}$", "BkgDstarDs": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^\\pm}$", "BkgDstarDsstar": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^{*\\pm}}$"}
+	namedict = {"Sig":"$B^0\\rightarrow D^{*-}\\tau^+\\nu_\\tau$", "BkgDstarDs": "$B^0\\rightarrow D^{*-}D_{s}^+$", "BkgDstarDsstar": "$B^0\\rightarrow D^{*-}D_{s}^{*+}$"} #{"Sig":"$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}\tau^\\pm\\myoversetnu{\\brabar}{\\nu}_\\tau}$", "BkgDstarDs": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^\\pm}$", "BkgDstarDsstar": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^{*\\pm}}$"}
 
 
 	with open("/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/Presentations/PresentationVFS_23_4_26/efftable.tex", "w") as outfile: 
+		outfile.write("\\begin{tabular}{lccccr}\n")
+		outfile.write("sample & $\\epsilon_{filter}$ & $\\epsilon_{ana}$ & Br & $N_{exp.}$ & N requested \\\\\n\\hline\n")
 
 		print("Expected yields")
 		for sample in samples: 
@@ -428,7 +441,9 @@ if __name__ == "__main__":
 			print("\tN expected for {}: {} (filter eff: {}, ana eff: {}, number requested: {})".format(sample, N, filtereffs[sample], eff, numberafterselection/eff))
 			numrequested = numberafterselection/eff
 			n = round(numrequested.n, -3)
-			outfile.write(template.format(namedict[sample], filtereffs[sample], eff, N, n, precision=2))
+			outfile.write(template.format(namedict[sample], FormatLatex(filtereffs[sample].n), eff, forcedbr[sample], N, FormatLatex(numrequested.n), precision=2).replace("\\times", "\\cdot"))
+
+		outfile.write("\\end{tabular}\n")
 
 	Ana.filemanager.CloseAll()
 

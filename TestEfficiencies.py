@@ -401,27 +401,32 @@ if __name__ == "__main__":
 			
 	Ana.Init(options.version)
 
-	template = "{} & {:.3eL} & {:.3eL} & {:fL} & {:eL} \\\\"
+	template = "{} & ${:.3eL}$ & ${:.3eL}$ & ${:fL}$ & ${:eL}$ \\\\\n"
 
 	numberafterselection = 10000.
 
-	print("Expected yields")
-	for sample in samples: 
-		# Getting selection efficiency from file 
-		item = sample+"_ntuple"
-		Ana.filemanager.OpenItem(item)
-		file = ROOT.TFile.Open(Ana.filemanager.GetFile(item), "READ")
-		info = file.Get("ntuplizer/EffCalc") #options.object
+	namedict = {"Sig":"$B^0\\rightarrow D^{*-}\\tau^+_{\\nu_\\tau}$", "BkgDstarDs": "$B^0\\rightarrow D^{*-}D_{s}^+$", "BkgDstarDsstar": "$B^0\\rightarrow D^{*-}D_{s}^{*+}$"} #{"Sig":"$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}\tau^\\pm\\myoversetnu{\\brabar}{\\nu}_\\tau}$", "BkgDstarDs": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^\\pm}$", "BkgDstarDsstar": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^{*\\pm}}$"}
 
-		if not info: 
-			raise ValueError("ERROR: No efficiency info found in file. Are you sure this file should contain efficiency information at {} ?".format(options.object))
 
-		eff = getEffFromInfo(info)
+	with open("/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/Presentations/PresentationVFS_23_4_26/efftable.tex", "w") as outfile: 
 
-		N = options.lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff
-		#print(10000./eff)
-		print("\tN expected for {}: {} (filter eff: {}, ana eff: {}, number requested: {})".format(sample, N, filtereffs[sample], eff, numberafterselection/eff))
-		print(template.format(sample, filtereffs[sample], eff, N, numberafterselection/eff))
+		print("Expected yields")
+		for sample in samples: 
+			# Getting selection efficiency from file 
+			item = sample+"_ntuple"
+			Ana.filemanager.OpenItem(item)
+			file = ROOT.TFile.Open(Ana.filemanager.GetFile(item), "READ")
+			info = file.Get("ntuplizer/EffCalc") #options.object
+
+			if not info: 
+				raise ValueError("ERROR: No efficiency info found in file. Are you sure this file should contain efficiency information at {} ?".format(options.object))
+
+			eff = getEffFromInfo(info)
+
+			N = options.lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff
+			#print(10000./eff)
+			print("\tN expected for {}: {} (filter eff: {}, ana eff: {}, number requested: {})".format(sample, N, filtereffs[sample], eff, numberafterselection/eff))
+			outfile.write(template.format(namedict[sample], filtereffs[sample], eff, N, numberafterselection/eff))
 
 	Ana.filemanager.CloseAll()
 

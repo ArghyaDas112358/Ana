@@ -96,6 +96,16 @@ namespace Ana
 			filemanager.AddItem("BkgDstara1Part_DNN", folder+"BkgDstara1Part_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstara1Part", folder+"BkgDstara1Part_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("BkgB0DD_ntuple", folder+"BkgB0DD.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgB0DD_tf", folder+"BkgB0DD_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgB0DD_DNN", folder+"BkgB0DD_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgB0DD", folder+"BkgB0DD_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("BkgBuDXc_ntuple", folder+"BkgBuDXc.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgBuDXc_tf", folder+"BkgBuDXc_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgBuDXc_DNN", folder+"BkgBuDXc_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("BkgBuDXc", folder+"BkgBuDXc_tauDNN_mva.root", "tree"); 
+
 			filemanager.AddItem("dataB2_ntuple", folder+"DataBPH2Run2018B.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataB2_tf", folder+"DataBPH2Run2018B_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataB2_DNN", folder+"DataBPH2Run2018B_tauDNN.root", "ntuplizer/tree"); 

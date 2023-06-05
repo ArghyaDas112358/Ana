@@ -3,7 +3,7 @@
 
 
 
-void PrintDecayString(TTree *tree) 
+void PrintDecayString(TTree *tree, bool fulldecay = false) 
 {
 
 	std::string *decaystring = new std::string(); 
@@ -34,7 +34,7 @@ void PrintDecayString(TTree *tree)
 		}
 		std::cout << endl; 
 
-		std::cout << *decaystring << std::endl; 
+		if (fulldecay) std::cout << *decaystring << std::endl; 
 
 		std::cout << "K: " << *decaystringK << std::endl; 
 		std::cout << "pi: " << *decaystringpi << std::endl; 

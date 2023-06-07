@@ -563,20 +563,43 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 			data.Draw("E")
 
 			stack = THStack("stack", "Background modelling")
+			hists = {}
 			for component in components: 
-				histo = frames[component][region].Histo1D(examplehist, variable)
+				if "-" in component: 
+					comps = component.split("-")
+					assert(len(comps)>=2)
+					print(component)
+					histo = copy.deepcopy(frames[comps[0]][region].Histo1D(examplehist, variable).GetPtr())
+					if (yields[comps[0]][region] > 0. ): 
+						histo.Scale(yields[comps[0]][region].nominal_value/histo.Integral())
+					elif (yields[comps[0]][region].nominal_value != -1.):
+						histo.Scale(-yields[comps[0]][region].nominal_value*histo.Integral())
+					comps.remove(comps[0])
+					for comp in comps: 
+						hist = copy.deepcopy(frames[comp][region].Histo1D(examplehist, variable).GetPtr())
+						if (yields[comp][region] > 0. ): 
+							hist.Scale(yields[comp][region].nominal_value/hist.Integral())
+						elif (yields[comp][region].nominal_value != -1.):
+							hist.Scale(-yields[comp][region].nominal_value*hist.Integral())
+						histo.Add(hist, -1.)
+				else: 
+					histo = frames[component][region].Histo1D(examplehist, variable).GetPtr()
+					if (yields[component][region] > 0. ): 
+						histo.Scale(yields[component][region].nominal_value/histo.Integral())
+					elif (yields[component][region].nominal_value != -1.):
+						histo.Scale(-yields[component][region].nominal_value*histo.Integral())
 				ROOT.SetOwnership(histo, 0)
-				if (yields[component][region] > 0. ): 
-					histo.Scale(yields[component][region].nominal_value/histo.Integral())
-				elif (yields[component][region].nominal_value != -1.):
-					histo.Scale(-yields[component][region].nominal_value*histo.Integral())
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
-				histo.SetLineColor(Ana.color[component.replace("Part", "")])
+				color = Ana.color[component.replace("Part", "")]
+				if (not color): 
+					color = colors[0]
+				histo.SetLineColor(color)
 				#histo.SetMarkerColor(Ana.color[component])
 				histo.SetFillStyle(1)
-				histo.SetFillColor(Ana.color[component.replace("Part", "")])
-				stack.Add(histo.GetPtr())
+				histo.SetFillColor(color)
+				hists[component] = histo
+				stack.Add(histo)
 				#legend.AddEntry(histo.GetPtr(), Ana.legends[component], "F")
 
 			stack.Draw("HIST SAME") #"SAME"
@@ -610,15 +633,15 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 				canv = TCanvas("legendCanvas", "legenCanvas", 800, 1200)
 				dummy = TCanvas("dummy", "dummy", 800, 600)
 				#legend.AddEntry(data.GetPtr(), "data", "PE")
-				for component in initialcomponents: 
-					histo = frames[component][region].Histo1D(examplehist, variable)
+				for component, histo in hists.iteritems(): 
+					#histo = frames[component][region].Histo1D(examplehist, variable)
 					ROOT.SetOwnership(histo, 0)
 					histo.SetLineStyle(1) # plain
 					histo.SetLineWidth(2)
 					histo.SetLineColor(Ana.color[component.replace("Part", "")])
 					histo.SetFillStyle(1)
 					histo.SetFillColor(Ana.color[component])
-					legend.AddEntry(histo.GetPtr(), Ana.legends[component.replace("Part", "")], "F")
+					legend.AddEntry(histo, Ana.legends[component.replace("Part", "")], "F")
 				canv.cd()
 				data.SetMarkerSize(4.)
 				data.SetLineWidth(4)
@@ -812,6 +835,7 @@ if __name__ == "__main__":
 	#AtomicDraw(frames["Sig"]["SR"].Histo1D("b_tau_rhomass1"), outputfolder+"/SignalFromNew.png")
 
 	#colors = {"Sig":2, "BkgDstarDs":3, "BkgDstarDsstar":8, "BkgDstara1":4, "dataD2WS":6, "dataD2TauWS":7, "other":9, "yetanother":1} #4, 3, 6, 7, 9 colors = [2, 3, 8, 4, 6, 7, 9, 1]
+	colors = [2, 3, 8, 4, 6, 7, 9, 1]
 
 	GetEfficiencies(frames)
 
@@ -841,18 +865,24 @@ if __name__ == "__main__":
 	PrintEfficiencies(regioneffs)
 
 	files = filesUsed #["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"]
-	PlotOverlay(frames, "dataD2", ["Sig", "dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1Part"], regions, variables, regioneffs, outputfolder)
+	#PlotOverlay(frames, "dataD2", ["Sig", "dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1Part"], regions, variables, regioneffs, outputfolder)
 
 	PlotStack(frames, "dataD2", files, regions, variables, regioneffs, outputfolder, False)
 
-	files = {"Sig":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/Sig.root"), "BkgDstara1":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/BkgDstara1.root") }
-	newframes, histos, histisunrolled = PrepareCustomFiles(files, regions)
+	#files = {"Sig":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/Sig.root"), "BkgDstara1":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/BkgDstara1.root") }
+	#newframes, histos, histisunrolled = PrepareCustomFiles(files, regions)
 
-	print(newframes)
+	#print(newframes)
 
-	PlotComparison(frames, "BkgDstara1Part", "Sig", regions, variables, outputfolder, False) #["t_B_mu_alpha", "t_B_m", "t_tau_m"]["tau_rhomass1", "tau_rhomass2", "B_m", "B_q2"]
+	#PlotComparison(frames, "BkgDstara1Part", "Sig", regions, variables, outputfolder, False) #["t_B_mu_alpha", "t_B_m", "t_tau_m"]["tau_rhomass1", "tau_rhomass2", "B_m", "B_q2"]
 
 	
+	#with open("normalisationsFromFit.json", "r") as fitefffile: 
+	fiteffs = ReadEffs("normalisationsFromFit.json")
+	fiteffs.update(regioneffs)
+	fiteffs["dataD2"]["SB"] = ufloat(-1., 0.)
+	fiteffs["dataD2"]["CR"] = ufloat(-1., 0.)
+	PlotStack(frames, "dataD2", ["Sig", "dataD2", "dataD2-BkgDstarDs"], ["SB", "CR"], variables, fiteffs, "./plots/closuretest/", False)
 
 
 	Ana.filemanager.CloseAll()

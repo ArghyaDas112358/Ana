@@ -3,5 +3,7 @@
 	"BkgDstarDs": [1.042e-6, 1e-8], 
 	"BkgDstarDsstar": [2.62e-4, 1e-6], 
 	"BkgDstara1": [2.0e-5, 0.0], 
-	"BkgDstar3pi": [3.800e-04, 0.0]
+	"BkgDstar3pi": [3.800e-04, 0.0], 
+	"BkgB0DD": [9.362E-05,9.36112352956E-13], 
+	"BkgBuDXc": [1.72020725388601E-05, 8.91283763086035E-13]
 }

@@ -418,6 +418,8 @@ if __name__ == "__main__":
 
 	namedict = {"Sig":"$B^0\\rightarrow D^{*-}\\tau^+\\nu_\\tau$", "BkgDstarDs": "$B^0\\rightarrow D^{*-}D_{s}^+$", "BkgDstarDsstar": "$B^0\\rightarrow D^{*-}D_{s}^{*+}$", "BkgBuDXc": "$B^+\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$", "BkgB0DD": "$B^0\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$"} #{"Sig":"$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}\tau^\\pm\\myoversetnu{\\brabar}{\\nu}_\\tau}$", "BkgDstarDs": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^\\pm}$", "BkgDstarDsstar": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^{*\\pm}}$"} # "BkgBuDXc": "$B^+\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}\\pi^+X$", "BkgB0DD": "$B^0\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}X$"
 
+	Nexpected = {}
+
 
 	with open("/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/Presentations/PresentationVFS_23_4_26/efftable.tex", "w") as outfile: 
 		outfile.write("\\begin{tabular}{lccccr}\n")
@@ -437,6 +439,7 @@ if __name__ == "__main__":
 			eff = getEffFromInfo(info)
 
 			N = options.lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff
+			Nexpected[sample] = N
 			#print(10000./eff)
 			print("\tN expected for {}: {} (filter eff: {}, ana eff: {}, number requested: {})".format(sample, N, filtereffs[sample], eff, numberafterselection/eff))
 			numrequested = numberafterselection/eff
@@ -444,6 +447,8 @@ if __name__ == "__main__":
 			outfile.write(template.format(namedict[sample], FormatLatex(filtereffs[sample].n), eff, forcedbr[sample], N, FormatLatex(numrequested.n), precision=2).replace("\\times", "\\cdot"))
 
 		outfile.write("\\end{tabular}\n")
+
+	DumpEffs(Nexpected, "./data/etc/Expectedyields.json")
 
 	Ana.filemanager.CloseAll()
 

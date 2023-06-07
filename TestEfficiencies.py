@@ -408,7 +408,7 @@ if __name__ == "__main__":
 
 	lumi = 26.8
 
-	samples = ["Sig", "BkgDstarDs", "BkgDstarDsstar"] #, "BkgDstara1Part"
+	samples = ["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] #, "BkgDstara1Part"
 			
 	Ana.Init(options.version)
 
@@ -416,7 +416,7 @@ if __name__ == "__main__":
 
 	numberafterselection = 10000.
 
-	namedict = {"Sig":"$B^0\\rightarrow D^{*-}\\tau^+\\nu_\\tau$", "BkgDstarDs": "$B^0\\rightarrow D^{*-}D_{s}^+$", "BkgDstarDsstar": "$B^0\\rightarrow D^{*-}D_{s}^{*+}$"} #{"Sig":"$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}\tau^\\pm\\myoversetnu{\\brabar}{\\nu}_\\tau}$", "BkgDstarDs": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^\\pm}$", "BkgDstarDsstar": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^{*\\pm}}$"}
+	namedict = {"Sig":"$B^0\\rightarrow D^{*-}\\tau^+\\nu_\\tau$", "BkgDstarDs": "$B^0\\rightarrow D^{*-}D_{s}^+$", "BkgDstarDsstar": "$B^0\\rightarrow D^{*-}D_{s}^{*+}$", "BkgBuDXc": "$B^+\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$", "BkgB0DD": "$B^0\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$"} #{"Sig":"$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}\tau^\\pm\\myoversetnu{\\brabar}{\\nu}_\\tau}$", "BkgDstarDs": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^\\pm}$", "BkgDstarDsstar": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^{*\\pm}}$"} # "BkgBuDXc": "$B^+\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}\\pi^+X$", "BkgB0DD": "$B^0\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}X$"
 
 
 	with open("/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/Presentations/PresentationVFS_23_4_26/efftable.tex", "w") as outfile: 

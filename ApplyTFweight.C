@@ -255,6 +255,12 @@ void ApplyTFweight(const TString& inIdentifier, const TString& outIndentifier, c
 		outfile = destination + outfilename; 
 	}
 
+	for (auto branch : {"v_tau_gen1str", "v_tau_gen2str", "v_tau_gen3str"}) // Hack to fix string branche 
+	{
+		withWeight = withWeight.Redefine(branch, [](const ROOT::RVec<std::string> &v) {return std::vector<std::string>(v.begin(), v.end());}, {branch}); 
+	}
+
+
 	withWeight.Snapshot(filemanager.GetObject(outIndentifier), outfile.Data()); 
 
 	//Pause(5); 

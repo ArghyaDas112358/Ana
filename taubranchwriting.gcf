@@ -198,6 +198,21 @@ static float WritePi3Q(const Tau& tau)
 	 return tau.pi3q;
 };
 
+static std::string WriteGen1Str(const Tau& tau)
+{
+	 return tau.gen1str;
+};
+
+static std::string WriteGen2Str(const Tau& tau)
+{
+	 return tau.gen2str;
+};
+
+static std::string WriteGen3Str(const Tau& tau)
+{
+	 return tau.gen3str;
+};
+
 static float WriteRhomass1(const Tau& tau)
 {
 	 return tau.rhomass1;
@@ -206,6 +221,26 @@ static float WriteRhomass1(const Tau& tau)
 static float WriteRhomass2(const Tau& tau)
 {
 	 return tau.rhomass2;
+};
+
+static float WritePhimass1(const Tau& tau)
+{
+	 return tau.phimass1;
+};
+
+static float WritePhimass2(const Tau& tau)
+{
+	 return tau.phimass2;
+};
+
+static float WriteM_Kkpi1(const Tau& tau)
+{
+	 return tau.m_KKpi1;
+};
+
+static float WriteM_Kkpi2(const Tau& tau)
+{
+	 return tau.m_KKpi2;
 };
 
 static bool WriteMatch1(const Tau& tau)

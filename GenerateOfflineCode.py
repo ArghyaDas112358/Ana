@@ -51,7 +51,7 @@ if __name__ == "__main__":
 	parser.add_argument("--objname", dest="objname", action="store", type=str, default="tau", help="Name of tau object in UpdateTauDNN.C")
 	parser.add_argument("--match", dest="match", action="store_true", default=False, help="Do gen matching")
 
-	defaultvalues = {"f": "-999.", "i": "-999", "b": "false", "d": "-999." } # since code generation given as string
+	defaultvalues = {"f": "-999.", "i": "-999", "b": "false", "d": "-999.", "s": "\"\""  } # since code generation given as string
 
 	candidates = ["tau", "B"]
 
@@ -121,10 +121,13 @@ if __name__ == "__main__":
 											cpptype = "double"
 											branchtypesuffix = "/F" # If really want to store double put D here 
 											branchtype = "float"
+										elif (vartype == "s"):
+											cpptype = "std::string"
+											branchtypesuffix = "" 
 										else: 
 											raise AttributeError, "No known type: {}".format(vartype)
 										assert(cpptype)
-										assert(branchtypesuffix)
+										#assert(branchtypesuffix)
 
 										other = "init_{}".format(varname)
 

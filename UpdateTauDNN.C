@@ -527,7 +527,7 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 				.Define("b_tau_dnn3", Tau::WriteDNN3, {"b_tau"})
 				.Define("b_tau_sumdnn", Tau::WriteSumDNN, {"b_tau"});
 
-	withDNN = withDNN.Define("b_D0_pt", extractFirstElement, {"BsDstarTauNu_D0_pt"})
+	/*withDNN = withDNN.Define("b_D0_pt", extractFirstElement, {"BsDstarTauNu_D0_pt"})
 				.Define("b_D0_eta", extractFirstElement, {"BsDstarTauNu_D0_eta"})
 				.Define("b_D0_phi", extractFirstElement, {"BsDstarTauNu_D0_phi"})
 				.Define("b_D0_vprob", extractFirstElement, {"BsDstarTauNu_D0_vprob"})
@@ -545,10 +545,16 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 				.Define("b_Ds_lip", extractFirstElement, {"BsDstarTauNu_Ds_lip"})
 				.Define("b_Ds_lips", extractFirstElement, {"BsDstarTauNu_Ds_lips"})
 				.Define("b_Ds_pvip", extractFirstElement, {"BsDstarTauNu_Ds_pvip"}); 
+	*/
 
 	withDNN = withDNN.Define("b_tau_minpipt", findMin, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"}).Define("b_tau_maxpipt", findMax, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"})
 						.Define("b_tau_minpieta", findMin, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"}).Define("b_tau_maxpieta", findMax, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"})
 						.Define("b_tau_minpiphi", findMin, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}).Define("b_tau_maxpiphi", findMax, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}); 
+
+	for (auto branch : {"v_tau_gen1str", "v_tau_gen2str", "v_tau_gen3str"}) // Hack to fix string branche TODO: write the branch names to a list (in GenerateOfflineCode.py)
+	{
+		withDNN = withDNN.Redefine(branch, [](const ROOT::RVec<std::string> &v) {return std::vector<std::string>(v.begin(), v.end());}, {branch}); 
+	}
 
 	withDNN.Snapshot(filemanager.GetObject(outIndentifier), filemanager.GetFile(outIndentifier)); 
 

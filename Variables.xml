@@ -5,6 +5,100 @@
     <!ATTLIST Object name ID #IMPLIED>
 ]>
 <Candidates>
+<Object name="D0">
+    <Variable name="pt" type="f" /> 
+    <Variable name="eta" type="f" /> 
+    <Variable name="phi" type="f" /> 
+    <Variable name="q" type="i" /> 
+    <Variable name="m" type="f" /> 
+    <Variable name="prefit_pt" type="f" /> 
+    <Variable name="prefit_eta" type="f" /> 
+    <Variable name="prefit_phi" type="f" />
+    <Variable name="prefit_m" type="f" /> 
+    <Variable name="vprob" type="f" /> 
+    <Variable name="fsig" type="f" /> 
+    <Variable name="lip" type="f" /> 
+    <Variable name="lipsig" type="f" />    
+    <Variable name="alpha" type="f" /> 
+    <Variable name="fl" type="f" /> 
+    <Variable name="pvip" type="f" /> 
+    <Variable name="pvipsig" type="f" /> 
+    <Variable name="dr" type="f" /> 
+    <Variable name="prefit_kpt" type="f" /> 
+    <Variable name="prefit_pipt" type="f" /> 
+    <Variable name="prefit_keta" type="f" /> 
+    <Variable name="prefit_pieta" type="f" /> 
+    <Variable name="prefit_kphi" type="f" /> 
+    <Variable name="prefit_piphi" type="f" /> 
+    <Variable name="prefit_km" type="f" /> 
+    <Variable name="prefit_pim" type="f" /> 
+    <Variable name="kq" type="i" /> 
+    <Variable name="piq" type="i" /> 
+    <Variable name="kidx" type="i" /> 
+    <Variable name="pidx" type="i" /> 
+    <Variable name="genkstr" type="s" />  
+    <Variable name="genpistr" type="s" />  
+    <Variable name="gen_pt" type="f" />  
+    <Variable name="gen_eta" type="f" />  
+    <Variable name="matchk" type="b" /> 
+    <Variable name="matchpi" type="b" /> 
+    <Variable name="match" type="b" /> 
+    <Variable name="vChi2" type="f" />
+    <Variable name="vChi2Ndof" type="f" /> 
+    <Variable name="vx" type="f" />
+    <Variable name="vy" type="f" />
+    <Variable name="vz" type="f" />
+    <Variable name="r" type="f" />
+    <Variable name="legacyMaxdr" type="f" /> 
+    <Variable name="drFit" type="f" /> 
+    <Variable name="drFitB" type="f" /> 
+    <Variable name="deltaPtFit" type="f" /> 
+    <Variable name="deltaPtFitB" type="f" /> 
+    <Variable name="mu_alpha" type="f" /> 
+</Object>
+<Object name="Dstar">
+    <Variable name="pt" type="f" /> 
+    <Variable name="eta" type="f" /> 
+    <Variable name="phi" type="f" /> 
+    <Variable name="q" type="i" /> 
+    <Variable name="m" type="f" /> 
+    <Variable name="prefit_pt" type="f" /> 
+    <Variable name="prefit_eta" type="f" /> 
+    <Variable name="prefit_phi" type="f" />
+    <Variable name="prefit_m" type="f" /> 
+    <Variable name="vprob" type="f" /> 
+    <Variable name="fsig" type="f" /> 
+    <Variable name="lip" type="f" /> 
+    <Variable name="lipsig" type="f" />    
+    <Variable name="alpha" type="f" /> 
+    <Variable name="fl" type="f" /> 
+    <Variable name="pvip" type="f" /> 
+    <Variable name="pvipsig" type="f" /> 
+    <Variable name="dr" type="f" /> 
+    <Variable name="prefit_pispt" type="f" /> 
+    <Variable name="prefit_piseta" type="f" /> 
+    <Variable name="prefit_pisphi" type="f" /> 
+    <Variable name="prefit_pism" type="f" /> 
+    <Variable name="pisq" type="i" /> 
+    <Variable name="spidx" type="i" /> 
+    <Variable name="genpistr" type="s" />  
+    <Variable name="gen_pt" type="f" />  
+    <Variable name="gen_eta" type="f" />  
+    <Variable name="matchpis" type="b" /> 
+    <Variable name="match" type="b" /> 
+    <Variable name="vChi2" type="f" />
+    <Variable name="vChi2Ndof" type="f" /> 
+    <Variable name="vx" type="f" />
+    <Variable name="vy" type="f" />
+    <Variable name="vz" type="f" />
+    <Variable name="r" type="f" />
+    <Variable name="legacyMaxdr" type="f" /> 
+    <Variable name="drFit" type="f" /> 
+    <Variable name="drFitB" type="f" /> 
+    <Variable name="deltaPtFit" type="f" /> 
+    <Variable name="deltaPtFitB" type="f" /> 
+    <Variable name="mu_alpha" type="f" /> 
+</Object>
 <Object name="tau">
     <Variable name="pt" type="f" /> 
     <Variable name="eta" type="f" /> 
@@ -46,8 +140,15 @@
     <Variable name="pi1q" type="f" /> 
     <Variable name="pi2q" type="f" /> 
     <Variable name="pi3q" type="f" />  
+    <Variable name="gen1str" type="s" />  
+    <Variable name="gen2str" type="s" />  
+    <Variable name="gen3str" type="s" />  
     <Variable name="rhomass1" type="f" /> 
     <Variable name="rhomass2" type="f" /> 
+    <Variable name="phimass1" type="f" /> 
+    <Variable name="phimass2" type="f" /> 
+    <Variable name="m_KKpi1" type="f" /> 
+    <Variable name="m_KKpi2" type="f" /> 
     <Variable name="match1" type="b" /> 
     <Variable name="match2" type="b" /> 
     <Variable name="match3" type="b" /> 

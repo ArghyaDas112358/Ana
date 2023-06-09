@@ -71,94 +71,102 @@ if __name__ == "__main__":
 					with open("taubranchreading.gcf", "w") as taubranchreading: 
 						with open("tauvariableaffectation.gcf", "w") as tauaffectation: 
 							with open("taubranchcreation.gcf", "w") as taubranchcreation: 
+								with open("stringbranches.gcf", "w") as stringbranches: 
+									stringbranches.write("std::vector<std::string> stringbranches = {")
+									notFirst = False
 
-								for candidate in candidates: 
-									element = document.getElementById(candidate)
-									
-									objectvars = element.getElementsByTagName("Variable")
-									lines = []
-									for var in objectvars: 
-										if (options.debug): print("Attributes: name={} type={}".format(var.getAttribute("name"), var.getAttribute("type")))
-										name = var.getAttribute("name")
-										if (candidate != "tau"): 
-											varname = "{}_{}".format(candidate, name)
-										else: 
-											varname = name
-										branchname = "{}_{}".format(candidate, name)
-										assert(name), "Variable has no field \"name\""
-										vartype = var.getAttribute("type")
-										assert(vartype), "Variable {} no field \"type\"".format(name)
-										vartype = vartype.lower()
-										assert(vartype in defaultvalues), "Variable {} has unsupported type: {}".format(name)
-										branch = var.getAttribute("branch")
-										if (not branch): 
-											branch = "b_{}".format(branchname)
-											if (options.debug): print("Using variable name as branch name: {}".format(branch))
-										vbranch = var.getAttribute("vbranch")
-										if (not vbranch): 
-											vbranch = "v_"+branchname
-											if (options.debug): print("Using variable default name as vbranch name: {}".format(vbranch))
-										default = var.getAttribute("default")
-										if (not default): 
-											default = defaultvalues[vartype]
-											if (options.debug): print("Using variable default name as default name: {}".format(default))
+									for candidate in candidates: 
+										element = document.getElementById(candidate)
+										
+										objectvars = element.getElementsByTagName("Variable")
+										lines = []
+										for var in objectvars: 
+											if (options.debug): print("Attributes: name={} type={}".format(var.getAttribute("name"), var.getAttribute("type")))
+											name = var.getAttribute("name")
+											if (candidate != "tau"): 
+												varname = "{}_{}".format(candidate, name)
+											else: 
+												varname = name
+											branchname = "{}_{}".format(candidate, name)
+											assert(name), "Variable has no field \"name\""
+											vartype = var.getAttribute("type")
+											assert(vartype), "Variable {} no field \"type\"".format(name)
+											vartype = vartype.lower()
+											assert(vartype in defaultvalues), "Variable {} has unsupported type: {}".format(name)
+											branch = var.getAttribute("branch")
+											if (not branch): 
+												branch = "b_{}".format(branchname)
+												if (options.debug): print("Using variable name as branch name: {}".format(branch))
+											vbranch = var.getAttribute("vbranch")
+											if (not vbranch): 
+												vbranch = "v_"+branchname
+												if (options.debug): print("Using variable default name as vbranch name: {}".format(vbranch))
+											default = var.getAttribute("default")
+											if (not default): 
+												default = defaultvalues[vartype]
+												if (options.debug): print("Using variable default name as default name: {}".format(default))
 
-										# Start writing out the generated code
-										cpptype = ""
-										branchtypesuffix = ""
-										branchtype = ""
-										if (vartype == "f"): 
-											cpptype = "float"
-											branchtypesuffix = "/F"
-										elif (vartype == "i"): 
-											cpptype = "int"
-											branchtypesuffix = "/I"
-										elif (vartype == "b"): 
-											cpptype = "bool"
-											branchtypesuffix = "/I" # Use here O for bool branches (if int branch OK, implicit conversion: https://stackoverflow.com/questions/5369770/bool-to-int-conversion)
-											branchtype = "int"
-										elif (vartype == "d"):
-											cpptype = "double"
-											branchtypesuffix = "/F" # If really want to store double put D here 
-											branchtype = "float"
-										elif (vartype == "s"):
-											cpptype = "std::string"
-											branchtypesuffix = "" 
-										else: 
-											raise AttributeError, "No known type: {}".format(vartype)
-										assert(cpptype)
-										#assert(branchtypesuffix)
+											# Start writing out the generated code
+											cpptype = ""
+											branchtypesuffix = ""
+											branchtype = ""
+											if (vartype == "f"): 
+												cpptype = "float"
+												branchtypesuffix = "/F"
+											elif (vartype == "i"): 
+												cpptype = "int"
+												branchtypesuffix = "/I"
+											elif (vartype == "b"): 
+												cpptype = "bool"
+												branchtypesuffix = "/I" # Use here O for bool branches (if int branch OK, implicit conversion: https://stackoverflow.com/questions/5369770/bool-to-int-conversion)
+												branchtype = "int"
+											elif (vartype == "d"):
+												cpptype = "double"
+												branchtypesuffix = "/F" # If really want to store double put D here 
+												branchtype = "float"
+											elif (vartype == "s"):
+												cpptype = "std::string"
+												branchtypesuffix = "" 
+												if (notFirst): stringbranches.write(", ")
+												notFirst = True
+												stringbranches.write("\"{}\"".format(vbranch))
+											else: 
+												raise AttributeError, "No known type: {}".format(vartype)
+											assert(cpptype)
+											#assert(branchtypesuffix)
 
-										other = "init_{}".format(varname)
+											other = "init_{}".format(varname)
 
-										funcName = "Write{}".format(varname.title())
+											funcName = "Write{}".format(varname.title())
 
-										tauvariables.write("{} {} = {};\n".format(cpptype, varname, default))
+											tauvariables.write("{} {} = {};\n".format(cpptype, varname, default))
 
-										taubranchwriting.write("static {} {}(const Tau& tau)\n{{\n\t return {}.{};\n}};\n\n".format(cpptype, funcName, options.objname, varname))
+											taubranchwriting.write("static {} {}(const Tau& tau)\n{{\n\t return {}.{};\n}};\n\n".format(cpptype, funcName, options.objname, varname))
 
-										if (count > 0): 
-											tauaffectationargs.write(", ")
-											taubranchreading.write(", ")
+											if (count > 0): 
+												tauaffectationargs.write(", ")
+												taubranchreading.write(", ")
 
-										tauaffectationargs.write("ROOT::VecOps::RVec<{}> {}".format(cpptype, other))
+											tauaffectationargs.write("ROOT::VecOps::RVec<{}> {}".format(cpptype, other))
 
-										taubranchreading.write("\"{}\"".format(vbranch))
+											taubranchreading.write("\"{}\"".format(vbranch))
 
-										tauaffectation.write("{}.{} = {}.at(i);\n".format(options.objname, varname, other))
+											tauaffectation.write("{}.{} = {}.at(i);\n".format(options.objname, varname, other))
 
-										taubranchcreation.write(".Define(\"{}\", Tau::{}, {{\"{}\"}})".format(branch, funcName, options.taubranchname))
+											taubranchcreation.write(".Define(\"{}\", Tau::{}, {{\"{}\"}})".format(branch, funcName, options.taubranchname))
 
-#										branchinclude.write("{} {};\n".format(branchtype, branch))
-#										branchinclude.write("std::vector<{}> {};\n".format(branchtype, vbranch))
+	#										branchinclude.write("{} {};\n".format(branchtype, branch))
+	#										branchinclude.write("std::vector<{}> {};\n".format(branchtype, vbranch))
 
-#										lines.append("tree_->Branch(\"{}\", &{}, \"{}\");\n".format(branch, branch, branch+branchtypesuffix))
-#										bracnhassignement.write("tree_->Branch(\"{}\", &{});\n".format(vbranch, vbranch))
+	#										lines.append("tree_->Branch(\"{}\", &{}, \"{}\");\n".format(branch, branch, branch+branchtypesuffix))
+	#										bracnhassignement.write("tree_->Branch(\"{}\", &{});\n".format(vbranch, vbranch))
 
-#										branchcleaning.write("{}.clear();\n".format(vbranch))
-#										branchcleaning.write("{} = {};\n".format(branch, default)) # Some variables need to be reset
-									
-										count+=1
+	#										branchcleaning.write("{}.clear();\n".format(vbranch))
+	#										branchcleaning.write("{} = {};\n".format(branch, default)) # Some variables need to be reset
+										
+											count+=1
+
+									stringbranches.write("};")
 
 					for line in lines: 
 						bracnhassignement.write(line)

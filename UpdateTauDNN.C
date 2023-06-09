@@ -551,7 +551,9 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 						.Define("b_tau_minpieta", findMin, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"}).Define("b_tau_maxpieta", findMax, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"})
 						.Define("b_tau_minpiphi", findMin, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}).Define("b_tau_maxpiphi", findMax, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}); 
 
-	for (auto branch : {"v_tau_gen1str", "v_tau_gen2str", "v_tau_gen3str"}) // Hack to fix string branche TODO: write the branch names to a list (in GenerateOfflineCode.py)
+	#include "stringbranches.gcf"
+
+	for (auto branch : stringbranches) // Hack to fix string branche 
 	{
 		withDNN = withDNN.Redefine(branch, [](const ROOT::RVec<std::string> &v) {return std::vector<std::string>(v.begin(), v.end());}, {branch}); 
 	}

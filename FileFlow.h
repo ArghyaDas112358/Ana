@@ -243,9 +243,9 @@ namespace Ana
 
 		colorold = {{"Sig", 2}, {"BkgDstarDs", 3}, {"BkgDstarDsstar", 8}, {"BkgDstara1", 4}, {"dataD2WS", 6}, {"dataD2TauWS", 7}, {"other", 9}, {"yetanother", 1}}; // Legacy color scheme 
 
-		model = {{"v1", "./data/tautagger/batchsize_10/serialized"}, {"v2", "./data/tautagger/FirstTopUp/serialized"}, {"v3", "./data/tautagger/FirstTopUp/serialized"},  {"v3.5", "./data/tautagger/FirstTopUp/serialized"},  {"v4", "./data/tautagger/NewSelTopUpNoOverlap/serialized"}}; 
+		model = {{"v1", "./data/tautagger/batchsize_10/serialized"}, {"v2", "./data/tautagger/FirstTopUp/serialized"}, {"v3", "./data/tautagger/FirstTopUp/serialized"},  {"v3.5", "./data/tautagger/FirstTopUp/serialized"},  {"v4", "./data/tautagger/NewSelTopUpNoOverlap/serialized"}, {"v6.7", "./data/tautagger/NewSelTopUpNoOverlap/serialized"}}; 
 
-		MVA = {{"v1", "./data/tautagger/batchsize_10/serialized"}, {"v2", "./data/tautagger/FirstTopUp/serialized"}, {"v3", "./data/tautagger/FirstTopUp/serialized"},  {"v3.5", "./data/tautagger/FirstTopUp/serialized"},  {"v4", "./data/tautagger/NewSelTopUpNoOverlap/serialized"}, {"v6.7", "./data/tautagger/NewSelTopUpNoOverlap/serialized"}, {"v6.8", "./data/tautagger/FlightSigCorrNoCharge/serialized"}}; 
+		MVA = {{"v1", "./data/tautagger/batchsize_10/serialized"}, {"v2", "./data/tautagger/FirstTopUp/serialized"}, {"v3", "./data/tautagger/FirstTopUp/serialized"},  {"v3.5", "./data/tautagger/FirstTopUp/serialized"},  {"v4", "./data/tautagger/NewSelTopUpNoOverlap/serialized"}}; 
 
 		legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 
 

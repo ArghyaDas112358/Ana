@@ -160,19 +160,19 @@ void ApplyTFweight(const TString& inIdentifier, const TString& outIndentifier, c
 
 	//auto histo2 = frame2.Histo2D({"Bmass_vs_Dmass", "Correlation plot between B and D masses", 100, 0., 7000., 100, 0., 5000.}, "BsDstarTauNu_B_mass", "BsDstarTauNu_D0_unfit_mass"); 
 
-	auto TFresponse = [&pyEvaluation, &counter](std::vector<float> Dstarpt, std::vector<float> Dstareta, std::vector<float> Dstarphi, std::vector<float> Dstarcharge, std::vector<float> pt, std::vector<float> eta, std::vector<float> phi, std::vector<float> q, std::vector<float> DOCA2D, std::vector<float> DOCA2DErr, std::vector<float> DOCA3D, std::vector<float> DOCA3DErr, std::vector<float> dzToPV, std::vector<float> dzToClosest, std::vector<float> isAssociate, std::vector<float> assocQualityToPV, std::vector<int> genmatch) 
+	auto TFresponse = [&pyEvaluation, &counter](float Dstarpt, float Dstareta, float Dstarphi, int Dstarcharge, std::vector<float> pt, std::vector<float> eta, std::vector<float> phi, std::vector<float> q, std::vector<float> DOCA2D, std::vector<float> DOCA2DErr, std::vector<float> DOCA3D, std::vector<float> DOCA3DErr, std::vector<float> dzToPV, std::vector<float> dzToClosest, std::vector<float> isAssociate, std::vector<float> assocQualityToPV, std::vector<float> doca2DToPV, std::vector<int> genmatch) 
 	{
-		assert(Dstarpt.size() == 1); 
-		assert(Dstareta.size() == 1); 
-		assert(Dstarphi.size() == 1); 
-		assert(Dstarcharge.size() == 1); 
+		//assert(Dstarpt.size() == 1); 
+		//assert(Dstareta.size() == 1); 
+		//assert(Dstarphi.size() == 1); 
+		//assert(Dstarcharge.size() == 1); 
 
 		const int initialSize = pt.size(); 
 
-		pt.insert(pt.begin(), Dstarpt[0]); 
-		eta.insert(eta.begin(), Dstareta[0]); 
-		phi.insert(phi.begin(), Dstarphi[0]); 
-		q.insert(q.begin(), Dstarcharge[0]); 
+		pt.insert(pt.begin(), Dstarpt); 
+		eta.insert(eta.begin(), Dstareta); 
+		phi.insert(phi.begin(), Dstarphi); 
+		//q.insert(q.begin(), Dstarcharge[0]); 
 
 		std::cout << "Event no: " << counter << std::endl; 
 		counter++; 
@@ -180,13 +180,13 @@ void ApplyTFweight(const TString& inIdentifier, const TString& outIndentifier, c
 		// create vector saying whether it is a Dstar 
 		std::vector<float> flag = {1.}; 
 
-		std::vector<std::vector<float>* > vectors = {&eta, &phi, &pt, &q}; 
+		std::vector<std::vector<float>* > vectors = {&eta, &phi, &pt}; // , &q
 
 		// Hack to fit the trained model 
-		auto fakePVassoc = new std::vector<float>(dzToClosest.begin(), dzToClosest.begin()+dzToClosest.size()); 
-		auto fakeAssoc = new std::vector<float>(dzToClosest.begin(), dzToClosest.begin()+dzToClosest.size()); 
+		//auto fakePVassoc = new std::vector<float>(dzToClosest.begin(), dzToClosest.begin()+dzToClosest.size()); 
+		//auto fakeAssoc = new std::vector<float>(dzToClosest.begin(), dzToClosest.begin()+dzToClosest.size()); 
 
-		std::vector<std::vector<float>* > additionalvectors = {fakePVassoc, &DOCA3D, &DOCA2D, &DOCA3DErr, &DOCA2DErr, &dzToPV, fakeAssoc, &dzToClosest}; 
+		std::vector<std::vector<float>* > additionalvectors = {&doca2DToPV, &assocQualityToPV, &DOCA3D, &DOCA2D, &DOCA3DErr, &DOCA2DErr, &dzToPV, &isAssociate, &dzToClosest}; 
 		// End hack 
 
 		for (auto vec : additionalvectors) 
@@ -205,8 +205,8 @@ void ApplyTFweight(const TString& inIdentifier, const TString& outIndentifier, c
 		}
 
 		// Hack to fit the trained model
-		garbageCollector.push_back(fakePVassoc); 
-		garbageCollector.push_back(fakeAssoc); 
+		//garbageCollector.push_back(fakePVassoc); 
+		//garbageCollector.push_back(fakeAssoc); 
 		// End hack 
 
 		auto concatenated = concatenateVectors(vectors); 
@@ -242,7 +242,7 @@ void ApplyTFweight(const TString& inIdentifier, const TString& outIndentifier, c
 		return response; 
 	};
 
-	auto withWeight = dataframe.Range(0, Nmax).Define("TFscore", TFresponse, {"BsDstarTauNu_Ds_pt", "BsDstarTauNu_Ds_eta", "BsDstarTauNu_Ds_phi", "BsDstarTauNu_spi_charge", "track_pt", "track_eta", "track_phi", "track_charge", "track_doca2D", "track_doca2Derror", "track_doca", "track_docaerror", "track_dzToPV", "track_dzToClosestVertex", "track_isAssociatedToPV", "track_pvAssociationQuality", "track_isgenmatched"}); 
+	auto withWeight = dataframe.Range(0, Nmax).Define("TFscore", TFresponse, {"Dstar_pt", "Dstar_eta", "Dstar_phi", "Dstar_q", "track_pt", "track_eta", "track_phi", "track_charge", "track_doca2D", "track_doca2Derror", "track_doca", "track_docaerror", "track_dzToPV", "track_dzToClosestVertex", "track_isAssociatedToPV", "track_pvAssociationQuality", "track_PV_doca2D", "track_isgenmatched"}); 
 
 	TString outfile = filemanager.GetFile(outIndentifier); 
 	

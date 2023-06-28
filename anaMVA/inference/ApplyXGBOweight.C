@@ -8,9 +8,7 @@
 #include "TH2D.h"
 #include "TLegend.h"
 #include <iostream>
-#include "DrawTMVAHistogram.C"
-#include "GetSeparation.C"
-#include "FileFlow.h"
+#include "../../FileFlow.h"
 #include "Python.h"
 #include "TPython.h"
 #include <numpy/arrayobject.h>
@@ -160,13 +158,25 @@ void ApplyXGBOweight(const TString& inIdentifier, const TString& outIndentifier,
 
 	//auto histo2 = frame2.Histo2D({"Bmass_vs_Dmass", "Correlation plot between B and D masses", 100, 0., 7000., 100, 0., 5000.}, "BsDstarTauNu_B_mass", "BsDstarTauNu_D0_unfit_mass"); 
 
-	auto TFresponse = [&pyEvaluation, &counter](double Dstarpt, std::vector<float> Dstareta, double Dstarphi, std::vector<float> Dstarcharge, std::vector<float> pt, std::vector<float> eta, std::vector<float> phi, std::vector<float> q, std::vector<float> DOCA2D, std::vector<float> DOCA2DErr, std::vector<float> DOCA3D, std::vector<float> DOCA3DErr, std::vector<float> dzToPV, std::vector<float> dzToClosest, std::vector<float> isAssociate, std::vector<float> assocQualityToPV, std::vector<int> genmatch) 
+ //    struct expand_type 
+ //    {
+ //  		template<typename... T>
+ //  		expand_type(T&&...) {}
+	// };
+
+	//template<typename... ArgTypes>
+	//auto TFresponse = [&pyEvaluation, &counter](float D0pt, float D0eta, float D0phi, float D0vprob, float D0fl, float D0fsig, float Dstarpt, float Dstareta, "b_Ds_phi", "b_Ds_vprob", "b_Ds_fl", "b_Ds_fsig", "b_D0_lip", "b_D0_lips", "b_D0_pvip", "b_Ds_lip", "b_Ds_lips", "b_Ds_pvip", "b_tau_pt", "b_tau_eta", "b_tau_phi", "b_tau_fl", "b_tau_fsig", "b_tau_vprob", "b_tau_lip", "b_tau_pvip", "b_tau_pvipsig", "b_tau_alpha", "b_tau_legacyMaxdr", "b_tau_pi1pt", "b_tau_pi1eta", "b_tau_pi1phi", "b_tau_pi2pt", "b_tau_pi2eta", "b_tau_pi2phi", "b_tau_pi3pt", "b_tau_pi3eta", "b_tau_pi3phi", "b_tau_sumdnn") 
+	auto MVAResponse = [&pyEvaluation, &counter](float a, float b) //const initializer_list<float> &values) 
 	{
 		std::cout << "Event no: " << counter << std::endl; 
 		counter++; 
 
+		std::vector<float> variables(a); 
+
+		for (auto element : variables) std::cout << element << std::endl; 
+
 		// create vector saying whether it is a Dstar 
-		std::vector<float> flag = {1.}; 
+		/*std::vector<float> flag = {1.}; 
 
 		std::vector<std::vector<float>* > vectors = {&eta, &phi, &pt, &q}; 
 
@@ -222,15 +232,19 @@ void ApplyXGBOweight(const TString& inIdentifier, const TString& outIndentifier,
     	}
     	std::cout << std::endl; */
 
-    	for (auto element: garbageCollector) 
+    	/*for (auto element: garbageCollector) 
     	{
     		delete element; 
     	}
 
+		return response; */
+
+		float response = -1.; 
+
 		return response; 
 	};
 
-	auto withWeight = dataframe.Range(0, Nmax).Define("mvaScoreNew", TFresponse, {"b_D0_pt", "b_D0_eta", "b_D0_phi", "b_D0_vprob", "b_D0_fl", "b_D0_fsig",  "b_Ds_pt", "b_Ds_eta", "b_Ds_phi", "b_Ds_vprob", "b_Ds_fl", "b_Ds_fsig", "b_D0_lip", "b_D0_lips", "b_D0_pvip", "b_Ds_lip", "b_Ds_lips", "b_Ds_pvip", "b_tau_pt", "b_tau_eta", "b_tau_phi", "b_tau_fl", "b_tau_fsig", "b_tau_vprob", "b_tau_lip", "b_tau_pvip", "b_tau_pvipsig", "b_tau_alpha", "b_tau_legacyMaxdr", "b_tau_pi1pt", "b_tau_pi1eta", "b_tau_pi1phi", "b_tau_pi2pt", "b_tau_pi2eta", "b_tau_pi2phi", "b_tau_pi3pt", "b_tau_pi3eta", "b_tau_pi3phi", "b_tau_sumdnn"}); 
+	auto withWeight = dataframe.Range(0, Nmax).Define("mvaScoreNew", MVAResponse, {"b_D0_pt", "b_D0_eta"}); //{"b_D0_pt", "b_D0_eta", "b_D0_phi", "b_D0_vprob", "b_D0_fl", "b_D0_fsig",  "b_Ds_pt", "b_Ds_eta", "b_Ds_phi", "b_Ds_vprob", "b_Ds_fl", "b_Ds_fsig", "b_D0_lip", "b_D0_lips", "b_D0_pvip", "b_Ds_lip", "b_Ds_lips", "b_Ds_pvip", "b_tau_pt", "b_tau_eta", "b_tau_phi", "b_tau_fl", "b_tau_fsig", "b_tau_vprob", "b_tau_lip", "b_tau_pvip", "b_tau_pvipsig", "b_tau_alpha", "b_tau_legacyMaxdr", "b_tau_pi1pt", "b_tau_pi1eta", "b_tau_pi1phi", "b_tau_pi2pt", "b_tau_pi2eta", "b_tau_pi2phi", "b_tau_pi3pt", "b_tau_pi3eta", "b_tau_pi3phi", "b_tau_sumdnn"}); 
 
 	TString outfile = filemanager.GetFile(outIndentifier); 
 	
@@ -242,6 +256,15 @@ void ApplyXGBOweight(const TString& inIdentifier, const TString& outIndentifier,
 
 		outfile = destination + outfilename; 
 	}
+
+	#include "../../stringbranches.gcf"
+
+	for (auto branch : stringbranches) // Hack to fix string branche 
+	{
+		//withWeight = withWeight.Redefine(branch, [](const ROOT::RVec<std::string> &v) {return std::vector<std::string>(v.begin(), v.end());}, {branch}); 
+	}
+
+	withWeight = withWeight.Redefine("v_taucandidates", [](const ROOT::RVec<Tau> &v) {return std::vector<Tau>(v.begin(), v.end());}, {"v_taucandidates"});
 
 	withWeight.Snapshot(filemanager.GetObject(outIndentifier), outfile.Data()); 
 

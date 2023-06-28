@@ -14,14 +14,7 @@ class PyXGBEval:
 
         #classifier = pickle.load(open(options.model, "rb"))
 
-        self.debug = False
-
-        #np.__config__.show()
-
-        #os.environ['OPENBLAS_NUM_THREADS'] = '1'
-        #os.environ['NUMEXPR_NUM_THREADS=1']
-
-        #self.Init()        
+        self.debug = False     
 
     def Initialise(self, model): 
         self.savedmodel = model
@@ -48,54 +41,6 @@ class PyXGBEval:
 
         return result
 
-
-    def NN_response(self, data):
-        # the input to this definition is the first key in the h5 file
-        # so far, this part is a blackbox for me
-        
-        # to distinguish if a track in short_data_set is found to be signal or background, read in the NN response (array of array of as many arrays as there are tracks. All of the event-arrays contain 3 probabilities, the first one tells you how likely it is a bg-track, the second if it's a signal-track and the third if it's a muon track.)  
-
-        size = data.shape
-        #print('input_size =', size)
-
-
-        #print(data[0,1,:])
-        
-        
-            
-            
-        
-            
-        pred_list = []
-            
-        for i in range(0, math.floor(len(data)/self.BATCHSIZE)): # TODO: remove
-              
-        # print("Evaluating from: {} to {}".format(i*self.BATCHSIZE+1, (i+1)*self.BATCHSIZE))
-            feed_dict = {
-                'Placeholder:0': data[i*self.BATCHSIZE:(i+1)*self.BATCHSIZE],
-                'Placeholder_1:0': self.mock_label,
-                'Placeholder_2:0': False,
-            }
-            '''
-              if feed_dict['Placeholder:0'].shape == (10, 20, 13):
-                pass
-              else:
-                print('feed_dict size of placeholder 0 different:', feed_dict['Placeholder:0'].shape)
-            '''
-
-        #print("Before running prediction")
-
-        predictions = self.sess.run(self.output, feed_dict)
-
-        #print("After running prediction")
-
-        #print(predictions)
-              
-        #predictions store 1 value per particle. The shape is [1,100,2]. The probability as coming from the B decay is stored at position 2, for example, the probability for the first particle come from the B decay is stored at predictions[0,0,1], while for the second is stored at predictions[0,1,1] and so on.
-        for pred in predictions:
-            pred_list.append(pred)
-            pred_array = np.asarray(pred_list, dtype=object)
-        return np.asarray(pred_array, "d")
 
     def CheckInput(self, dataframe): 
         # open the file and check if the dataframes are  identical

@@ -111,16 +111,31 @@ namespace Ana
 			filemanager.AddItem("dataB2_DNN", folder+"DataBPH2Run2018B_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataB2", folder+"DataBPH2Run2018B_tauDNN_mva.root", "tree"); 
 
-			filemanager.AddItem("dataD2_ntuple", folder+"ParkingBPHULD1.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD2_tf", folder+"ParkingBPHULD1_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD2_DNN", folder+"ParkingBPHULD1_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD2", folder+"ParkingBPHULD1_tauDNN_mva.root", "tree"); 
+			filemanager.AddItem("dataD1_ntuple", folder+"ParkingBPHULD1.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD1_tf", folder+"ParkingBPHULD1_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD1_DNN", folder+"ParkingBPHULD1_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD1", folder+"ParkingBPHULD1_tauDNN_mva.root", "tree"); 
 
-			filemanager.AddItem("dataD2WS_ntuple", folder+"ParkingBPHULA2WS.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD2WS_tf", folder+"ParkingBPHULA2WS_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD2WS_DNN", folder+"ParkingBPHULA2WS_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD2WS", folder+"ParkingBPH2Run2018DWS_tauDNN_mva.root", "tree"); //ParkingBPH2Run2018DWS
+			filemanager.AddItem("dataD2_ntuple", folder+"ParkingBPHULD2.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2_tf", folder+"ParkingBPHULD2_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2_DNN", folder+"ParkingBPHULD2_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2", folder+"ParkingBPHULD2_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("dataA2WS_ntuple", folder+"ParkingBPHULA2WS.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataA2WS_tf", folder+"ParkingBPHULA2WS_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataA2WS_DNN", folder+"ParkingBPHULA2WS_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataA2WS", folder+"ParkingBPH2Run2018DWS_tauDNN_mva.root", "tree"); //ParkingBPH2Run2018DWS
 			//filemanager.AddItem("dataD2WS", folder+"ParkingBPHULA2WS_tauDNN_mva.root", "tree"); //ParkingBPH2Run2018DWS
+
+			filemanager.AddItem("dataD1WS_ntuple", folder+"ParkingBPHULD1WS.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD1WS_tf", folder+"ParkingBPHULD1WS_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD1WS_DNN", folder+"ParkingBPHULD1WS_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD1WS", folder+"ParkingBPHULD1WS_tauDNN_mva.root", "tree");
+
+			filemanager.AddItem("dataD2WS_ntuple", folder+"ParkingBPHULD2WS.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2WS_tf", folder+"ParkingBPHULD2WS_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2WS_DNN", folder+"ParkingBPHULD2WS_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD2WS", folder+"ParkingBPHULD2WS_tauDNN_mva.root", "tree");
 
 			filemanager.AddItem("dataD2TauWS_ntuple", folder+"ParkingBPHULA2WSTau.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataD2TauWS_tf", folder+"ParkingBPHULA2WSTau_withTFweight.root", "ntuplizer/tree"); 

@@ -112,9 +112,9 @@ numLoad = testSize*options.trainEvents
 
 
 
-features_save = [("b_D0_pt", "F"), ("b_D0_eta", "F"), ("b_D0_phi", "F"), ("b_D0_vprob", "F"), ("b_D0_fl", "F"), ("b_D0_fsig", "F"),
-	("b_Ds_pt", "F"), ("b_Ds_eta", "F"), ("b_Ds_phi", "F"), ("b_Ds_vprob", "F"), ("b_Ds_fl", "F"), ("b_Ds_fsig", "F"), 
-	("b_D0_lip", "F"), ("b_D0_lips", "F"), ("b_D0_pvip", "F"), ("b_Ds_lip", "F"), ("b_Ds_lips", "F"), ("b_Ds_pvip", "F"), 
+features_save = [("D0_pt", "F"), ("D0_eta", "F"), ("D0_phi", "F"), ("D0_vprob", "F"), ("D0_fl", "F"), ("D0_fsig", "F"),
+	("Dstar_pt", "F"), ("Dstar_eta", "F"), ("Dstar_phi", "F"), ("Dstar_vprob", "F"), ("Dstar_fl", "F"), ("Dstar_fsig", "F"), 
+	("D0_lip", "F"), ("D0_lipsig", "F"), ("D0_pvip", "F"), ("Dstar_lip", "F"), ("Dstar_lipsig", "F"), ("Dstar_pvip", "F"), 
 	("b_tau_pt", "F"), ("b_tau_eta", "F"), ("b_tau_phi", "F"), ("b_tau_fl", "F"), ("b_tau_fsig", "F"), ("b_tau_vprob", "F"), 
 	("b_tau_lip", "F"), 
 	#("b_tau_lips", "F"), 
@@ -147,7 +147,7 @@ featuresToLoad = cp.copy(features)
 
 
 from loadSamples import loadSamples
-samples = loadSamples(featuresToLoad, numLoad)
+samples = loadSamples(featuresToLoad, "v6.7", numLoad)
 
 
 signal = [samples["signal"]]

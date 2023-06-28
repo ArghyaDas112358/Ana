@@ -4,10 +4,12 @@ try:
 	import uproot3 as uproot #if the latest uproot is installed we want to use a previous version
 except: 
 	import uproot
+import ROOT
+ROOT.gROOT.LoadMacro("../FileFlow.h")
 
 
 
-def loadSamples(features, eventFraction=-1) : 
+def loadSamples(features, version, eventFraction=-1) : 
 
 
 	path = "/eos/home-m/mhuwiler/data/Analysis/v5/" #"../localdata/" #"/pnfs/psi.ch/cms/trivcat/store/user/mhuwiler/Analysis/submit/productionProductionFastApplyDnnNoDNNdebug/" #"/eos/home-m/mhuwiler/data/Analysis/v5/"
@@ -24,6 +26,9 @@ def loadSamples(features, eventFraction=-1) :
 
 	samples={}
 
+	ROOT.Ana.Init(version)
+	from ROOT.Ana import filemanager
+
 	#samples["signal"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents) #Dict-like structure 
 	#samples["background"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPH1-3Run2018B_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)
 
@@ -31,8 +36,8 @@ def loadSamples(features, eventFraction=-1) :
 	#samples["background"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_tauDNN.root"))["ntuplizer/tree"].pandas.df(branches=features, entrystop=numEvents)
 	#samples["backgroundDs"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau_tauDNN.root"))["ntuplizer/tree"].pandas.df(branches=features, entrystop=numEvents)
 
-	samples["signal"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/v4/SigTest_tauDNN.root"))["ntuplizer/tree"].pandas.df(branches=features, entrystop=numEvents) #Dict-like structure 
-	samples["background"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/v4/ParkingBPHULD1_tauDNN.root"))["ntuplizer/tree"].pandas.df(branches=features, entrystop=numEvents)
+	samples["signal"] = uproot.open(os.path.expandvars(filemanager.GetFile("SigTest_DNN")))["ntuplizer/tree"].pandas.df(branches=features, entrystop=numEvents) #Dict-like structure #"/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/v4/SigTest_tauDNN.root"
+	samples["background"] = uproot.open(os.path.expandvars(filemanager.GetFile("dataD1_DNN")))["ntuplizer/tree"].pandas.df(branches=features, entrystop=numEvents) #"/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/v4/ParkingBPHULD1_tauDNN.root"
 
 	#samples["signalfloatgendstar"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/PrivateProductionGenDstar_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)
 	#samples["signalfloat"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)

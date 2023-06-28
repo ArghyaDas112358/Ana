@@ -201,7 +201,8 @@ for i in range(0, len(X_test)):
 	data = X_test.iloc[i,:]
 	print(len(data))
 	converted = xgb.DMatrix(data, feature_names=features)
-	prediction = evaluation.Eval(converted) #prediction = classifier.predict(xgtest, model="inference")
+	prediction = evaluation.Evaluate(converted) #prediction = classifier.predict(xgtest, model="inference")
+	prediction = evaluation.Eval(data) #prediction = classifier.predict(xgtest, model="inference")
 	print prediction
 	fullresponse.append(prediction)
 

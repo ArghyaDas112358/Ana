@@ -3,6 +3,7 @@ import tensorflow as tf
 import ctypes
 import math
 import h5py
+import xgboost as xgb
 import pickle
 
 
@@ -25,21 +26,42 @@ class PyXGBEval:
         print("Using the following model: {}".format(self.savedmodel))
 
         self.classifier = pickle.load(open(self.savedmodel, "rb"))
+
+        features_save = [("b_D0_pt", "F"), ("b_D0_eta", "F"), ("b_D0_phi", "F"), ("b_D0_vprob", "F"), ("b_D0_fl", "F"), ("b_D0_fsig", "F"),
+           ("b_Ds_pt", "F"), ("b_Ds_eta", "F"), ("b_Ds_phi", "F"), ("b_Ds_vprob", "F"), ("b_Ds_fl", "F"), ("b_Ds_fsig", "F"), 
+            ("b_D0_lip", "F"), ("b_D0_lips", "F"), ("b_D0_pvip", "F"), ("b_Ds_lip", "F"), ("b_Ds_lips", "F"), ("b_Ds_pvip", "F"), 
+            ("b_tau_pt", "F"), ("b_tau_eta", "F"), ("b_tau_phi", "F"), ("b_tau_fl", "F"), ("b_tau_fsig", "F"), ("b_tau_vprob", "F"), 
+            ("b_tau_lip", "F"), 
+            #("b_tau_lips", "F"), 
+            ("b_tau_pvip", "F"), ("b_tau_pvipsig", "F"), ("b_tau_alpha", "F"), ("b_tau_legacyMaxdr", "F"), 
+            ("b_tau_pi1pt", "F"), ("b_tau_pi1eta", "F"), ("b_tau_pi1phi", "F"), 
+            ("b_tau_pi2pt", "F"), ("b_tau_pi2eta", "F"), ("b_tau_pi2phi", "F"), 
+            ("b_tau_pi3pt", "F"), ("b_tau_pi3eta", "F"), ("b_tau_pi3phi", "F"), ("b_tau_sumdnn", "F"), 
+            #("BsDstarTauNu_k_charge", "F"), ("BsDstarTauNu_pi_charge", "F"), ("BsDstarTauNu_spi_charge", "F"), 
+            ] #("BsDstarTauNu_mu1_vx", "F"), ("BsDstarTauNu_mu1_vy", "F"), ("BsDstarTauNu_tau_pi1_charge", "F"), ("BsDstarTauNu_tau_pi2_charge", "F"), ("BsDstarTauNu_tau_pi3_charge", "F"), ("BsDstarTauNu_mu1_q", "I"), ("BsDstarTauNu_tau_q", "I"), ("BsDstarTauNu_mu1_vz", "F")
+
+        self.features = [item[0] for item in features_save]
         
 
     def Eval(self, data): 
         #print("Evaluation called")
 
-        return self.Evaluate(data)
+        dataForEval = xgb.DMatrix(data, feature_names=self.features)
+
+        return self.Evaluate(dataForEval)
 
 
     def Evaluate(self, data): 
+
+        print data
         
         result = self.classifier.predict(data)
 
+        print result
+
         #result = response[0,:, :]
 
-        return result
+        return np.array([result])
 
 
     def CheckInput(self, dataframe): 

@@ -26,6 +26,16 @@ def getEffFromInfo(tree):
 	eff = getEff(n, N)
 	return eff
 
+def getGenmatchingEff(tree, cut):
+	frame = RDataFrame(tree)
+
+	initialCount = frame.Count().GetValue()
+
+	genmatchedframe = frame.Filter(cut)
+	finalCount = genmatchedframe.Count().GetValue()
+
+	return getEff(finalCount, initialCount)
+
 
 if __name__ == "__main__": 
 	from argparse import ArgumentParser
@@ -34,7 +44,10 @@ if __name__ == "__main__":
 	parser.add_argument("filename", action="store", type=str, default="", help="Name of file")
 	#parser.add_argument("-N", "--version", dest="iteration", action="store", type=int, default=0, help="Which iteration of inference")
 	#parser.add_argument("-i", "--input", dest="input", action="store", type=str, default="file.root", help="Number of points to be tested")
+	parser.add_argument("-t", "--total", dest="total", action="store_true", default=False, help="Print total efficiency, including genmatching")
+	parser.add_argument("-c", "--cut", dest="cut", action="store", type=str, default="Dstar_match&&pttau_tau_match", help="PCut to enable genmatching")
 	parser.add_argument("-o", "--object", dest="object", action="store", type=str, default="ntuplizer/EffCalc", help="Efficiency info object within file")
+	parser.add_argument("-e", "--tree", dest="tree", action="store", type=str, default="ntuplizer/tree", help="Event ntuple object within the file")
 
 	options = parser.parse_args()
 
@@ -51,4 +64,13 @@ if __name__ == "__main__":
 	#print("Number of selected events: {}/{}".format(n, N))
 
 	print("Efficiency: {}".format(eff))
+
+	if options.total: 
+		eventstree = file.Get(options.tree)
+		if not eventstree: 
+			raise ValueError("ERROR: No events tree '{}' found in file, please provide the correct events tree. ".format(options.tree))
+		genmatcheff = getGenmatchingEff(eventstree, options.cut)
+		totaleff = eff*genmatcheff
+		print("Genmatching efficiency: {}\n".format(genmatcheff))
+		print("Total efficiency: {}\n".format(totaleff))
 

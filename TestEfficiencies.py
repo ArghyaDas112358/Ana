@@ -274,6 +274,16 @@ def getEffFromInfo(tree):
 	eff = getEff(n, N)
 	return eff
 
+def getGenmatchingEff(tree, cut):
+	frame = RDataFrame(tree)
+
+	initialCount = frame.Count().GetValue()
+
+	genmatchedframe = frame.Filter(cut)
+	finalCount = genmatchedframe.Count().GetValue()
+
+	return getEff(finalCount, initialCount)
+
 def CompleteEffsFromFile(effs, version, filemanager): 
 	anaeffs = {"Sig":ufloat(1.4e-3, 0.), "BkgDstarDs":ufloat(1.44e-3, 0.), "BkgDstarDsstar":ufloat(2.26e-3, 0.), "BkgDstar3pi":ufloat(5.3e-4, 0.), "SigPart":ufloat(1.27e-3, 0.), "dataD2WS":ufloat(-0.392, 0.), "dataD21TauWS": ufloat(-0.53, 0.)}
 	for key, eff in effs.iteritems(): 
@@ -408,11 +418,11 @@ if __name__ == "__main__":
 
 	lumi = 26.8
 
-	samples = ["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] #, "BkgDstara1Part"
+	samples = ["Sig", "BkgDstarDs", "BkgDstarDsstar"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
 			
 	Ana.Init(options.version)
 
-	template = "{} & ${}$ & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:fL}$ & ${}$ \\\\\n" #{:.1e} "{} & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:fL}$ & ${}$ \\\\\n"
+	template = "{} & ${}$ & ${}$ & ${}$ & ${}$ & ${:fL}$ & ${}$ \\\\\n" #{:.1e} "{} & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:fL}$ & ${}$ \\\\\n"
 
 	numberafterselection = 10000.
 
@@ -421,9 +431,9 @@ if __name__ == "__main__":
 	Nexpected = {}
 
 
-	with open("/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/Presentations/PresentationVFS_23_4_26/efftable.tex", "w") as outfile: 
-		outfile.write("\\begin{tabular}{lccccr}\n")
-		outfile.write("sample & $\\epsilon_{filter}$ & $\\epsilon_{ana}$ & Br & $N_{exp.}$ & N requested \\\\\n\\hline\n")
+	with open("/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/Presentations/PresentationVFS_23_6_13/efftable.tex", "w") as outfile: 
+		outfile.write("\\begin{tabular}{lcccccr}\n")
+		outfile.write("sample & $\\epsilon_{filter}$ & $\\epsilon_{ana}$ & $\\epsilon_{match}$ & Br & $N_{exp.}$ & N requested \\\\\n\\hline\n")
 
 		print("Expected yields")
 		for sample in samples: 
@@ -438,13 +448,16 @@ if __name__ == "__main__":
 
 			eff = getEffFromInfo(info)
 
+			cut = "Dstar_match&&pttau_tau_match"
+			genmatcheff = getGenmatchingEff(Ana.filemanager.GetItem(item), cut)
+
 			N = options.lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff
 			Nexpected[sample] = N
 			#print(10000./eff)
-			print("\tN expected for {}: {} (filter eff: {}, ana eff: {}, number requested: {})".format(sample, N, filtereffs[sample], eff, numberafterselection/eff))
-			numrequested = numberafterselection/eff
+			print("\tN expected for {}: {} (filter eff: {}, ana eff: {}, genmatch eff: {}, number requested: {})".format(sample, N, filtereffs[sample], eff, genmatcheff, numberafterselection/eff))
+			numrequested = numberafterselection/(eff*genmatcheff)
 			n = round(numrequested.n, -3)
-			outfile.write(template.format(namedict[sample], FormatLatex(filtereffs[sample].n), eff, forcedbr[sample], N, FormatLatex(numrequested.n), precision=2).replace("\\times", "\\cdot"))
+			outfile.write(template.format(namedict[sample], FormatLatex(filtereffs[sample].n), FormatLatex(eff.n), FormatLatex(genmatcheff.n), FormatLatex(forcedbr[sample].n), N, FormatLatex(numrequested.n), precision=2).replace("\\times", "\\cdot"))
 
 		outfile.write("\\end{tabular}\n")
 

@@ -81,6 +81,26 @@ namespace Ana
 			filemanager.AddItem("BkgDstarDsstar_DNN", folder+"BkgDstarDsstar_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstarDsstar", folder+"BkgDstarDsstar_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("B0toDstarDs1_ntuple", folder+"B0toDstarDs1.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDs1_tf", folder+"B0toDstarDs1_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDs1_DNN", folder+"B0toDstarDs1_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDs1", folder+"B0toDstarDs1_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("B0toDstarDs0star_ntuple", folder+"B0toDstarDs0star.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDs0star_tf", folder+"B0toDstarDs0star_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDs0star_DNN", folder+"B0toDstarDs0star_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDs0star", folder+"B0toDstarDs0star_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("B0toDstarD0K_ntuple", folder+"B0toDstarD0K.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarD0K_tf", folder+"B0toDstarD0K_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarD0K_DNN", folder+"B0toDstarD0K_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarD0K", folder+"B0toDstarD0K_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("B0toDstarD0Kstar_ntuple", folder+"B0toDstarD0Kstar.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarD0Kstar_tf", folder+"B0toDstarD0Kstar_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarD0Kstar_DNN", folder+"B0toDstarD0Kstar_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarD0Kstar", folder+"B0toDstarD0Kstar_tauDNN_mva.root", "tree"); 
+
 			filemanager.AddItem("BkgDstar3pi_ntuple", folder+"BkgDstar3piNonres.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstar3pi_tf", folder+"BkgDstar3piNonres_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstar3pi_DNN", folder+"BkgDstar3piNonres_tauDNN.root", "ntuplizer/tree"); 

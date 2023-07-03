@@ -744,6 +744,16 @@ def PrepareCustomFiles(dictf, regions):
 			#histosunrolled[key][region] = UnrollHist(histos[key][region])
 	return frames, histos, histosunrolled
 
+def ReadEffsSimple(path): 
+	effs = {}
+	with open(path, "r") as file: 
+		effsFromFile = json.load(file, encoding="utf8")
+		for item, content in effsFromFile.iteritems(): 
+				eff = effsFromFile[item]
+				assert(len(eff)==2)
+				effs[item] = ufloat(eff[0], eff[1])
+	return effs
+
 
 #ROOT.gInterpreter.Declare("""
 #	double Rhomass2DUnrolled(Float_t rhomass1, Float_t rhomass2)
@@ -789,7 +799,7 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	filesUsed = ["Sig", "dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1Part"] #"SigPart", "dataD2WS", "dataD2TauWS", 
+	filesUsed = ["Sig", "dataD2", "BkgDstarDs", "BkgDstarDsstar"] #"SigPart", "dataD2WS", "dataD2TauWS", 
 
 	regions = ["SR", "CR", "SB"]
 
@@ -864,10 +874,12 @@ if __name__ == "__main__":
 
 	PrintEfficiencies(regioneffs)
 
+	effs = ReadEffsSimple("./data/etc/Expectedyields.json")
+
 	files = filesUsed #["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"]
 	#PlotOverlay(frames, "dataD2", ["Sig", "dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1Part"], regions, variables, regioneffs, outputfolder)
 
-	PlotStack(frames, "dataD2", files, regions, variables, regioneffs, outputfolder, False)
+	PlotStack(frames, "dataD2", files, regions, variables, effs, outputfolder, False)
 
 	#files = {"Sig":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/Sig.root"), "BkgDstara1":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/BkgDstara1.root") }
 	#newframes, histos, histisunrolled = PrepareCustomFiles(files, regions)

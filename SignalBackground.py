@@ -767,7 +767,7 @@ if __name__ == "__main__":
 
 	parser = ArgumentParser(description="SignalBackground")
 	#parser.add_argument("tool", action="store", type=str, help="Which time list you want to analyse")
-	parser.add_argument("--out", dest="out", action="store", type=str, default="BackgroundEstimateUpdate/", help="Directory where the plots shuld go")
+	parser.add_argument("--out", dest="out", action="store", type=str, default="BackgroundEstimateTauFL/", help="Directory where the plots shuld go")
 	parser.add_argument("--name", dest="name", action="store", type=str, default="test", help="Turn on debug output")
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v1", help="Which version (cycle) of files to run on")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
@@ -799,7 +799,7 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	filesUsed = ["Sig", "dataD2", "BkgDstarDs", "BkgDstarDsstar"] #"SigPart", "dataD2WS", "dataD2TauWS", 
+	filesUsed = ["Sig", "dataD1", "BkgDstarDs", "BkgDstarDsstar"] #"SigPart", "dataD2WS", "dataD2TauWS", 
 
 	regions = ["SR", "CR", "SB"]
 
@@ -847,39 +847,40 @@ if __name__ == "__main__":
 	#colors = {"Sig":2, "BkgDstarDs":3, "BkgDstarDsstar":8, "BkgDstara1":4, "dataD2WS":6, "dataD2TauWS":7, "other":9, "yetanother":1} #4, 3, 6, 7, 9 colors = [2, 3, 8, 4, 6, 7, 9, 1]
 	colors = [2, 3, 8, 4, 6, 7, 9, 1]
 
-	GetEfficiencies(frames)
+	#GetEfficiencies(frames)
 
 	effs = ComputeEfficiencies(frames)
 
-	PrintEfficiencies(effs)
+	#PrintEfficiencies(effs)
 
-	DumpEffs(effs, "efficienciesTest.json")
+	#DumpEffs(effs, "efficienciesTest.json")
 
-	newEffs = ReadEffs("efficienciesTest.json")
+	#newEffs = ReadEffs("efficienciesTest.json")
 
-	PrintEfficiencies(newEffs)
+	#PrintEfficiencies(newEffs)
 
-	value = InitialEffs(7.98)
+	#value = InitialEffs(7.98)
 
-	print(value)
+	#print(value)
 
-	selectioneffs = CompleteEffsFromFile(value, "v3", Ana.filemanager)
+	#selectioneffs = CompleteEffsFromFile(value, "v3", Ana.filemanager)
 
-	print(selectioneffs)
+	#print(selectioneffs)
 
-	selectioneffs["dataD2WS"] = ufloat(-0.0003, 0.)  #29
-	selectioneffs["dataD2TauWS"] = ufloat(-0.0005, 0.) #21.5
+	#selectioneffs["dataD2WS"] = ufloat(-0.0003, 0.)  #29
+	#selectioneffs["dataD2TauWS"] = ufloat(-0.0005, 0.) #21.5
+
+	selectioneffs = ReadEffsSimple("./data/etc/Expectedyields.json")
 
 	regioneffs = MultiplyFinalEffs(selectioneffs, effs)
 
 	PrintEfficiencies(regioneffs)
 
-	effs = ReadEffsSimple("./data/etc/Expectedyields.json")
 
 	files = filesUsed #["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"]
 	#PlotOverlay(frames, "dataD2", ["Sig", "dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1Part"], regions, variables, regioneffs, outputfolder)
 
-	PlotStack(frames, "dataD2", files, regions, variables, effs, outputfolder, False)
+	PlotStack(frames, "dataD1", files, regions, variables, regioneffs, outputfolder, False)
 
 	#files = {"Sig":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/Sig.root"), "BkgDstara1":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/BkgDstara1.root") }
 	#newframes, histos, histisunrolled = PrepareCustomFiles(files, regions)

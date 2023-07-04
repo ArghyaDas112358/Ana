@@ -609,7 +609,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 			legend.SetMargin(0.3)
 			legend.SetTextSize(0.04)
 
-			data.GetXaxis().SetTitle("Invariant m_{#rho}")
+			data.GetXaxis().SetTitle(legends[variable])
 			data.GetXaxis().SetTitleSize(0.06)
 			data.GetXaxis().SetLabelSize(0.06)
 			data.GetYaxis().SetLabelSize(0.06)
@@ -630,7 +630,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 
 			if ((not drawlegend) and notYetDrawn): 
 				#components.reverse()
-				canv = TCanvas("legendCanvas", "legenCanvas", 800, 1200)
+				canv = TCanvas("legendCanvas", "legenCanvas", 800, 200*len(hists))
 				dummy = TCanvas("dummy", "dummy", 800, 600)
 				#legend.AddEntry(data.GetPtr(), "data", "PE")
 				for component, histo in hists.iteritems(): 
@@ -804,6 +804,8 @@ if __name__ == "__main__":
 	regions = ["SR", "CR", "SB"]
 
 	variables = ["b_tau_rhomass1", "b_tau_rhomass2", "b_B_q2", "b_B_m"]
+
+	legends = {"b_tau_rhomass1":"Invariant m_{#rho}", "b_tau_rhomass2":"Invariant m_{#rho}", "b_B_q2":"q2", "b_B_m":"Reconstructed m_{B}"}
 
 
 	nBins = 6

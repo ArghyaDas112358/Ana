@@ -276,7 +276,7 @@ namespace Ana
 			mycolors.push_back(color->GetNumber()); 
 		}
 
-		color = {{"Sig", mycolors[0]}, {"SigPart", mycolors[1]}, {"BkgDstarDs", mycolors[2]}, {"BkgDstarDsstar", mycolors[3]}, {"BkgDstara1", mycolors[4]},{"WS", mycolors[6]}, {"WSTau", mycolors[5]}, {"dataD2WS", mycolors[6]}, {"dataD2TauWS", mycolors[5]}}; 
+		color = {{"Sig", mycolors[0]}, {"SigPart", mycolors[1]}, {"BkgDstarDs", mycolors[2]}, {"BkgDstarDsstar", mycolors[3]}, {"BkgDstara1", mycolors[4]},{"WS", mycolors[6]}, {"WSTau", mycolors[5]}, {"dataD2WS", mycolors[6]}, {"dataD2TauWS", mycolors[5]}, {"B0toDstarD0K", mycolors[5]}}; 
 
 		colorold = {{"Sig", 2}, {"BkgDstarDs", 3}, {"BkgDstarDsstar", 8}, {"BkgDstara1", 4}, {"dataD2WS", 6}, {"dataD2TauWS", 7}, {"other", 9}, {"yetanother", 1}}; // Legacy color scheme 
 
@@ -284,7 +284,7 @@ namespace Ana
 
 		MVA = {{"v1", "./anaMVA/secondtraining/model_optimized/weights.xml"}, {"v2", "./anaMVA/secondtraining/model_optimized/weights.xml"}, {"v3", "./anaMVA/secondtraining/model_optimized/weights.xml"},  {"v3.5", "./anaMVA/NewSelection/model_optimized/weights.xml"},  {"v4", "./anaMVA/NewSelection/model_optimized/weights.xml"}, {"v6.7", "./anaMVA/NewFixTauFL/model_optimized/weights.xml"}}; 
 
-		legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 
+		legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"}, {"B0toDstarD0K", "B^{0}#rightarrowD^{0}K"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 
 
 		labels = {{"b_tau_rhomass1", "Invariant m_{#rho}"}, {"b_tau_rhomass2", "Invariant m_{#rho}"}, {"b_B_q2", "q2"}, {"b_B_m", "Reconstructed m_{B}"}}; 
 

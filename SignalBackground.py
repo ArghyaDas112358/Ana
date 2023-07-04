@@ -609,7 +609,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 			legend.SetMargin(0.3)
 			legend.SetTextSize(0.04)
 
-			data.GetXaxis().SetTitle(legends[variable])
+			data.GetXaxis().SetTitle(Ana.labels[variable])
 			data.GetXaxis().SetTitleSize(0.06)
 			data.GetXaxis().SetLabelSize(0.06)
 			data.GetYaxis().SetLabelSize(0.06)
@@ -804,8 +804,6 @@ if __name__ == "__main__":
 	regions = ["SR", "CR", "SB"]
 
 	variables = ["b_tau_rhomass1", "b_tau_rhomass2", "b_B_q2", "b_B_m"]
-
-	legends = {"b_tau_rhomass1":"Invariant m_{#rho}", "b_tau_rhomass2":"Invariant m_{#rho}", "b_B_q2":"q2", "b_B_m":"Reconstructed m_{B}"}
 
 
 	nBins = 6

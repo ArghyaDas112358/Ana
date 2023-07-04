@@ -400,11 +400,11 @@ if __name__ == "__main__":
 
 	anaeffs = ReadEffsFromFile("Sig", "v6", Ana.filemanager)
 
-	filtereffs = ReadEffs("../../data/etc/FilterEfficiencies.json")
+	filtereffs = ReadEffs("./data/etc/FilterEfficiencies.json")
 
-	constants = ReadEffs("../../data/etc/Constants.json")
+	constants = ReadEffs("./data/etc/Constants.json")
 
-	forcedbr = ReadEffs("../../data/etc/ForcedBranchingFractions.json")
+	forcedbr = ReadEffs("./data/etc/ForcedBranchingFractions.json")
 
 	print(constants)
 

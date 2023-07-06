@@ -120,26 +120,12 @@ class PythonInterface
         double *response = static_cast<double*>(PyArray_DATA((PyArrayObject*)result)); 
 
         std::vector<float> returnvec; 
-        returnvec.reserve(20); 
-        std::vector<float> probSig; 
-        probSig.reserve(20); 
-        std::vector<float> probBkg; 
-        probBkg.reserve(20); 
 
-        for (int i=0; i<3*20; i++) 
+        for (int i=0; i<1; i++) 
         {
             //std::cout << *(response + i) << ", "; 
             float value = static_cast<float>(*(response + i)); 
-            returnvec.push_back(value); 
-            if ((i%3) == 1) 
-            {
-                probSig.push_back(value); 
-            }
-            if ((i%3) == 2) 
-            {
-                probBkg.push_back(value); 
-            }
-            //response++; 
+            returnvec.push_back(value);
         }
         //std::cout << std::endl; 
 
@@ -149,16 +135,16 @@ class PythonInterface
         Py_DECREF (pFunc);
 
 
-        return probSig;
+        return returnvec;
     }
 
-    void Initialise(std::string modelname,int givenbatchsize, int givennumpoints) 
+    void Initialise(std::string modelname) 
     {
         initFunc = PyObject_GetAttrString (object, (char*)"Initialise");
 
         PyObject *model = PyUnicode_FromStringAndSize(modelname.data(), modelname.size()); 
 
-        PyObject *localArgs = PyTuple_New (3);
+        PyObject *localArgs = PyTuple_New (1);
         PyTuple_SetItem (localArgs, 0, model);
 
         if (PyCallable_Check (initFunc))

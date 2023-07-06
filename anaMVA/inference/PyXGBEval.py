@@ -1,4 +1,6 @@
+from __future__ import division, print_function
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 import ctypes
 import math
@@ -46,22 +48,33 @@ class PyXGBEval:
     def Eval(self, data): 
         #print("Evaluation called")
 
-        dataForEval = xgb.DMatrix(data, feature_names=self.features)
+        with open("debugvariables.txt", "a") as file: 
+            file.write(str(data))
+
+        dataforconvert = pd.Series(data)
+
+        dataForEval = xgb.DMatrix(dataforconvert, feature_names=self.features)
+
+        with open("debugvariablesconvert.txt", "a") as file: 
+            file.write(str(data))
 
         return self.Evaluate(dataForEval)
 
 
     def Evaluate(self, data): 
 
-        print data
+        print(data)
+
+        with open("debugvariablesevaluate.txt", "a") as file: 
+            file.write(str(data))
         
         result = self.classifier.predict(data)
 
-        print result
+        print(result)
 
         #result = response[0,:, :]
 
-        return np.array([result])
+        return [result]
 
 
     def CheckInput(self, dataframe): 

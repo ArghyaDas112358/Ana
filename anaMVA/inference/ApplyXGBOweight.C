@@ -166,14 +166,14 @@ void ApplyXGBOweight(const TString& inIdentifier, const TString& outIndentifier,
 
 	//template<typename... ArgTypes>
 	//auto TFresponse = [&pyEvaluation, &counter](float D0pt, float D0eta, float D0phi, float D0vprob, float D0fl, float D0fsig, float Dstarpt, float Dstareta, "b_Ds_phi", "b_Ds_vprob", "b_Ds_fl", "b_Ds_fsig", "b_D0_lip", "b_D0_lips", "b_D0_pvip", "b_Ds_lip", "b_Ds_lips", "b_Ds_pvip", "b_tau_pt", "b_tau_eta", "b_tau_phi", "b_tau_fl", "b_tau_fsig", "b_tau_vprob", "b_tau_lip", "b_tau_pvip", "b_tau_pvipsig", "b_tau_alpha", "b_tau_legacyMaxdr", "b_tau_pi1pt", "b_tau_pi1eta", "b_tau_pi1phi", "b_tau_pi2pt", "b_tau_pi2eta", "b_tau_pi2phi", "b_tau_pi3pt", "b_tau_pi3eta", "b_tau_pi3phi", "b_tau_sumdnn") 
-	auto MVAResponse = [&pyEvaluation, &counter](float a, float b) //const initializer_list<float> &values) 
+	auto MVAResponse = [&pyEvaluation, &counter](float D0_pt, float D0_eta, float D0_phi, float D0_vprob, float D0_fl, float D0_fsig, float Ds_pt, float Ds_eta, float Ds_phi, float Ds_vprob, float Ds_fl, float Ds_fsig, float D0_lip, float D0_lips, float D0_pvip, float Ds_lip, float Ds_lips, float Ds_pvip, float tau_pt, float tau_eta, float tau_phi, float tau_fl, float tau_fsig, float tau_vprob, float tau_lip, float tau_pvip, float tau_pvipsig, float tau_alpha, float tau_legacyMaxdr, float tau_pi1pt, float tau_pi1eta, float tau_pi1phi, float tau_pi2pt, float tau_pi2eta, float tau_pi2phi, float tau_pi3pt, float tau_pi3eta, float tau_pi3phi, float tau_sumdnn) 
 	{
 		std::cout << "Event no: " << counter << std::endl; 
 		counter++; 
 
-		std::vector<float> variables(a); 
+		std::vector<float> variables = {D0_pt, D0_eta, D0_phi, D0_vprob, D0_fl, D0_fsig, Ds_pt, Ds_eta, Ds_phi, Ds_vprob, Ds_fl, Ds_fsig, D0_lip, D0_lips, D0_pvip, Ds_lip, Ds_lips, Ds_pvip, tau_pt, tau_eta, tau_phi, tau_fl, tau_fsig, tau_vprob, tau_lip, tau_pvip, tau_pvipsig, tau_alpha, tau_legacyMaxdr, tau_pi1pt, tau_pi1eta, tau_pi1phi, tau_pi2pt, tau_pi2eta, tau_pi2phi, tau_pi3pt, tau_pi3eta, tau_pi3phi, tau_sumdnn}; 
 
-		for (auto element : variables) std::cout << element << std::endl; 
+		//for (auto element : variables) std::cout << element << std::endl; 
 
 		// create vector saying whether it is a Dstar 
 		/*std::vector<float> flag = {1.}; 
@@ -239,12 +239,14 @@ void ApplyXGBOweight(const TString& inIdentifier, const TString& outIndentifier,
 
 		return response; */
 
-		float response = -1.; 
+		auto response = pyEvaluation.Evaluate(variables); 
+
+		assert(response.size() == 1); 
 
 		return response; 
 	};
 
-	auto withWeight = dataframe.Range(0, Nmax).Define("mvaScoreNew", MVAResponse, {"b_D0_pt", "b_D0_eta"}); //{"b_D0_pt", "b_D0_eta", "b_D0_phi", "b_D0_vprob", "b_D0_fl", "b_D0_fsig",  "b_Ds_pt", "b_Ds_eta", "b_Ds_phi", "b_Ds_vprob", "b_Ds_fl", "b_Ds_fsig", "b_D0_lip", "b_D0_lips", "b_D0_pvip", "b_Ds_lip", "b_Ds_lips", "b_Ds_pvip", "b_tau_pt", "b_tau_eta", "b_tau_phi", "b_tau_fl", "b_tau_fsig", "b_tau_vprob", "b_tau_lip", "b_tau_pvip", "b_tau_pvipsig", "b_tau_alpha", "b_tau_legacyMaxdr", "b_tau_pi1pt", "b_tau_pi1eta", "b_tau_pi1phi", "b_tau_pi2pt", "b_tau_pi2eta", "b_tau_pi2phi", "b_tau_pi3pt", "b_tau_pi3eta", "b_tau_pi3phi", "b_tau_sumdnn"}); 
+	auto withWeight = dataframe.Range(0, Nmax).Define("mvaScoreNew", MVAResponse, {"b_D0_pt", "b_D0_eta", "b_D0_phi", "b_D0_vprob", "b_D0_fl", "b_D0_fsig",  "b_Ds_pt", "b_Ds_eta", "b_Ds_phi", "b_Ds_vprob", "b_Ds_fl", "b_Ds_fsig", "b_D0_lip", "b_D0_lips", "b_D0_pvip", "b_Ds_lip", "b_Ds_lips", "b_Ds_pvip", "b_tau_pt", "b_tau_eta", "b_tau_phi", "b_tau_fl", "b_tau_fsig", "b_tau_vprob", "b_tau_lip", "b_tau_pvip", "b_tau_pvipsig", "b_tau_alpha", "b_tau_legacyMaxdr", "b_tau_pi1pt", "b_tau_pi1eta", "b_tau_pi1phi", "b_tau_pi2pt", "b_tau_pi2eta", "b_tau_pi2phi", "b_tau_pi3pt", "b_tau_pi3eta", "b_tau_pi3phi", "b_tau_sumdnn"}); 
 
 	TString outfile = filemanager.GetFile(outIndentifier); 
 	
@@ -259,7 +261,7 @@ void ApplyXGBOweight(const TString& inIdentifier, const TString& outIndentifier,
 
 	#include "../../stringbranches.gcf"
 
-	for (auto branch : stringbranches) // Hack to fix string branche 
+	for (auto branch : stringbranches) // Hack to fix string branches 
 	{
 		//withWeight = withWeight.Redefine(branch, [](const ROOT::RVec<std::string> &v) {return std::vector<std::string>(v.begin(), v.end());}, {branch}); 
 	}

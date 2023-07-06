@@ -117,14 +117,22 @@ class PythonInterface
             cout << "Function is not callable !" << endl;
         }
 
-        double *response = static_cast<double*>(PyArray_DATA((PyArrayObject*)result)); 
+        float *response = static_cast<float*>(PyArray_DATA((PyArrayObject*)result)); 
 
         std::vector<float> returnvec; 
+
+        float value = static_cast<float>(*response); 
+
+        std::cout << "Response: " << response << " " << *response << " " << value << std::endl; 
+
+        returnvec.push_back(value); 
 
         for (int i=0; i<1; i++) 
         {
             //std::cout << *(response + i) << ", "; 
             float value = static_cast<float>(*(response + i)); 
+            std::cout << "Response: " << value << std::endl;
+
             returnvec.push_back(value);
         }
         //std::cout << std::endl; 

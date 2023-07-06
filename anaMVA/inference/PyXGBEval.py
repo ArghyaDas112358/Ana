@@ -70,11 +70,24 @@ class PyXGBEval:
         
         result = self.classifier.predict(data)
 
+        with open("debugvariablesresponse.txt", "a") as file: 
+            file.write(str(result))
+
         print(result)
+
+        print(result.shape)
+
+        #result = np.squeeze(result)
+
+        #print(result.shape)
+
+        print(type(result))
+
+        print(np.array(list(result)).dtype)
 
         #result = response[0,:, :]
 
-        return [result]
+        return result
 
 
     def CheckInput(self, dataframe): 

@@ -72,7 +72,11 @@ if __name__ == "__main__":
 	#parser.add_argument("-N", "--version", dest="iteration", action="store", type=int, default=0, help="Which iteration of inference")
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v6.7", help="Which version (cycle) of files to run on")
 	parser.add_argument("-l", "--lumi", dest="lumi", action="store", type=float, default=41.5, help="Luminostiy processed")
-	parser.add_argument("-o", "--object", dest="object", action="store", type=str, default="ntuplizer/EffCalc", help="Efficiency info object within file")
+	parser.add_argument("-e", "--object", dest="object", action="store", type=str, default="ntuplizer/EffCalc", help="Efficiency info object within file")
+	parser.add_argument("-g", "--cut", dest="cut", action="store", type=str, default="Dstar_match&&pttau_tau_match", help="Cut to apply for genmatching eff calculation")
+	parser.add_argument("-t", "--table", dest="table", action="store", type=str, default="/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/Presentations/Presentation_23_7_18/efftable.tex", help="Latex fragment with summary table")
+	parser.add_argument("-o", "--out", dest="out", action="store", type=str, default="./data/etc/Expectedyields.json", help="Path for json with yield info")
+	parser.add_argument("-n", "--target", dest="target", action="store", type=float, default=10000., help="Target number of events after selection")
 
 	options = parser.parse_args()
 
@@ -83,17 +87,16 @@ if __name__ == "__main__":
 
 	forcedbr = ReadEffs("./data/etc/ForcedBranchingFractions.json")
 
-	print(constants)
+	#print(constants)
 
-	print(filtereffs)
+	#print(filtereffs)
 
-	N = constants["sigmabb"]*constants["fB0"]*forcedbr["Sig"]
+	#N = constants["sigmabb"]*constants["fB0"]*forcedbr["Sig"]
 
-	print("N expected: {}".format(N))
+	#print("N expected: {}".format(N))
 
 	expected = {}
 
-	lumi = 26.8
 
 	samples = ["Sig", "BkgDstarDs", "BkgDstarDsstar", "B0toDstarD0K", "B0toDstarDs1"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
 			
@@ -101,14 +104,13 @@ if __name__ == "__main__":
 
 	template = "{} & ${}$ & ${}$ & ${}$ & ${}$ & ${:fL}$ & ${}$ \\\\\n" #{:.1e} "{} & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:fL}$ & ${}$ \\\\\n"
 
-	numberafterselection = 10000.
+	numberafterselection = options.target
 
 	namedict = {"Sig":"$B^0\\rightarrow D^{*-}\\tau^+\\nu_\\tau$", "BkgDstarDs": "$B^0\\rightarrow D^{*-}D_{s}^+$", "BkgDstarDsstar": "$B^0\\rightarrow D^{*-}D_{s}^{*+}$", "BkgBuDXc": "$B^+\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$", "BkgB0DD": "$B^0\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$", "B0toDstarD0K": "$B^0\\rightarrow D^{*}D^{0}K$", "B0toDstarDs1": "$B^{0}\\rightarrow D^{*}D_{s1}$"} #{"Sig":"$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}\tau^\\pm\\myoversetnu{\\brabar}{\\nu}_\\tau}$", "BkgDstarDs": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^\\pm}$", "BkgDstarDsstar": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^{*\\pm}}$"} # "BkgBuDXc": "$B^+\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}\\pi^+X$", "BkgB0DD": "$B^0\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}X$"
 
 	Nexpected = {}
 
-
-	with open("/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/Presentations/Presentation_23_7_18/efftable.tex", "w") as outfile: 
+	with open(options.table, "w") as outfile: 
 		outfile.write("\\begin{tabular}{lcccccr}\n")
 		outfile.write("sample & $\\epsilon_{filter}$ & $\\epsilon_{ana}$ & $\\epsilon_{match}$ & Br & $N_{exp.}$ & N requested \\\\\n\\hline\n")
 
@@ -118,14 +120,14 @@ if __name__ == "__main__":
 			item = sample+"_ntuple"
 			Ana.filemanager.OpenItem(item)
 			file = ROOT.TFile.Open(Ana.filemanager.GetFile(item), "READ")
-			info = file.Get("ntuplizer/EffCalc") #options.object
+			info = file.Get(options.object)
 
 			if not info: 
 				raise ValueError("ERROR: No efficiency info found in file. Are you sure this file should contain efficiency information at {} ?".format(options.object))
 
 			eff = getEffFromInfo(info)
 
-			cut = "Dstar_match&&pttau_tau_match"
+			cut = options.cut
 			genmatcheff = getGenmatchingEff(Ana.filemanager.GetItem(item), cut)
 
 			N = options.lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff
@@ -138,7 +140,7 @@ if __name__ == "__main__":
 
 		outfile.write("\\end{tabular}\n")
 
-	DumpEffs(Nexpected, "./data/etc/Expectedyields.json")
+	DumpEffs(Nexpected, options.out)
 
 	Ana.filemanager.CloseAll()
 

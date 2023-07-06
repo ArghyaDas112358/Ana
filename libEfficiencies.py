@@ -94,6 +94,116 @@ def FormatLatex(number, precision = 2):
 	return latexstring
 
 # For Ana regions
+def GetEfficiencies(frames): 
+	keys = [] #TODO: generate a json
+	#for item in frames: 
+		#localkeys = frames[item].keys()
+		#print localkeys
+	
+	#Credit to: https://stackoverflow.com/questions/35491223/inverting-a-dictionary-with-list-values
+	inv_frames = {}
+	for k,v in list(frames.items()):
+		for x in v:
+			inv_frames.setdefault(x,[]).append(k)
+	print(inv_frames)
+
+	for key, value in list(inv_frames.items()): 
+		print(key)
+		for item in value: 
+			n = frames[item][key].Count().GetValue()
+			N = frames[item]["all"].Count().GetValue()
+			eff = n/N
+			print(("\t{}: {} ({}/{})".format(item, eff, n, N)))
+		print("\n")
+
+def ComputeEfficiencies(frames): 
+	efficiencies = collections.defaultdict(dict)
+	for item, content in frames.iteritems(): 
+		#print("{}:".format(item))
+		for key, value in content.iteritems(): 
+			n = frames[item][key].Count().GetValue()
+			N = frames[item]["all"].Count().GetValue()
+			# see: chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://indico.cern.ch/event/66256/contributions/2071577/attachments/1017176/1447814/EfficiencyErrors.pdf
+			ne = ufloat(n, sqrt(n))
+			NE = ufloat(N, sqrt(N))
+			efferr = ne/NE
+			#print(efferr)
+			#print(("\t{}: {} ({}/{})".format(key, eff, n, N)))
+			efficiencies[item][key] = getEff(n, N) #ufloat(eff, err)
+	return efficiencies
+
+def InitialEffs(lumi): 
+	# Computing the initial efficiencies 
+	#effs = collections.defaultdict(dict)
+	# Efficiencies relative to the 
+	effs = { "Sig": {"br":ufloat(1.84e-2, 2.2e-3), "geneff":ufloat(3.72e-4, 0.), "eff":ufloat(1.4e-3, 0.)}, # TODO: group these with the others into another file 
+		"BkgDstarDs": {"br":ufloat(8e-3, 1.1e-3), "geneff":ufloat(1.458e-3, 0.), "eff":ufloat(1.4e-3, 0.)},
+		"BkgDstarDsstar": {"br":ufloat(1.77e-2, 1.4e-3), "geneff":ufloat(5.38e-4, 0.), "eff":ufloat(1.4e-3, 0.)}, 
+		"BkgDstar3pi": {"br":ufloat(7.21e-3, 2.9e-4), "geneff":ufloat(2.e-5, 0.), "eff":ufloat(1.4e-3, 0.)}, # TODO: obtain ana eff from other script
+		"SigPart": {"br":ufloat(1.84e-2, 2.2e-3), "geneff":ufloat(3.72e-4, 0.), "eff":ufloat(1.4e-3, 0.)},
+		"BkgDstara1": {"br":ufloat(1.3e-2, 2.7e-3), "geneff":ufloat(3.800e-04, 0.), "eff":ufloat(1.4e-3, 0.)},
+		"BkgDstara1Part": {"br":ufloat(1.3e-2, 2.7e-3), "geneff":ufloat(3.800e-04, 0.), "eff":ufloat(1.4e-3, 0.)},
+	}
+	bbxsec = ufloat(4.72e8, 0.)
+	fB0 = fB = ufloat(0.404, 0.006)
+	Br_Dstar_D0pi = ufloat(6.77e-1, 0.)
+	Br_D0_KPI = ufloat(3.88e-2, 0.)
+
+	expected = {}
+	for key, eff in effs.iteritems(): 
+		key.replace("Part", "")
+	 	expected[key]= lumi*bbxsec*fB0*2.*Br_Dstar_D0pi*Br_D0_KPI*1000.*eff["br"]*eff["geneff"] #*eff["eff"]
+
+	return expected
+
+def CompleteEffsFromFile(effs, version, filemanager): 
+	anaeffs = {"Sig":ufloat(1.4e-3, 0.), "BkgDstarDs":ufloat(1.44e-3, 0.), "BkgDstarDsstar":ufloat(2.26e-3, 0.), "BkgDstar3pi":ufloat(5.3e-4, 0.), "SigPart":ufloat(1.27e-3, 0.), "dataD2WS":ufloat(-0.392, 0.), "dataD21TauWS": ufloat(-0.53, 0.)}
+	for key, eff in effs.iteritems(): 
+		print(key)
+		
+		efficiency = 1.
+		try: 
+			file = TFile.Open(filemanager.GetFile(key+"_ntuple"), "READ")
+			efftree = file.Get("ntuplizer/EffCalc")
+			print(efftree)
+			efficiency = getEffFromInfo(efftree)
+			file.Close()
+		except: 
+			efficiency = anaeffs[key]
+		effs[key] = eff*efficiency
+		#if anaeffs[key].nominal_value < 0.: 
+			#effs[key] = anaeffs[key]
+	return effs
+
+def ReadEffsFromFile(item, version, filemanager): 
+	anaeffs = {"Sig":ufloat(1.4e-3, 0.), "BkgDstarDs":ufloat(1.44e-3, 0.), "BkgDstarDsstar":ufloat(2.26e-3, 0.), "BkgDstar3pi":ufloat(5.3e-4, 0.), "SigPart":ufloat(1.27e-3, 0.), "dataD2WS":ufloat(-0.392, 0.), "dataD21TauWS": ufloat(-0.53, 0.)}
+	
+	print(item)
+		
+	efficiency = 1.
+	try: 
+		file = TFile.Open(filemanager.GetFile(item+"_ntuple"), "READ")
+		efftree = file.Get("ntuplizer/EffCalc")
+		print(efftree)
+		efficiency = getEffFromInfo(efftree)
+		file.Close()
+	except: 
+		efficiency = anaeffs[item]
+		#if anaeffs[key].nominal_value < 0.: 
+			#effs[key] = anaeffs[key]
+	return efficiency
+
+def MultiplyFinalEffs(effs, regioneffs):
+	for item, content in regioneffs.iteritems(): 
+		print("{}:".format(item))
+		for key, value in content.iteritems(): 
+			try:
+				regioneffs[item][key] = effs[item]*regioneffs[item][key]
+				if (effs[item].nominal_value < 0.): 
+					regioneffs[item][key]=effs[item]
+			except:
+				regioneffs[item][key] = -1.
+	return regioneffs
 
 
 if __name__ == "__main__": 

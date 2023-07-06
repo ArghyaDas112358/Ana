@@ -27,40 +27,8 @@ from libEfficiencies import getEffFromInfo, getGenmatchingEff, DumpEffs, ReadEff
 
 
 
-webpublication =False
-
-
-
 
 # Efficiency calculations 
-
-
-# Web publication
-if (webpublication): 
-	webfolder = "/eos/home-m/mhuwiler/www/Analysis/BackgroundModellingUpdate/"
-	os.system("mkdir -p "+webfolder)
-	webenginesource = "/eos/home-m/mhuwiler/software/php-plots/"
-	os.system("cp -r "+webenginesource+"res "+webfolder)
-	os.system("cp "+webenginesource+"index.php "+webfolder)
-	with open(webenginesource+"example/htaccess", "r") as permissionfile: 
-		content = permissionfile.read()
-		content = content.replace("/<me>/<my-project>/", webfolder)
-		file = open(webfolder+".htaccess", "w")
-		file.write(content)
-		file.close()
-	os.system("cp "+webfolder+".htaccess "+webfolder+"htaccess")
-	webfolder = webfolder+"plots/"
-	os.system("mkdir -p "+webfolder)
-
-textsize = 0.04
-
-numEvents = -1 
-
-def AtomicDraw(histo, name, options = ""): 
-	canv = ROOT.TCanvas("canv", "canv", 800, 600)
-	histo.DrawCopy(options)
-	canv.Draw()
-	canv.Print(name)
 
 
 

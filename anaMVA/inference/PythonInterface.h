@@ -123,18 +123,18 @@ class PythonInterface
 
         float value = static_cast<float>(*response); 
 
-        std::cout << "Response: " << response << " " << *response << " " << value << std::endl; 
+        //std::cout << "Response: " << response << " " << *response << " " << value << std::endl; 
 
         returnvec.push_back(value); 
 
-        for (int i=0; i<1; i++) 
-        {
-            //std::cout << *(response + i) << ", "; 
-            float value = static_cast<float>(*(response + i)); 
-            std::cout << "Response: " << value << std::endl;
+        // for (int i=0; i<1; i++) 
+        // {
+        //     //std::cout << *(response + i) << ", "; 
+        //     float value = static_cast<float>(*(response + i)); 
+        //     std::cout << "Response: " << value << std::endl;
 
-            returnvec.push_back(value);
-        }
+        //     returnvec.push_back(value);
+        // }
         //std::cout << std::endl; 
 
         //PyObject* myResult = PyObject_CallMethod(object, "Add2toNumber", "(d)", a); 

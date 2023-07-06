@@ -47,44 +47,20 @@ class PyXGBEval:
     def Eval(self, data): 
         #print("Evaluation called")
 
-        with open("debugvariables.txt", "a") as file: 
-            file.write(str(data))
-
         dataforconvert = pd.Series(data)
 
         dataForEval = xgb.DMatrix(dataforconvert, feature_names=self.features)
-
-        with open("debugvariablesconvert.txt", "a") as file: 
-            file.write(str(data))
 
         return self.Evaluate(dataForEval)
 
 
     def Evaluate(self, data): 
 
-        print(data)
-
-        with open("debugvariablesevaluate.txt", "a") as file: 
-            file.write(str(data))
+        #print(data)
         
         result = self.classifier.predict(data)
 
-        with open("debugvariablesresponse.txt", "a") as file: 
-            file.write(str(result))
-
-        print(result)
-
-        print(result.shape)
-
-        #result = np.squeeze(result)
-
-        #print(result.shape)
-
-        print(type(result))
-
-        print(np.array(list(result)).dtype)
-
-        #result = response[0,:, :]
+        #print(result)
 
         return result
 

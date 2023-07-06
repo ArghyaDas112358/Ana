@@ -1,7 +1,6 @@
 from __future__ import division, print_function
 import numpy as np
 import pandas as pd
-import tensorflow as tf
 import ctypes
 import math
 import h5py

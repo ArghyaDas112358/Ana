@@ -13,6 +13,7 @@ compatibility.
 
 """
 
+from __future__ import division, print_function
 import pandas as pd
 import numpy as np
 import os
@@ -105,24 +106,24 @@ signal = [samples["signal"]]
 background = [samples["background"]]
 
 
-print "Background composition: {}".format(background[0].keys())
+print("Background composition: {}".format(background[0].keys()))
 
 dfSig = pd.concat(signal)
 dfBkg = pd.concat(background)
 
 if (weighted): 
-	if (debug) : print "Signal weights: {}".format(dfSig["weight"])
-	if (debug) : print "Background weights: {}".format(dfBkg["weight"])
+	if (debug) : print("Signal weights: {}".format(dfSig["weight"]))
+	if (debug) : print("Background weights: {}".format(dfBkg["weight"]))
 
 
-print "Features: {}: ".format(dfSig.columns)
+print("Features: {}: ".format(dfSig.columns))
 
 
 # Applying selection
 if (not cut==""): 
 	dfSig = dfSig.query(cut)
 	dfBkg = dfBkg.query(cut)
-if (debug) : print "Cut: {}:".format(cut) 
+if (debug) : print("Cut: {}:".format(cut)) 
 
 #dfBkg = dfBkg.query(bkgcut)
 
@@ -200,10 +201,17 @@ fullresponse = []
 for i in range(0, len(X_test)): 
 	data = X_test.iloc[i,:]
 	print(len(data))
+	data = np.array(data)
+	data = pd.Series(data)
+	print(data.shape)
+	#np.expand_dims(data, )
+	print(data.shape)
+	print(str(data))
+	print(type(data))
 	converted = xgb.DMatrix(data, feature_names=features)
 	prediction = evaluation.Evaluate(converted) #prediction = classifier.predict(xgtest, model="inference")
 	prediction = evaluation.Eval(data) #prediction = classifier.predict(xgtest, model="inference")
-	print prediction
+	print(prediction)
 	fullresponse.append(prediction)
 
 from sklearn import metrics

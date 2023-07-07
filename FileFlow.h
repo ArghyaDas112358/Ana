@@ -83,6 +83,16 @@ namespace Ana
 			filemanager.AddItem("BkgDstarDsstar_DNN", folder+"BkgDstarDsstar_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstarDsstar", folder+"BkgDstarDsstar_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("B0toDstarDs_ntuple", folder+"B0toDstarDs.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDs_tf", folder+"B0toDstarDs_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDs_DNN", folder+"B0toDstarDs_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDs", folder+"B0toDstarDs_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("B0toDstarDsstar_ntuple", folder+"B0toDstarDsstar.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDsstar_tf", folder+"B0toDstarDsstar_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDsstar_DNN", folder+"B0toDstarDsstar_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDsstar", folder+"B0toDstarDsstar_tauDNN_mva.root", "tree"); 
+
 			filemanager.AddItem("B0toDstarDs1_ntuple", folder+"B0toDstarDs1.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstarDs1_tf", folder+"B0toDstarDs1_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstarDs1_DNN", folder+"B0toDstarDs1_tauDNN.root", "ntuplizer/tree"); 
@@ -276,7 +286,7 @@ namespace Ana
 			mycolors.push_back(color->GetNumber()); 
 		}
 
-		color = {{"Sig", mycolors[0]}, {"SigPart", mycolors[1]}, {"BkgDstarDs", mycolors[2]}, {"BkgDstarDsstar", mycolors[3]}, {"BkgDstara1", mycolors[4]},{"WS", mycolors[6]}, {"WSTau", mycolors[5]}, {"dataD2WS", mycolors[6]}, {"dataD2TauWS", mycolors[5]}, {"B0toDstarD0K", mycolors[5]}}; 
+		color = {{"Sig", mycolors[0]}, {"SigPart", mycolors[1]}, {"B0toDstarDs", mycolors[2]}, {"BkgDstarDs", mycolors[2]}, {"B0toDstarDsstar", mycolors[3]}, {"BkgDstarDsstar", mycolors[3]}, {"BkgDstara1", mycolors[4]},{"WS", mycolors[6]}, {"WSTau", mycolors[5]}, {"dataD2WS", mycolors[6]}, {"dataD2TauWS", mycolors[5]}, {"B0toDstarD0K", mycolors[5]}}; 
 
 		colorold = {{"Sig", 2}, {"BkgDstarDs", 3}, {"BkgDstarDsstar", 8}, {"BkgDstara1", 4}, {"dataD2WS", 6}, {"dataD2TauWS", 7}, {"other", 9}, {"yetanother", 1}}; // Legacy color scheme 
 
@@ -284,7 +294,7 @@ namespace Ana
 
 		MVA = {{"v1", "./anaMVA/secondtraining/model_optimized/weights.xml"}, {"v2", "./anaMVA/secondtraining/model_optimized/weights.xml"}, {"v3", "./anaMVA/secondtraining/model_optimized/weights.xml"},  {"v3.5", "./anaMVA/NewSelection/model_optimized/weights.xml"},  {"v4", "./anaMVA/NewSelection/model_optimized/weights.xml"}, {"v6.7", "./anaMVA/NewFixTauFL/model_optimized/weights.xml"}}; 
 
-		legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"}, {"B0toDstarD0K", "B^{0}#rightarrowD^{0}K"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 
+		legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"B0toDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"B0toDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"}, {"B0toDstarD0K", "B^{0}#rightarrowD^{0}K"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 
 
 		labels = {{"b_tau_rhomass1", "Invariant m_{#rho}"}, {"b_tau_rhomass2", "Invariant m_{#rho}"}, {"b_B_q2", "q2"}, {"b_B_m", "Reconstructed m_{B}"}}; 
 

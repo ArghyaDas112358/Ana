@@ -66,7 +66,7 @@ if __name__ == "__main__":
 	expected = {}
 
 
-	samples = ["Sig", "BkgDstarDs", "BkgDstarDsstar", "B0toDstarD0K", "B0toDstarDs1"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
+	samples = ["Sig", "BkgDstarDs", "BkgDstarDsstar", "B0toDstarD0K", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarDs1", "BkgDstara1"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
 			
 	Ana.Init(options.version)
 
@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
 	numberafterselection = options.target
 
-	namedict = {"Sig":"$B^0\\rightarrow D^{*-}\\tau^+\\nu_\\tau$", "BkgDstarDs": "$B^0\\rightarrow D^{*-}D_{s}^+$", "BkgDstarDsstar": "$B^0\\rightarrow D^{*-}D_{s}^{*+}$", "BkgBuDXc": "$B^+\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$", "BkgB0DD": "$B^0\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$", "B0toDstarD0K": "$B^0\\rightarrow D^{*}D^{0}K$", "B0toDstarDs1": "$B^{0}\\rightarrow D^{*}D_{s1}$"} #{"Sig":"$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}\tau^\\pm\\myoversetnu{\\brabar}{\\nu}_\\tau}$", "BkgDstarDs": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^\\pm}$", "BkgDstarDsstar": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^{*\\pm}}$"} # "BkgBuDXc": "$B^+\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}\\pi^+X$", "BkgB0DD": "$B^0\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}X$"
+	namedict = {"Sig":"$B^0\\rightarrow D^{*-}\\tau^+\\nu_\\tau$", "BkgDstarDs": "$B^0\\rightarrow D^{*-}D_{s}^+$", "BkgDstarDsstar": "$B^0\\rightarrow D^{*-}D_{s}^{*+}$", "BkgBuDXc": "$B^+\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$", "BkgB0DD": "$B^0\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$", "B0toDstarD0K": "$B^0\\rightarrow D^{*}D^{0}K$", "B0toDstarDs1": "$B^{0}\\rightarrow D^{*}D_{s1}$", "B0toDstarDs": "$B^0\\rightarrow D^{*-}D_{s}^+$", "B0toDstarDsstar": "$B^0\\rightarrow D^{*-}D_{s}^{*+}$", "BkgDstara1": "$B^0\\rightarrow D^{*-}a_{1}^+$"} #{"Sig":"$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}\tau^\\pm\\myoversetnu{\\brabar}{\\nu}_\\tau}$", "BkgDstarDs": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^\\pm}$", "BkgDstarDsstar": "$\\smash{\\myoverset{\\brabar}{B}^0\\rightarrow D^{*\\mp}D_{s}^{*\\pm}}$"} # "BkgBuDXc": "$B^+\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}\\pi^+X$", "BkgB0DD": "$B^0\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}X$"
 
 	Nexpected = {}
 
@@ -102,8 +102,10 @@ if __name__ == "__main__":
 			Nexpected[sample] = N
 			#print(10000./eff)
 			print("\tN expected for {}: {} (filter eff: {}, ana eff: {}, genmatch eff: {}, number requested: {})".format(sample, N, filtereffs[sample], eff, genmatcheff, numberafterselection/eff))
+			if (genmatcheff==0): genmatcheff=ufloat(1., 0) # Hack to avoid division by zero
 			numrequested = numberafterselection/(eff*genmatcheff)
 			n = round(numrequested.n, -3)
+			samplename = sample # TODO; implement handlig of casw where sample name not found
 			outfile.write(template.format(namedict[sample], FormatLatex(filtereffs[sample].n), FormatLatex(eff.n), FormatLatex(genmatcheff.n), FormatLatex(forcedbr[sample].n), N, FormatLatex(numrequested.n), precision=2).replace("\\times", "\\cdot"))
 
 		outfile.write("\\end{tabular}\n")

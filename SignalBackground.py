@@ -799,7 +799,7 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	filesUsed = ["Sig", "dataD1", "BkgDstarDs", "BkgDstarDsstar", "B0toDstarD0K"] #"SigPart", "dataD2WS", "dataD2TauWS", 
+	filesUsed = ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD0K", "BkgDstara1"] #"SigPart", "dataD2WS", "dataD2TauWS", 
 
 	regions = ["SR", "CR", "SB"]
 

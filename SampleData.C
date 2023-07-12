@@ -8,8 +8,14 @@ class SampleData
 {
 public: 
 
-	SampleData(int initColor, std::string initLegend, std::string initLatex, std::initializer_list<std::string> initRefList = {})
-		: color(initColor), legend(initLegend), latex(initLatex), fileRefs(initRefList.begin(), initRefList.end()) {}; 
+	SampleData(int initColor, std::string initLegend, std::string initLatex = "", std::initializer_list<std::string> initRefList = {})
+		: color(initColor), legend(initLegend), latex(initLatex), fileRefs(initRefList.begin(), initRefList.end()) 
+	{
+		if (initLatex == "") 
+		{
+			latex = TString::Format("$%s$", TString(initLegend).ReplaceAll("#", "\\").ReplaceAll("rightarrow", "rightarrow ").Data()).Data(); // If no latex string provided, use the legend and make it proper latex
+		}
+	}; 
 
 	int color = -999.; 
 	std::string legend = ""; 
@@ -22,6 +28,7 @@ public:
 
 std::unordered_map<std::string, SampleData> InitSamples() 
 {
+	// https://colorbrewer2.org/?type=diverging&scheme=RdYlBu&n=7#type=diverging&scheme=RdYlBu&n=11
 	std::vector<TColor*> colors = 
 	{	
 		new TColor(TColor::GetFreeColorIndex(), 165,0,38), 

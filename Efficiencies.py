@@ -66,11 +66,11 @@ if __name__ == "__main__":
 	expected = {}
 
 
-	samples = ["Sig", "BkgDstarDs", "BkgDstarDsstar", "B0toDstarD0K", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarDs1", "BkgDstara1"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
+	samples = ["Sig", "BkgDstarDs", "BkgDstarDsstar", "B0toDstarD0K", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarDs1", "BkgDstara1", "B0toDstarD", "B0toDstar3pi", "ButoDstarDK"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
 			
 	Ana.Init(options.version)
 
-	template = "{} & ${}$ & ${}$ & ${}$ & ${}$ & ${:fL}$ & ${}$ \\\\\n" #{:.1e} "{} & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:fL}$ & ${}$ \\\\\n"
+	template = "${}$ & ${}$ & ${}$ & ${}$ & ${}$ & ${:fL}$ & ${}$ \\\\\n" #{:.1e} "{} & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:fL}$ & ${}$ \\\\\n"
 
 	numberafterselection = options.target
 
@@ -106,7 +106,7 @@ if __name__ == "__main__":
 			numrequested = numberafterselection/(eff*genmatcheff)
 			n = round(numrequested.n, -3)
 			samplename = sample # TODO; implement handlig of casw where sample name not found
-			outfile.write(template.format(namedict[sample], FormatLatex(filtereffs[sample].n), FormatLatex(eff.n), FormatLatex(genmatcheff.n), FormatLatex(forcedbr[sample].n), N, FormatLatex(numrequested.n), precision=2).replace("\\times", "\\cdot"))
+			outfile.write(template.format(Ana.legends[sample], FormatLatex(filtereffs[sample].n), FormatLatex(eff.n), FormatLatex(genmatcheff.n), FormatLatex(forcedbr[sample].n), N, FormatLatex(numrequested.n), precision=2).replace("\\times", "\\cdot"))
 
 		outfile.write("\\end{tabular}\n")
 

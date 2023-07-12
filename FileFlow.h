@@ -93,6 +93,11 @@ namespace Ana
 			filemanager.AddItem("B0toDstarDsstar_DNN", folder+"B0toDstarDsstar_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstarDsstar", folder+"B0toDstarDsstar_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("B0toDstarD_ntuple", folder+"B0toDstarD.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarD_tf", folder+"B0toDstarD_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarD_DNN", folder+"B0toDstarD_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarD", folder+"B0toDstarD_tauDNN_mva.root", "tree"); 
+
 			filemanager.AddItem("B0toDstarDs1_ntuple", folder+"B0toDstarDs1.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstarDs1_tf", folder+"B0toDstarDs1_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstarDs1_DNN", folder+"B0toDstarDs1_tauDNN.root", "ntuplizer/tree"); 
@@ -113,6 +118,16 @@ namespace Ana
 			filemanager.AddItem("B0toDstarD0Kstar_DNN", folder+"B0toDstarD0Kstar_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstarD0Kstar", folder+"B0toDstarD0Kstar_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("B0toDstar3pi_ntuple", folder+"B0toDstar3pi.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstar3pi_tf", folder+"B0toDstar3pi_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstar3pi_DNN", folder+"B0toDstar3pi_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstar3pi", folder+"B0toDstar3pi_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("B0toDstar5pi_ntuple", folder+"B0toDstar5pi.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstar5pi_tf", folder+"B0toDstar5pi_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstar5pi_DNN", folder+"B0toDstar5pi_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstar5pi", folder+"B0toDstar5pi_tauDNN_mva.root", "tree"); 
+
 			filemanager.AddItem("BkgDstar3pi_ntuple", folder+"BkgDstar3piNonres.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstar3pi_tf", folder+"BkgDstar3piNonres_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstar3pi_DNN", folder+"BkgDstar3piNonres_tauDNN.root", "ntuplizer/tree"); 
@@ -132,6 +147,11 @@ namespace Ana
 			filemanager.AddItem("BkgB0DD_tf", folder+"BkgB0DD_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgB0DD_DNN", folder+"BkgB0DD_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgB0DD", folder+"BkgB0DD_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("ButoDstarDK_ntuple", folder+"ButoDstarDK.root", "ntuplizer/tree"); 
+			filemanager.AddItem("ButoDstarDK_tf", folder+"ButoDstarDK_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("ButoDstarDK_DNN", folder+"ButoDstarDK_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("ButoDstarDK", folder+"ButoDstarDK_tauDNN_mva.root", "tree"); 
 
 			filemanager.AddItem("BkgBuDXc_ntuple", folder+"BkgBuDXc.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgBuDXc_tf", folder+"BkgBuDXc_withTFweight.root", "ntuplizer/tree"); 
@@ -294,7 +314,7 @@ namespace Ana
 
 		MVA = {{"v1", "./anaMVA/secondtraining/model_optimized/weights.xml"}, {"v2", "./anaMVA/secondtraining/model_optimized/weights.xml"}, {"v3", "./anaMVA/secondtraining/model_optimized/weights.xml"},  {"v3.5", "./anaMVA/NewSelection/model_optimized/weights.xml"},  {"v4", "./anaMVA/NewSelection/model_optimized/weights.xml"}, {"v6.7", "./anaMVA/NewFixTauFL/model_optimized/weights.xml"}}; 
 
-		legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"B0toDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"B0toDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"}, {"B0toDstarD0K", "B^{0}#rightarrowD^{0}K"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 
+		legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"B0toDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"B0toDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"}, {"B0toDstar3pi", "B^{0}#rightarrowD^{*}3pi"}, {"B0toDstarD", "B^{0}#rightarrowD^{*}D"}, {"ButoDstarDK", "B^{+}#rightarrowD^{*}DK"}, {"B0toDstarD0K", "B^{0}#rightarrowD^{*}D^{0}K"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 
 
 		labels = {{"b_tau_rhomass1", "Invariant m_{#rho}"}, {"b_tau_rhomass2", "Invariant m_{#rho}"}, {"b_B_q2", "q2"}, {"b_B_m", "Reconstructed m_{B}"}}; 
 

@@ -4,6 +4,8 @@
 #include <string>
 #include "TString.h"
 #include "TCut.h"
+#include <unordered_map>
+#include "SampleData.C"
 
 
 namespace Ana 
@@ -30,6 +32,8 @@ namespace Ana
 	std::unordered_map<std::string, ROOT::RDF::TH1DModel> binning; 
 
 	std::unordered_map<std::string, std::string> labels; 
+
+	std::unordered_map<std::string, SampleData> samples; 
 
 
 	std::map<std::string, TCut> cutstandalone;
@@ -330,6 +334,8 @@ namespace Ana
 				{"tau_rhomass2", {"", ";#rho_{12} mass [GeV]", 40, 0., 1.5}},
 				{"b_tau_m", {"", ";B mass [GeV]", 40, 0., 5.}},
 		}; 
+
+		samples = InitSamples(); 
 
 	}
 

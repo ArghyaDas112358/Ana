@@ -584,7 +584,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 						histo.Add(hist, -1.)
 				else: 
 					histo = frames[component][region].Histo1D(examplehist, variable).GetPtr()
-					if (yields[component][region] > 0. ): 
+					if (yields[component][region] > 0. and histo.Integral() > 0): 
 						histo.Scale(yields[component][region].nominal_value/histo.Integral())
 					elif (yields[component][region].nominal_value != -1.):
 						histo.Scale(-yields[component][region].nominal_value*histo.Integral())

@@ -302,16 +302,16 @@ namespace Ana
 		cutstandalone.emplace(std::make_pair("CR", TCut("base", "(b_Ds_vprob>0.1) && (b_D0_vprob>0.1) && (mvaScore>-2.)")+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutCR, mvaCutSB)))); 
 
 		// https://colorbrewer2.org/?type=diverging&scheme=RdYlBu&n=7 
-		colors = {new TColor(TColor::GetFreeColorIndex(), 165,0,38), new TColor(TColor::GetFreeColorIndex(), 215,48,39), new TColor(TColor::GetFreeColorIndex(), 244,109,67), new TColor(TColor::GetFreeColorIndex(), 253,174,97), new TColor(TColor::GetFreeColorIndex(), 254,224,144), new TColor(TColor::GetFreeColorIndex(), 255,255,191), new TColor(TColor::GetFreeColorIndex(), 224,243,248), new TColor(TColor::GetFreeColorIndex(), 171,217,233), new TColor(TColor::GetFreeColorIndex(), 116,173,209), new TColor(TColor::GetFreeColorIndex(), 69,117,180), new TColor(TColor::GetFreeColorIndex(), 49,54,149)}; 
+		//colors = {new TColor(TColor::GetFreeColorIndex(), 165,0,38), new TColor(TColor::GetFreeColorIndex(), 215,48,39), new TColor(TColor::GetFreeColorIndex(), 244,109,67), new TColor(TColor::GetFreeColorIndex(), 253,174,97), new TColor(TColor::GetFreeColorIndex(), 254,224,144), new TColor(TColor::GetFreeColorIndex(), 255,255,191), new TColor(TColor::GetFreeColorIndex(), 224,243,248), new TColor(TColor::GetFreeColorIndex(), 171,217,233), new TColor(TColor::GetFreeColorIndex(), 116,173,209), new TColor(TColor::GetFreeColorIndex(), 69,117,180), new TColor(TColor::GetFreeColorIndex(), 49,54,149)}; 
 			// {new TColor(TColor::GetFreeColorIndex(), 215,48,39), new TColor(TColor::GetFreeColorIndex(), 252,141,89), new TColor(TColor::GetFreeColorIndex(), 254,224,144), new TColor(TColor::GetFreeColorIndex(), 255,255,191), new TColor(TColor::GetFreeColorIndex(), 224,243,248), new TColor(TColor::GetFreeColorIndex(), 145,191,219), new TColor(TColor::GetFreeColorIndex(), 69,117,180)}; 
 
-		mycolors.reserve(colors.size()); 
-		for (auto color : colors) 
-		{
-			mycolors.push_back(color->GetNumber()); 
-		}
+		//mycolors.reserve(colors.size()); 
+		//for (auto color : colors) 
+		//{
+		//	mycolors.push_back(color->GetNumber()); 
+		//}
 
-		color = {{"Sig", mycolors[0]}, {"B0toDstarDs", mycolors[1]}, {"BkgDstarDs", mycolors[1]}, {"B0toDstarDsstar", mycolors[2]}, {"BkgDstarDsstar", mycolors[2]}, {"B0toDstarD", mycolors[3]}, {"B0toDstarD0K", mycolors[5]}, {"ButoDstarDK", mycolors[4]}, {"B0toDstar3pi", mycolors[7]}, {"BkgDstara1", mycolors[6]},{"WS", mycolors[10]}, {"WSTau", mycolors[10]}, {"dataD2WS", mycolors[10]}, {"dataD2TauWS", mycolors[10]}, }; 
+		//color = {{"Sig", mycolors[0]}, {"B0toDstarDs", mycolors[1]}, {"BkgDstarDs", mycolors[1]}, {"B0toDstarDsstar", mycolors[2]}, {"BkgDstarDsstar", mycolors[2]}, {"B0toDstarD", mycolors[3]}, {"B0toDstarD0K", mycolors[5]}, {"ButoDstarDK", mycolors[4]}, {"B0toDstar3pi", mycolors[7]}, {"BkgDstara1", mycolors[6]},{"WS", mycolors[10]}, {"WSTau", mycolors[10]}, {"dataD2WS", mycolors[10]}, {"dataD2TauWS", mycolors[10]}, }; 
 			// {{"Sig", mycolors[0]}, {"SigPart", mycolors[1]}, {"B0toDstarDs", mycolors[2]}, {"BkgDstarDs", mycolors[2]}, {"B0toDstarDsstar", mycolors[3]}, {"BkgDstarDsstar", mycolors[3]}, {"BkgDstara1", mycolors[4]},{"WS", mycolors[6]}, {"WSTau", mycolors[5]}, {"dataD2WS", mycolors[6]}, {"dataD2TauWS", mycolors[5]}, {"B0toDstarD0K", mycolors[5]}}; 
 
 		colorold = {{"Sig", 2}, {"BkgDstarDs", 3}, {"BkgDstarDsstar", 8}, {"BkgDstara1", 4}, {"dataD2WS", 6}, {"dataD2TauWS", 7}, {"other", 9}, {"yetanother", 1}}; // Legacy color scheme 
@@ -332,7 +332,7 @@ namespace Ana
 				{"B_q2", {"", ";B mass [GeV]", 40, 0., 12.}},
 				{"tau_rhomass1", {"", ";#rho_{12} mass [GeV]", 40, 0., 1.5}},
 				{"tau_rhomass2", {"", ";#rho_{12} mass [GeV]", 40, 0., 1.5}},
-				{"b_tau_m", {"", ";B mass [GeV]", 40, 0., 5.}},
+				{"b_tau_m", {"", ";#tau mass [GeV]", 40, 0., 5.}},
 		}; 
 
 		samples = InitSamples(); 

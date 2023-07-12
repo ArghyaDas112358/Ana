@@ -591,7 +591,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 				ROOT.SetOwnership(histo, 0)
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
-				color = Ana.color[component.replace("Part", "")]
+				color = Ana.samples.at(component.replace("Part", "")).color
 				if (not color): 
 					color = colors[0]
 				histo.SetLineColor(color)
@@ -638,10 +638,10 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 					ROOT.SetOwnership(histo, 0)
 					histo.SetLineStyle(1) # plain
 					histo.SetLineWidth(2)
-					histo.SetLineColor(Ana.color[component.replace("Part", "")])
+					histo.SetLineColor(Ana.samples.at(component.replace("Part", "")).color)
 					histo.SetFillStyle(1)
-					histo.SetFillColor(Ana.color[component])
-					legend.AddEntry(histo, Ana.legends[component.replace("Part", "")], "F")
+					histo.SetFillColor(Ana.samples.at(component.replace("Part", "")).color)
+					legend.AddEntry(histo, Ana.samples.at(component.replace("Part", "")).legend, "F")
 				canv.cd()
 				data.SetMarkerSize(4.)
 				data.SetLineWidth(4)

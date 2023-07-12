@@ -767,7 +767,7 @@ if __name__ == "__main__":
 
 	parser = ArgumentParser(description="SignalBackground")
 	#parser.add_argument("tool", action="store", type=str, help="Which time list you want to analyse")
-	parser.add_argument("--out", dest="out", action="store", type=str, default="BackgroundEstimateTauFL/", help="Directory where the plots shuld go")
+	parser.add_argument("--out", dest="out", action="store", type=str, default="BackgroundEstimateTauFLMoreBkg/", help="Directory where the plots shuld go")
 	parser.add_argument("--name", dest="name", action="store", type=str, default="test", help="Turn on debug output")
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v1", help="Which version (cycle) of files to run on")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
@@ -799,11 +799,11 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	filesUsed = ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD0K", "BkgDstara1"] #"SigPart", "dataD2WS", "dataD2TauWS", 
+	filesUsed = ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi"] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi"
 
 	regions = ["SR", "CR", "SB"]
 
-	variables = ["b_tau_rhomass1", "b_tau_rhomass2", "b_B_q2", "b_B_m"]
+	variables = ["b_tau_rhomass1", "b_tau_rhomass2", "b_B_q2", "b_B_m", "b_tau_m"]
 
 
 	nBins = 6

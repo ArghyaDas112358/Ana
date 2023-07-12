@@ -117,6 +117,19 @@ std::unordered_map<std::string, SampleData> InitSamples()
 			"$WS~|q_{#tau}|~=~3$", 
 			{"dataD2TauWS"})
 		},
+		// For backwards compatibility purposes # TODO: make a maping for sample names 
+		{"BkgDstarDs", SampleData(
+			1, 
+			"B^{0}#rightarrowD*D_{s}", 
+			"$B^0\\rightarrow D^{*-}D_{s}^+$", 
+			{"BkgDstarDs"})
+		},
+		{"BkgDstarDsstar", SampleData(
+			1, 
+			"B^{0}#rightarrowD*D*_{s}", 
+			"$B^0\\rightarrow D^{*-}D_{s}^{*+}$", 
+			{"BkgDstarDsstar"})
+		},
 	};
 
 	return samples; 

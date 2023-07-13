@@ -2,10 +2,6 @@ from __future__ import division, print_function
 import ROOT
 
 
-#ROOT.gROOT.LoadMacro("VariableList.h") # Uncomment this to run directly 
-#ROOT.gInterpreter.Declare("gInterpreter->Declare(\"namespace MVAEval { std::vector<TString> variables; }\");")
-
-
 def extractVariables(vec, variables): 
 	#vec = ROOT.vector("TString")()
 	#vec = ROOT.MVAEval.variables
@@ -23,6 +19,8 @@ def getVariables(vec):
 
 
 if __name__ == "__main__": 
+
+	ROOT.gROOT.LoadMacro("VariableList.h")
 
 	from anaMVA.BDTvariables import features_save
 

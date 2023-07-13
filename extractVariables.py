@@ -2,7 +2,7 @@ from __future__ import division, print_function
 import ROOT
 
 
-#ROOT.gROOT.LoadMacro("VariableList.h")
+#ROOT.gROOT.LoadMacro("VariableList.h") # Uncomment this to run directly 
 #ROOT.gInterpreter.Declare("gInterpreter->Declare(\"namespace MVAEval { std::vector<TString> variables; }\");")
 
 
@@ -14,7 +14,7 @@ def extractVariables(vec, variables):
 	myvec = ROOT.castToList(vec)
 	for item in variables : 
 		myvec.Add(ROOT.TString(item[0]+"/"+item[1]))
-		print(item[0])
+		#print(item[0])
 	return myvec
 
 def getVariables(vec): 

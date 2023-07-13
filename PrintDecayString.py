@@ -23,11 +23,13 @@ if __name__ == "__main__":
 	parser.add_argument("--sample", dest="sample", action="store", type=str, default="", help="Turn on debug output")
 	parser.add_argument("--full", dest="full", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument("--tree", dest="tree", action="store", type=str, default="ntuplizer/tree", help="Turn on debug output")
+	parser.add_argument("--cut", dest="cut", action="store", type=str, default="", help="Cut to apply to the tree")
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v5", help="Which version (cycle) of files to run on")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument("-f", "--forcepath", dest="forcepath", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
 	parser.add_argument("--stats", dest="stats", action="store_true", default=False, help="Show stats box in ROOT")
+	parser.add_argument("--cache", dest="cache", action="store", type=str, default="./cache/", help="Cached tree for cuts")
 
 	options = parser.parse_args()
 
@@ -50,6 +52,11 @@ if __name__ == "__main__":
 	}
 	""")
 
+	#if (options.cut != ""): 
+	#	ROOT.gSystem.Exec("mkdir -p {}".format(options.cache))
+	#	cachefile = TFile.Open(options.cache+"TreeForDecayString.root", "WRITE")
+
+
 	ROOT.gROOT.LoadMacro("FileFlow.h")
 	ROOT.gROOT.LoadMacro("PrintDecayStringPerEvent.C")
 	from ROOT import Ana
@@ -57,6 +64,10 @@ if __name__ == "__main__":
 	if (options.sample == ""): 
 		file = TFile.Open(options.file, "READ")
 		tree = file.Get(options.tree)
+		if (options.cut != ""): 
+			#cachefile.cd()
+			ROOT.gROOT.cd(); # Making sure the tree with the cut is memory resident 
+			tree = tree.CopyTree(options.cut)
 
 		ROOT.PrintDecayString(tree, options.full)
 
@@ -70,8 +81,11 @@ if __name__ == "__main__":
 		Ana.filemanager.OpenItem(options.sample)
 
 		#filtered = frame.Filter("pttau_tau_m>1.5").Define("numPrinted", ROOT.PrintDecayString, ("genstring"))
+		tree = Ana.filemanager.GetItem(options.sample)
+		if (options.cut != ""): 
+			tree = tree.CopyTree(options.cut)
 
-		ROOT.PrintDecayString(Ana.filemanager.GetItem(options.sample), options.full) #+"_ntuple"
+		ROOT.PrintDecayString(tree, options.full) #+"_ntuple"
 
 	print("Done")
 	#file.Close()

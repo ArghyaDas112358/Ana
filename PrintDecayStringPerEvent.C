@@ -23,7 +23,7 @@ void PrintDecayString(TTree *tree, bool fulldecay = false)
 
 	tree->SetBranchAddress("genstring", &decaystring); 
 
-	int max = std::min(10, static_cast<int>(tree->GetEntries())); 
+	int max = std::max(10, static_cast<int>(tree->GetEntries())); 
 	for (int i=0; i<max; i++) 
 	{
 		tree->GetEntry(i);

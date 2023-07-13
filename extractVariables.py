@@ -2,25 +2,40 @@ from __future__ import division, print_function
 import ROOT
 
 
+#ROOT.gROOT.LoadMacro("VariableList.h")
+#ROOT.gInterpreter.Declare("gInterpreter->Declare(\"namespace MVAEval { std::vector<TString> variables; }\");")
 
-def extractVariables(variables): 
-	vec = ROOT.vector("TString")()
+
+def extractVariables(vec, variables): 
+	#vec = ROOT.vector("TString")()
+	#vec = ROOT.MVAEval.variables
+	#vec = []
+	ROOT.gInterpreter.Declare("VariableList* castToList(TObject* obj) { return static_cast<VariableList*>(obj); }")
+	myvec = ROOT.castToList(vec)
 	for item in variables : 
-		vec.push_back(ROOT.TString(item[0]+"/"+item[1]))
+		myvec.Add(ROOT.TString(item[0]+"/"+item[1]))
 		print(item[0])
-	return vec
+	return myvec
 
-def getVariables(): 
+def getVariables(vec): 
 	from anaMVA.BDTvariables import features_save
-	extractVariables(features_save)
+	return extractVariables(vec, features_save)
 
 
 if __name__ == "__main__": 
 
 	from anaMVA.BDTvariables import features_save
 
-	extractVariables(features_save)
+	#extractVariables(features_save)
 
-	getVariables()
+	#vec = ROOT.vector("TString")()
+	vec = ROOT.VariableList()
+
+	result = getVariables(vec)
+
+	print(result)
+
+	for i in range(result.variables.size()): 
+		print(result.variables.at(i))
 
 

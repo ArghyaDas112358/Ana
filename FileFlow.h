@@ -15,11 +15,11 @@ namespace Ana
 
 	std::map<std::string, TCut> cut; //std::map<std::string, std::map<std::sting, TCut> > cuts; 
 
-	std::vector<TColor*> colors; 
+	//std::vector<TColor*> colors; 
 
-	std::vector<Int_t> mycolors; 
+	//std::vector<Int_t> mycolors; 
 
-	std::unordered_map<std::string, Int_t> color; 
+	//std::unordered_map<std::string, Int_t> color; 
 
 	std::unordered_map<std::string, Int_t> colorold; 
 
@@ -27,11 +27,11 @@ namespace Ana
 
 	std::unordered_map<std::string, std::string> MVA; 
 
-	std::unordered_map<std::string, std::string> legends; 
+	//std::unordered_map<std::string, std::string> legends; 
 
 	std::unordered_map<std::string, ROOT::RDF::TH1DModel> binning; 
 
-	std::unordered_map<std::string, std::string> labels; 
+	//std::unordered_map<std::string, std::string> labels; 
 
 	std::unordered_map<std::string, SampleData> samples; 
 
@@ -320,19 +320,19 @@ namespace Ana
 
 		MVA = {{"v1", "./anaMVA/secondtraining/model_optimized/weights.xml"}, {"v2", "./anaMVA/secondtraining/model_optimized/weights.xml"}, {"v3", "./anaMVA/secondtraining/model_optimized/weights.xml"},  {"v3.5", "./anaMVA/NewSelection/model_optimized/weights.xml"},  {"v4", "./anaMVA/NewSelection/model_optimized/weights.xml"}, {"v6.7", "./anaMVA/NewFixTauFL/model_optimized/weights.xml"}}; 
 
-		legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"B0toDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"B0toDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"}, {"B0toDstar3pi", "B^{0}#rightarrowD^{*}3pi"}, {"B0toDstarD", "B^{0}#rightarrowD^{*}D"}, {"ButoDstarDK", "B^{+}#rightarrowD^{*}DK"}, {"B0toDstarD0K", "B^{0}#rightarrowD^{*}D^{0}K"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 
+		//legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"B0toDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"B0toDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"}, {"B0toDstar3pi", "B^{0}#rightarrowD^{*}3pi"}, {"B0toDstarD", "B^{0}#rightarrowD^{*}D"}, {"ButoDstarDK", "B^{+}#rightarrowD^{*}DK"}, {"B0toDstarD0K", "B^{0}#rightarrowD^{*}D^{0}K"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 
 
-		labels = {{"b_tau_rhomass1", "Invariant m_{#rho}"}, {"b_tau_rhomass2", "Invariant m_{#rho}"}, {"b_B_q2", "q2"}, {"b_B_m", "Reconstructed m_{B}"}}; 
+		//labels = {{"b_tau_rhomass1", "Invariant m_{#rho}"}, {"b_tau_rhomass2", "Invariant m_{#rho}"}, {"b_B_q2", "q2"}, {"b_B_m", "Reconstructed m_{B}"}}; 
 
-		binning = {{"b_tau_rhomass1", {"", ";#rho_{12} mass [GeV]", 40, 0., 1.5}},
-				{"b_tau_rhomass2", {"", ";#rho_{12} mass [GeV]", 40, 0., 1.5}},
-				{"b_B_m", {"", ";B mass [GeV]", 40, 0., 6.}},
-				{"b_B_q2", {"", ";B mass [GeV]", 40, 0., 12.}},
-				{"B_m", {"", ";B mass [GeV]", 40, 0., 6.}},
-				{"B_q2", {"", ";B mass [GeV]", 40, 0., 12.}},
-				{"tau_rhomass1", {"", ";#rho_{12} mass [GeV]", 40, 0., 1.5}},
-				{"tau_rhomass2", {"", ";#rho_{12} mass [GeV]", 40, 0., 1.5}},
-				{"b_tau_m", {"", ";#tau mass [GeV]", 40, 0., 5.}},
+		binning = {{"b_tau_rhomass1", {"", "#rho_{12} mass;Invariant m_{#rho} [GeV];Counts", 40, 0., 1.5}},
+				{"b_tau_rhomass2", {"", "rho_{23} mass;Invariant m_{#rho} [GeV];Counts", 40, 0., 1.5}},
+				{"b_B_m", {"", "B mass;Reconstructed m_{B} [GeV];Counts", 40, 0., 6.}},
+				{"b_B_q2", {"", "q2;q^{2} [GeV];Counts", 40, 0., 12.}},
+				{"B_m", {"", ";B mass [GeV];Counts", 40, 0., 6.}},
+				{"B_q2", {"", ";B mass [GeV];Counts", 40, 0., 12.}},
+				{"tau_rhomass1", {"", ";#rho_{12} mass [GeV];Counts", 40, 0., 1.5}},
+				{"tau_rhomass2", {"", ";#rho_{12} mass [GeV];Counts", 40, 0., 1.5}},
+				{"b_tau_m", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", 40, 0., 5.}},
 		}; 
 
 		samples = InitSamples(); 

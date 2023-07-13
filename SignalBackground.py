@@ -609,11 +609,11 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 			legend.SetMargin(0.3)
 			legend.SetTextSize(0.04)
 
-			data.GetXaxis().SetTitle(Ana.labels[variable])
+			#data.GetXaxis().SetTitle(Ana.labels[variable])
 			data.GetXaxis().SetTitleSize(0.06)
 			data.GetXaxis().SetLabelSize(0.06)
 			data.GetYaxis().SetLabelSize(0.06)
-			data.GetYaxis().SetTitle("Counts")
+			#data.GetYaxis().SetTitle("Counts")
 			data.GetYaxis().SetTitleSize(0.06)
 			data.GetXaxis().SetTitleOffset(1.2)
 			canvas.SetBottomMargin(0.15)

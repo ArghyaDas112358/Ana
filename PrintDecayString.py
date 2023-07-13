@@ -14,6 +14,16 @@ from uncertainties.umath import *
 
 
 
+def PrintDecayString(tree, options): 
+	if (options.cut != ""): 
+		#cachefile.cd()
+		ROOT.gROOT.cd(); # Making sure the tree with the cut is memory resident 
+		tree = tree.CopyTree(options.cut)
+
+	ROOT.PrintDecayString(tree, options.full)
+
+
+
 if __name__ == "__main__":
 
 	parser = ArgumentParser(description="SignalBackground")
@@ -64,12 +74,8 @@ if __name__ == "__main__":
 	if (options.sample == ""): 
 		file = TFile.Open(options.file, "READ")
 		tree = file.Get(options.tree)
-		if (options.cut != ""): 
-			#cachefile.cd()
-			ROOT.gROOT.cd(); # Making sure the tree with the cut is memory resident 
-			tree = tree.CopyTree(options.cut)
-
-		ROOT.PrintDecayString(tree, options.full)
+		
+		PrintDecayString(tree, options)
 
 		file.Close()
 
@@ -82,10 +88,12 @@ if __name__ == "__main__":
 
 		#filtered = frame.Filter("pttau_tau_m>1.5").Define("numPrinted", ROOT.PrintDecayString, ("genstring"))
 		tree = Ana.filemanager.GetItem(options.sample)
-		if (options.cut != ""): 
-			tree = tree.CopyTree(options.cut)
+		
+		PrintDecayString(tree, options)
 
-		ROOT.PrintDecayString(tree, options.full) #+"_ntuple"
+		#ROOT.PrintDecayString(tree, options.full) #+"_ntuple"
+
+		Ana.filemanager.CloseAll()
 
 	print("Done")
 	#file.Close()

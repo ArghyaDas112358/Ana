@@ -38,8 +38,8 @@ function processFull()
 
 	if [ $4 -le 2 ]; then
 		. AddAnaBDT.sh $1 $2
-		sleep 2
-		./anaMVA/inference/ApplyXGBOweight.sh $1 $2
+		#sleep 2
+		#./anaMVA/inference/ApplyXGBOweight.sh $1 $2
 
 		if [ $? -ne 0 ]; then
 			echo "Abort due to error. "

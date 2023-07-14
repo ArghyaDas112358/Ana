@@ -14,13 +14,34 @@ from uncertainties.umath import *
 
 
 
+class CacheFile: 
+	@classmethod
+	def SetFile(self, somefile): 
+		self.file = somefile
+		self.open = True
+
+	file = ""
+	folder = "./cache/"
+	open = False
+
 def PrintDecayString(tree, options): 
+	cache = CacheFile
 	if (options.cut != ""): 
-		#cachefile.cd()
-		ROOT.gROOT.cd(); # Making sure the tree with the cut is memory resident 
+		if (options.cache): 
+			ROOT.gSystem.Exec("mkdir -p {}".format(cache.folder))
+			cachefile = TFile.Open(cache.folder+"/TreeForDecayString.root", "RECREATE")
+			cachefile.cd()
+			cache.SetFile(cachefile)
+			#ache.file = cachefile
+		else:
+			ROOT.gROOT.cd(); # Making sure the tree with the cut is memory resident 
 		tree = tree.CopyTree(options.cut)
 
 	ROOT.PrintDecayString(tree, options.full)
+
+	if (cache.open): 
+		cache.file.Close(); 
+		ROOT.gSystem.Exec("rm -r {}".format(cache.folder))
 
 
 
@@ -39,7 +60,8 @@ if __name__ == "__main__":
 	parser.add_argument("-f", "--forcepath", dest="forcepath", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
 	parser.add_argument("--stats", dest="stats", action="store_true", default=False, help="Show stats box in ROOT")
-	parser.add_argument("--cache", dest="cache", action="store", type=str, default="./cache/", help="Cached tree for cuts")
+	#parser.add_argument("--cache", dest="cache", action="store", type=str, default="./cache/", help="Cached tree for cuts")
+	parser.add_argument("--cache", dest="cache", action="store_true", default=False, help="Cache tree for cuts")
 
 	options = parser.parse_args()
 

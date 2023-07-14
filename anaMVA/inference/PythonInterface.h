@@ -139,7 +139,8 @@ class PythonInterface
 
         //PyObject* myResult = PyObject_CallMethod(object, "Add2toNumber", "(d)", a); 
 
-        Py_DECREF (py_array);                             
+        //Py_DECREF (py_array);  
+        Py_DECREF (pArgs);                             
         Py_DECREF (pFunc);
 
 

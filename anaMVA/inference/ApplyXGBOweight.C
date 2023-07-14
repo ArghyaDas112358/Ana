@@ -132,7 +132,7 @@ std::vector<double> castVector(std::vector<float> vec)
 
 void ApplyXGBOweight(const TString& inIdentifier, const TString& outIndentifier, const TString& version = "", const Int_t Nmax = 0, const Int_t Nmin = 0, const TString& destination = "") 
 {
-	//ROOT::EnableImplicitMT(); //ROOT::DisableImplicitMT(); 
+	ROOT::DisableImplicitMT(); 
 	Init(version); 
 
 
@@ -150,7 +150,15 @@ void ApplyXGBOweight(const TString& inIdentifier, const TString& outIndentifier,
 
     //std::cout << "After making class" << std::endl; 
 
-    pyEvaluation.Initialise(std::string("/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/scripts/Ana/anaMVA/NewSelection/models/model_optimized.pkcl"));
+    std::string TMVAweightFile = std::string(TString::Format("../../%s", Ana::MVA[version.Data()].c_str()).Data()); 
+
+    std::cout << "TMVA weight file: " << TMVAweightFile << std::endl; 
+
+    std::string pklFile = TString(TMVAweightFile).ReplaceAll("/weights.xml", ".pkcl").ReplaceAll("model_", "models/model_").Data(); 
+
+    std::cout << "pkl weight file: " << pklFile << std::endl; 
+
+    pyEvaluation.Initialise(pklFile);
 
     int counter = 0; 
 
@@ -246,7 +254,7 @@ void ApplyXGBOweight(const TString& inIdentifier, const TString& outIndentifier,
 		return response; 
 	};
 
-	auto withWeight = dataframe.Range(0, Nmax).Define("mvaScoreNew", MVAResponse, {"b_D0_pt", "b_D0_eta", "b_D0_phi", "b_D0_vprob", "b_D0_fl", "b_D0_fsig",  "b_Ds_pt", "b_Ds_eta", "b_Ds_phi", "b_Ds_vprob", "b_Ds_fl", "b_Ds_fsig", "b_D0_lip", "b_D0_lips", "b_D0_pvip", "b_Ds_lip", "b_Ds_lips", "b_Ds_pvip", "b_tau_pt", "b_tau_eta", "b_tau_phi", "b_tau_fl", "b_tau_fsig", "b_tau_vprob", "b_tau_lip", "b_tau_pvip", "b_tau_pvipsig", "b_tau_alpha", "b_tau_legacyMaxdr", "b_tau_pi1pt", "b_tau_pi1eta", "b_tau_pi1phi", "b_tau_pi2pt", "b_tau_pi2eta", "b_tau_pi2phi", "b_tau_pi3pt", "b_tau_pi3eta", "b_tau_pi3phi", "b_tau_sumdnn"}); 
+	auto withWeight = dataframe.Range(0, Nmax).Define("mvaScoreNew", MVAResponse, {"D0_pt", "D0_eta", "D0_phi", "D0_vprob", "D0_fl", "D0_fsig", "Dstar_pt", "Dstar_eta", "Dstar_phi", "Dstar_vprob", "Dstar_fl", "Dstar_fsig", "D0_lip", "D0_lipsig", "D0_pvip", "Dstar_lip", "Dstar_lipsig", "Dstar_pvip", "b_tau_pt", "b_tau_eta", "b_tau_phi", "b_tau_fl", "b_tau_fsig", "b_tau_vprob", "b_tau_lip", "b_tau_pvip", "b_tau_pvipsig", "b_tau_alpha", "b_tau_legacyMaxdr", "b_tau_pi1pt", "b_tau_pi1eta", "b_tau_pi1phi", "b_tau_pi2pt", "b_tau_pi2eta", "b_tau_pi2phi", "b_tau_pi3pt", "b_tau_pi3eta", "b_tau_pi3phi", "b_tau_sumdnn"}); 
 
 	TString outfile = filemanager.GetFile(outIndentifier); 
 	
@@ -263,7 +271,7 @@ void ApplyXGBOweight(const TString& inIdentifier, const TString& outIndentifier,
 
 	for (auto branch : stringbranches) // Hack to fix string branches 
 	{
-		//withWeight = withWeight.Redefine(branch, [](const ROOT::RVec<std::string> &v) {return std::vector<std::string>(v.begin(), v.end());}, {branch}); 
+		withWeight = withWeight.Redefine(branch, [](const ROOT::RVec<std::string> &v) {return std::vector<std::string>(v.begin(), v.end());}, {branch}); 
 	}
 
 	withWeight = withWeight.Redefine("v_taucandidates", [](const ROOT::RVec<Tau> &v) {return std::vector<Tau>(v.begin(), v.end());}, {"v_taucandidates"});

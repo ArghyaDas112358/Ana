@@ -19,9 +19,9 @@ elif [[ $# > 3 ]]; then
 fi 
 
 
-INITIALREF=${1}_DNN
+INITIALREF=${1}
 VERSION=""
-FINALREF="${1}" # Adding suffix to the ref
+FINALREF="${1}_mva" # Adding suffix to the ref
 #Remove suffix from string
 #FINALREF=${INITIALREF%".root"}
 STARTEVT=0
@@ -45,8 +45,14 @@ echo $FINALREF
 echo $STARTEVT
 echo $STOPEVT
 
+olddir=${PWD}
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd ${SCRIPT_DIR}
+
 
 #root -e 'gInterpreter->AddIncludePath("/opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/numpy/core/include");' TestApplyTFweightnew.C
 root -q -e 'gInterpreter->AddIncludePath("'$NUMPYLIBRARY'"); gInterpreter->LoadMacro("../../Tau.h+");' 'ApplyXGBOweight.C("'$INITIALREF'", "'$FINALREF'", "'$VERSION'", '$STOPEVT', '$STARTEVT')'
 #root -e 'gInterpreter->AddIncludePath("/opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/numpy/core/include");' ApplyTFweight.C
 #root -e 'gInterpreter->AddIncludePath("/t3home/mhuwiler/.local/lib/python3.6/site-packages/numpy/core/include/");' ApplyTFweight.C
+
+cd ${olddir}

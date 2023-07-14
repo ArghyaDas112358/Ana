@@ -130,18 +130,24 @@ std::vector<double> castVector(std::vector<float> vec)
 
  
 
-void ApplyXGBOweight(const TString& inIdentifier, const TString& outIndentifier, const TString& version = "", const Int_t Nmax = 0, const Int_t Nmin = 0, const TString& destination = "") 
+void ApplyXGBOweight(const TString& inIdentifier, const TString& outIdentifier, const TString& version = "", const Int_t Nmax = 0, const Int_t Nmin = 0, const TString& destination = "") 
 {
 	ROOT::DisableImplicitMT(); 
 	Init(version); 
 
+	// Hack to create an intermediate file for applications
+	TString newInIdentifier = inIdentifier+"_tmp"; 
+	TString tempFileName = TString(Ana::filemanager.GetFile(inIdentifier)).ReplaceAll("mva.root", "tmp.root"); 
+	filemanager.AddItem(newInIdentifier, tempFileName, "tree"); 
+	gSystem->Exec(TString::Format("cp %s %s", filemanager.GetFile(inIdentifier).c_str(), filemanager.GetFile(newInIdentifier).c_str())); 
 
-	filemanager.OpenItem(inIdentifier); 
+
+	filemanager.OpenItem(newInIdentifier); 
 
 	gStyle->SetOptStat(0); 
 
 
-	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>(inIdentifier)); 
+	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>(newInIdentifier)); 
 
 
     //std::cout << "Before making class" << std::endl; 
@@ -152,6 +158,7 @@ void ApplyXGBOweight(const TString& inIdentifier, const TString& outIndentifier,
 
     std::string TMVAweightFile = std::string(TString::Format("../../%s", Ana::MVA[version.Data()].c_str()).Data()); 
 
+    // Hack to get the pkl file from the xml path 
     std::cout << "TMVA weight file: " << TMVAweightFile << std::endl; 
 
     std::string pklFile = TString(TMVAweightFile).ReplaceAll("/weights.xml", ".pkcl").ReplaceAll("model_", "models/model_").Data(); 
@@ -256,7 +263,7 @@ void ApplyXGBOweight(const TString& inIdentifier, const TString& outIndentifier,
 
 	auto withWeight = dataframe.Range(0, Nmax).Define("mvaScoreNew", MVAResponse, {"D0_pt", "D0_eta", "D0_phi", "D0_vprob", "D0_fl", "D0_fsig", "Dstar_pt", "Dstar_eta", "Dstar_phi", "Dstar_vprob", "Dstar_fl", "Dstar_fsig", "D0_lip", "D0_lipsig", "D0_pvip", "Dstar_lip", "Dstar_lipsig", "Dstar_pvip", "b_tau_pt", "b_tau_eta", "b_tau_phi", "b_tau_fl", "b_tau_fsig", "b_tau_vprob", "b_tau_lip", "b_tau_pvip", "b_tau_pvipsig", "b_tau_alpha", "b_tau_legacyMaxdr", "b_tau_pi1pt", "b_tau_pi1eta", "b_tau_pi1phi", "b_tau_pi2pt", "b_tau_pi2eta", "b_tau_pi2phi", "b_tau_pi3pt", "b_tau_pi3eta", "b_tau_pi3phi", "b_tau_sumdnn"}); 
 
-	TString outfile = filemanager.GetFile(outIndentifier); 
+	TString outfile = filemanager.GetFile(inIdentifier); 
 	
 	if (destination != "") 
 	{
@@ -276,11 +283,13 @@ void ApplyXGBOweight(const TString& inIdentifier, const TString& outIndentifier,
 
 	withWeight = withWeight.Redefine("v_taucandidates", [](const ROOT::RVec<Tau> &v) {return std::vector<Tau>(v.begin(), v.end());}, {"v_taucandidates"});
 
-	withWeight.Snapshot(filemanager.GetObject(outIndentifier), outfile.Data()); 
+	withWeight.Snapshot(filemanager.GetObject(inIdentifier), outfile.Data()); 
 
 	//Pause(5); 
 
 	//PauseUntilEnter(); //system("pause"); 
+
+	//gSystem->Exec(TString::Format("rm %s", filemanager.GetFile(newInIdentifier).c_str())); 
 
 	filemanager.CloseAll(); 
 

@@ -631,9 +631,12 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 					ROOT.SetOwnership(histo, 0)
 					histo.SetLineStyle(1) # plain
 					histo.SetLineWidth(2)
-					histo.SetLineColor(Ana.samples.at(component.replace("Part", "")).color)
+					color = Ana.samples.at(component.replace("Part", "")).color
+					if "WS" in component: 
+						color = Ana.samples.at("WS").color
+					histo.SetLineColor(color)
 					histo.SetFillStyle(1)
-					histo.SetFillColor(Ana.samples.at(component.replace("Part", "")).color)
+					histo.SetFillColor(color)
 					legend.AddEntry(histo, Ana.samples.at(component.replace("Part", "")).legend, "F")
 				canv.cd()
 				data.SetMarkerSize(4.)
@@ -792,7 +795,7 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	filesUsed = ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi"] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi"
+	filesUsed = ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi"
 
 	regions = ["SR", "CR", "SB"]
 
@@ -824,8 +827,8 @@ if __name__ == "__main__":
 		#baseline[item]
 		for region in regions: 
 			cut = Ana.cut[region].GetTitle()
-			if "WS" in item: 
-				cut = Ana.cutstandalone[region].GetTitle()
+			#if "WS" in item: 
+			#	cut = Ana.cutstandalone[region].GetTitle()
 			if (options.debug): print("Using following cut string (from TCut): {}".format(cut))
 			frames[item][region] = samples[item].Filter(cut)
 			ROOT.SetOwnership(frames[item][region], 0)
@@ -870,6 +873,8 @@ if __name__ == "__main__":
 	#selectioneffs["dataD2TauWS"] = ufloat(-0.0005, 0.) #21.5
 
 	selectioneffs = ReadEffsSimple("./data/etc/Expectedyields.json")
+
+	selectioneffs["dataD2WS"] = ufloat(1.24e-5*-5.5, 0.)
 
 	regioneffs = MultiplyFinalEffs(selectioneffs, effs)
 

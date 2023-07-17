@@ -426,16 +426,17 @@ def CompleteEffsFromFile(effs, version, filemanager):
 
 
 def MultiplyFinalEffs(effs, regioneffs):
+	resulteffs = collections.defaultdict(dict)
 	for item, content in regioneffs.iteritems(): 
 		print("{}:".format(item))
 		for key, value in content.iteritems(): 
 			try:
-				regioneffs[item][key] = effs[item]*regioneffs[item][key]
+				resulteffs[item][key] = effs[item]*regioneffs[item][key]
 				if (effs[item].nominal_value < 0.): 
-					regioneffs[item][key]=effs[item]
+					resulteffs[item][key]=effs[item]
 			except:
-				regioneffs[item][key] = -1.
-	return regioneffs
+				resulteffs[item][key] = -1.
+	return resulteffs
 
 
 def MakeDatacardSimple(frames, yields, name=""): 

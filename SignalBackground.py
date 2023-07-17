@@ -310,7 +310,7 @@ def GetEfficiencies(frames):
 def getEff(n, N): 
 	eff = float(n)/float(N)
 	#print eff
-	err = sqrt(eff*(1.-eff)/float(N))
+	err = sqrt(abs(eff*(1.-eff)/float(N)))
 	#print err
 	#return eff, err
 	return ufloat(eff, err)
@@ -386,14 +386,6 @@ def InitialEffs(lumi):
 
 	return expected
 
-
-def getEff(n, N): 
-	eff = float(n)/float(N)
-	#print eff
-	err = sqrt(eff*(1.-eff)/float(N))
-	#print err
-	#return eff, err
-	return ufloat(eff, err)
 
 def getEffFromInfo(tree): 
 	frame = RDataFrame(tree)

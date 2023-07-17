@@ -316,13 +316,13 @@ def getEff(n, N):
 	return ufloat(eff, err)
 
 
-def ComputeEfficiencies(frames): 
+def ComputeEfficiencies(frames, baseline="baseline"): 
 	efficiencies = collections.defaultdict(dict)
 	for item, content in frames.iteritems(): 
 		#print("{}:".format(item))
 		for key, value in content.iteritems(): 
 			n = frames[item][key].Count().GetValue()
-			N = frames[item]["all"].Count().GetValue()
+			N = frames[item][baseline].Count().GetValue()
 			# see: chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://indico.cern.ch/event/66256/contributions/2071577/attachments/1017176/1447814/EfficiencyErrors.pdf
 			ne = ufloat(n, sqrt(n))
 			NE = ufloat(N, sqrt(N))
@@ -821,12 +821,15 @@ if __name__ == "__main__":
 
 	samples = {}
 	frames = collections.defaultdict(dict)
+	baseline = collections.defaultdict(dict)
 	histos = collections.defaultdict(dict)
 	histosunrolled = collections.defaultdict(dict)
 
 	for item in filesUsed:  
 		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
-		frames[item]["all"] = samples[item].Filter("1.") #Ana.cut["base"].GetTitle()
+		frames[item]["baseline"] =  samples[item].Filter(Ana.cut["base"].GetTitle()) #Ana.cut["base"].GetTitle() "1."
+		frames[item]["all"] = samples[item].Filter("1.")
+		#baseline[item]
 		for region in regions: 
 			cut = Ana.cut[region].GetTitle()
 			if "WS" in item: 
@@ -850,7 +853,10 @@ if __name__ == "__main__":
 
 	#GetEfficiencies(frames)
 
-	effs = ComputeEfficiencies(frames)
+	effs = ComputeEfficiencies(frames, "all")
+
+	for key, item in effs.iteritems(): 
+		print("{}: {}".format(key, item["baseline"]))
 
 	#PrintEfficiencies(effs)
 

@@ -122,6 +122,11 @@ namespace Ana
 			filemanager.AddItem("B0toDstarD0Kstar_DNN", folder+"B0toDstarD0Kstar_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstarD0Kstar", folder+"B0toDstarD0Kstar_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("B0toDDtoTau_ntuple", folder+"B0toDDtoTau.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDDtoTau_tf", folder+"B0toDDtoTau_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDDtoTau_DNN", folder+"B0toDDtoTau_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDDtoTau", folder+"B0toDDtoTau_tauDNN_mva.root", "tree"); 
+
 			filemanager.AddItem("B0toDstar3pi_ntuple", folder+"B0toDstar3pi.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstar3pi_tf", folder+"B0toDstar3pi_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstar3pi_DNN", folder+"B0toDstar3pi_tauDNN.root", "ntuplizer/tree"); 
@@ -131,6 +136,11 @@ namespace Ana
 			filemanager.AddItem("B0toDstar5pi_tf", folder+"B0toDstar5pi_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstar5pi_DNN", folder+"B0toDstar5pi_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstar5pi", folder+"B0toDstar5pi_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("B0toDstarRho0pi_ntuple", folder+"B0toDstarRho0pi.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarRho0pi_tf", folder+"B0toDstarRho0pi_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarRho0pi_DNN", folder+"B0toDstarRho0pi_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarRho0pi", folder+"B0toDstarRho0pi_tauDNN_mva.root", "tree"); 
 
 			filemanager.AddItem("BkgDstar3pi_ntuple", folder+"BkgDstar3piNonres.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstar3pi_tf", folder+"BkgDstar3piNonres_withTFweight.root", "ntuplizer/tree"); 
@@ -156,6 +166,11 @@ namespace Ana
 			filemanager.AddItem("ButoDstarDK_tf", folder+"ButoDstarDK_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("ButoDstarDK_DNN", folder+"ButoDstarDK_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("ButoDstarDK", folder+"ButoDstarDK_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("ButoDstarXc_ntuple", folder+"ButoDstarXc.root", "ntuplizer/tree"); 
+			filemanager.AddItem("ButoDstarXc_tf", folder+"ButoDstarXc_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("ButoDstarXc_DNN", folder+"ButoDstarXc_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("ButoDstarXc", folder+"ButoDstarXc_tauDNN_mva.root", "tree"); 
 
 			filemanager.AddItem("BkgBuDXc_ntuple", folder+"BkgBuDXc.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgBuDXc_tf", folder+"BkgBuDXc_withTFweight.root", "ntuplizer/tree"); 

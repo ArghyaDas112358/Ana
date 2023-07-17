@@ -420,7 +420,7 @@ def CompleteEffsFromFile(effs, version, filemanager):
 def MultiplyFinalEffs(effs, regioneffs):
 	resulteffs = collections.defaultdict(dict)
 	for item, content in regioneffs.iteritems(): 
-		print("{}:".format(item))
+		#print("{}:".format(item))
 		for key, value in content.iteritems(): 
 			try:
 				resulteffs[item][key] = effs[item]*regioneffs[item][key]
@@ -847,8 +847,8 @@ if __name__ == "__main__":
 
 	effs = ComputeEfficiencies(frames, "all")
 
-	for key, item in effs.iteritems(): 
-		print("{}: {}".format(key, item["baseline"]))
+	#for key, item in effs.iteritems(): 
+	#	print("{}: {}".format(key, item["baseline"]))
 
 	#PrintEfficiencies(effs)
 

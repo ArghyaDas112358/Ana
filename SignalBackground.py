@@ -822,11 +822,11 @@ if __name__ == "__main__":
 
 	for item in filesUsed:  
 		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
-		frames[item]["baseline"] =  samples[item].Filter(Ana.cut["base"].GetTitle()) #Ana.cut["base"].GetTitle() "1."
+		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(item).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."
 		frames[item]["all"] = samples[item].Filter("1.")
 		#baseline[item]
 		for region in regions: 
-			cut = Ana.cut[region].GetTitle()
+			cut = (Ana.cut[region]+Ana.samples.at(item).cut).GetTitle()
 			#if "WS" in item: 
 			#	cut = Ana.cutstandalone[region].GetTitle()
 			if (options.debug): print("Using following cut string (from TCut): {}".format(cut))

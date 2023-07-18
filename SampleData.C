@@ -1,6 +1,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include "TCut.h"
 
 
 
@@ -8,7 +9,7 @@ class SampleData
 {
 public: 
 
-	SampleData(int initColor, std::string initLegend, std::string initLatex = "", std::initializer_list<std::string> initRefList = {})
+	SampleData(int initColor, std::string initLegend, TCut initCut = "", std::string initLatex = "", std::initializer_list<std::string> initRefList = {})
 		: color(initColor), legend(initLegend), latex(initLatex), fileRefs(initRefList.begin(), initRefList.end()) 
 	{
 		if (initLatex == "") 
@@ -19,6 +20,7 @@ public:
 
 	int color = -999.; 
 	std::string legend = ""; 
+	TCut cut = ""; 
 	std::string latex = ""; 
 	std::vector<std::string> fileRefs; 
 
@@ -53,53 +55,63 @@ namespace Ana {
 			mycolors.push_back(color->GetNumber()); 
 		}
 
+		TCut genMatchCut = "(Dstar_match)&&(b_tau_match)";
+
 		std::unordered_map<std::string, SampleData> samples = {
 			// B0 decays
 			{"Sig", {
 				mycolors[0], 
 				"signal", 
+				genMatchCut, 
 				"$B^0\\rightarrow D^{*-}\\tau^+\\nu_\\tau$", 
 				{"Sig"}}
 			}, 
 			{"B0toDstarDs", SampleData(
 				mycolors[1], 
 				"B^{0}#rightarrowD*D_{s}", 
+				genMatchCut, 
 				"$B^0\\rightarrow D^{*-}D_{s}^+$", 
 				{"B0toDstarDs"})
 			},
 			{"B0toDstarDsstar", SampleData(
 				mycolors[2], 
 				"B^{0}#rightarrowD*D*_{s}", 
+				genMatchCut, 
 				"$B^0\\rightarrow D^{*-}D_{s}^{*+}$", 
 				{"B0toDstarDsstar"})
 			},
 			{"B0toDstarDs1", SampleData(
 				mycolors[2], 
 				"B^{0}#rightarrowD*D_{s1}", 
+				genMatchCut, 
 				"$B^{0}\\rightarrow D^{*}D_{s1}$", 
 				{"B0toDstarDs1"})
 			},
 			{"B0toDstarD", SampleData(
 				mycolors[3], 
 				"B^{0}#rightarrowD*D", 
+				genMatchCut, 
 				"", 
 				{"B0toDstarD"})
 			},
 			{"B0toDstarD0K", SampleData(
 				mycolors[5], 
 				"B^{0}#rightarrowD*D^{0}K", 
+				genMatchCut, 
 				"$B^0\\rightarrow D^{*}D^{0}K$", 
 				{"B0toDstarD0K"})
 			},
 			{"BkgDstara1", SampleData(
 				mycolors[6], 
 				"B^{0}#rightarrowD*a_{1}", 
+				"", 
 				"$B^0\\rightarrow D^{*-}a_{1}^+$", 
 				{"BkgDstara1"})
 			},
 			{"B0toDstar3pi", SampleData(
 				mycolors[7], 
 				"B^{0}#rightarrowD*3pi", 
+				genMatchCut, 
 				"", 
 				{"B0toDstar3pi"})
 			},
@@ -107,6 +119,7 @@ namespace Ana {
 			{"ButoDstarDK", SampleData(
 				mycolors[4], 
 				"B^{+}#rightarrowD*DK", 
+				genMatchCut, 
 				"", 
 				{"ButoDstarDK"})
 			}, 
@@ -114,37 +127,50 @@ namespace Ana {
 			{"BkgBuDXc", SampleData(
 				mycolors[8], 
 				"B^{+}#rightarrowD*D", 
+				"",
 				"$B^+\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$", 
 				{"BkgBuDXc"})
 			},
 			{"BkgB0DD", SampleData(
 				mycolors[8], 
 				"B^{0}#rightarrowDD", 
+				genMatchCut, 
 				"$B^0\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$", 
 				{"BkgB0DD"})
+			},
+			{"dataD1", SampleData(
+				 mycolors[10], 
+				"data", 
+				"", 
+				"data$", 
+				{"dataD2WS"})
 			},
 			// data driven components
 			{"WS", SampleData(
 				 mycolors[10], 
 				"|q_{B}| = 2  WS", 
+				"", 
 				"$WS~|q_{B}|}~=~2$", 
 				{"WS"})
 			},
 			{"WSTau", SampleData(
 				 mycolors[10], 
 				"|q_{#tau}| = 3  WS", 
+				"", 
 				"$WS~|q_{#tau}|~=~3$", 
 				{"WSTau"})
 			},
 			{"dataD2WS", SampleData(
 				 mycolors[10], 
 				"|q_{B}| = 2  WS", 
+				"", 
 				"$WS~|q_{B}|}~=~2$", 
 				{"dataD2WS"})
 			},
 			{"dataD2TauWS", SampleData(
 				 mycolors[10], 
 				"|q_{#tau}| = 3  WS", 
+				"", 
 				"$WS~|q_{#tau}|~=~3$", 
 				{"dataD2TauWS"})
 			},
@@ -152,12 +178,14 @@ namespace Ana {
 			{"BkgDstarDs", SampleData(
 				mycolors[1], 
 				"B^{0}#rightarrowD*D_{s}", 
+				genMatchCut, 
 				"$B^0\\rightarrow D^{*-}D_{s}^+$", 
 				{"BkgDstarDs"})
 			},
 			{"BkgDstarDsstar", SampleData(
 				mycolors[2], 
 				"B^{0}#rightarrowD*D*_{s}", 
+				genMatchCut, 
 				"$B^0\\rightarrow D^{*-}D_{s}^{*+}$", 
 				{"BkgDstarDsstar"})
 			},

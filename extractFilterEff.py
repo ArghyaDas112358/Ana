@@ -2,6 +2,8 @@
 from __future__ import division, print_function
 
 import pandas as pd
+import os
+import time
 from uncertainties import ufloat
 from uncertainties.umath import * 
 from argparse import ArgumentParser
@@ -41,6 +43,14 @@ def updateEfficiency(eff, sample, file, force=False):
 	DumpEffs(filterEffs, file)
 
 
+def ensureEOSDirectory(directory): 
+	if (not os.path.isdir(directory)): 
+		os.system("mounteos")
+		time.sleep(2)
+
+	return os.path.isdir(directory)
+
+
 if __name__ == "__main__": 
 
 	parser = ArgumentParser(description="GetEfficiency")
@@ -62,6 +72,7 @@ if __name__ == "__main__":
 		updateEfficiency(eff, options.sample, options.database, options.force)
 
 
+	ensureEOSDirectory(options.out)
 	singleEff = { options.sample: eff }
 	DumpEffs(singleEff, options.out+"/{}FilterEff.json".format(options.sample))
 

@@ -48,6 +48,7 @@ if __name__ == "__main__":
 	parser.add_argument("-s", "--sample", dest="sample", action="store", type=str, default="", help="File from which to extract filter efficiency")
 	parser.add_argument("-u", "--update", dest="update", action="store_true", default=False, help="Update filter efficiency in efficiency file ")
 	parser.add_argument("-d", "--database", dest="database", action="store", type=str, default="/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/Ana/data/etc/FilterEfficiencies.json", help="Database file where to store the efficiency")
+	parser.add_argument("-o", "--out", dest="out", action="store", type=str, default="/eos/home-m/mhuwiler/DoctoralThesis/Analysis/normalisation", help="Folder where to output computed eff")
 	parser.add_argument("-f", "--force", dest="force", action="store_true", default=False, help="Force updating efficiency if already present")
 	parser.add_argument("-b", "--batch", dest="batch", action="store_true",default=False, help="Run in batch mode")
 
@@ -61,7 +62,14 @@ if __name__ == "__main__":
 		updateEfficiency(eff, options.sample, options.database, options.force)
 
 
+	singleEff = { options.sample: eff }
+	DumpEffs(singleEff, options.out+"/{}FilterEff.json".format(options.sample))
+
+
 	print(eff)
+
+
+	print("Efficiency for {}:\n\n\t\"{}\": [{}, {}],\n\n".format(options.sample, options.sample, eff.n, eff.s))
 
 
 	

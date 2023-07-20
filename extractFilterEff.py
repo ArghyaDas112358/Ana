@@ -7,7 +7,38 @@ import time
 from uncertainties import ufloat
 from uncertainties.umath import * 
 from argparse import ArgumentParser
-from libEfficiencies import getEff, DumpEffs, ReadEffs
+#from libEfficiencies import getEff, DumpEffs, ReadEffs
+from collections import OrderedDict
+import json
+
+
+def DumpEffs(effs, path): 
+	effsForWrite = OrderedDict()
+	for item, content in effs.iteritems(): 
+			eff = effs[item]
+			effsForWrite[item] = (eff.n, eff.s)
+	with open(path, "w") as file: 
+		print(effsForWrite)
+		json.dump(effsForWrite, file, ensure_ascii=False, encoding="utf8", sort_keys=False) #indent=4, 
+
+def ReadEffs(path): 
+	effs = OrderedDict()
+	with open(path, "r") as file: 
+		effsFromFile = json.load(file, encoding="utf8", object_pairs_hook=OrderedDict)
+		for item, content in effsFromFile.iteritems(): 
+				eff = effsFromFile[item]
+				assert(len(eff)==2)
+				effs[item] = ufloat(eff[0], eff[1])
+	return effs
+
+
+def getEff(n, N): 
+	eff = float(n)/float(N)
+	#print eff
+	err = sqrt(eff*(1.-eff)/float(N))
+	#print err
+	#return eff, err
+	return ufloat(eff, err)
 
 
 def getFilterEffFromSummary(file): 
@@ -45,7 +76,7 @@ def updateEfficiency(eff, sample, file, force=False):
 
 def ensureEOSDirectory(directory): 
 	if (not os.path.isdir(directory)): 
-		os.system("mounteos")
+		os.system("kinit mhuwiler@CERN.CH; eosfusebind -g krb5 $HOME/krb5cc_$UID")
 		time.sleep(2)
 
 	return os.path.isdir(directory)

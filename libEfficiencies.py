@@ -7,6 +7,7 @@ from ROOT import RDataFrame, TFile
 from uncertainties import ufloat
 from uncertainties.umath import * 
 import json
+from collections import OrderedDict
 
 
 def getEff(n, N): 
@@ -39,17 +40,17 @@ def getGenmatchingEff(tree, cut):
 
 
 def DumpEffs(effs, path): 
-	effsForWrite = {}
+	effsForWrite = OrderedDict()
 	for item, content in effs.iteritems(): 
 			eff = effs[item]
 			effsForWrite[item] = (eff.n, eff.s)
 	with open(path, "w") as file: 
-		json.dump(effsForWrite, file, ensure_ascii=False, encoding="utf8", sort_keys=False)
+		json.dump(effsForWrite, file, ensure_ascii=False, encoding="utf8", sort_keys=False) #indent=4, 
 
 def ReadEffs(path): 
-	effs = {}
+	effs = OrderedDict()
 	with open(path, "r") as file: 
-		effsFromFile = json.load(file, encoding="utf8")
+		effsFromFile = json.load(file, encoding="utf8", object_pairs_hook=OrderedDict)
 		for item, content in effsFromFile.iteritems(): 
 				eff = effsFromFile[item]
 				assert(len(eff)==2)

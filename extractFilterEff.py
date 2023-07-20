@@ -12,6 +12,11 @@ from collections import OrderedDict
 import json
 
 
+def FormatCustom(filecontent): 
+	output = filecontent.replace("{","{\n\t").replace("}", "\n}").replace("], ", "], \n\t")
+	return output
+
+
 def DumpEffs(effs, path): 
 	effsForWrite = OrderedDict()
 	for item, content in effs.iteritems(): 
@@ -19,7 +24,9 @@ def DumpEffs(effs, path):
 			effsForWrite[item] = (eff.n, eff.s)
 	with open(path, "w") as file: 
 		print(effsForWrite)
-		json.dump(effsForWrite, file, ensure_ascii=False, encoding="utf8", sort_keys=False) #indent=4, 
+		forwrite = FormatCustom(json.dumps(effsForWrite, ensure_ascii=False, encoding="utf8", sort_keys=False)) #indent=4, 
+		print(forwrite)
+		file.write(forwrite)
 
 def ReadEffs(path): 
 	effs = OrderedDict()

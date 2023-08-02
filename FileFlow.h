@@ -187,10 +187,10 @@ namespace Ana
 			filemanager.AddItem("dataB2_DNN", folder+"dataB2_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataB2", folder+"dataB2_tauDNN_mva.root", "tree"); 
 
-			filemanager.AddItem("dataD1_ntuple", folder+"ParkingBPHULD1.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD1_tf", folder+"ParkingBPHULD1_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD1_DNN", folder+"ParkingBPHULD1_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD1", folder+"ParkingBPHULD1_tauDNN_mva.root", "tree"); 
+			filemanager.AddItem("dataD1_ntuple", folder+"dataD1small.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD1_tf", folder+"dataD1small_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD1_DNN", folder+"dataD1small_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD1", folder+"dataD1small_tauDNN_mva.root", "tree"); 
 
 			filemanager.AddItem("dataD2_ntuple", folder+"dataD2Partial.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataD2_tf", folder+"dataD2Partial_withTFweight.root", "ntuplizer/tree"); 

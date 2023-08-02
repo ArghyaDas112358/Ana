@@ -92,8 +92,6 @@
     <Variable name="vy" type="f" />
     <Variable name="vz" type="f" />
     <Variable name="r" type="f" />
-    <Variable name="gen_numneutrals" type="i" />
-    <Variable name="gen_neutrals" type="i" />
     <Variable name="legacyMaxdr" type="f" /> 
     <Variable name="drFit" type="f" /> 
     <Variable name="drFitB" type="f" /> 
@@ -151,7 +149,6 @@
     <Variable name="phimass2" type="f" /> 
     <Variable name="m_KKpi1" type="f" /> 
     <Variable name="m_KKpi2" type="f" /> 
-    <Variable name="m_Kpipi" type="f" /> 
     <Variable name="match1" type="b" /> 
     <Variable name="match2" type="b" /> 
     <Variable name="match3" type="b" /> 
@@ -171,14 +168,6 @@
     <Variable name="vtx4trkChi2ndof" type="f" default="9999." />
     <Variable name="npi0" type="i" default="0" />
     <Variable name="ngamma" type="i" default="0" />
-    <Variable name="nmu" type="i"  default="0" />
-    <Variable name="ne" type="i" default="0" />
-    <Variable name="nh" type="i" default="0" />
-    <Variable name="min_dr_mu" type="f" default="9999." />
-    <Variable name="min_dr_e" type="f" default="9999."/>
-    <Variable name="min_dr_h" type="f" default="9999." />
-    <Variable name="nh_doca3p" type="i" default="0" />
-    <Variable name="iso_mindoca" type="f" default="9999." />
     <Variable name="vtx4trkDeltaChi2" type="f" default="9999." />
     <Variable name="vtx4trkDeltaChi2Ndof" type="f" default="9999." />
     <Variable name="drFit" type="f" /> 

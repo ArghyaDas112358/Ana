@@ -117,7 +117,7 @@ if __name__ == "__main__":
 												cpptype = "int"
 												branchtypesuffix = "/I"
 											elif (vartype == "b"): 
-												cpptype = "bool"
+												cpptype = "int"
 												branchtypesuffix = "/I" # Use here O for bool branches (if int branch OK, implicit conversion: https://stackoverflow.com/questions/5369770/bool-to-int-conversion)
 												branchtype = "int"
 											elif (vartype == "d"):

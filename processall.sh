@@ -2,9 +2,9 @@
 
 VERSION=${1}
 
-BKGLIST=( B0toDstarDs B0toDstarDsstar B0toDstarDs1 B0toDstarD0K B0toDstarD0Kstar B0toDstarD B0toDstara1 B0toDstar3pi B0toDstar5pi ButoDstarXc But0DstarD0K ) #SigTrain  #Sig SigTest 
+BKGLIST=( B0toDstarDs B0toDstarDsstar B0toDstarDs1 B0toDstarD0K B0toDstarD0Kstar B0toDstarD B0toDstara1 B0toDstar3pi B0toDstar5pi ButoDstarXc But0DstarDK ) #SigTrain  #Sig SigTest 
 SIGNALLIST=( Sig SigTrain )
-DATALIST=( dataB2 dataD1 dataD1WS )
+DATALIST=( dataB2 dataD1 dataD2WS )
 
 SAMPLELIST=( "${BKGLIST[@]}" "${SIGNALLIST[@]}" )
 shift

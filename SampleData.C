@@ -108,6 +108,13 @@ namespace Ana {
 				"$B^0\\rightarrow D^{*-}a_{1}^+$", 
 				{"BkgDstara1"})
 			},
+			{"B0toDstara1", SampleData(
+				mycolors[6], 
+				"B^{0}#rightarrowD*a_{1}", 
+				"", 
+				"$B^0\\rightarrow D^{*-}a_{1}^+$", 
+				{"BkgDstara1"})
+			},
 			{"B0toDstar3pi", SampleData(
 				mycolors[7], 
 				"B^{0}#rightarrowD*3pi", 
@@ -142,7 +149,14 @@ namespace Ana {
 				 mycolors[10], 
 				"data", 
 				"", 
-				"data$", 
+				"data", 
+				{"dataD2WS"})
+			},
+			{"dataB2", SampleData(
+				 mycolors[10], 
+				"data", 
+				"", 
+				"data", 
 				{"dataD2WS"})
 			},
 			// data driven components

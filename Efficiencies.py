@@ -28,7 +28,7 @@ if __name__ == "__main__":
 	parser = ArgumentParser(description="GetEfficiency")
 	#parser.add_argument("filename", action="store", type=str, default="", help="Name of file")
 	#parser.add_argument("-N", "--version", dest="iteration", action="store", type=int, default=0, help="Which iteration of inference")
-	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v6.7", help="Which version (cycle) of files to run on")
+	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v6.8", help="Which version (cycle) of files to run on")
 	parser.add_argument("-l", "--lumi", dest="lumi", action="store", type=float, default=41.5, help="Luminostiy processed")
 	parser.add_argument("-e", "--object", dest="object", action="store", type=str, default="ntuplizer/EffCalc", help="Efficiency info object within file")
 	parser.add_argument("-g", "--cut", dest="cut", action="store", type=str, default="Dstar_match&&pttau_tau_match", help="Cut to apply for genmatching eff calculation")
@@ -56,7 +56,7 @@ if __name__ == "__main__":
 	expected = {}
 
 
-	samples = ["Sig", "BkgDstarDs", "BkgDstarDsstar", "B0toDstarD0K", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarDs1", "BkgDstara1", "B0toDstarD", "B0toDstar3pi", "ButoDstarDK"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
+	samples = ["Sig", "B0toDstarD0K", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarDs1", "B0toDstara1", "B0toDstarD", "B0toDstar3pi", "ButoDstarDK"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
 			
 	Ana.Init(options.version)
 

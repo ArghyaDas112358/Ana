@@ -127,6 +127,11 @@ namespace Ana
 			filemanager.AddItem("B0toDDtoTau_DNN", folder+"B0toDDtoTau_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDDtoTau", folder+"B0toDDtoTau_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("B0toDstara1_ntuple", folder+"B0toDstara1.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstara1_tf", folder+"B0toDstara1_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstara1_DNN", folder+"B0toDstara1_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstara1", folder+"B0toDstara1_tauDNN_mva.root", "tree"); 
+
 			filemanager.AddItem("B0toDstar3pi_ntuple", folder+"B0toDstar3pi.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstar3pi_tf", folder+"B0toDstar3pi_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstar3pi_DNN", folder+"B0toDstar3pi_tauDNN.root", "ntuplizer/tree"); 
@@ -187,10 +192,10 @@ namespace Ana
 			filemanager.AddItem("dataB2_DNN", folder+"dataB2_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataB2", folder+"dataB2_tauDNN_mva.root", "tree"); 
 
-			filemanager.AddItem("dataD1_ntuple", folder+"dataD1.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD1_tf", folder+"dataD1_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD1_DNN", folder+"dataD1_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD1", folder+"dataD1_tauDNN_mva.root", "tree"); 
+			filemanager.AddItem("dataD1_ntuple", folder+"dataD1small.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD1_tf", folder+"dataD1small_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD1_DNN", folder+"dataD1small_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD1", folder+"dataD1small_tauDNN_mva.root", "tree"); 
 
 			filemanager.AddItem("dataD2_ntuple", folder+"dataD2Partial.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataD2_tf", folder+"dataD2Partial_withTFweight.root", "ntuplizer/tree"); 
@@ -201,6 +206,11 @@ namespace Ana
 			filemanager.AddItem("dataD2WS_tf", folder+"dataD2WS_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataD2WS_DNN", folder+"dataD2WS_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataD2WS", folder+"dataD2WS_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("dataD1WS_ntuple", folder+"dataD1WS.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD1WS_tf", folder+"dataD1WS_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD1WS_DNN", folder+"dataD1WS_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("dataD1WS", folder+"dataD1WS_tauDNN_mva.root", "tree"); 
 
 			filemanager.AddItem("dataA2WS_ntuple", folder+"ParkingBPHULA2WS.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataA2WS_tf", folder+"ParkingBPHULA2WS_withTFweight.root", "ntuplizer/tree"); 
@@ -353,7 +363,7 @@ namespace Ana
 			{"v3.5", "./anaMVA/NewSelection/model_optimized/weights.xml"},  
 			{"v4", "./anaMVA/NewSelection/model_optimized/weights.xml"}, 
 			{"v6.7", "./anaMVA/NewFixTauFL/model_optimized/weights.xml"}, 
-			{"v6.8", "./anaMVA/NewFixTauFL/model_optimized/weights.xml"}
+			{"v6.8", "./anaMVA/NewIsoVariables/model_optimized/weights.xml"}
 		}; 
 
 		//legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"B0toDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"B0toDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"}, {"B0toDstar3pi", "B^{0}#rightarrowD^{*}3pi"}, {"B0toDstarD", "B^{0}#rightarrowD^{*}D"}, {"ButoDstarDK", "B^{+}#rightarrowD^{*}DK"}, {"B0toDstarD0K", "B^{0}#rightarrowD^{*}D^{0}K"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 

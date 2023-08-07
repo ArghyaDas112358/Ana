@@ -2,6 +2,8 @@
 
 VERSION=${1}
 
+STAGE=0
+
 BKGLIST=( B0toDstarDs B0toDstarDsstar B0toDstarDs1 B0toDstarD0K B0toDstarD0Kstar B0toDstarD B0toDstara1 B0toDstar3pi B0toDstar5pi ButoDstarXc But0DstarDK ) #SigTrain  #Sig SigTest 
 SIGNALLIST=( Sig SigTrain )
 DATALIST=( dataB2 dataD1 dataD2WS )
@@ -19,6 +21,9 @@ while [[ $1 =~ "--" ]]; do # Looping over all arguments, see shift
 		SAMPLELIST=( "${DATALIST[@]}" )
 	elif [[ $1 == "--ALL" ]]; then 
 		SAMPLELIST=( "${BKGLIST[@]}" "${SIGNALLIST[@]}" "${DATALIST[@]}" )
+	elif [[ $1 == "--STEP" ]]; then 
+		shift
+		STAGE=$1
 	else 
 		echo "WARNING: Unknown argument: $1"
 	fi
@@ -34,6 +39,6 @@ fi
 
 for ITEM in "${SAMPLELIST[@]}"; do
 	#echo $ITEM
-	. process.sh $ITEM $VERSION
+	. process.sh $ITEM $VERSION $STAGE
 done
 

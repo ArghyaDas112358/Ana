@@ -231,11 +231,43 @@ struct
 
 
 
+void WriteEffInfo(std::string directory, const Double_t Initial, Double_t final = 0., const TString structure = "EffUpdateTau") 
+{
+	TFile *outfile = TFile::Open(filemanager.GetFile(directory).c_str(), "UPDATE"); 
+
+	TDirectory *dir = static_cast<TDirectory*>(outfile->Get("ntuplizer")); // TODO: tokenize this from the object
+
+	if (final == 0) 
+	{
+		RDataFrame frame(*static_cast<TTree*>(outfile->Get(filemanager.GetObject(directory).c_str()))); 
+		final = frame.Count().GetValue(); 
+		std::cout << final << std::endl; 
+	}
+
+	dir->cd(); 
+	//TDirectory *newdir = directory->mkdir("SelectTau"); 
+	dir->cd(); 
+	TVectorD vec(2);
+	vec[0] = Initial; 
+	vec[1] = final;  
+	vec.Write(structure); 
+
+
+	outfile->Write(); 
+
+	outfile->Close(); 
+}
+
 Tau SelectTauCandidate(std::vector<Tau> collection) 
 {
 	std::sort(collection.begin(), collection.end(), SortTauCandidates); //std::greater<>()
 
-	return collection.at(0); 
+	for (auto candidate : collection) 
+	{
+		if (candidate.m < 1.7) return candidate; 
+	}
+
+	return Tau(); // This wil return an invalid tau
 }
 
 Tau SelectGenmatchedTauCandidate(std::vector<Tau> collection) // For taking explicitly candidates in the list that are genmatched with a certain number of pions 
@@ -324,6 +356,8 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 
 
 	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>(inIdentifier)); // tree100k
+
+	Double_t Ninitial = (*filemanager.GetItem<TTree*>(inIdentifier)).GetEntries(); 
 	
 
 	// Defining the delta
@@ -442,7 +476,7 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 	};
 
 	// For legacy processing of v1 files 
-	auto BuildTauCandidatesWithCount_v1 = [&count](ROOT::VecOps::RVec<float> taupt, ROOT::VecOps::RVec<float> taueta, ROOT::VecOps::RVec<float> tauphi, ROOT::VecOps::RVec<int> taucharge, ROOT::VecOps::RVec<float> taumass, ROOT::VecOps::RVec<float> tauVprob, ROOT::VecOps::RVec<float> taufsig, ROOT::VecOps::RVec<float> taulip, ROOT::VecOps::RVec<int> idx1, ROOT::VecOps::RVec<int> idx2, ROOT::VecOps::RVec<int> idx3, ROOT::VecOps::RVec<float> dnn1, ROOT::VecOps::RVec<float> dnn2, ROOT::VecOps::RVec<float> dnn3, std::vector<float> sumdnn, 
+	/*auto BuildTauCandidatesWithCount_v1 = [&count](ROOT::VecOps::RVec<float> taupt, ROOT::VecOps::RVec<float> taueta, ROOT::VecOps::RVec<float> tauphi, ROOT::VecOps::RVec<int> taucharge, ROOT::VecOps::RVec<float> taumass, ROOT::VecOps::RVec<float> tauVprob, ROOT::VecOps::RVec<float> taufsig, ROOT::VecOps::RVec<float> taulip, ROOT::VecOps::RVec<int> idx1, ROOT::VecOps::RVec<int> idx2, ROOT::VecOps::RVec<int> idx3, ROOT::VecOps::RVec<float> dnn1, ROOT::VecOps::RVec<float> dnn2, ROOT::VecOps::RVec<float> dnn3, std::vector<float> sumdnn, 
 										ROOT::VecOps::RVec<float> alpha, ROOT::VecOps::RVec<float> maxDr, ROOT::VecOps::RVec<float> taufl, ROOT::VecOps::RVec<float> pvip, ROOT::VecOps::RVec<float> pvips, ROOT::VecOps::RVec<float> dau1pt, ROOT::VecOps::RVec<float> dau1eta, ROOT::VecOps::RVec<float> dau1phi, ROOT::VecOps::RVec<float> dau2pt, ROOT::VecOps::RVec<float> dau2eta, ROOT::VecOps::RVec<float> dau2phi, ROOT::VecOps::RVec<float> dau3pt, ROOT::VecOps::RVec<float> dau3eta, ROOT::VecOps::RVec<float> dau3phi, ROOT::VecOps::RVec<float> rhomass1, ROOT::VecOps::RVec<float> rhomass2) // TODO: set to int  
 	{
 		std::vector<Tau> mytaus; 
@@ -467,7 +501,7 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 		std::cout << "Built tau candidates for event " << count << std::endl; 
 		assert(mytaus.size() == taupt.size()); 
 		return mytaus; 
-	};
+	};*/
 
 	auto withDNN = dataframe.Define("v_tau_dnn1", FillTauDNNscore, {"v_tau_idx1", "TFscore"}).Define("v_tau_dnn2", FillTauDNNscore, {"v_tau_idx2", "TFscore"}).Define("v_tau_dnn3", FillTauDNNscore, {"v_tau_idx3", "TFscore"}); 
 
@@ -547,7 +581,9 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 				.Define("b_Ds_pvip", extractFirstElement, {"BsDstarTauNu_Ds_pvip"}); 
 	*/
 
-	withDNN = withDNN.Define("b_tau_minpipt", findMin, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"}).Define("b_tau_maxpipt", findMax, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"})
+	auto filtered = withDNN.Filter("b_tau_m > 0."); 
+
+	auto pimped = filtered.Define("b_tau_minpipt", findMin, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"}).Define("b_tau_maxpipt", findMax, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"})
 						.Define("b_tau_minpieta", findMin, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"}).Define("b_tau_maxpieta", findMax, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"})
 						.Define("b_tau_minpiphi", findMin, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}).Define("b_tau_maxpiphi", findMax, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}); 
 
@@ -555,16 +591,32 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 
 	for (auto branch : stringbranches) // Hack to fix string branche 
 	{
-		withDNN = withDNN.Redefine(branch, [](const ROOT::RVec<std::string> &v) {return std::vector<std::string>(v.begin(), v.end());}, {branch}); 
+		pimped = pimped.Redefine(branch, [](const ROOT::RVec<std::string> &v) {return std::vector<std::string>(v.begin(), v.end());}, {branch}); 
 	}
 
-	withDNN.Snapshot(filemanager.GetObject(outIndentifier), filemanager.GetFile(outIndentifier)); 
+	pimped.Snapshot(filemanager.GetObject(outIndentifier), filemanager.GetFile(outIndentifier)); 
 
 	//Pause(5); 
 
 	//PauseUntilEnter(); //system("pause"); 
 
 	filemanager.CloseAll(); 
+
+
+	// Writing out eff info 
+	//filemanager.OpenItem(outIndentifier, "READ"); 
+
+	//auto effFrame = RDataFrame(*filemanager.GetItem<TTree*>(outIndentifier)); 
+
+	//Double_t Nfinal = effFrame.Count().GetValue(); 
+
+
+	//std::cout << "N initial: " << Ninitial << ", N final: " << Nfinal << std::endl; 
+
+	WriteEffInfo(outIndentifier.Data(), Ninitial); 
+	
+
+	//filemanager.CloseAll(); 
 
 
 }

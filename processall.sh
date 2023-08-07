@@ -21,6 +21,8 @@ while [[ $1 =~ "--" ]]; do # Looping over all arguments, see shift
 		SAMPLELIST=( "${DATALIST[@]}" )
 	elif [[ $1 == "--ALL" ]]; then 
 		SAMPLELIST=( "${BKGLIST[@]}" "${SIGNALLIST[@]}" "${DATALIST[@]}" )
+	elif [[ $1 == "--TEST" ]]; then 
+		SAMPLELIST=( B0toDstarDs B0toDstara1 )
 	elif [[ $1 == "--STEP" ]]; then 
 		shift
 		STAGE=$1
@@ -37,8 +39,15 @@ if [[ "${VERSION}" == "" ]]; then
 	return $?
 fi
 
+DATESTRING=$(date '+%Y_%m_%d__%H_%M_%S')
+echo $DATESTRING >> failprocessing.txt
+
 for ITEM in "${SAMPLELIST[@]}"; do
 	#echo $ITEM
 	. process.sh $ITEM $VERSION $STAGE
+	RETURNCODE=$?
+	if [ $RETURNCODE -ne 0 ]; then 
+		echo $ITEM >> failprocessing.txt
+	fi
 done
 

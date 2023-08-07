@@ -21,18 +21,20 @@ function processFull()
 	if [ $4 -le 0 ]; then
 		. ApplyTFweight.sh $1 $2 $3
 
-		if [ $? -ne 0 ]; then
+		RETURNCODE=$?
+		if [ $RETURNCODE -ne 0 ]; then
 			echo "Abort due to error. "
-			return $?
+			return $RETURNCODE
 		fi
 	fi
 
 	if [ $4 -le 1 ]; then
 		. SelectTauCandidate.sh $1 $2
 
-		if [ $? -ne 0 ]; then
+		RETURNCODE=$?
+		if [ $RETURNCODE -ne 0 ]; then
 			echo "Abort due to error. "
-			return $?
+			return $RETURNCODE
 		fi
 	fi
 
@@ -41,9 +43,10 @@ function processFull()
 		#sleep 2
 		#./anaMVA/inference/ApplyXGBOweight.sh $1 $2
 
-		if [ $? -ne 0 ]; then
+		RETURNCODE=$?
+		if [ $RETURNCODE -ne 0 ]; then
 			echo "Abort due to error. "
-			return $?
+			return $RETURNCODE
 		fi
 	fi
 

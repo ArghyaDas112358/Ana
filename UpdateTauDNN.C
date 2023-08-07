@@ -258,13 +258,13 @@ void WriteEffInfo(std::string directory, const Double_t Initial, Double_t final 
 	outfile->Close(); 
 }
 
-Tau SelectTauCandidate(std::vector<Tau> collection) 
+Tau SelectTauCandidate(std::vector<Tau> collection, const int q) 
 {
 	std::sort(collection.begin(), collection.end(), SortTauCandidates); //std::greater<>()
 
 	for (auto candidate : collection) 
 	{
-		if (candidate.m < 1.7) return candidate; 
+		if (candidate.q == -q) return candidate; // candidate.m < 1.7
 	}
 
 	return Tau(); // This wil return an invalid tau
@@ -519,7 +519,7 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 		, "v_tau_dnn1", "v_tau_dnn2", "v_tau_dnn3", "v_tau_sumdnn"
 	});
 	
-	withDNN = withDNN.Define("b_tau", SelectTauCandidate, {"v_taucandidates"})
+	withDNN = withDNN.Define("b_tau", SelectTauCandidate, {"v_taucandidates", "Dstar_q"})
 				// .Define("b_tau_pt", Tau::WritePt, {"b_tau"})
 				// .Define("b_tau_eta", Tau::WriteEta, {"b_tau"})
 				// .Define("b_tau_phi", Tau::WritePhi, {"b_tau"})

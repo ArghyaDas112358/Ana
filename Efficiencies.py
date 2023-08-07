@@ -11,9 +11,9 @@ from uncertainties.umath import *
 
 ROOT.gROOT.LoadMacro("FileFlow.h")
 
-from ROOT import Ana
+from ROOT import Ana, TFile
 
-from libEfficiencies import getEffFromInfo, getGenmatchingEff, DumpEffs, ReadEffs, FormatLatex
+from libEfficiencies import getEffFromInfo, getGenmatchingEff, DumpEffs, ReadEffs, FormatLatex, getOfflineEff
 
 
 
@@ -86,12 +86,19 @@ if __name__ == "__main__":
 			cut = options.cut
 			genmatcheff = getGenmatchingEff(Ana.filemanager.GetItem(item), cut)
 
-			N = options.lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff*genmatcheff
+			offlinesample = sample+"_DNN"
+			Ana.filemanager.OpenItem(offlinesample)
+			file = TFile.Open(Ana.filemanager.GetFile(offlinesample))
+			vec = file.Get("ntuplizer/EffUpdateTau")
+			offlineeff = getOfflineEff(vec)
+			print(offlineeff)
+
+			N = options.lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff*offlineeff*genmatcheff
 			Nexpected[sample] = N
 			#print(10000./eff)
 			print("\tN expected for {}: {} (filter eff: {}, ana eff: {}, genmatch eff: {}, number requested: {})".format(sample, N, filtereffs[sample], eff, genmatcheff, numberafterselection/eff))
 			if (genmatcheff==0): genmatcheff=ufloat(1., 0) # Hack to avoid division by zero
-			numrequested = numberafterselection/(eff*genmatcheff)
+			numrequested = numberafterselection/(eff*offlineeff*genmatcheff)
 			n = round(numrequested.n, -3)
 			samplename = sample # TODO; implement handlig of casw where sample name not found
 			outfile.write(template.format(Ana.samples.at(sample).latex, FormatLatex(filtereffs[sample].n), FormatLatex(eff.n), FormatLatex(genmatcheff.n), FormatLatex(forcedbr[sample].n), N, FormatLatex(numrequested.n), precision=2).replace("\\times", "\\cdot"))

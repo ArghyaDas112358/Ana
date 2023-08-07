@@ -3,7 +3,7 @@
 from __future__ import division, print_function
 
 import os
-from ROOT import RDataFrame, TFile
+from ROOT import RDataFrame, TFile, TVectorD, gInterpreter
 from uncertainties import ufloat
 from uncertainties.umath import * 
 import json
@@ -35,6 +35,16 @@ def getGenmatchingEff(tree, cut):
 
 	genmatchedframe = frame.Filter(cut)
 	finalCount = genmatchedframe.Count().GetValue()
+
+	return getEff(finalCount, initialCount)
+
+gInterpreter.Declare("TVectorD castVectorD(TObject* obj) { return *static_cast<TVectorD*>(obj); };") #"TH1F * convertHisto(TH1D *histo) { return static_cast<TH1F*>(histo); } "
+
+def getOfflineEff(vector):
+	from ROOT import castVectorD
+	vec = TVectorD(castVectorD(vector))
+	initialCount = vec(0)
+	finalCount = vec(1)
 
 	return getEff(finalCount, initialCount)
 

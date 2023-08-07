@@ -181,6 +181,13 @@ namespace Ana {
 				"$WS~|q_{B}|}~=~2$", 
 				{"dataD2WS"})
 			},
+			{"dataD1WS", SampleData(
+				 mycolors[10], 
+				"|q_{B}| = 2  WS", 
+				"", 
+				"$WS~|q_{B}|}~=~2$", 
+				{"dataD1WS"})
+			},
 			{"dataD2TauWS", SampleData(
 				 mycolors[10], 
 				"|q_{#tau}| = 3  WS", 

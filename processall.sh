@@ -6,7 +6,8 @@ STAGE=0
 
 BKGLIST=( B0toDstarDs B0toDstarDsstar B0toDstarDs1 B0toDstarD0K B0toDstarD0Kstar B0toDstarD B0toDstara1 B0toDstar3pi B0toDstar5pi ButoDstarXc ButoDstarDK ) #SigTrain  #Sig SigTest 
 SIGNALLIST=( Sig SigTest )
-DATALIST=( dataB2 dataD1 dataD2WS )
+DATALIST=( dataB2 dataD1 )
+WSLIST=( dataD1WS dataD2WS )
 
 SAMPLELIST=( "${BKGLIST[@]}" "${SIGNALLIST[@]}" )
 shift
@@ -19,8 +20,10 @@ while [[ $1 =~ "--" ]]; do # Looping over all arguments, see shift
 		SAMPLELIST=( "${SIGNALLIST[@]}" )
 	elif [[ $1 == "--DATA" ]]; then 
 		SAMPLELIST=( "${DATALIST[@]}" )
+	elif [[ $1 == "--WS" ]]; then 
+		SAMPLELIST=( "${WSLIST[@]}" )
 	elif [[ $1 == "--ALL" ]]; then 
-		SAMPLELIST=( "${BKGLIST[@]}" "${SIGNALLIST[@]}" "${DATALIST[@]}" )
+		SAMPLELIST=( "${BKGLIST[@]}" "${SIGNALLIST[@]}" "${DATALIST[@]} ${WSLIST[@]}" )
 	elif [[ $1 == "--TEST" ]]; then 
 		SAMPLELIST=( B0toDstarDs B0toDstara1 )
 	elif [[ $1 == "--STEP" ]]; then 

@@ -60,7 +60,7 @@ if __name__ == "__main__":
 			
 	Ana.Init(options.version)
 
-	template = "{} & ${}$ & ${}$ & ${}$ & ${}$ & ${:fL}$ & ${}$ \\\\\n" #{:.1e} "{} & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:fL}$ & ${}$ \\\\\n"
+	template = "{} & ${}$ & ${}$ & ${}$ & ${}$ & ${:fL}$ \\\\\n" #"{} & ${}$ & ${}$ & ${}$ & ${}$ & ${:fL}$ & ${}$ \\\\\n" #{:.1e} "{} & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:fL}$ & ${}$ \\\\\n"
 
 	numberafterselection = options.target
 

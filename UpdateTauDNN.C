@@ -264,7 +264,7 @@ Tau SelectTauCandidate(std::vector<Tau> collection, const int q)
 
 	for (auto candidate : collection) 
 	{
-		if (candidate.q == -q) return candidate; // candidate.m < 1.7
+		if (true) return candidate; // candidate.m < 1.7 candidate.q == q
 	}
 
 	return Tau(); // This wil return an invalid tau
@@ -581,7 +581,7 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 				.Define("b_Ds_pvip", extractFirstElement, {"BsDstarTauNu_Ds_pvip"}); 
 	*/
 
-	auto filtered = withDNN.Filter("b_tau_m > 0."); 
+	auto filtered = withDNN.Filter("(b_tau_m > 0.)"); //&&(b_tau_min_dr_mu>0.5)&&(b_tau_min_dr_e>0.5)
 
 	auto pimped = filtered.Define("b_tau_minpipt", findMin, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"}).Define("b_tau_maxpipt", findMax, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"})
 						.Define("b_tau_minpieta", findMin, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"}).Define("b_tau_maxpieta", findMax, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"})

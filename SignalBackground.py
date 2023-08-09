@@ -25,7 +25,7 @@ from ROOT import Ana
 
 
 
-webpublication =True
+webpublication =False
 
 
 
@@ -439,7 +439,7 @@ def MakeDatacardSimple(frames, yields, name=""):
 
 # Web publication
 if (webpublication): 
-	webfolder = "/eos/home-m/mhuwiler/www/Analysis/Modelling_23_8_9/"
+	webfolder = "/eos/home-m/mhuwiler/www/Analysis/BackgroundModellingUpdate/"
 	os.system("mkdir -p "+webfolder)
 	webenginesource = "/eos/home-m/mhuwiler/software/php-plots/"
 	os.system("cp -r "+webenginesource+"res "+webfolder)
@@ -451,8 +451,8 @@ if (webpublication):
 		file.write(content)
 		file.close()
 	os.system("cp "+webfolder+".htaccess "+webfolder+"htaccess")
-	#webfolder = webfolder+"plots/"
-	#os.system("mkdir -p "+webfolder)
+	webfolder = webfolder+"plots/"
+	os.system("mkdir -p "+webfolder)
 
 textsize = 0.04
 
@@ -526,13 +526,10 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 			canvas.Print(outfolder+name+".pdf")
 
 
-def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, outputfolders, drawlegend=True): 
+def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, outfolder, drawlegend=True): 
 	# Plotting distributions over each other 
-	outfolders = []
-	for outfolder in outputfolders: 
-		foldername = outfolder+"stacked/"
-		outfolders.append(foldername)
-		os.system("mkdir -p "+foldername)
+	outfolder+="stacked/"
+	os.system("mkdir -p "+outfolder)
 	factor = 1.1 # how much overhead to add to the histos 
 	components = copy.deepcopy(initialcomponents)
 	if (dataname in components): components.remove(dataname)
@@ -621,9 +618,8 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 			data.SetMaximum(factor*max(maxes))
 			canvas.Draw()
 
-			for outfolder in outfolders: 
-				canvas.Print(outfolder+name+".png")
-				canvas.Print(outfolder+name+".pdf")
+			canvas.Print(outfolder+name+".png")
+			canvas.Print(outfolder+name+".pdf")
 
 			if ((not drawlegend) and notYetDrawn): 
 				#components.reverse()
@@ -656,20 +652,15 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 				legend.SetTextSize(canv.GetWh()/(2*stack.GetNhists()))
 				legend.Draw()
 				canv.Draw()
-				for outfolder in outfolders: 
-					canv.Print(outfolder+"legend.png")
-					canv.Print(outfolder+"legend.pdf")
+				canv.Print(outfolder+"legend.png")
+				canv.Print(outfolder+"legend.pdf")
 				notYetDrawn = False
 
 
 def PlotComparison(frames, referencename, comparisonname, regions, variables, outfolder, normalise=False): 
 	# Plotting distributions over each other 
-	outfolders = []
-	for folder in outfolder: 
-		print(outfolder)
-		foldername = folder+"comparisons/"
-		outfolders.append(foldername)
-		os.system("mkdir -p "+foldername)
+	outfolder+="comparisons/"
+	os.system("mkdir -p "+outfolder)
 	factor = 1.3 # how much overhead to add to the histos 
 	for region in regions: 
 		for variable in variables: 
@@ -719,9 +710,8 @@ def PlotComparison(frames, referencename, comparisonname, regions, variables, ou
 			reference.SetMaximum(factor*max(maxes))
 			canvas.Draw()
 
-			for folder in outfolders: 
-				canvas.Print(folder+name+".png")
-				canvas.Print(folder+name+".pdf")
+			canvas.Print(outfolder+name+".png")
+			canvas.Print(outfolder+name+".pdf")
 
 
 from ROOT import TFile
@@ -773,7 +763,7 @@ if __name__ == "__main__":
 
 	parser = ArgumentParser(description="SignalBackground")
 	#parser.add_argument("tool", action="store", type=str, help="Which time list you want to analyse")
-	parser.add_argument("--out", dest="out", action="store", type=str, default="BackgroundEstimateTauFLNewVersionIsoLatest/", help="Directory where the plots shuld go")
+	parser.add_argument("--out", dest="out", action="store", type=str, default="BackgroundEstimateTauFLNewVersion/", help="Directory where the plots shuld go")
 	parser.add_argument("--name", dest="name", action="store", type=str, default="test", help="Turn on debug output")
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v1", help="Which version (cycle) of files to run on")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
@@ -894,10 +884,8 @@ if __name__ == "__main__":
 
 	files = filesUsed #["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"]
 	#PlotOverlay(frames, "dataD2", ["Sig", "dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1Part"], regions, variables, regioneffs, outputfolder)
-	outfolders = [outputfolder]
-	if (webpublication): outfolders.append(webfolder)
 
-	PlotStack(frames, "dataB2", files, regions, variables, regioneffs, outfolders, False)
+	PlotStack(frames, "dataB2", files, regions, variables, regioneffs, outputfolder, False)
 
 	PlotComparison(frames, "dataB2", "dataD2WS", regions, variables, outfolders, False)
 

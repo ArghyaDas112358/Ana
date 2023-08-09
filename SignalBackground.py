@@ -434,6 +434,19 @@ def MultiplyFinalEffs(effs, regioneffs):
 def MakeDatacardSimple(frames, yields, name=""): 
 	region = "SB"
 	control = "CR"
+
+def InitialiseWebfolder(webfolder): 
+	os.system("mkdir -p "+webfolder)
+	webenginesource = "/eos/home-m/mhuwiler/software/php-plots/"
+	os.system("cp -r "+webenginesource+"res "+webfolder)
+	os.system("cp "+webenginesource+"index.php "+webfolder)
+	with open(webenginesource+"example/htaccess", "r") as permissionfile: 
+		content = permissionfile.read()
+		content = content.replace("/<me>/<my-project>/", webfolder)
+		file = open(webfolder+".htaccess", "w")
+		file.write(content)
+		file.close()
+	os.system("cp "+webfolder+".htaccess "+webfolder+"htaccess")
 	
 
 
@@ -763,7 +776,7 @@ if __name__ == "__main__":
 
 	parser = ArgumentParser(description="SignalBackground")
 	#parser.add_argument("tool", action="store", type=str, help="Which time list you want to analyse")
-	parser.add_argument("--out", dest="out", action="store", type=str, default="BackgroundEstimateTauFLNewVersion/", help="Directory where the plots shuld go")
+	parser.add_argument("--out", dest="out", action="store", type=str, default="BackgroundEstimateTauFLNewVersionLatest/", help="Directory where the plots shuld go")
 	parser.add_argument("--name", dest="name", action="store", type=str, default="test", help="Turn on debug output")
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v1", help="Which version (cycle) of files to run on")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
@@ -887,7 +900,7 @@ if __name__ == "__main__":
 
 	PlotStack(frames, "dataB2", files, regions, variables, regioneffs, outputfolder, False)
 
-	PlotComparison(frames, "dataB2", "dataD2WS", regions, variables, outfolders, False)
+	PlotComparison(frames, "dataB2", "dataD2WS", regions, variables, outputfolder, False)
 
 	#files = {"Sig":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/Sig.root"), "BkgDstara1":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/BkgDstara1.root") }
 	#newframes, histos, histisunrolled = PrepareCustomFiles(files, regions)

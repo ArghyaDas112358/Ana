@@ -795,7 +795,7 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	filesUsed = ["Sig", "dataB2", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "B0toDstar3pi", "dataD1WS"] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
+	filesUsed = ["Sig", "dataB2", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "B0toDstar3pi", "dataD2WS"] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
 
 	regions = ["SR", "CR", "SB"]
 
@@ -874,7 +874,7 @@ if __name__ == "__main__":
 
 	selectioneffs = ReadEffsSimple("./data/etc/Expectedyields.json")
 
-	selectioneffs["dataD2WS"] = ufloat(1.39e-5*-12.0*5, 0.)
+	selectioneffs["dataD2WS"] = ufloat(1.39e-5*-12.0*7, 0.)
 	selectioneffs["dataD1WS"] = ufloat(1.39e-5*-12.0*11, 0.)
 
 	regioneffs = MultiplyFinalEffs(selectioneffs, effs)
@@ -886,6 +886,8 @@ if __name__ == "__main__":
 	#PlotOverlay(frames, "dataD2", ["Sig", "dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1Part"], regions, variables, regioneffs, outputfolder)
 
 	PlotStack(frames, "dataB2", files, regions, variables, regioneffs, outputfolder, False)
+
+	PlotComparison(frames, "dataB2", "dataD2WS", regions, variables, outfolders, False)
 
 	#files = {"Sig":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/Sig.root"), "BkgDstara1":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/BkgDstara1.root") }
 	#newframes, histos, histisunrolled = PrepareCustomFiles(files, regions)

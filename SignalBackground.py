@@ -447,6 +447,16 @@ def InitialiseWebfolder(webfolder):
 		file.write(content)
 		file.close()
 	os.system("cp "+webfolder+".htaccess "+webfolder+"htaccess")
+
+
+def PublishToWeb(folder, webfolder): 
+	webbasepath = "/eos/home-m/mhuwiler/www/Analysis/"
+	publicationfolder = "{}{}/".format(webbasepath, webfolder)
+	print(publicationfolder)
+	InitialiseWebfolder(publicationfolder)
+	os.system("cp -r {} {}".format(folder, publicationfolder))
+	publicationurl = "https://mhuwiler.web.cern.ch/Analysis/{}/?match=&depth=3".format(webfolder)
+	print("Published plots in '{}' to: \n{}".format(folder, publicationurl))
 	
 
 
@@ -901,6 +911,8 @@ if __name__ == "__main__":
 	PlotStack(frames, "dataB2", files, regions, variables, regioneffs, outputfolder, False)
 
 	PlotComparison(frames, "dataB2", "dataD2WS", regions, variables, outputfolder, False)
+
+	PublishToWeb(outputfolder, "Modelling_23_8_10")
 
 	#files = {"Sig":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/Sig.root"), "BkgDstara1":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/BkgDstara1.root") }
 	#newframes, histos, histisunrolled = PrepareCustomFiles(files, regions)

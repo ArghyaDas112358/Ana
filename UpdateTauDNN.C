@@ -329,6 +329,18 @@ float findMax(const float& pt1, const float& pt2, const float& pt3)
 	return max(max(pt1, pt2), pt3); 
 }
 
+float getMin(const float& pt1, const float& pt2)
+{
+	return min(pt1, pt2); 
+}
+
+
+float getMax(const float& pt1, const float& pt2)
+{
+	return max(pt1, pt2); 
+}
+
+
 
 float extractFirstElement(const ROOT::VecOps::RVec<float>& vec) 
 {
@@ -585,7 +597,8 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 
 	auto pimped = filtered.Define("b_tau_minpipt", findMin, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"}).Define("b_tau_maxpipt", findMax, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"})
 						.Define("b_tau_minpieta", findMin, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"}).Define("b_tau_maxpieta", findMax, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"})
-						.Define("b_tau_minpiphi", findMin, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}).Define("b_tau_maxpiphi", findMax, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}); 
+						.Define("b_tau_minpiphi", findMin, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}).Define("b_tau_maxpiphi", findMax, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"})
+						.Define("b_tau_rhomass_min", getMin, {"b_tau_rhomass1", "b_tau_rhomass2"}).Define("b_tau_rhomass_max", getMax, {"b_tau_rhomass1", "b_tau_rhomass2"}); 
 
 	#include "stringbranches.gcf"
 

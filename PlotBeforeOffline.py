@@ -317,7 +317,7 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	filesUsed = ["Sig", "dataD2WS"] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
+	filesUsed = ["Sig", "dataD2WS", "dataB2"] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
 
 	regions = ["SR", "CR", "SB"]
 
@@ -372,7 +372,7 @@ if __name__ == "__main__":
 	PlotComparison(frames, "Sig", "dataD2WS", ["baseline"], variables, outputfolder, False)
 
 	from webInterface import PublishToWeb
-	PublishToWeb(outputfolder, "Variables_23_8_10_beforeBDT")
+	PublishToWeb(outputfolder, "Variables_23_8_10_beforeBDT") #Variables_23_8_14_beforeBDT_Sigvsdata
 
 
 

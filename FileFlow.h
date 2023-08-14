@@ -392,8 +392,19 @@ namespace Ana
 				//{"tau_rhomass1", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},
 				//{"tau_rhomass2", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},
 				{"b_tau_m", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, 0., 5.}},
-				#include "VariableDefinitions.ccf"
 		}; 
+
+		// Complete binning with default
+		std::unordered_map<std::string, ROOT::RDF::TH1DModel> defaultbinning = { 
+			#include "VariableDefinitions.ccf" 
+		}; 
+		for (auto item : defaultbinning) 
+		{
+			if (binning.find(item.first) == binning.end()) 
+			{
+				binning[item.first] = item.second; 
+			}
+		}
 
 		samples = InitSamples(); 
 

@@ -148,6 +148,16 @@ namespace Ana
 			filemanager.AddItem("B0toDstarRho0pi_DNN", folder+"B0toDstarRho0pi_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstarRho0pi", folder+"B0toDstarRho0pi_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("B0toDstarDsPart_ntuple", folder+"B0toDstarDsTestPart.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDsPart_tf", folder+"B0toDstarDsTestPart_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDsPart_DNN", folder+"B0toDstarDsTestPart_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDsPart", folder+"B0toDstarDsTestPart_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("B0toDstarDsDist_ntuple", folder+"B0toDstarDsTestDefinition.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDsDist_tf", folder+"B0toDstarDsTestDefinition_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDsDist_DNN", folder+"B0toDstarDsTestDefinition_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstarDsDist", folder+"B0toDstarDsTestDefinition_tauDNN_mva.root", "tree"); 
+
 			filemanager.AddItem("BkgDstar3pi_ntuple", folder+"BkgDstar3piNonres.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstar3pi_tf", folder+"BkgDstar3piNonres_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgDstar3pi_DNN", folder+"BkgDstar3piNonres_tauDNN.root", "ntuplizer/tree"); 
@@ -323,7 +333,7 @@ namespace Ana
 			filemanager.AddItem("BkgBtoDstarDsstar", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/BkgDstarDsstarInclPrivateProdFirst.root", "ntuplizer/tree"); 
 		}
 
-		cut.emplace(std::make_pair("base", "(b_tau_m<1.7)&&(b_tau_min_dr_mu>0.5)&&(b_tau_min_dr_e>0.5)")); //&&(b_tau_min_dr_mu>0.5)&&(b_tau_min_dr_e>0.5)//&& (b_B_q2 > 6.) // (b_Ds_vprob>0.1) && (b_D0_vprob>0.1) && (mvaScore>-2.) && (b_B_mu_alpha > 1.) &&((b_tau_m_KKpi1>2.)||(b_tau_m_KKpi1<1.9))&&((b_tau_m_KKpi2>2.)||(b_tau_m_KKpi2<1.9))
+		cut.emplace(std::make_pair("base", "(b_tau_m<1.7)&&(b_tau_min_dr_mu>0.5)&&(b_tau_min_dr_e>0.5)&&(b_tau_alpha>0)")); //&&(b_tau_min_dr_mu>0.5)&&(b_tau_min_dr_e>0.5)//&& (b_B_q2 > 6.) // (b_Ds_vprob>0.1) && (b_D0_vprob>0.1) && (mvaScore>-2.) && (b_B_mu_alpha > 1.) &&((b_tau_m_KKpi1>2.)||(b_tau_m_KKpi1<1.9))&&((b_tau_m_KKpi2>2.)||(b_tau_m_KKpi2<1.9)) 
 		cut.emplace(std::make_pair("SR", cut["base"]+TCut(TString::Format("mvaScore>=%f", mvaCutSR)))); 
 		cut.emplace(std::make_pair("SB", cut["base"]+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutSB, mvaCutSR)))); 
 		cut.emplace(std::make_pair("CR", cut["base"]+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutCR, mvaCutSB)))); 
@@ -371,17 +381,18 @@ namespace Ana
 
 		//labels = {{"b_tau_rhomass1", "Invariant m_{#rho}"}, {"b_tau_rhomass2", "Invariant m_{#rho}"}, {"b_B_q2", "q2"}, {"b_B_m", "Reconstructed m_{B}"}}; 
 
-		Int_t nBins = 25; 
+		Int_t nBins = 50; 
 
 		binning = {{"b_tau_rhomass1", {"", "#rho_{12} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
 				{"b_tau_rhomass2", {"", "rho_{23} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
 				{"b_B_m", {"", "B mass;Reconstructed m_{B} [GeV];Counts", nBins, 0., 6.}},
 				{"b_B_q2", {"", "q2;q^{2} [GeV];Counts", nBins, 0., 12.}},
-				{"B_m", {"", ";B mass [GeV];Counts", nBins, 0., 6.}},
-				{"B_q2", {"", ";B mass [GeV];Counts", nBins, 0., 12.}},
-				{"tau_rhomass1", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},
-				{"tau_rhomass2", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},
+				//{"B_m", {"", ";B mass [GeV];Counts", nBins, 0., 6.}},
+				//{"B_q2", {"", ";B mass [GeV];Counts", nBins, 0., 12.}},
+				//{"tau_rhomass1", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},
+				//{"tau_rhomass2", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},
 				{"b_tau_m", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, 0., 5.}},
+				#include "VariableDefinitions.ccf"
 		}; 
 
 		samples = InitSamples(); 

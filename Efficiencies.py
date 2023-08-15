@@ -31,7 +31,7 @@ if __name__ == "__main__":
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v6.8", help="Which version (cycle) of files to run on")
 	parser.add_argument("-l", "--lumi", dest="lumi", action="store", type=float, default=41.5, help="Luminostiy processed")
 	parser.add_argument("-e", "--object", dest="object", action="store", type=str, default="ntuplizer/EffCalc", help="Efficiency info object within file")
-	parser.add_argument("-g", "--cut", dest="cut", action="store", type=str, default="Dstar_match&&pttau_tau_match", help="Cut to apply for genmatching eff calculation")
+	parser.add_argument("-g", "--cut", dest="cut", action="store", type=str, default="1", help="Custom cut to be included in eff calculation")
 	parser.add_argument("-t", "--table", dest="table", action="store", type=str, default="/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/Presentations/Presentation_23_7_25/efftable.tex", help="Latex fragment with summary table")
 	parser.add_argument("-o", "--out", dest="out", action="store", type=str, default="./data/etc/Expectedyields.json", help="Path for json with yield info")
 	parser.add_argument("-n", "--target", dest="target", action="store", type=float, default=10000., help="Target number of events after selection")
@@ -83,17 +83,18 @@ if __name__ == "__main__":
 
 			eff = getEffFromInfo(info)
 
-			cut = options.cut
-			genmatcheff = getGenmatchingEff(Ana.filemanager.GetItem(item), cut)
-
 			offlinesample = sample+"_DNN"
 			Ana.filemanager.OpenItem(offlinesample)
+			genmatcheff = getGenmatchingEff(Ana.filemanager.GetItem(offlinesample), Ana.samples.at(sample).cut.GetTitle())
+
+			customeff = getGenmatchingEff(Ana.filemanager.GetItem(item), options.cut)
+
 			file = TFile.Open(Ana.filemanager.GetFile(offlinesample))
 			vec = file.Get("ntuplizer/EffUpdateTau")
 			offlineeff = getOfflineEff(vec)
 			print(offlineeff)
 
-			N = options.lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff*offlineeff*genmatcheff
+			N = options.lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff*offlineeff*genmatcheff*customeff
 			Nexpected[sample] = N
 			#print(10000./eff)
 			print("\tN expected for {}: {} (filter eff: {}, ana eff: {}, genmatch eff: {}, number requested: {})".format(sample, N, filtereffs[sample], eff, genmatcheff, numberafterselection/eff))

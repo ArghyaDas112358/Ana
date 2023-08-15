@@ -92,7 +92,7 @@ namespace Ana {
 				mycolors[3], 
 				"B^{0}#rightarrowD*D", 
 				genMatchCut, 
-				"", 
+				"1", 
 				{"B0toDstarD"})
 			},
 			{"B0toDstarD0K", SampleData(
@@ -105,14 +105,14 @@ namespace Ana {
 			{"BkgDstara1", SampleData(
 				mycolors[6], 
 				"B^{0}#rightarrowD*a_{1}", 
-				"", 
+				"1", 
 				"$B^0\\rightarrow D^{*-}a_{1}^+$", 
 				{"BkgDstara1"})
 			},
 			{"B0toDstara1", SampleData(
 				mycolors[6], 
 				"B^{0}#rightarrowD*a_{1}", 
-				"", 
+				"1", 
 				"$B^0\\rightarrow D^{*-}a_{1}^+$", 
 				{"BkgDstara1"})
 			},
@@ -120,7 +120,7 @@ namespace Ana {
 				mycolors[7], 
 				"B^{0}#rightarrowD*3pi", 
 				genMatchCut, 
-				"", 
+				"1", 
 				{"B0toDstar3pi"})
 			},
 			// Bu decays 
@@ -128,14 +128,14 @@ namespace Ana {
 				mycolors[4], 
 				"B^{+}#rightarrowD*DK", 
 				genMatchCut, 
-				"", 
+				"1", 
 				{"ButoDstarDK"})
 			}, 
 			// To be completed
 			{"BkgBuDXc", SampleData(
 				mycolors[8], 
 				"B^{+}#rightarrowD*D", 
-				"",
+				"1",
 				"$B^+\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$", 
 				{"BkgBuDXc"})
 			},
@@ -149,14 +149,14 @@ namespace Ana {
 			{"dataD1", SampleData(
 				 mycolors[10], 
 				"data", 
-				"", 
+				"1", 
 				"data", 
 				{"dataD2WS"})
 			},
 			{"dataB2", SampleData(
 				 mycolors[10], 
 				"data", 
-				"", 
+				"1", 
 				"data", 
 				{"dataD2WS"})
 			},
@@ -164,35 +164,35 @@ namespace Ana {
 			{"WS", SampleData(
 				 mycolors[10], 
 				"|q_{B}| = 2  WS", 
-				"", 
+				"1", 
 				"$WS~|q_{B}|}~=~2$", 
 				{"WS"})
 			},
 			{"WSTau", SampleData(
 				 mycolors[10], 
 				"|q_{#tau}| = 3  WS", 
-				"", 
+				"1", 
 				"$WS~|q_{#tau}|~=~3$", 
 				{"WSTau"})
 			},
 			{"dataD2WS", SampleData(
 				 mycolors[10], 
 				"|q_{B}| = 2  WS", 
-				"", 
+				"1", 
 				"$WS~|q_{B}|}~=~2$", 
 				{"dataD2WS"})
 			},
 			{"dataD1WS", SampleData(
 				 mycolors[10], 
 				"|q_{B}| = 2  WS", 
-				"", 
+				"1", 
 				"$WS~|q_{B}|}~=~2$", 
 				{"dataD1WS"})
 			},
 			{"dataD2TauWS", SampleData(
 				 mycolors[10], 
 				"|q_{#tau}| = 3  WS", 
-				"", 
+				"1", 
 				"$WS~|q_{#tau}|~=~3$", 
 				{"dataD2TauWS"})
 			},

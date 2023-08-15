@@ -423,7 +423,7 @@ def MultiplyFinalEffs(effs, regioneffs):
 		#print("{}:".format(item))
 		for key, value in content.iteritems(): 
 			try:
-				resulteffs[item][key] = effs[item]*regioneffs[item][key]
+				resulteffs[item][key] = effs[item]*regioneffs[item][key]*regioneffs[item]["baseline"]
 				if (effs[item].nominal_value < 0.): 
 					resulteffs[item][key]=effs[item]
 			except:

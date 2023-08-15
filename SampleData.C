@@ -11,7 +11,7 @@ class SampleData
 public: 
 
 	SampleData(int initColor, std::string initLegend, TCut initCut = "", std::string initLatex = "", std::initializer_list<std::string> initRefList = {})
-		: color(initColor), legend(initLegend), latex(initLatex), fileRefs(initRefList.begin(), initRefList.end()) 
+		: color(initColor), legend(initLegend), cut(initCut), latex(initLatex), fileRefs(initRefList.begin(), initRefList.end()) 
 	{
 		if (initLatex == "") 
 		{

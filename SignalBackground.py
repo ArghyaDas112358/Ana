@@ -904,6 +904,13 @@ if __name__ == "__main__":
 
 	PrintEfficiencies(regioneffs)
 
+	# Quick and dirty significance computation
+	s = regioneffs["Sig"]["SR"]
+	b = frames["dataB2"]["SR"].Count().GetValue()
+	significance = s/sqrt(b) # b is here s+b since taken from data
+
+	print("Expected significance: {}/sqrt({}) = {}".format(s, b, significance))
+
 
 	files = filesUsed #["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"]
 	#PlotOverlay(frames, "dataD2", ["Sig", "dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1Part"], regions, variables, regioneffs, outputfolder)

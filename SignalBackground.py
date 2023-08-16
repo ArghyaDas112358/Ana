@@ -911,6 +911,8 @@ if __name__ == "__main__":
 
 	print("Expected significance: {}/sqrt({}) = {}".format(s, b, significance))
 
+	print("Signal over background ratio: {}".format(s/b))
+
 
 	files = filesUsed #["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"]
 	#PlotOverlay(frames, "dataD2", ["Sig", "dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1Part"], regions, variables, regioneffs, outputfolder)

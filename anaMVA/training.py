@@ -78,7 +78,7 @@ parser.add_argument("-N", "--numEvents", dest="trainEvents", action="store", typ
 parser.add_argument("-P", "--numPoints", dest="nPoints", action="store", type=int, default=1000, help="Number of points to be tested")
 parser.add_argument("-R", "--numRounds", dest="nRounds", action="store", type=int, default=100, help="Number of rounds to train")
 parser.add_argument("-o", "--outpath", dest="outputpath", action="store", type=str, default="test", help="The utput path")
-parser.add_argument("-v", "--version", dest="version", action="store", type=str, default="v6.8", help="The version of files to use")
+parser.add_argument("-v", "--version", dest="version", action="store", type=str, default="v1", help="The version of files to use")
 
 options = parser.parse_args()
 

@@ -291,6 +291,7 @@ if __name__ == "__main__":
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument("-f", "--forcepath", dest="forcepath", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
+	parser.add_argument('-l', "--variable", dest="variable", action="store", default="", help="Variable to reprocess")
 	parser.add_argument("--stats", dest="stats", action="store_true", default=False, help="Show stats box in ROOT")
 
 	options = parser.parse_args()
@@ -317,7 +318,7 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	filesUsed = ["Sig", "dataD2WS", "dataB2"] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
+	filesUsed = ["Sig", "dataD2WS", "dataB2", "B0toDstarDsPart", "B0toDstarDsDist"] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
 
 	regions = ["SR", "CR", "SB"]
 
@@ -329,6 +330,9 @@ if __name__ == "__main__":
 	variables = [] #variables = [ var for var ]
 	for i in range(varvector.size()): 
 		variables.append(varvector.at(i))
+
+	if (options.variable != ""): 
+		variables = options.variable.split(",")
 
 	print(variables)
 
@@ -369,10 +373,13 @@ if __name__ == "__main__":
 
 	# from here on starts teting
 
-	PlotComparison(frames, "Sig", "dataD2WS", ["baseline"], variables, outputfolder, False)
+	PlotComparison(frames, "Sig", "dataB2", ["baseline"], variables, outputfolder, False)
+
+	#variables = ["D0_pt", "D0_eta", "D0_eta", "D0_alpha", "D0_fl", "D0_gen_pt", "D0_gen_eta", "D0_lip", "D0_mu_alpha", "D0_prefit_pt", "D0_prefit_eta", "D0_prefit_kpt", "D0_prefit_keta", "D0_prefit_kphi", "D0_prefit_pipt", "D0_prefit_pieta", "D0_prefit_piphi", "D0_pvip", "Dstar_pt", "Dstar_pt", "Dstar_phi", "Dstar_alpha", "Dstar_gen_pt", "Dstar_gen_eta", "Dstar_lip", "Dstar_mu_alpha", "Dstar_prefit_pt", "Dstar_prefit_eta", "Dstar_prefit_phi", "Dstar_prefit_pispt", "Dstar_prefit_piseta", "Dstar_prefit_pisphi", "Dstar_pvip", "b_tau_pt", "b_tau_eta", "b_tau_phi", "b_tau_alpha", "b_tau_fl", "b_tau_lip", "b_tau_mu_alpha", "b_tau_prefit_pt", "b_tau_prefit_eta", "b_tau_prefit_phi", "b_tau_pvip", "b_B_pt", "b_B_eta", "b_B_phi", "b_B_alpha", "b_B_fl", "b_B_lip", "b_B_mu_alpha", "b_B_prefit_pt", "b_B_prefit_eta", "b_B_prefit_phi", "b_B_pvip"]
+	#PlotComparison(frames, "B0toDstarDsPart", "B0toDstarDsDist", ["baseline"], variables, outputfolder, False)
 
 	from webInterface import PublishToWeb
-	PublishToWeb(outputfolder, "Variables_23_8_10_beforeBDT") #Variables_23_8_14_beforeBDT_Sigvsdata
+	PublishToWeb(outputfolder, "Variables_23_8_16_beforeBDT_data") #Variables_23_8_14_beforeBDT_Sigvsdata
 
 
 

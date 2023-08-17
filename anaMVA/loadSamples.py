@@ -43,7 +43,18 @@ def loadSamples(features, version, eventFraction=-1) :
 	#samples["signalfloat"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)
 	#samples["backgroundfloat"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPH1-3Run2018B_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)
 	#samples["backgroundfloatprevious"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/DataVeryLarge_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)
+
+	from ROOT import Ana
+
+	trainingsamples = { "signal": "SigTest_DNN", "background": "dataB2_DNN"}
+
+	for key, item in trainingsamples.iteritems(): 
+		filemanager.OpenItem(item)
 	
+	samples["signal"] = pd.DataFrame(ROOT.RDataFrame(filemanager.GetItem(trainingsamples["signal"])).Filter((Ana.samples.at("Sig").cut+Ana.cut["base"]).GetTitle()).Range(int(numEvents)).AsNumpy(features))
+	samples["background"] = pd.DataFrame(ROOT.RDataFrame(filemanager.GetItem(trainingsamples["background"])).Filter((Ana.samples.at("dataB2").cut+Ana.cut["base"]).GetTitle()).Range(int(numEvents)).AsNumpy(features))
+
+
 
 	return samples
 

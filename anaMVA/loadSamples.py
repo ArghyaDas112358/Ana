@@ -37,7 +37,7 @@ def loadSamples(features, version, eventFraction=-1) :
 	#samples["backgroundDs"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/firstDstarDsMultipleTau_tauDNN.root"))["ntuplizer/tree"].pandas.df(branches=features, entrystop=numEvents)
 
 	samples["signal"] = uproot.open(os.path.expandvars(filemanager.GetFile("SigTest_DNN")))["ntuplizer/tree"].pandas.df(branches=features, entrystop=numEvents) #Dict-like structure #"/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/v4/SigTest_tauDNN.root"
-	samples["background"] = uproot.open(os.path.expandvars(filemanager.GetFile("dataD1_DNN")))["ntuplizer/tree"].pandas.df(branches=features, entrystop=numEvents) #"/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/v4/ParkingBPHULD1_tauDNN.root"
+	samples["background"] = uproot.open(os.path.expandvars(filemanager.GetFile("dataD1WS_DNN")))["ntuplizer/tree"].pandas.df(branches=features, entrystop=numEvents) #"/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/v4/ParkingBPHULD1_tauDNN.root"
 
 	#samples["signalfloatgendstar"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/PrivateProductionGenDstar_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)
 	#samples["signalfloat"] = uproot.open(os.path.expandvars("/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_converted.root"))["tree"].pandas.df(branches=features, entrystop=numEvents)

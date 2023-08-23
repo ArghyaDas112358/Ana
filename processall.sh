@@ -4,7 +4,7 @@ VERSION=${1}
 
 STAGE=0
 
-BKGLIST=( B0toDstarDs B0toDstarDsstar B0toDstarDs1 B0toDstarD0K B0toDstarD0Kstar B0toDstarD B0toDstara1 B0toDstar3pi B0toDstar5pi ButoDstarXc ButoDstarDK ) #SigTrain  #Sig SigTest 
+BKGLIST=( B0toDstarDs B0toDstarDsstar B0toDstarDs1 B0toDstarD0K B0toDstarD0Kstar B0toDstarD B0toDstara1 B0toDstar3pi B0toDstar5pi ButoDstarXc ButoDstarDK ) #SigTrain  #Sig "SigTest" 
 SIGNALLIST=( Sig SigTest )
 DATALIST=( dataB2 dataD1 )
 WSLIST=( dataD1WS dataD2WS )
@@ -23,7 +23,7 @@ while [[ $1 =~ "--" ]]; do # Looping over all arguments, see shift
 	elif [[ $1 == "--WS" ]]; then 
 		SAMPLELIST=( "${WSLIST[@]}" )
 	elif [[ $1 == "--ALL" ]]; then 
-		SAMPLELIST=( "${BKGLIST[@]}" "${SIGNALLIST[@]}" "${DATALIST[@]} ${WSLIST[@]}" )
+		SAMPLELIST=( "${BKGLIST[@]}" "${SIGNALLIST[@]}" "${DATALIST[@]}" "${WSLIST[@]}" )
 	elif [[ $1 == "--MIN" ]]; then 
 		SAMPLELIST=( "${BKGLIST[@]}" Sig dataB2 dataD2WS )
 	elif [[ $1 == "--TEST" ]]; then 

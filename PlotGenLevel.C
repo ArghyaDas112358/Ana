@@ -47,7 +47,7 @@ TLorentzVector LV(double pt, double eta, double phi, double m)
 }
 
 
-void PlotGenEtacut(TString campaignName = "BkgGenDstarDsstar/") 
+void PlotGenLevel(TString campaignName = "BkgGenParticleDefinitions/") 
 {
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C"); 
 	//gROOT->LoadMacro("/Users/mhuwiler/coding/plugins/FileManager/CFileManager.C+");
@@ -56,19 +56,21 @@ void PlotGenEtacut(TString campaignName = "BkgGenDstarDsstar/")
 	FileManager filemanager; 
 
 
-	filemanager.AddItem("reference", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/dummy.root", "GenEvents"); 
-	filemanager.AddItem("filters", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/RunDstarfilterConverted.root", "GenEvents"); 
+	//filemanager.AddItem("reference", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/dummy.root", "GenEvents"); 
+	//filemanager.AddItem("filters", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/RunDstarfilterConverted.root", "GenEvents"); 
 	//filemanager.AddItem("filters", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/TestDstarFilterLargerConverted.root", "GenEvents"); 
-	filemanager.AddItem("baseline", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/CONVERTEDnoEtaCut.root", "GenEvents"); 
-	filemanager.AddItem("nocut", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/CONVERTEDsecond.root", "GenEvents"); 
-	filemanager.AddItem("restricted", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/CONVERTEDrestrictedPhaseSpace.root", "GenEvents"); 
+	//filemanager.AddItem("baseline", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/CONVERTEDnoEtaCut.root", "GenEvents"); 
+	//filemanager.AddItem("nocut", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/CONVERTEDsecond.root", "GenEvents"); 
+	//filemanager.AddItem("restricted", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/CONVERTEDrestrictedPhaseSpace.root", "GenEvents"); 
+	filemanager.AddItem("particles", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/v6.8/convertedParticles.root", "GenEvents"); 
+	filemanager.AddItem("definitions", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/v6.8/convertedDefinition.root", "GenEvents"); 
 
 
 	filemanager.OpenAllItems(); 
 
 	gStyle->SetOptStat(0); 
 
-	std::vector<TString> samples = {"baseline", "nocut", "restricted"}; 
+	std::vector<TString> samples = {"particles", "definitions"}; 
 
 	vector<Int_t> colors = {4, 2, 3, 6, 7, 5, 9, 8, 15};
 
@@ -144,7 +146,7 @@ void PlotGenEtacut(TString campaignName = "BkgGenDstarDsstar/")
 
 	TString outfolder = "plots/BkgGeneration/"+campaignName; 
 
-	bool webpublication = false; 
+	bool webpublication = true; 
 
 	if (gSystem->AccessPathName(outfolder)) gSystem->Exec("mkdir -p "+outfolder); 
 

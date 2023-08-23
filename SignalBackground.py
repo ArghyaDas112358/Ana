@@ -423,7 +423,7 @@ def MultiplyFinalEffs(effs, regioneffs):
 		#print("{}:".format(item))
 		for key, value in content.iteritems(): 
 			try:
-				resulteffs[item][key] = effs[item]*regioneffs[item][key]*regioneffs[item]["baseline"]
+				resulteffs[item][key] = effs[item]*regioneffs[item][key] #*regioneffs[item]["baseline"]
 				if (effs[item].nominal_value < 0.): 
 					resulteffs[item][key]=effs[item]
 			except:
@@ -921,7 +921,7 @@ if __name__ == "__main__":
 
 	PlotComparison(frames, "dataB2", "dataD2WS", regions, variables, outputfolder, False)
 
-	PublishToWeb(outputfolder, "Modelling_23_8_10")
+	PublishToWeb(outputfolder, "Modelling_23_8_15")
 
 	#files = {"Sig":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/Sig.root"), "BkgDstara1":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/BkgDstara1.root") }
 	#newframes, histos, histisunrolled = PrepareCustomFiles(files, regions)

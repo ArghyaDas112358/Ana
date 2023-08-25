@@ -10,6 +10,7 @@ import collections
 import copy
 from datetime import datetime
 from ROOT import RooRealVar, RooArgSet, RooDataHist, RooArgList, RooFormulaVar, RooAddition
+from uncertainties import ufloat
 
 uproot.default_library = "np"
 
@@ -27,7 +28,7 @@ ROOT.gROOT.LoadMacro("RooParametricHist.h")
 from ROOT.Ana import filemanager
 
 
-ROOT.Ana.Init("v1") 
+ROOT.Ana.Init("v6.8") 
 
 
 bkgInSample = 9400000000*0.0000376
@@ -403,9 +404,9 @@ for quantity in ["Rhomass2Dunrolled"]:
 	#canvas.SetRightMargin(0.12)
 	ROOT.gROOT.SetBatch(1)
 
-	filesUsed = ["dataD2", "Sig", "SigPart", "BkgDstarDs", "BkgDstar3pi", "BkgDstarDsstar"] #, "DstarDsMCfirst", "Data2018BFirst"
+	filesUsed = ["dataB2", "Sig", "B0toDstarDs", "B0toDstar3pi", "B0toDstarDsstar"] #, "DstarDsMCfirst", "Data2018BFirst" "SigPart", 
 
-	mapping = {"dataD2":"dataD2", "Sig":"SigOld", "SigPart":"SigPartOld", "BkgDstarDs":"BkgDstarDs", "BkgDstar3pi":"BkgDstar3pi", "BkgDstarDsstar":"BkgDstarDsstar"}
+	mapping = {"dataD2":"dataB2", "Sig":"SigOld", "SigPart":"SigPartOld", "BkgDstarDs":"B0toDstarDs", "BB0toDstar3pi":"B0toDstar3pi", "BkgDstarDsstar":"B0toDstarDsstar"}
 
 	filemap = {"data":"dataD2", "MC":"Sig", "DstarDs":"BkgDstarDs", "DstarDsstar":"BkgDstar3pi", "Dstar3pi":"BkgDstarDsstar"}
 
@@ -429,7 +430,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	for item in filesUsed: 
 		print("Opening file: {}".format(item)) 
-		filemanager.OpenItem(mapping[item]); 
+		filemanager.OpenItem(item); 
 
 
 	canvas = ROOT.TCanvas("romassunrolled", "Unrolled 2D distribution of rho mass", 800, 600)
@@ -446,51 +447,21 @@ for quantity in ["Rhomass2Dunrolled"]:
 	cut = {}
 
 	# Signal region definitions
-	mvaThreshold = 0.9
-	mvaLowThreshold = 0.0
-	mvaLowerBound = -0.5
-
-	cut["base"] = "(b_Ds_vprob>0.1) && (b_D0_vprob>0.1)"
-	cut["SR"] = cut["base"]+" && (mvaScore>={})".format(mvaThreshold) # TODO: Use TCut 
-	cut["CR"] = cut["base"]+" && (mvaScore<{})&&(mvaScore>{})".format(mvaThreshold, mvaLowThreshold) #cut["base"]+" && "+"(mvaScore>={})".format(mvaThreshold)
-	cut["SB"] = cut["base"]+" && (mvaScore<{})&&(mvaScore>{})".format(mvaLowThreshold, mvaLowerBound)
-
 	
-	norm = collections.defaultdict(dict)
-	norm["Sig"]["SR"] = 638. # TODO: load from json
-	norm["Sig"]["CR"] = 300.
-	norm["Sig"]["SB"] = 62.8
+	from libEfficiencies import ReadEffs2D 
 
-	norm["SigPart"]["SR"] = 638.
-	norm["SigPart"]["CR"] = 300.
-	norm["SigPart"]["SB"] = 62.8
+	norm = ReadEffs2D("./data/etc/RegionEffs.json")
 
-	norm["BkgDstarDs"]["SR"] = 615.
-	norm["BkgDstarDs"]["CR"] = 607.
-	norm["BkgDstarDs"]["SB"] = 186.
-
-	norm["BkgDstarDsstar"]["SR"] = 1.1
-	norm["BkgDstarDsstar"]["CR"] = 1.1
-	norm["BkgDstarDsstar"]["SB"] = 1.1
-
-	norm["BkgDstar3pi"]["SR"] = 1430.
-	norm["BkgDstar3pi"]["CR"] = 800.
-	norm["BkgDstar3pi"]["SB"] = 188.
-
-	norm["dataD2"]["SR"] = 1.
-	norm["dataD2"]["CR"] = 1.
-	norm["dataD2"]["SB"] = 1.
-
-	partFraction = norm["SigPart"]["CR"]/norm["Sig"]["CR"]
+	#partFraction = norm["SigPart"]["CR"]/norm["Sig"]["CR"]
 
 
-	print(cut["SR"])
+	#print(cut["SR"])
 
 
 	for item in filesUsed:  
-		samples[item] = ROOT.RDataFrame(filemanager.GetItem(mapping[item]))
+		samples[item] = ROOT.RDataFrame(filemanager.GetItem(item))
 		for region in regions: 
-			frames[item][region] = samples[item].Filter(cut[region])
+			frames[item][region] = samples[item].Filter(ROOT.Ana.cut[region].GetTitle())
 			ROOT.SetOwnership(frames[item][region], 0)
 			# For histogram legacy compatibility
 			histos[item][region] = frames[item][region].Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2")
@@ -510,10 +481,10 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	variable = "b_tau_rhomass1"
 	model = ("model", "", 20, 0.2, 1.6)
-	datadesc = "dataD2"
+	datadesc = "dataB2"
 
-	data = frames["dataD2"]["SR"].Histo1D(model, variable)
-	bkg = frames["BkgDstarDs"]["SR"].Histo1D(model, variable)
+	data = frames["dataB2"]["SR"].Histo1D(model, variable)
+	bkg = frames["B0toDstarDs"]["SR"].Histo1D(model, variable)
 
 	AtomicDraw(data, outputfolder+"data_before.pdf")
 
@@ -553,14 +524,15 @@ for quantity in ["Rhomass2Dunrolled"]:
 		legend.AddEntry(datahist,"data","P")
 		for item in MC: 
 			hist = frames[item][region].Histo1D(model, variable)
-			hist.Scale(norm[item][region]/hist.Integral())
-			hist.SetLineColor(colors[item])
-			hist.SetMarkerColor(colors[item])
+			if (hist.Integral()):
+				hist.Scale(norm[item][region].n/hist.Integral())
+			hist.SetLineColor(ROOT.Ana.samples.at(item).color)
+			hist.SetMarkerColor(ROOT.Ana.samples.at(item).color)
 			hist.SetLineWidth(2)
 			histo = hist.DrawCopy("HIST SAME")
 			hists[item] = hist
 
-			legend.AddEntry(histo, legends[item], "L")
+			legend.AddEntry(histo, ROOT.Ana.samples.at(item).legend, "L")
 
 
 		legend.Draw()
@@ -571,8 +543,10 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 		canv.cd()
 		background = reference.Clone("backgroundModel{}".format(count)) # Works (does not change initial histo)
-		bkg = frames["BkgDstar3pi"][region].Histo1D(model, variable)
-		normfactor = norm["BkgDstar3pi"][region]/bkg.Integral()
+		bkg = frames["B0toDstar3pi"][region].Histo1D(model, variable)
+		normfactor = 0
+		if (bkg.Integral()): 
+			normfactor = norm["B0toDstar3pi"][region].n/bkg.Integral()
 		background.Add(bkg.GetPtr(), -1.*normfactor)
 		background.SetLineColor(ROOT.kOrange+1+count)
 		currenthist = background.DrawCopy("HIST SAME")
@@ -586,17 +560,19 @@ for quantity in ["Rhomass2Dunrolled"]:
 	canv.Print(outputfolder+"BackgroundModel.pdf")
 
 
-	SuperimposeRegions(frames, "BkgDstarDs", variable, outputfolder+"DstarDsShapesTest.pdf", model)
+	SuperimposeRegions(frames, "B0toDstarDs", variable, outputfolder+"DstarDsShapesTest.pdf", model)
 
 	count = 0
 	shapes = {}
 	maxes=[]
 	drawn = {}
 	for region in regions: 
-		background = frames["dataD2"][region].Histo1D(model, variable) #.Clone("backgroundModel{}".format(count)) # Works (does not change initial histo)
+		background = frames["dataB2"][region].Histo1D(model, variable) #.Clone("backgroundModel{}".format(count)) # Works (does not change initial histo)
 		background.Sumw2()
-		bkg = frames["BkgDstarDs"][region].Histo1D(model, variable)
-		normfactor = norm["BkgDstarDs"][region]/bkg.Integral()
+		bkg = frames["B0toDstarDs"][region].Histo1D(model, variable)
+		normfactor = 0
+		if (bkg.Integral()):
+			normfactor = norm["B0toDstarDs"][region].n/bkg.Integral()
 		background.Add(bkg.GetPtr(), -1.*normfactor)
 		background.SetLineColor(ROOT.kOrange+1+count)
 		shapes[region] = background
@@ -627,7 +603,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 	maxes=[]
 	drawn = {}
 	for region in regions: 
-		shapes[region] = frames["BkgDstarDs"][region].Histo1D(model, variable)
+		shapes[region] = frames["B0toDstarDs"][region].Histo1D(model, variable)
 		shapes[region].Sumw2()
 		shapes[region].SetLineColor(ROOT.kAzure+1+count)
 		shapes[region].SetLineWidth(2)
@@ -676,8 +652,8 @@ for quantity in ["Rhomass2Dunrolled"]:
 		datacard.write(regionstring)
 
 		observationstring = "observation "
-		for item in frames["dataD2"]: 
-			observationstring += ("{} ".format(frames["dataD2"]["CR"].Count().GetValue()))
+		for item in frames["dataB2"]: 
+			observationstring += ("{} ".format(frames["dataB2"]["CR"].Count().GetValue()))
 		datacard.write(observationstring+"\n")
 
 		datacard.write("\n#Expected events (MC/model)\n")
@@ -691,7 +667,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 				binstring += "{} ".format(region)
 				labelstring += "{} ".format(item)
 				indexstring += "{} ".format(count)
-				expectedstring += "{} ".format(norm[item][region])
+				expectedstring += "{} ".format(norm[item][region].n)
 				count += 1
 		datacard.write(binstring+"\n")
 		datacard.write(labelstring+"\n")
@@ -716,19 +692,21 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 	# Deriving the background shape in the SB 
 	region = "SB" # we work in the sideband for now
-	MC = ["SigPart", "BkgDstarDs", "BkgDstarDsstar"] #"Sig", 
-	BKG = ["BkgDstarDs", "BkgDstarDsstar"]
-	background = histosunrolled["dataD2"][region].Clone("backgroundModel") # Works (does not change initial histo)
+	MC = ["Sig", "B0toDstarDs", "B0toDstarDsstar"] #"Sig", "SigPart"
+	BKG = ["B0toDstarDs", "B0toDstarDsstar"]
+	background = histosunrolled["dataB2"][region].Clone("backgroundModel") # Works (does not change initial histo)
 	background.Sumw2()
 	for item in BKG: 
 		hist = histosunrolled[item][region]
 		hist.Sumw2()
-		normfactor = norm[item][region]/hist.Integral()
+		normfactor = 0
+		if (hist.Integral()): 
+			normfactor = norm[item][region].n/hist.Integral()
 		background.Add(hist, -1.*normfactor)
 
 	histograms = collections.defaultdict(dict)
 	for region in regions: 
-		for item in MC+["dataD2"]: 
+		for item in MC+["dataB2"]: 
 			hist = histosunrolled[item][region] #ROOT.convertHisto(frames[item][region].Histo1D(model, variable).GetPtr())
 			hist.Sumw2()
 			print(hist.Integral())
@@ -758,27 +736,27 @@ for quantity in ["Rhomass2Dunrolled"]:
 		fitspace = RooArgSet(var)
 		datacard.write("shapes data_obs {} {} {}\n".format("CR", workspacefile, workspacename+":data_obs_CR"))
 		datacard.write("shapes data_obs {} {} {}\n".format("SB", workspacefile, workspacename+":data_obs_SB"))
-		histograms["dataD2"]["CR"].SetName("data_obs_CR")
-		dataCR = RooDataHist("data_obs_CR", "data_obs_CR", fitspace, histograms["dataD2"]["CR"])
-		histograms["dataD2"]["CR"].Write()
+		histograms["dataB2"]["CR"].SetName("data_obs_CR")
+		dataCR = RooDataHist("data_obs_CR", "data_obs_CR", fitspace, histograms["dataB2"]["CR"])
+		histograms["dataB2"]["CR"].Write()
 		getattr(workspace, "import")(dataCR)
-		histograms["dataD2"]["SB"].SetName("data_obs_SB")
-		dataSB = RooDataHist("data_obs_SB", "data_obs_SB", fitspace, histograms["dataD2"]["SB"])
-		histograms["dataD2"]["SB"].Write()
+		histograms["dataB2"]["SB"].SetName("data_obs_SB")
+		dataSB = RooDataHist("data_obs_SB", "data_obs_SB", fitspace, histograms["dataB2"]["SB"])
+		histograms["dataB2"]["SB"].Write()
 		getattr(workspace, "import")(dataSB)
-		histograms["dataD2"]["SB"].Write()
-		print(histograms["dataD2"]["CR"].Integral())
+		histograms["dataB2"]["SB"].Write()
+		print(histograms["dataB2"]["CR"].Integral())
 		localnorm = copy.deepcopy(norm)
-		localnorm["BkgDstarDs"]["CR"] = 1. #"Ds_norm"
-		localnorm["bkg"]["CR"] = 1. #"bkg_norm"
-		localnorm["bkg"]["SB"] = 1.
-		localnorm["BkgDstarDs"]["SB"] = 1.
+		localnorm["B0toDstarDs"]["CR"] = ufloat(1., 0.) #"Ds_norm"
+		localnorm["bkg"]["CR"] = ufloat(1., 0.) #"bkg_norm"
+		localnorm["bkg"]["SB"] = ufloat(1., 0.)
+		localnorm["B0toDstarDs"]["SB"] = ufloat(1., 0.)
 		for region in regions: 
 			for item in MC: 
 				histname = item+"_"+region
 				datacard.write("shapes {} {} {} {}\n".format(item, region, workspacefile, workspacename+":"+histname))
 				hist = histograms[item][region] #TODO: fix availablility of histos
-				hist.Scale(localnorm[item][region]/hist.Integral())
+				hist.Scale(localnorm[item][region].n/hist.Integral())
 				hist.SetName(histname)
 				roohist = ROOT.RooDataHist(histname, histname, fitspace, hist)
 				hist.Write()
@@ -787,7 +765,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 		binsdest = RooArgList()
 		variables = []
 		variablesdest = []
-		maxval = histograms["dataD2"][region].GetMaximum()
+		maxval = histograms["dataB2"][region].GetMaximum()
 		print(background.GetNbinsX())
 		transferfactor = RooRealVar("bkg_transferfactor_SB_CR", "bkg_transferfactor_SB_CR", 0., 10.)
 		for i in range(background.GetNbinsX()): 
@@ -827,7 +805,7 @@ for quantity in ["Rhomass2Dunrolled"]:
 
 		observationstring = "observation "
 		for item in regions: 
-			print(frames["dataD2"][item].Count().GetValue())
+			print(frames["dataB2"][item].Count().GetValue())
 			observationstring += ("-1 ") # "{} ".format(frames["dataD2"][item].Count().GetValue()) # TODO: fix
 		datacard.write(observationstring+"\n")
 
@@ -858,9 +836,9 @@ for quantity in ["Rhomass2Dunrolled"]:
 		#datacard.write("lumi     lnN    1.10       1.0 		1.0\n")
 
 		datacard.write("\n"+"-"*50+"\n")
-		datacard.write("BkgDstarDs_CR_norm rateParam CR BkgDstarDs {} [{},{}]\n".format(norm["BkgDstarDs"]["CR"], 0, norm["BkgDstarDs"]["CR"]*5.))
-		datacard.write("BkgDstarDs_SB_norm rateParam SB BkgDstarDs {} [{},{}]\n".format(norm["BkgDstarDs"]["SB"], 0, norm["BkgDstarDs"]["SB"]*5.))
-		datacard.write("bkg_SB_norm rateParam CR bkg {} [{},{}]\n".format(norm["dataD2"]["CR"]/2., 0., norm["dataD2"]["CR"]))
+		datacard.write("B0toDstarDs_CR_norm rateParam CR B0toDstarDs {} [{},{}]\n".format(norm["B0toDstarDs"]["CR"].n, 0, norm["B0toDstarDs"]["CR"].n*5.))
+		datacard.write("B0toDstarDs_SB_norm rateParam SB B0toDstarDs {} [{},{}]\n".format(norm["B0toDstarDs"]["SB"].n, 0, norm["B0toDstarDs"]["SB"].n*5.))
+		datacard.write("bkg_SB_norm rateParam CR bkg {} [{},{}]\n".format(norm["dataB2"]["CR"].n/2., 0., norm["dataB2"]["CR"].n))
 		datacard.write("bkg_transferfactor_SB_CR rateParam SB bkg 0.5 [0.0,10]\n")
 		datacard.write("bkg_CR_norm rateParam SB bkg (@0*@1) bkg_SB_norm,bkg_transferfactor_SB_CR\n")
 		#datacard.write("Sig_CR_norm rateParam CR Sig {} [{},{}]\n".format(norm["Sig"]["CR"], 0, norm["Sig"]["CR"]*5.))

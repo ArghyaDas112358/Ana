@@ -1,17 +1,9 @@
 #!/usr/bin/env python
 from __future__ import division, print_function
 
-import ROOT
 import os
 import copy
-import numpy as np
-from argparse import ArgumentParser
-from sklearn.metrics import roc_curve
-
-
-ROOT.gROOT.LoadMacro("FileFlow.h")
-
-from ROOT import Ana, RDataFrame, TGraph
+from ROOT import RDataFrame, TGraph
 
 from libEfficiencies import getEffFromInfo, getGenmatchingEff, DumpEffs, ReadEffs, FormatLatex, getOfflineEff
 
@@ -19,6 +11,8 @@ from libEfficiencies import getEffFromInfo, getGenmatchingEff, DumpEffs, ReadEff
 
 
 def ComputeRoc(sig, bkg, mvavar = "mvaScore", sigtarget=1., bkgtarget=-1.): 
+	import numpy as np
+	from sklearn.metrics import roc_curve, auc
 	columns = [mvavar]
 	signal = sig.AsNumpy(columns)
 	background = bkg.AsNumpy(columns)
@@ -49,19 +43,9 @@ def ComputeRoc(sig, bkg, mvavar = "mvaScore", sigtarget=1., bkgtarget=-1.):
 	# creating a TGraph from the efficiency points
 	graph = TGraph(len(bkgeff), np.asarray(bkgeff, "d"), np.asarray(sigeff, "d"))
 
-	return graph #copy.deepcopy(graph)
+	area = auc(bkgeff, sigeff)
 
-
-def HoldUntilKeyPress(otherThanEnter=False): 
-	# Inspired from Fabrice Couderc 
-	rep = ''
-	if otherThanEnter: 
-		while rep in [ "" ]:
-			rep = raw_input( "Press a key to continue... " ).lower()
-	else:
-		rep = raw_input( "Press a key to continue... " ).lower()
-	
-	return
+	return graph, area #copy.deepcopy(graph)
 
 
 if __name__ == "__main__": 
@@ -80,6 +64,12 @@ if __name__ == "__main__":
 
 
 	samples = ["Sig", "dataB2", "datD2WS"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
+
+	import ROOT
+
+	ROOT.gROOT.LoadMacro("FileFlow.h")
+
+	from ROOT import Ana
 			
 	Ana.Init(options.version)
 
@@ -98,7 +88,7 @@ if __name__ == "__main__":
 	background = RDataFrame(Ana.filemanager.GetItem("dataB2")).Filter(cutbkg)
 
 	print("Starting to compute ROC curve... ")
-	roc = ComputeRoc(signal, background, options.variable)
+	roc, auc = ComputeRoc(signal, background, options.variable)
 	print("Computed ROC curve. ")
 
 	canv = ROOT.TCanvas("canv", "canv", 800, 600)
@@ -108,8 +98,10 @@ if __name__ == "__main__":
 	#roc.SetMarkerSize(1)
 	#roc.SetMarkerStyle(8)
 	canv.Draw()
-	canv.Print(options.out+"NewRoc.pdf")
+	canv.Print(options.out+"ROC.pdf")
+	print("Area under curve (A.U.C.): {}".format(auc))
 
+	from libUtils import HoldUntilKeyPress
 	HoldUntilKeyPress()
 
 

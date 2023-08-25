@@ -89,7 +89,12 @@ def GetFom(sig, bkg,  mvavar = "mvaScore", sigInSample=1., bkgInSample=1.,sigtar
 		FOM.SetBinError(numPoints -1 - point, error)
 		#FOM.SetBinError(point, error)
 
-	return FOM
+		maxvalue = FOM.GetMaximum()
+
+		maxbin = FOM.GetMaximumBin()
+		maxcut = FOM.GetXaxis().GetBinCenter(maxbin)
+
+	return FOM, maxvalue, maxcut
 
 
 if __name__ == "__main__": 
@@ -148,18 +153,20 @@ if __name__ == "__main__":
 	from libUtils import HoldUntilKeyPress
 	HoldUntilKeyPress()
 
-	fom = GetFom(signal, background, options.variable)
+	fom, maxsig, cutvalue = GetFom(signal, background, options.variable)
 	canv2 = ROOT.TCanvas("fom", "fom", 800, 600)
 	fom.Draw("E")
 	canv2.Draw()
 	fom.GetXaxis().SetRangeUser(-1., 1.)
-	fom.SetMarkerColor(ROOT.kGreen+4)
+	#fom.SetMarkerColor(ROOT.kGreen+4)
+	fom.SetMarkerStyle(8)
 	fom.SetMarkerSize(0.2)
 	fom.SetLineColor(ROOT.kGreen+2)
 	#roc.SetMarkerSize(1)
 	#roc.SetMarkerStyle(8)
 	canv2.Draw()
 	canv2.Print(options.out+"FOM.pdf")
+	print("Maximum significance of {} with cut at value {}".format(maxsig, cutvalue))
 
 	HoldUntilKeyPress()
 

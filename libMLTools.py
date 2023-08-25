@@ -2,17 +2,28 @@
 from __future__ import division, print_function
 
 import os
+import math
+import numpy as np
 import copy
-from ROOT import RDataFrame, TGraph
-
-from libEfficiencies import getEffFromInfo, getGenmatchingEff, DumpEffs, ReadEffs, FormatLatex, getOfflineEff
+from ROOT import RDataFrame, TGraph, TH1D
 
 
+
+
+def GetROC(sig, bkg, mvavar = "mvaScore", sigtarget=1., bkgtarget=-1.): 
+	from sklearn.metrics import auc
+	bkgeff, sigeff = ComputeRoc(sig, bkg, mvavar, sigtarget, bkgtarget)
+
+	# creating a TGraph from the efficiency points
+	graph = TGraph(len(bkgeff), np.asarray(bkgeff, "d"), np.asarray(sigeff, "d"))
+
+	area = auc(bkgeff, sigeff)
+
+	return graph, area #copy.deepcopy(graph)
 
 
 def ComputeRoc(sig, bkg, mvavar = "mvaScore", sigtarget=1., bkgtarget=-1.): 
-	import numpy as np
-	from sklearn.metrics import roc_curve, auc
+	from sklearn.metrics import roc_curve
 	columns = [mvavar]
 	signal = sig.AsNumpy(columns)
 	background = bkg.AsNumpy(columns)
@@ -40,12 +51,45 @@ def ComputeRoc(sig, bkg, mvavar = "mvaScore", sigtarget=1., bkgtarget=-1.):
 
 	bkgeff, sigeff, _ = roc_curve(truths, labels)
 
-	# creating a TGraph from the efficiency points
-	graph = TGraph(len(bkgeff), np.asarray(bkgeff, "d"), np.asarray(sigeff, "d"))
+	return bkgeff, sigeff
 
-	area = auc(bkgeff, sigeff)
 
-	return graph, area #copy.deepcopy(graph)
+def GetFom(sig, bkg,  mvavar = "mvaScore", sigInSample=1., bkgInSample=1.,sigtarget=1., bkgtarget=-1.): 
+	bkgeffroc, sigeffroc = ComputeRoc(sig, bkg, mvavar, sigtarget, bkgtarget)
+	sigeffs = np.sort(sigeffroc)
+	bkgeffs = np.sort(bkgeffroc)
+	assert(len(sigeffs) == len(bkgeffs))
+	numPoints = len(sigeffs)
+
+	print(sigeffs)
+
+	FOM = TH1D("FOM", "", numPoints, -1., 1.)
+
+	for point in range(0, numPoints): 
+		sigEff = sigeffs[point]
+		bkgEff = bkgeffs[point]
+		
+		print("Sig eff: {}, bkg eff: {}".format(sigEff, bkgEff))
+
+		B = bkgInSample*bkgEff
+		S = sigInSample*sigEff
+
+		Sigma = 0 if (B == 0) else S/math.sqrt(B) #Sigma = 0 if (S+B == 0) else S/math.sqrt(S+B)
+
+		factor = 0.1
+		factordenom = 0.0000001
+		corrB = factor if (bkgInSample*bkgEff < factor) else bkgInSample*bkgEff
+		corrS = factor if (sigInSample*sigEff < factor) else sigInSample*sigEff
+		corrSigma = factordenom if (Sigma < factordenom) else Sigma
+
+		# Error commputation taken from slide 13 in: /https://indico.cern.ch/event/66256/contributions/2071577/attachments/1017176/1447814/EfficiencyErrors.pdf
+		error = math.sqrt((S+1)*(S+2) - (S+1)*(S+1))/((B+2)*(B+3)-(B+2)*(B+2)) #(math.sqrt(corrB)/corrB)*(math.sqrt(corrS)/corrS)*corrSigma # *bkgInSample*sigInSample
+
+		FOM.SetBinContent(numPoints -1 - point, Sigma)
+		FOM.SetBinError(numPoints -1 - point, error)
+		#FOM.SetBinError(point, error)
+
+	return FOM
 
 
 if __name__ == "__main__": 
@@ -88,7 +132,7 @@ if __name__ == "__main__":
 	background = RDataFrame(Ana.filemanager.GetItem("dataB2")).Filter(cutbkg)
 
 	print("Starting to compute ROC curve... ")
-	roc, auc = ComputeRoc(signal, background, options.variable)
+	roc, auc = GetROC(signal, background, options.variable)
 	print("Computed ROC curve. ")
 
 	canv = ROOT.TCanvas("canv", "canv", 800, 600)
@@ -102,6 +146,21 @@ if __name__ == "__main__":
 	print("Area under curve (A.U.C.): {}".format(auc))
 
 	from libUtils import HoldUntilKeyPress
+	HoldUntilKeyPress()
+
+	fom = GetFom(signal, background, options.variable)
+	canv2 = ROOT.TCanvas("fom", "fom", 800, 600)
+	fom.Draw("E")
+	canv2.Draw()
+	fom.GetXaxis().SetRangeUser(-1., 1.)
+	fom.SetMarkerColor(ROOT.kGreen+4)
+	fom.SetMarkerSize(0.2)
+	fom.SetLineColor(ROOT.kGreen+2)
+	#roc.SetMarkerSize(1)
+	#roc.SetMarkerStyle(8)
+	canv2.Draw()
+	canv2.Print(options.out+"FOM.pdf")
+
 	HoldUntilKeyPress()
 
 

@@ -31,7 +31,7 @@ webpublication =False
 
 if __name__ == "__main__":
 
-	parser = ArgumentParser(description="SignalBackground")
+	parser = ArgumentParser(description="SaveRegions")
 	#parser.add_argument("tool", action="store", type=str, help="Which time list you want to analyse")
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v1", help="Which version (cycle) of files to run on")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")

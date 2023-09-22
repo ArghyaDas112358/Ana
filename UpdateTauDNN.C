@@ -258,6 +258,17 @@ void WriteEffInfo(std::string directory, const Double_t Initial, Double_t final 
 	outfile->Close(); 
 }
 
+std::vector<std::string>& purgeColumns(std::vector<std::string> &&columns, const std::vector<std::string>& blacklist)
+{
+   			// a lambda that checks if `s` is in the blacklist
+   			auto is_blacklisted = [&blacklist](const std::string &s)  { return std::find(blacklist.begin(), blacklist.end(), s) != blacklist.end(); };
+
+   			// removing elements from std::vectors is not pretty, see https://en.wikipedia.org/wiki/Erase%E2%80%93remove_idiom
+   			columns.erase(std::remove_if(columns.begin(), columns.end(), is_blacklisted), columns.end());
+
+   			return columns; 
+}
+
 Tau SelectTauCandidate(std::vector<Tau> collection, const int q) 
 {
 	std::sort(collection.begin(), collection.end(), SortTauCandidates); //std::greater<>()
@@ -607,7 +618,9 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 		pimped = pimped.Redefine(branch, [](const ROOT::RVec<std::string> &v) {return std::vector<std::string>(v.begin(), v.end());}, {branch}); 
 	}
 
-	pimped.Snapshot(filemanager.GetObject(outIndentifier), filemanager.GetFile(outIndentifier)); 
+	const std::vector<std::string> blacklist = {"v_taucandidates", "b_tau"};
+
+	pimped.Snapshot(filemanager.GetObject(outIndentifier), filemanager.GetFile(outIndentifier), purgeColumns(pimped.GetColumnNames(), blacklist)); 
 
 	//Pause(5); 
 

@@ -7,7 +7,8 @@ from ROOT import RDataFrame, TFile, TVectorD, gInterpreter
 from uncertainties import ufloat
 from uncertainties.umath import * 
 import json
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
+
 
 
 def getEff(n, N): 
@@ -51,7 +52,7 @@ def getOfflineEff(vector):
 
 def DumpEffs(effs, path): 
 	effsForWrite = OrderedDict()
-	for item, content in effs.iteritems(): 
+	for item, content in effs.items(): 
 			eff = effs[item]
 			effsForWrite[item] = (eff.n, eff.s)
 	with open(path, "w") as file: 
@@ -61,37 +62,37 @@ def ReadEffs(path):
 	effs = OrderedDict()
 	with open(path, "r") as file: 
 		effsFromFile = json.load(file, encoding="utf8", object_pairs_hook=OrderedDict)
-		for item, content in effsFromFile.iteritems(): 
+		for item, content in effsFromFile.items(): 
 				eff = effsFromFile[item]
 				assert(len(eff)==2)
 				effs[item] = ufloat(eff[0], eff[1])
 	return effs
 
 def DumpEffs2D(effs, path): 
-	effsForWrite = collections.defaultdict(dict)
-	for item, content in effs.iteritems(): 
-		for key, value in content.iteritems(): 
+	effsForWrite = defaultdict(dict)
+	for item, content in effs.items(): 
+		for key, value in content.items(): 
 			eff = effs[item][key]
 			effsForWrite[item][key] = (eff.n, eff.s)
 	with open(path, "w") as file: 
-		json.dump(effsForWrite, file, ensure_ascii=False, encoding="utf8", sort_keys=False)
+		json.dump(effsForWrite, file, ensure_ascii=False, sort_keys=False) #encoding="utf8", 
 
 
 def ReadEffs2D(path): 
-	effs = collections.defaultdict(dict)
+	effs = defaultdict(dict)
 	with open(path, "r") as file: 
-		effsFromFile = json.load(file, encoding="utf8")
-		for item, content in effsFromFile.iteritems(): 
-			for key, value in content.iteritems(): 
+		effsFromFile = json.load(file) #, encoding="utf8"
+		for item, content in effsFromFile.items(): 
+			for key, value in content.items(): 
 				eff = effsFromFile[item][key]
 				assert(len(eff)==2)
 				effs[item][key] = ufloat(eff[0], eff[1])
 	return effs
 
 def PrintEfficiencies2D(effs): 
-	for item, content in effs.iteritems(): 
+	for item, content in effs.items(): 
 		print("{}:".format(item))
-		for key, value in content.iteritems(): 
+		for key, value in content.items(): 
 			print(("\t{}: {}".format(key, value)))
 
 def FormatLatex(number, precision = 2): 
@@ -128,10 +129,10 @@ def GetEfficiencies(frames):
 		print("\n")
 
 def ComputeEfficiencies(frames): 
-	efficiencies = collections.defaultdict(dict)
-	for item, content in frames.iteritems(): 
+	efficiencies = defaultdict(dict)
+	for item, content in frames.items(): 
 		#print("{}:".format(item))
-		for key, value in content.iteritems(): 
+		for key, value in content.items(): 
 			n = frames[item][key].Count().GetValue()
 			N = frames[item]["all"].Count().GetValue()
 			# see: chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://indico.cern.ch/event/66256/contributions/2071577/attachments/1017176/1447814/EfficiencyErrors.pdf
@@ -161,15 +162,15 @@ def InitialEffs(lumi):
 	Br_D0_KPI = ufloat(3.88e-2, 0.)
 
 	expected = {}
-	for key, eff in effs.iteritems(): 
+	for key, eff in effs.items(): 
 		key.replace("Part", "")
-	 	expected[key]= lumi*bbxsec*fB0*2.*Br_Dstar_D0pi*Br_D0_KPI*1000.*eff["br"]*eff["geneff"] #*eff["eff"]
+		expected[key]= lumi*bbxsec*fB0*2.*Br_Dstar_D0pi*Br_D0_KPI*1000.*eff["br"]*eff["geneff"] #*eff["eff"]
 
 	return expected
 
 def CompleteEffsFromFile(effs, version, filemanager): 
 	anaeffs = {"Sig":ufloat(1.4e-3, 0.), "BkgDstarDs":ufloat(1.44e-3, 0.), "BkgDstarDsstar":ufloat(2.26e-3, 0.), "BkgDstar3pi":ufloat(5.3e-4, 0.), "SigPart":ufloat(1.27e-3, 0.), "dataD2WS":ufloat(-0.392, 0.), "dataD21TauWS": ufloat(-0.53, 0.)}
-	for key, eff in effs.iteritems(): 
+	for key, eff in effs.items(): 
 		print(key)
 		
 		efficiency = 1.
@@ -205,9 +206,9 @@ def ReadEffsFromFile(item, version, filemanager):
 	return efficiency
 
 def MultiplyFinalEffs(effs, regioneffs):
-	for item, content in regioneffs.iteritems(): 
+	for item, content in regioneffs.items(): 
 		print("{}:".format(item))
-		for key, value in content.iteritems(): 
+		for key, value in content.items(): 
 			try:
 				regioneffs[item][key] = effs[item]*regioneffs[item][key]
 				if (effs[item].nominal_value < 0.): 

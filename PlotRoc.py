@@ -22,7 +22,7 @@ plotstats = False
 webpublication =False
 
 
-outputfolder = "./plots/MVAFiguresUpdate/"
+outputfolder = "./plots/MVAFiguresTauFLIsoLatest/"
 
 os.system("mkdir -p "+outputfolder)
 
@@ -169,9 +169,9 @@ if __name__ == "__main__":
 	ROOT.gSystem.Load("Tau.h")
 
 
-	filemanager.AddItem("signal", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/SignalOfficialMC50M_tauDNN_mva.root", "tree")
-	filemanager.AddItem("bkgnoresponse", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPH1-3Run2018B_converted.root", "tree")
-	filemanager.AddItem("background", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/prod2018BFirst_tauDNN_mva.root", "tree")
+	filemanager.AddItem("signal", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/v6.8/Sig_tauDNN_mva.root", "tree")
+	#filemanager.AddItem("bkgnoresponse", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/ParkingBPH1-3Run2018B_converted.root", "tree")
+	filemanager.AddItem("background", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/v6.8/dataB2_tauDNN_mva.root", "tree")
 	filemanager.AddItem("oldroc",  "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "xgboOptimized/scikit-like_ROC")
 	#filemanager.AddItem("TMVAROC", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "xgboOptimized/TMVA-like_ROC")
 	#filemanager.AddItem("bkgEff", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/scripts/MVA/trainingBayesian/newtest/plots.root", "xgboOptimized/bkgEff(sigEff)")
@@ -251,7 +251,7 @@ if __name__ == "__main__":
 	print sigeffcorr 
 	print bkgeffcorr
 
-	fom = GetFom(sigeffcorr, bkgeffcorr, 118, 1296-118) #626, 2698 updated values from Oct. 2022
+	fom = GetFom(sigeffcorr, bkgeffcorr, 220, 1296-118) #626, 2698 updated values from Oct. 2022
 
 	# Margins 
 	leftmargin = 0.1
@@ -276,7 +276,7 @@ if __name__ == "__main__":
 
 	fomcanvas = ROOT.TCanvas("fomcanvas", "fomcanvas", 800, 600)
 	fomcanvas.SetMargin(leftmargin, rightmargin, bottommargin, topmargin); 
-	signalDist = ROOT.RDataFrame(filemanager.GetItem("signal")).Filter("mvaScore>-1").Histo1D(("signalDist", "signalDist", 30, -1., 1.), "mvaScore") # TODO: use cut >= -1.
+	signalDist = ROOT.RDataFrame(filemanager.GetItem("signal")).Filter("(mvaScore>-1)&&Dstar_match&&b_tau_match").Histo1D(("signalDist", "signalDist", 30, -1., 1.), "mvaScore") # TODO: use cut >= -1.
 	bkgDist = ROOT.RDataFrame(filemanager.GetItem("background")).Filter("mvaScore>-1").Histo1D(("bkgDist", "bkgDist", 30, -1., 1.), "mvaScore")
 	fomcanvas.cd()
 	fompad = ROOT.TPad("fompad", "fompad", 0., 0., 1., 1.)

@@ -108,6 +108,26 @@ static float WriteFl(const Tau& tau)
 	 return tau.fl;
 };
 
+static float WritePvfl(const Tau& tau)
+{
+	 return tau.pvfl;
+};
+
+static float WritePvfsig(const Tau& tau)
+{
+	 return tau.pvfsig;
+};
+
+static float WritePvlip(const Tau& tau)
+{
+	 return tau.pvlip;
+};
+
+static float WritePvlipsig(const Tau& tau)
+{
+	 return tau.pvlipsig;
+};
+
 static float WritePvip(const Tau& tau)
 {
 	 return tau.pvip;
@@ -333,6 +353,61 @@ static float WriteVtx4Trkchi2Ndof(const Tau& tau)
 	 return tau.vtx4trkChi2ndof;
 };
 
+static float WriteProper_Alpha_Rho1_Pi(const Tau& tau)
+{
+	 return tau.proper_alpha_rho1_pi;
+};
+
+static float WriteProper_Alpha_Rho2_Pi(const Tau& tau)
+{
+	 return tau.proper_alpha_rho2_pi;
+};
+
+static float WriteProper_Alpha_Phi1_Pi(const Tau& tau)
+{
+	 return tau.proper_alpha_phi1_pi;
+};
+
+static float WriteProper_Alpha_Phi2_Pi(const Tau& tau)
+{
+	 return tau.proper_alpha_phi2_pi;
+};
+
+static float WriteProper_Alpha_Rho_Max(const Tau& tau)
+{
+	 return tau.proper_alpha_rho_max;
+};
+
+static float WriteProper_Alpha_Rho_Min(const Tau& tau)
+{
+	 return tau.proper_alpha_rho_min;
+};
+
+static float WriteProper_Theta_Rho1(const Tau& tau)
+{
+	 return tau.proper_theta_rho1;
+};
+
+static float WriteProper_Theta_Rho2(const Tau& tau)
+{
+	 return tau.proper_theta_rho2;
+};
+
+static float WriteProper_Theta_Rho_Max(const Tau& tau)
+{
+	 return tau.proper_theta_rho_max;
+};
+
+static float WriteProper_Theta_Rho_Min(const Tau& tau)
+{
+	 return tau.proper_theta_rho_min;
+};
+
+static float WriteProper_Alpha_Rho_K(const Tau& tau)
+{
+	 return tau.proper_alpha_rho_K;
+};
+
 static int WriteNpi0(const Tau& tau)
 {
 	 return tau.npi0;
@@ -556,6 +631,51 @@ static float WriteB_Mcorr_Phi(const Tau& tau)
 static float WriteB_Proper_Tau_E(const Tau& tau)
 {
 	 return tau.B_proper_tau_E;
+};
+
+static float WriteB_Proper_Alpha_Dstar_Tau(const Tau& tau)
+{
+	 return tau.B_proper_alpha_Dstar_tau;
+};
+
+static float WriteB_Proper_Xi_Rho1(const Tau& tau)
+{
+	 return tau.B_proper_xi_rho1;
+};
+
+static float WriteB_Proper_Xi_Rho2(const Tau& tau)
+{
+	 return tau.B_proper_xi_rho2;
+};
+
+static float WriteB_Proper_Xi_Rho_Max(const Tau& tau)
+{
+	 return tau.B_proper_xi_rho_max;
+};
+
+static float WriteB_Proper_Xi_Rho_Min(const Tau& tau)
+{
+	 return tau.B_proper_xi_rho_min;
+};
+
+static float WriteB_Proper_Xi_Phi1(const Tau& tau)
+{
+	 return tau.B_proper_xi_phi1;
+};
+
+static float WriteB_Proper_Xi_Phi2(const Tau& tau)
+{
+	 return tau.B_proper_xi_phi2;
+};
+
+static float WriteB_Proper_Xi_Phi_Max(const Tau& tau)
+{
+	 return tau.B_proper_xi_phi_max;
+};
+
+static float WriteB_Proper_Xi_Phi_Min(const Tau& tau)
+{
+	 return tau.B_proper_xi_phi_min;
 };
 
 static float WriteB_Mu_Alpha(const Tau& tau)

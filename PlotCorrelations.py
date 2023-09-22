@@ -1,21 +1,22 @@
 import pandas as pd
 from anaMVA.loadSamples import loadSamples
 import ROOT
+from anaMVA.BDTvariables import features
 
 
 # TODO: put this in an extra file
-features = [ "BsDstarTauNu_D0_pt", "BsDstarTauNu_D0_eta", "BsDstarTauNu_D0_phi", "BsDstarTauNu_D0_vprob", "BsDstarTauNu_D0_fl3d", "BsDstarTauNu_D0_fls3d",
-	"BsDstarTauNu_Ds_pt", "BsDstarTauNu_Ds_eta", "BsDstarTauNu_Ds_phi", "BsDstarTauNu_Ds_vprob", "BsDstarTauNu_Ds_fl3d", "BsDstarTauNu_Ds_fls3d",
-	"BsDstarTauNu_D0_lip", "BsDstarTauNu_D0_lips", "BsDstarTauNu_D0_pvip", "BsDstarTauNu_Ds_lip", "BsDstarTauNu_Ds_lips", "BsDstarTauNu_Ds_pvip", 
-	"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_fl3d", "BsDstarTauNu_tau_fls3d", "BsDstarTauNu_tau_vprob", 
-	"BsDstarTauNu_tau_lip", "BsDstarTauNu_tau_lips", "BsDstarTauNu_tau_pvip", "BsDstarTauNu_tau_pvips", "BsDstarTauNu_tau_alpha", "BsDstarTauNu_tau_max_dr_3prong", 
-	"BsDstarTauNu_tau_pi1_pt", "BsDstarTauNu_tau_pi1_eta", "BsDstarTauNu_tau_pi1_phi", 
-	"BsDstarTauNu_tau_pi2_pt", "BsDstarTauNu_tau_pi2_eta", "BsDstarTauNu_tau_pi2_phi", 
-	"BsDstarTauNu_tau_pi3_pt", "BsDstarTauNu_tau_pi3_eta", "BsDstarTauNu_tau_pi3_phi", 
-	"BsDstarTauNu_tau_sumofdnn",  
-	 ]
+# features = [ "BsDstarTauNu_D0_pt", "BsDstarTauNu_D0_eta", "BsDstarTauNu_D0_phi", "BsDstarTauNu_D0_vprob", "BsDstarTauNu_D0_fl3d", "BsDstarTauNu_D0_fls3d",
+# 	"BsDstarTauNu_Ds_pt", "BsDstarTauNu_Ds_eta", "BsDstarTauNu_Ds_phi", "BsDstarTauNu_Ds_vprob", "BsDstarTauNu_Ds_fl3d", "BsDstarTauNu_Ds_fls3d",
+# 	"BsDstarTauNu_D0_lip", "BsDstarTauNu_D0_lips", "BsDstarTauNu_D0_pvip", "BsDstarTauNu_Ds_lip", "BsDstarTauNu_Ds_lips", "BsDstarTauNu_Ds_pvip", 
+# 	"BsDstarTauNu_tau_pt", "BsDstarTauNu_tau_eta", "BsDstarTauNu_tau_phi", "BsDstarTauNu_tau_fl3d", "BsDstarTauNu_tau_fls3d", "BsDstarTauNu_tau_vprob", 
+# 	"BsDstarTauNu_tau_lip", "BsDstarTauNu_tau_lips", "BsDstarTauNu_tau_pvip", "BsDstarTauNu_tau_pvips", "BsDstarTauNu_tau_alpha", "BsDstarTauNu_tau_max_dr_3prong", 
+# 	"BsDstarTauNu_tau_pi1_pt", "BsDstarTauNu_tau_pi1_eta", "BsDstarTauNu_tau_pi1_phi", 
+# 	"BsDstarTauNu_tau_pi2_pt", "BsDstarTauNu_tau_pi2_eta", "BsDstarTauNu_tau_pi2_phi", 
+# 	"BsDstarTauNu_tau_pi3_pt", "BsDstarTauNu_tau_pi3_eta", "BsDstarTauNu_tau_pi3_phi", 
+# 	"BsDstarTauNu_tau_sumofdnn",  
+# 	 ]
 
-samples = loadSamples(features, 10000)
+samples = loadSamples(features, "v6.8", 10000)
 
 ROOT.gStyle.SetOptStat(0)
 
@@ -60,7 +61,7 @@ histo.Draw("COLZ")
 canvas.SetLeftMargin(0.15)
 canvas.SetBottomMargin(0.15)
 canvas.Draw()
-canvas.Print("testcorrelations.pdf")
+canvas.Print("plots/CorrelationsMVA.pdf")
 
 
 

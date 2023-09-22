@@ -118,7 +118,7 @@ if __name__ == "__main__":
 
 	ROOT.fixStringVariables(tosave)
 
-	tosave.Snapshot("tree", "file.root", ROOT.purgeColumns(tosave.GetColumnNames()), snapshotOptions)
+	tosave.Snapshot(Ana.filemanager.GetObject(data+"_SB"), Ana.filemanager.GetFile(data+"_SB"), ROOT.purgeColumns(tosave.GetColumnNames()), snapshotOptions)
 	
 
 	Ana.filemanager.CloseAll()

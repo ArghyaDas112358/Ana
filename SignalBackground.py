@@ -905,6 +905,10 @@ if __name__ == "__main__":
 
 	PrintEfficiencies(regioneffs)
 
+	from libEfficiencies import DumpEffs2D
+
+	DumpEffs2D(regioneffs, "./data/etc/RegionEffs.json")
+
 	# Quick and dirty significance computation
 	s = regioneffs["Sig"]["SR"]
 	b = frames[data]["SR"].Count().GetValue()

@@ -427,7 +427,7 @@ def MultiplyFinalEffs(effs, regioneffs):
 				if (effs[item].nominal_value < 0.): 
 					resulteffs[item][key]=effs[item]
 			except:
-				resulteffs[item][key] = -1.
+				resulteffs[item][key] = ufloat(-1., 0.)
 	return resulteffs
 
 

@@ -818,7 +818,8 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	filesUsed = ["Sig", "dataB2", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "B0toDstar3pi", "dataD2WS"] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
+	data = "dataD2" #"dataB2"
+	filesUsed = ["Sig", data, "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "B0toDstar3pi", "dataD2WS"] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
 
 	regions = ["SR", "CR", "SB"]
 
@@ -906,7 +907,7 @@ if __name__ == "__main__":
 
 	# Quick and dirty significance computation
 	s = regioneffs["Sig"]["SR"]
-	b = frames["dataB2"]["SR"].Count().GetValue()
+	b = frames[data]["SR"].Count().GetValue()
 	significance = s/sqrt(b) # b is here s+b since taken from data
 
 	print("Expected significance: {}/sqrt({}) = {}".format(s, b, significance))
@@ -917,11 +918,13 @@ if __name__ == "__main__":
 	files = filesUsed #["Sig", "BkgDstarDs", "BkgDstarDsstar", "dataD2WS", "dataD2TauWS"]
 	#PlotOverlay(frames, "dataD2", ["Sig", "dataD2", "BkgDstarDs", "BkgDstarDsstar", "BkgDstara1Part"], regions, variables, regioneffs, outputfolder)
 
-	PlotStack(frames, "dataB2", files, regions, variables, regioneffs, outputfolder, False)
+	PlotStack(frames, data, files, regions, variables, regioneffs, outputfolder, False)
 
-	PlotComparison(frames, "dataB2", "dataD2WS", regions, variables, outputfolder, False)
+	PlotComparison(frames, data, "dataD2WS", regions, variables, outputfolder, False)
 
-	PublishToWeb(outputfolder, "Modelling_23_8_15")
+	PublishToWeb(outputfolder, "Modelling_23_9_21")
+
+	
 
 	#files = {"Sig":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/Sig.root"), "BkgDstara1":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/BkgDstara1.root") }
 	#newframes, histos, histisunrolled = PrepareCustomFiles(files, regions)

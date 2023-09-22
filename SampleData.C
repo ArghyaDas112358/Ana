@@ -151,14 +151,21 @@ namespace Ana {
 				"data", 
 				"1", 
 				"data", 
-				{"dataD2WS"})
+				{"dataD1"})
+			},
+			{"dataD2", SampleData(
+				 mycolors[10], 
+				"data", 
+				"1", 
+				"data", 
+				{"dataD2"})
 			},
 			{"dataB2", SampleData(
 				 mycolors[10], 
 				"data", 
 				"1", 
 				"data", 
-				{"dataD2WS"})
+				{"dataB2"})
 			},
 			// data driven components
 			{"WS", SampleData(

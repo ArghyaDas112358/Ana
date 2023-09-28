@@ -763,6 +763,100 @@ def PrepareCustomFiles(dictf, regions):
 			#histosunrolled[key][region] = UnrollHist(histos[key][region])
 	return frames, histos, histosunrolled
 
+def WriteDatacard(frames, yields, variables, regions, dataname, datacardname="datacard.txt", workspacefile="workspace.root", workspacename="w"): 
+	from datetime import datetime
+	from ROOT import RooRealVar, RooArgSet, RooWorkspace, RooDataHist
+	MC = frames.keys()
+	MC.remove(dataname)
+	variable = "b_tau_rhomass1"
+
+	with open(datacardname, "w") as datacard: 
+		datacard.write("# Datacard generated automatically with {}{} on {}.\n".format(os.getcwd(), __file__, datetime.today().strftime("%d.%m.%y %H:%M:%S")))
+		datacard.write("# Simple fit \n\n")
+		datacard.write("imax {}\n".format(len(regions)))
+		datacard.write("jmax {}\n".format(len(MC)))
+		datacard.write("kmax {}\n".format(0)) # For now no systematics
+		datacard.write("\n"+"-"*50+"\n")
+
+		datacard.write("# Shapes and RooFit workspace\n")
+		file = ROOT.TFile.Open(workspacefile, "RECREATE")
+		workspace = ROOT.RooWorkspace(workspacename)
+		# Creating the variable on which we fit
+		var = RooRealVar(variable, variable, 0., 100.)
+		fitspace = RooArgSet(var)
+		for region in regions: 
+			# Writing the data shapes for each region
+			name = "data_obs_{}".format(region)
+			datacard.write("shapes data_obs {} {} {}\n".format(region, workspacefile, workspacename+":{}".format(name)))
+			examplehist = Ana.binning[variable]
+			hist = frames[dataname][region].Histo1D(examplehist, variable).GetPtr()
+			hist.SetName(name)
+			histogram = RooDataHist(name, name, fitspace, hist)
+			hist.Write() # Also saving the ROOT hist
+			getattr(workspace, "import")(histogram)
+			# Writing the MC shapes 
+			for item in MC: 
+				histname = item+"_"+region
+				datacard.write("shapes {} {} {} {}\n".format(item, region, workspacefile, workspacename+":"+histname))
+				hist = frames[item][region].Histo1D(examplehist, variable).GetPtr()
+				#hist.Scale(yields[item][region].n/hist.Integral())
+				hist.SetName(histname)
+				roohist = ROOT.RooDataHist(histname, histname, fitspace, hist)
+				hist.Write()
+				getattr(workspace, "import")(roohist)
+
+		workspace.Write()
+		file.Write()
+		file.Close()
+		datacard.write("\n"+"-"*50+"\n")
+		
+		datacard.write("# Observed events (data)\n")
+		regionstring = "bin "
+		for item in regions: 
+			regionstring += (item+" ")
+		regionstring+="\n"
+		datacard.write(regionstring)
+
+		observationstring = "observation "
+		for item in regions: 
+			print(frames[dataname][item].Count().GetValue())
+			observationstring += ("-1 ") # "{} ".format(frames["dataD2"][item].Count().GetValue()) # TODO: fix
+		datacard.write(observationstring+"\n")
+		# We want to leave a few components floating 
+		datacard.write("\n"+"-"*50+"\n")
+
+		datacard.write("# Expected events (MC/model)\n")
+		binstring = "bin "
+		labelstring = "process "
+		indexstring = "process "
+		expectedstring = "rate "
+		count = 0
+		for region in regions: 
+			for item in MC: 
+				binstring += "{} ".format(region)
+				labelstring += "{} ".format(item)
+				factor = 1
+				if "Sig" in item: 
+					factor = -1 # make signal negative
+				indexstring += "{} ".format(factor*count)
+				expectedstring += "{} ".format(yields[item][region])
+				count += 1
+		datacard.write(binstring+"\n")
+		datacard.write(labelstring+"\n")
+		datacard.write(indexstring+"\n")
+		datacard.write(expectedstring+"\n")
+		#datacard.write("\n"+"-"*50+"\n")
+		#datacard.write("lumi     lnN    1.10       1.0 		1.0\n")
+		datacard.write("\n"+"-"*50+"\n")
+		# Writing out the constraints
+		for region in regions: 
+			for item in MC: 
+				datacard.write("{}_{}_norm rateParam {} {} {} [{},{}]\n".format(item, region, region, item, yields[item][region].n, 0, yields[item][region].n*5.))
+		datacard.write("\n"+"-"*50+"\n")
+		#for item in variables: 
+			#datacard.write("{} flatParam\n".format(item.GetName()))
+
+
 def ReadEffsSimple(path): 
 	effs = {}
 	with open(path, "r") as file: 
@@ -786,7 +880,7 @@ if __name__ == "__main__":
 
 	parser = ArgumentParser(description="SignalBackground")
 	#parser.add_argument("tool", action="store", type=str, help="Which time list you want to analyse")
-	parser.add_argument("--out", dest="out", action="store", type=str, default="BackgroundEstimateTauFLNewVersionLatest/", help="Directory where the plots shuld go")
+	parser.add_argument("--out", dest="out", action="store", type=str, default="BackgroundEstimateTauFLNewTrainingWSlatestBinning/", help="Directory where the plots shuld go")
 	parser.add_argument("--name", dest="name", action="store", type=str, default="test", help="Turn on debug output")
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v1", help="Which version (cycle) of files to run on")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
@@ -819,7 +913,7 @@ if __name__ == "__main__":
 
 
 	data = "dataD2" #"dataB2"
-	filesUsed = ["Sig", data, "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "B0toDstar3pi", "dataD2WS"] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
+	filesUsed = ["Sig", data, "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "B0toDstar3pi", "dataD1WS"] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
 
 	regions = ["SR", "CR", "SB"]
 
@@ -898,8 +992,11 @@ if __name__ == "__main__":
 
 	selectioneffs = ReadEffsSimple("./data/etc/Expectedyields.json")
 
-	selectioneffs["dataD2WS"] = ufloat(1.39e-5*-12.0*7, 0.)
-	selectioneffs["dataD1WS"] = ufloat(1.39e-5*-12.0*11, 0.)
+	print(selectioneffs)
+	print(effs)
+
+	selectioneffs["dataD2WS"] = ufloat(1.39e-5*-12.0*7*8, 0.)
+	selectioneffs["dataD1WS"] = ufloat(1.39e-5*-12.0*11*22*3.3, 0.)
 
 	regioneffs = MultiplyFinalEffs(selectioneffs, effs)
 
@@ -924,11 +1021,11 @@ if __name__ == "__main__":
 
 	PlotStack(frames, data, files, regions, variables, regioneffs, outputfolder, False)
 
-	PlotComparison(frames, data, "dataD2WS", regions, variables, outputfolder, False)
+	#PlotComparison(frames, data, "dataD2WS", regions, variables, outputfolder, False)
 
-	PublishToWeb(outputfolder, "Modelling_23_9_21")
+	#PublishToWeb(outputfolder, "Modelling_23_9_27")
 
-	
+	#WriteDatacard(frames, regioneffs, variables, regions, "dataB2")
 
 	#files = {"Sig":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/Sig.root"), "BkgDstara1":LoadFile("/Users/mhuwiler/eos/DoctoralThesis/Analysis/data/v3/BkgDstara1.root") }
 	#newframes, histos, histisunrolled = PrepareCustomFiles(files, regions)

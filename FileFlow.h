@@ -41,7 +41,7 @@ namespace Ana
 
 
 	// Constants being defined centrally 
-	Double_t mvaCutSR = 0.4; // TODO: make cuts per version 
+	Double_t mvaCutSR = 0.7; // TODO: make cuts per version 
 	Double_t mvaCutSB = -0.1; 
 	Double_t mvaCutCR = -0.5; 
 
@@ -335,7 +335,7 @@ namespace Ana
 			filemanager.AddItem("BkgBtoDstarDsstar", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/BkgDstarDsstarInclPrivateProdFirst.root", "ntuplizer/tree"); 
 		}
 
-		cut.emplace(std::make_pair("base", "(b_tau_m<1.7)")); //&&(b_tau_min_dr_mu>0.5)&&(b_tau_min_dr_e>0.5)//&& (b_B_q2 > 6.) // (b_Ds_vprob>0.1) && (b_D0_vprob>0.1) && (mvaScore>-2.) && (b_B_mu_alpha > 1.) &&((b_tau_m_KKpi1>2.)||(b_tau_m_KKpi1<1.9))&&((b_tau_m_KKpi2>2.)||(b_tau_m_KKpi2<1.9)) &&(b_tau_min_dr_mu>0.5)&&(b_tau_min_dr_e>0.5)&&(b_tau_alpha>0) (b_tau_m<1.7)&&(b_tau_alpha>0)&&(D0_fsig>3.)&&(b_B_m>3.)&&(b_tau_vtx4trkProb<0.2)
+		cut.emplace(std::make_pair("base", "(b_tau_m<1.7)&&(b_tau_min_dr_mu>0.5)&&(b_tau_alpha>0)&&(D0_fsig>3.)&&(b_B_m>3.)")); //&&(b_tau_min_dr_mu>0.5)&&(b_tau_min_dr_e>0.5)//&& (b_B_q2 > 6.) // (b_Ds_vprob>0.1) && (b_D0_vprob>0.1) && (mvaScore>-2.) && (b_B_mu_alpha > 1.) &&((b_tau_m_KKpi1>2.)||(b_tau_m_KKpi1<1.9))&&((b_tau_m_KKpi2>2.)||(b_tau_m_KKpi2<1.9)) &&(b_tau_min_dr_mu>0.5)&&(b_tau_min_dr_e>0.5)&&(b_tau_alpha>0) (b_tau_m<1.7)&&(b_tau_alpha>0)&&(D0_fsig>3.)&&(b_B_m>3.)&&(b_tau_vtx4trkProb<0.2)
 		cut.emplace(std::make_pair("SR", cut["base"]+TCut(TString::Format("mvaScore>=%f", mvaCutSR)))); 
 		cut.emplace(std::make_pair("SB", cut["base"]+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutSB, mvaCutSR)))); 
 		cut.emplace(std::make_pair("CR", cut["base"]+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutCR, mvaCutSB)))); 
@@ -367,7 +367,7 @@ namespace Ana
 			{"v4", "./data/tautagger/NewSelTopUpNoOverlap/serialized"}, 
 			{"v6.7", "./data/tautagger/FlightSigCorrNoCharge/serialized"}, 
 			{"v6.8", "./data/tautagger/FlightSigCorrNoCharge/serialized"},
-			{"v6.9", "./data/tautagger/LastProduction/serialized"}
+			{"v6.9", "./data/tautagger/FlightSigCorrNoCharge/serialized"}
 		}; 
 
 		MVA = {	
@@ -378,7 +378,7 @@ namespace Ana
 			{"v4", "./anaMVA/NewSelection/model_optimized/weights.xml"}, 
 			{"v6.7", "./anaMVA/NewFixTauFL/model_optimized/weights.xml"}, 
 			{"v6.8", "./anaMVA/NewIsoWithCutsvsdata/model_optimized/weights.xml"}, //./anaMVA/NewIsoVariablesAgainstWS/model_optimized/weights.xml" ./anaMVA/NewIsoVariables/model_optimized/weights.xml
-			{"v6.9", "./anaMVA/TrimmedVariablesWS/model_optimized/weights.xml"}
+			{"v6.9", "./anaMVA/NewFixTauFL/model_optimized/weights.xml"} //LatestVsData
 		}; 
 
 		//legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"B0toDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"B0toDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"}, {"B0toDstar3pi", "B^{0}#rightarrowD^{*}3pi"}, {"B0toDstarD", "B^{0}#rightarrowD^{*}D"}, {"ButoDstarDK", "B^{+}#rightarrowD^{*}DK"}, {"B0toDstarD0K", "B^{0}#rightarrowD^{*}D^{0}K"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 
@@ -389,13 +389,13 @@ namespace Ana
 
 		binning = {{"b_tau_rhomass1", {"", "#rho_{12} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
 				{"b_tau_rhomass2", {"", "rho_{23} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
-				{"b_B_m", {"", "B mass;Reconstructed m_{B} [GeV];Counts", nBins, 0., 6.}},
+				{"b_B_m", {"", "B mass;Reconstructed m_{B} [GeV];Counts", nBins, 2., 6.}},
 				{"b_B_q2", {"", "q2;q^{2} [GeV];Counts", nBins, 0., 12.}},
 				//{"B_m", {"", ";B mass [GeV];Counts", nBins, 0., 6.}},
 				//{"B_q2", {"", ";B mass [GeV];Counts", nBins, 0., 12.}},
 				//{"tau_rhomass1", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},
 				//{"tau_rhomass2", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},
-				{"b_tau_m", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, 0., 5.}},
+				{"b_tau_m", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, 0., 2.}},
 		}; 
 
 		// Complete binning with default

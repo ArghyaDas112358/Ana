@@ -173,7 +173,7 @@
 {"b_B_fsig", {"", "b_B_fsig;b_B_fsig;Counts", nBins, 0., 35.}},
 {"b_B_lip", {"", "b_B_lip;b_B_lip;Counts", nBins, -0.1, 0.1}},
 {"b_B_lipsig", {"", "b_B_lipsig;b_B_lipsig;Counts", nBins, -10., 10.}},
-{"b_B_m", {"", "b_B_m;b_B_m;Counts", nBins, 0., 6.}},
+{"b_B_m", {"", "b_B_m;b_B_m;Counts", nBins, 3., 6.}},
 {"b_B_mcorr_eta", {"", "b_B_mcorr_eta;b_B_mcorr_eta;Counts", nBins, -3.15, 3.15}},
 {"b_B_mcorr_phi", {"", "b_B_mcorr_phi;b_B_mcorr_phi;Counts", nBins, -3.5, 3.5}},
 {"b_B_mcorr_pt", {"", "b_B_mcorr_pt;b_B_mcorr_pt;Counts", nBins, 0., 50.}},

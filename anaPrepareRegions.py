@@ -9,6 +9,7 @@ import copy
 from argparse import ArgumentParser
 ROOT.gROOT.LoadMacro("FileFlow.h+")
 from ROOT import Ana, TCanvas, TH1D, TPad, TLegend, THStack, RDataFrame
+import anaConfig
 
 
 #from anaConfig import variables
@@ -46,13 +47,10 @@ if __name__ == "__main__":
 
 	parser = ArgumentParser(description="SignalBackground")
 	#parser.add_argument("tool", action="store", type=str, help="Which time list you want to analyse")
-	parser.add_argument("--out", dest="out", action="store", type=str, default="TestPrepareRegions/", help="Directory where the plots shuld go")
-	parser.add_argument("--name", dest="name", action="store", type=str, default="test", help="Turn on debug output")
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v1", help="Which version (cycle) of files to run on")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
-	parser.add_argument("-f", "--forcepath", dest="forcepath", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
-	parser.add_argument("--stats", dest="stats", action="store_true", default=False, help="Show stats box in ROOT")
+	
 
 	options = parser.parse_args()
 
@@ -78,11 +76,11 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	filesUsed = ["Sig", "dataB2", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "B0toDstar3pi", "dataD2WS"] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
+	filesUsed = anaConfig.samples
 
-	regions = ["SR", "CR", "SB"]
+	regions = anaConfig.regions
 
-	variables = ["b_tau_rhomass1", "b_tau_rhomass2", "b_B_q2", "b_B_m", "b_tau_m"]
+	variables = anaConfig.variables
 
 
 	nBins = 6

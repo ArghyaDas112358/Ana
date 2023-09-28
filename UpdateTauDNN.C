@@ -498,6 +498,23 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 		return mytaus; 
 	};
 
+	bool ws = false; 
+
+	auto SelectTauCandidateRegion = [&ws](std::vector<Tau> collection, const int q) 
+	{
+		std::sort(collection.begin(), collection.end(), SortTauCandidates); //std::greater<>()
+
+		int charge = ws ? q : -q; 
+
+		for (auto candidate : collection) 
+		{
+			if (candidate.q == charge) return candidate; // candidate.m < 1.7 candidate.q == q
+		}
+
+		return Tau(); // This wil return an invalid tau
+	};
+	// Could use the following type: std::function<Tau (std::vector<Tau>, const int)>
+
 	// For legacy processing of v1 files 
 	/*auto BuildTauCandidatesWithCount_v1 = [&count](ROOT::VecOps::RVec<float> taupt, ROOT::VecOps::RVec<float> taueta, ROOT::VecOps::RVec<float> tauphi, ROOT::VecOps::RVec<int> taucharge, ROOT::VecOps::RVec<float> taumass, ROOT::VecOps::RVec<float> tauVprob, ROOT::VecOps::RVec<float> taufsig, ROOT::VecOps::RVec<float> taulip, ROOT::VecOps::RVec<int> idx1, ROOT::VecOps::RVec<int> idx2, ROOT::VecOps::RVec<int> idx3, ROOT::VecOps::RVec<float> dnn1, ROOT::VecOps::RVec<float> dnn2, ROOT::VecOps::RVec<float> dnn3, std::vector<float> sumdnn, 
 										ROOT::VecOps::RVec<float> alpha, ROOT::VecOps::RVec<float> maxDr, ROOT::VecOps::RVec<float> taufl, ROOT::VecOps::RVec<float> pvip, ROOT::VecOps::RVec<float> pvips, ROOT::VecOps::RVec<float> dau1pt, ROOT::VecOps::RVec<float> dau1eta, ROOT::VecOps::RVec<float> dau1phi, ROOT::VecOps::RVec<float> dau2pt, ROOT::VecOps::RVec<float> dau2eta, ROOT::VecOps::RVec<float> dau2phi, ROOT::VecOps::RVec<float> dau3pt, ROOT::VecOps::RVec<float> dau3eta, ROOT::VecOps::RVec<float> dau3phi, ROOT::VecOps::RVec<float> rhomass1, ROOT::VecOps::RVec<float> rhomass2) // TODO: set to int  
@@ -542,7 +559,7 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 		, "v_tau_dnn1", "v_tau_dnn2", "v_tau_dnn3", "v_tau_sumdnn"
 	});
 	
-	withDNN = withDNN.Define("b_tau", SelectTauCandidate, {"v_taucandidates", "Dstar_q"})
+	withDNN = withDNN.Define("b_tau", SelectTauCandidateRegion, {"v_taucandidates", "Dstar_q"})
 				// .Define("b_tau_pt", Tau::WritePt, {"b_tau"})
 				// .Define("b_tau_eta", Tau::WriteEta, {"b_tau"})
 				// .Define("b_tau_phi", Tau::WritePhi, {"b_tau"})

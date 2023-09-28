@@ -361,7 +361,7 @@ float extractFirstElement(const ROOT::VecOps::RVec<float>& vec)
 
  
 
-void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, const TString& cycle) 
+void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, const TString& cycle, const bool ws = false) 
 {
 	ROOT::DisableImplicitMT(); 
 	//ROOT::EnableImplicitMT(); //ROOT::DisableImplicitMT(); 
@@ -497,8 +497,6 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 		assert(mytaus.size() == taupt.size()); 
 		return mytaus; 
 	};
-
-	bool ws = false; 
 
 	auto SelectTauCandidateRegion = [&ws](std::vector<Tau> collection, const int q) 
 	{

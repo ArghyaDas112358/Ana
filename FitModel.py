@@ -26,9 +26,9 @@ file = TFile(shape_file)
 cb = ch.CombineHarvester()
 if (options.debug): cb.SetVerbosity(3)
 
-sig_procs = ['SignalOfficialMC50M'] #['Sig']
+sig_procs = ["Sig"] #['Sig']
 
-bkg_procs = ['BkgDstarDsMultipleTau', "bkg"]
+bkg_procs = ["B0toDstarDs", "B0toDstarDsstar", "B0toDstarD0K"]
 
 categories = {
     'SR': [(1, 'SR')],
@@ -37,8 +37,8 @@ categories = {
     }
 
 
-channels = ['SB']
-prefix = ['fitFirst']
+channels = ['SB'] # Channels for which to write datacards
+prefix = ['fitFirst'] # also called analysis
 era = ['2018']
 
 

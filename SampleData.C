@@ -92,7 +92,7 @@ namespace Ana {
 				mycolors[3], 
 				"B^{0}#rightarrowD*D", 
 				genMatchCut, 
-				"1", 
+				"", 
 				{"B0toDstarD"})
 			},
 			{"B0toDstarD0K", SampleData(
@@ -120,7 +120,7 @@ namespace Ana {
 				mycolors[7], 
 				"B^{0}#rightarrowD*3pi", 
 				genMatchCut, 
-				"1", 
+				"", 
 				{"B0toDstar3pi"})
 			},
 			// Bu decays 
@@ -128,7 +128,7 @@ namespace Ana {
 				mycolors[4], 
 				"B^{+}#rightarrowD*DK", 
 				genMatchCut, 
-				"1", 
+				"", 
 				{"ButoDstarDK"})
 			}, 
 			// To be completed

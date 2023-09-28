@@ -9,7 +9,8 @@ SIGNALLIST=( Sig SigTest )
 DATALIST=( dataB2 dataD1 dataD2)
 WSLIST=( dataD1WS dataD2WS )
 
-SAMPLELIST=( "${BKGLIST[@]}" "${SIGNALLIST[@]}" )
+SAMPLELIST=( ) #( "${BKGLIST[@]}" "${SIGNALLIST[@]}" )
+WSPROCLIST=( ) #( "${WSLIST[@]}" )
 shift
 while [[ $1 =~ "--" ]]; do # Looping over all arguments, see shift
 	if [[ $1 == "--BKG" ]]; then 
@@ -21,13 +22,16 @@ while [[ $1 =~ "--" ]]; do # Looping over all arguments, see shift
 	elif [[ $1 == "--DATA" ]]; then 
 		SAMPLELIST=( "${DATALIST[@]}" )
 	elif [[ $1 == "--WS" ]]; then 
-		SAMPLELIST=( "${WSLIST[@]}" )
+		WSPROCLIST=( "${WSLIST[@]}" )
 	elif [[ $1 == "--ALL" ]]; then 
-		SAMPLELIST=( "${BKGLIST[@]}" "${SIGNALLIST[@]}" "${DATALIST[@]}" "${WSLIST[@]}" )
+		SAMPLELIST=( "${BKGLIST[@]}" "${SIGNALLIST[@]}" "${DATALIST[@]}" )
+		WSPROCLIST=( "${WSLIST[@]}" )
 	elif [[ $1 == "--MIN" ]]; then 
-		SAMPLELIST=( "${BKGLIST[@]}" Sig dataB2 dataD2WS )
+		SAMPLELIST=( "${BKGLIST[@]}" Sig dataB2 )
+		WSPROCLIST=( dataD2WS )
 	elif [[ $1 == "--TEST" ]]; then 
 		SAMPLELIST=( B0toDstarDs B0toDstara1 )
+		WSPROCLIST=( dataD2WS )
 	elif [[ $1 == "--STEP" ]]; then 
 		shift
 		STAGE=$1
@@ -44,12 +48,23 @@ if [[ "${VERSION}" == "" ]]; then
 	return $?
 fi
 
+echo "Start processing the following sample list: ${SAMPLELIST[@]}"
+echo "and the following samples with wrong sign: ${WSPROCLIST[@]}"
 DATESTRING=$(date '+%Y_%m_%d__%H_%M_%S')
 echo $DATESTRING >> failprocessing.txt
 
 for ITEM in "${SAMPLELIST[@]}"; do
 	#echo $ITEM
 	. process.sh $ITEM $VERSION $STAGE
+	RETURNCODE=$?
+	if [ $RETURNCODE -ne 0 ]; then 
+		echo $ITEM >> failprocessing.txt
+	fi
+done
+
+for ITEM in "${WSPROCLIST[@]}"; do
+	#echo $ITEM
+	. process.sh $ITEM $VERSION $STAGE 1
 	RETURNCODE=$?
 	if [ $RETURNCODE -ne 0 ]; then 
 		echo $ITEM >> failprocessing.txt

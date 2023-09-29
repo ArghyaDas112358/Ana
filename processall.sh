@@ -70,7 +70,7 @@ if (( $DATAPROCESSED )) && [[ $STAGE -lt 1 ]]; then
 fi
 for ITEM in "${WSPROCLIST[@]}"; do
 	#echo $ITEM
-	. process.sh $ITEM $VERSION $STAGE 0 1
+	. process.sh $ITEM $VERSION $STAGE 1
 	RETURNCODE=$?
 	if [ $RETURNCODE -ne 0 ]; then 
 		echo $ITEM >> failprocessing.txt

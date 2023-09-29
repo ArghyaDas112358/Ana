@@ -13,10 +13,10 @@ if [[ $# -ge 3 ]]; then
 	STEP=${3}
 fi
 if [[ $# -ge 4 ]]; then
-	STOPEVT=${4}
+	WRONGSIGN=${4}
 fi
 if [[ $# -ge 5 ]]; then
-	WRONGSIGN=${5}
+	STOPEVT=${5}
 fi
 
 function processFull()

@@ -11,6 +11,7 @@ WSLIST=( dataD1WS dataD2WS )
 
 SAMPLELIST=( ) #( "${BKGLIST[@]}" "${SIGNALLIST[@]}" )
 WSPROCLIST=( ) #( "${WSLIST[@]}" )
+DATAPROCESSED=0
 shift
 while [[ $1 =~ "--" ]]; do # Looping over all arguments, see shift
 	if [[ $1 == "--BKG" ]]; then 
@@ -21,10 +22,12 @@ while [[ $1 =~ "--" ]]; do # Looping over all arguments, see shift
 		SAMPLELIST=( "${SIGNALLIST[@]}" )
 	elif [[ $1 == "--DATA" ]]; then 
 		SAMPLELIST=( "${DATALIST[@]}" )
+		DATAPROCESSED=1
 	elif [[ $1 == "--WS" ]]; then 
 		WSPROCLIST=( "${WSLIST[@]}" )
 	elif [[ $1 == "--ALL" ]]; then 
 		SAMPLELIST=( "${BKGLIST[@]}" "${SIGNALLIST[@]}" "${DATALIST[@]}" )
+		DATAPROCESSED=1
 		WSPROCLIST=( "${WSLIST[@]}" )
 	elif [[ $1 == "--MIN" ]]; then 
 		SAMPLELIST=( "${BKGLIST[@]}" Sig dataB2 )
@@ -62,6 +65,9 @@ for ITEM in "${SAMPLELIST[@]}"; do
 	fi
 done
 
+if (( $DATAPROCESSED )) && [[ $STAGE -lt 1 ]]; then
+	STAGE=1
+fi
 for ITEM in "${WSPROCLIST[@]}"; do
 	#echo $ITEM
 	. process.sh $ITEM $VERSION $STAGE 0 1

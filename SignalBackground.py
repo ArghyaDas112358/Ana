@@ -917,7 +917,7 @@ if __name__ == "__main__":
 
 	regions = ["SR", "CR", "SB"]
 
-	variables = ["b_tau_rhomass1", "b_tau_rhomass2", "b_B_q2", "b_B_m", "b_tau_m"]
+	variables = ["b_tau_rhomass1", "b_tau_rhomass2", "b_B_q2", "b_B_m", "b_tau_m", "b_B_proper_xi_rho1", "b_B_proper_xi_rho2", "b_tau_proper_alpha_rho1_pi", "b_tau_proper_alpha_rho2_pi", "b_tau_proper_theta_rho1", "b_tau_proper_theta_rho2"]
 
 
 	nBins = 6

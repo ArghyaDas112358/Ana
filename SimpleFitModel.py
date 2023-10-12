@@ -41,6 +41,9 @@ if __name__ == "__main__":
 	options = parser.parse_args()
 
 
+	if (options.batch): 
+		ROOT.gROOT.SetBatch(1) 
+
 	# Global initialisations
 	Ana.Init(options.version)
 
@@ -53,8 +56,11 @@ if __name__ == "__main__":
 	samples = {}
 	frames = collections.defaultdict(dict)
 	baseline = collections.defaultdict(dict)
+	anasamples = anaConfig.samples
 
-	for item in anaConfig.samples:  
+	anasamples = {"Sig", "dataD2", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "dataD2WS"}
+
+	for item in anasamples:  
 		Ana.filemanager.OpenItem(item)
 		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
 		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(item).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."

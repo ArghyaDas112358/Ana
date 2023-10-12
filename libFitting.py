@@ -118,7 +118,7 @@ def WriteWorkspace(frames, yields, variables, regions, dataname, filename="works
 			examplehist = Ana.binning[variable]
 
 			# Writing the data shapes for each region
-			name = "data_obs_{}_{}".format(region, variable)
+			name = "data_obs_{}".format(region, variable)
 	
 			hist = frames[dataname][region].Histo1D(examplehist, variable).GetPtr()
 			hist.SetName(name)
@@ -127,7 +127,53 @@ def WriteWorkspace(frames, yields, variables, regions, dataname, filename="works
 			getattr(workspace, "import")(histogram)
 			# Writing the MC shapes 
 			for item in MC: 
-				histname = item+"_"+region+"_"+variable
+				histname = item+"_"+region #+"_"+variable
+				hist = frames[item][region].Histo1D(examplehist, variable).GetPtr()
+				norm = -1.
+				try: 
+					norm = yields[item][region].n
+					hist.Scale(norm/hist.Integral())
+				except:
+					pass
+				hist.SetName(histname)
+				roohist = ROOT.RooDataHist(histname, histname, fitspace, hist)
+				hist.Write()
+				getattr(workspace, "import")(roohist)
+
+		workspace.Write()
+		file.Write()
+		file.Close()
+
+
+def WriteWorkspaceWithSyst(frames, yields, variables, regions, dataname, filename="workspace.root", workspacename="w"): 
+	from ROOT import RooRealVar, RooDataHist, RooArgSet
+	from ROOT import Ana
+
+	MC = frames.keys()
+	print(MC)
+	print(dataname)
+	MC.remove(dataname)
+
+	for variable in variables: 
+		file = ROOT.TFile.Open(filename, "RECREATE")
+		workspace = ROOT.RooWorkspace(workspacename)
+		# Creating the variable on which we fit
+		var = RooRealVar(variable, variable, 0., 100.)
+		fitspace = RooArgSet(var)
+		for region in regions: 
+			examplehist = Ana.binning[variable]
+
+			# Writing the data shapes for each region
+			name = "data_obs_{}".format(region, variable)
+	
+			hist = frames[dataname][region].Histo1D(examplehist, variable).GetPtr()
+			hist.SetName(name)
+			histogram = RooDataHist(name, name, fitspace, hist)
+			hist.Write() # Also saving the ROOT hist
+			getattr(workspace, "import")(histogram)
+			# Writing the MC shapes 
+			for item in MC: 
+				histname = item+"_"+region #+"_"+variable
 				hist = frames[item][region].Histo1D(examplehist, variable).GetPtr()
 				#hist.Scale(yields[item][region].n/hist.Integral())
 				hist.SetName(histname)
@@ -187,7 +233,7 @@ def WriteDatacardSimple(frames, yields, variables, regions, fitvariable, datanam
 		labelstring = "process "
 		indexstring = "process "
 		expectedstring = "rate "
-		count = 0
+		count = 1
 		for region in regions: 
 			for item in MC: 
 				if ("data" in item): 
@@ -201,9 +247,9 @@ def WriteDatacardSimple(frames, yields, variables, regions, fitvariable, datanam
 				indexstring += "{} ".format(factor*count)
 				# Hack for normalising WS
 				if (not "data" in item): 
-					expectedstring += "{} ".format(yields[item][region])
+					expectedstring += "{} ".format(yields[item][region].n)
 				else: 
-					expectedstring += "1."
+					expectedstring += "1. "
 				count += 1
 		datacard.write(binstring+"\n")
 		datacard.write(labelstring+"\n")

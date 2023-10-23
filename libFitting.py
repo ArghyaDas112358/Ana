@@ -175,6 +175,11 @@ def WriteWorkspaceWithSyst(frames, yields, variables, regions, dataname, filenam
 			for item in MC: 
 				histname = item+"_"+region #+"_"+variable
 				hist = frames[item][region].Histo1D(examplehist, variable).GetPtr()
+				try: 
+					norm = yields[item][region].n
+					hist.Scale(norm/hist.Integral())
+				except:
+					pass
 				#hist.Scale(yields[item][region].n/hist.Integral())
 				hist.SetName(histname)
 				roohist = ROOT.RooDataHist(histname, histname, fitspace, hist)

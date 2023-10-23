@@ -43,9 +43,32 @@ def UnrollHist(histo2D, inverted=True):
 	return unrolled
 
 
+def PrepareRegionsSimple(): 
+	samples = {}
+	frames = collections.defaultdict(dict)
+	baseline = collections.defaultdict(dict)
+
+	for item in anaConfig.samples:  
+		Ana.filemanager.OpenItem(item)
+		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
+		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(item).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."
+		frames[item]["all"] = samples[item].Filter("1.")
+		#baseline[item]
+		for region in anaConfig.regions: 
+			cut = (Ana.cut[region]+Ana.samples.at(item).cut).GetTitle()
+			#if "WS" in item: 
+			#	cut = Ana.cutstandalone[region].GetTitle()
+			#if (options.debug): print("Using following cut string (from TCut): {}".format(cut))
+			frames[item][region] = samples[item].Filter(cut)
+			ROOT.SetOwnership(frames[item][region], 0)
+			# For histogram legacy compatibility
+
+	return frames
+
+
 if __name__ == "__main__":
 
-	parser = ArgumentParser(description="SignalBackground")
+	parser = ArgumentParser(description="SignalBackground") 
 	#parser.add_argument("tool", action="store", type=str, help="Which time list you want to analyse")
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v1", help="Which version (cycle) of files to run on")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")

@@ -50,24 +50,9 @@ if __name__ == "__main__":
 
 
 	# Starting script 
-	samples = {}
-	frames = collections.defaultdict(dict)
-	baseline = collections.defaultdict(dict)
-
-	for item in anaConfig.samples:  
-		Ana.filemanager.OpenItem(item)
-		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
-		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(item).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."
-		frames[item]["all"] = samples[item].Filter("1.")
-		#baseline[item]
-		for region in anaConfig.regions: 
-			cut = (Ana.cut[region]+Ana.samples.at(item).cut).GetTitle()
-			#if "WS" in item: 
-			#	cut = Ana.cutstandalone[region].GetTitle()
-			if (options.debug): print("Using following cut string (from TCut): {}".format(cut))
-			frames[item][region] = samples[item].Filter(cut)
-			ROOT.SetOwnership(frames[item][region], 0)
-			# For histogram legacy compatibility
+	from anaPrepareRegions import PrepareRegionsSimple
+	frames = PrepareRegionsSimple()
+	
 
 	if options.debug: print(frames)
 
@@ -91,7 +76,7 @@ if __name__ == "__main__":
 
 	yields = ReadEffs2D("./data/etc/RegionEffs.json")
 
-	WriteWorkspace(frames, yields, anaConfig.variables, anaConfig.regions, anaConfig.data, "workspaceFromExport.root", "w")
+	WriteWorkspace(frames, yields, anaConfig.variables, anaConfig.regions, anaConfig.data, "workspaceFromExportTest.root", "w")
 
 	Ana.filemanager.CloseAll()
 

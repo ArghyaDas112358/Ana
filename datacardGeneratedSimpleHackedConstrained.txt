@@ -1,0 +1,45 @@
+# Datacard generated automatically with /Users/mhuwiler/cernbox/DoctoralThesis/Analysis/scripts/Ana/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/scripts/Ana/libFitting.py on 11.10.23 14:52:03.
+# Simple fit 
+
+imax 1
+jmax 6
+kmax 6
+
+--------------------------------------------------
+# Shapes and RooFit workspace
+shapes data_obs SR workspaceFromExport.root w:data_obs_SR
+shapes dataD2WS SR workspaceFromExport.root w:dataD2WS_SR
+shapes ButoDstarDK SR workspaceFromExport.root w:ButoDstarDK_SR
+shapes B0toDstarDs SR workspaceFromExport.root w:B0toDstarDs_SR
+shapes B0toDstarD SR workspaceFromExport.root w:B0toDstarD_SR
+shapes Sig SR workspaceFromExport.root w:Sig_SR
+shapes B0toDstarD0K SR workspaceFromExport.root w:B0toDstarD0K_SR
+shapes B0toDstarDsstar SR workspaceFromExport.root w:B0toDstarDsstar_SR
+
+--------------------------------------------------
+# Observed events (data)
+bin SR 
+observation -1 
+
+--------------------------------------------------
+# Expected events (MC/model)
+bin SR SR SR SR SR SR SR 
+process dataD2WS ButoDstarDK B0toDstarDs B0toDstarD Sig B0toDstarD0K B0toDstarDsstar 
+process 8 1 2 3 -5 6 7 
+rate 808 1.65980352612 15.5021353104 1.53522448066 24.5506215248 3.82994354761 28.2140367954 
+
+--------------------------------------------------
+ButoDstarDK_SR_norm rateParam SR ButoDstarDK 1.65980352612 [0,8.29901763061]
+ButoDstarDK_SR_norm param 1.65980352612 0.3239195269518141
+B0toDstarDs_SR_norm rateParam SR B0toDstarDs 15.5021353104 [0,77.5106765518]
+B0toDstarDs_SR_norm param 15.5021353104 3.007646083965838
+B0toDstarD_SR_norm rateParam SR B0toDstarD 1.53522448066 [0,7.67612240331]
+B0toDstarD_SR_norm param 1.53522448066 0.26872748374833355
+Sig_SR_norm rateParam SR Sig 24.5506215248 [0,122.753107624]
+Sig_SR_norm param 24.5506215248 3.0333639958427847
+B0toDstarD0K_SR_norm rateParam SR B0toDstarD0K 3.82994354761 [0,19.149717738]
+B0toDstarD0K_SR_norm param 3.82994354761 0.6833368343052345
+B0toDstarDsstar_SR_norm rateParam SR B0toDstarDsstar 28.2140367954 [0,141.070183977]
+B0toDstarDsstar_SR_norm param 28.2140367954 4.779364414327871
+
+--------------------------------------------------

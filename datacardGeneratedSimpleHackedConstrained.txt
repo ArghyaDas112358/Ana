@@ -3,7 +3,7 @@
 
 imax 1
 jmax 6
-kmax 6
+kmax 5
 
 --------------------------------------------------
 # Shapes and RooFit workspace
@@ -36,7 +36,6 @@ B0toDstarDs_SR_norm param 15.5021353104 3.007646083965838
 B0toDstarD_SR_norm rateParam SR B0toDstarD 1.53522448066 [0,7.67612240331]
 B0toDstarD_SR_norm param 1.53522448066 0.26872748374833355
 Sig_SR_norm rateParam SR Sig 24.5506215248 [0,122.753107624]
-Sig_SR_norm param 24.5506215248 3.0333639958427847
 B0toDstarD0K_SR_norm rateParam SR B0toDstarD0K 3.82994354761 [0,19.149717738]
 B0toDstarD0K_SR_norm param 3.82994354761 0.6833368343052345
 B0toDstarDsstar_SR_norm rateParam SR B0toDstarDsstar 28.2140367954 [0,141.070183977]

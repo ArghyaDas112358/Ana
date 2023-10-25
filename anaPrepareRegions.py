@@ -43,10 +43,34 @@ def UnrollHist(histo2D, inverted=True):
 	return unrolled
 
 
+def PrepareRegions(nBins = 6, rangeMin = 0.2, rangeMax = 1.5, debug=False): 
+	samples = {}
+	frames = collections.defaultdict(dict)
+	histos = collections.defaultdict(dict)
+	histosunrolled = collections.defaultdict(dict)
+
+	for item in anaConfig.samples:  
+		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
+		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(item).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."
+		frames[item]["all"] = samples[item].Filter("1.")
+		#baseline[item]
+		for region in anaConfig.regions: 
+			cut = (Ana.cut[region]+Ana.samples.at(item).cut).GetTitle()
+			#if "WS" in item: 
+			#	cut = Ana.cutstandalone[region].GetTitle()
+			if (debug): print("Using following cut string (from TCut): {}".format(cut))
+			frames[item][region] = samples[item].Filter(cut)
+			ROOT.SetOwnership(frames[item][region], 0)
+			# For histogram legacy compatibility
+			histos[item][region] = frames[item][region].Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2")
+			histosunrolled[item][region] = UnrollHist(histos[item][region])
+
+	return frames, histosunrolled
+
+
 def PrepareRegionsSimple(): 
 	samples = {}
 	frames = collections.defaultdict(dict)
-	baseline = collections.defaultdict(dict)
 
 	for item in anaConfig.samples:  
 		Ana.filemanager.OpenItem(item)
@@ -71,6 +95,7 @@ if __name__ == "__main__":
 	parser = ArgumentParser(description="SignalBackground") 
 	#parser.add_argument("tool", action="store", type=str, help="Which time list you want to analyse")
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v1", help="Which version (cycle) of files to run on")
+	parser.add_argument("-o", "--out", dest="out", action="store", type=str, default="TestPrepareRegions", help="Which version (cycle) of files to run on")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
 	
@@ -81,62 +106,24 @@ if __name__ == "__main__":
 	if (options.batch): 
 		ROOT.gROOT.SetBatch(1) 
 
-	if (options.stats): 
-		ROOT.gStyle.SetOptStat(1111111)
-	else: 
-		# Don't plot stats box
-		ROOT.gStyle.SetOptStat(0) 
-
 	outputfolder = "./plots/"+options.out+"/"
-	if (options.forcepath): 
-		print("WARNING: You have used option '-f' or '--forcepath'. Files will be written to: {}".format(options.out))
-		outputfolder = options.out+"/"
+	#if (options.forcepath): 
+	#	print("WARNING: You have used option '-f' or '--forcepath'. Files will be written to: {}".format(options.out))
+	#	outputfolder = options.out+"/"
 
 	os.system("mkdir -p "+outputfolder)
 
 
 	# Global initialisations
 	Ana.Init(options.version)
-
-
-	filesUsed = anaConfig.samples
-
-	regions = anaConfig.regions
-
-	variables = anaConfig.variables
-
-
-	nBins = 6
-	rangeMin = 0.2 #0.37
-	rangeMax = 1.5 #1.43
 	
 
-	for file in filesUsed: 
+	for file in anaConfig.samples: 
 		Ana.filemanager.OpenItem(file)
 
 
 
-	samples = {}
-	frames = collections.defaultdict(dict)
-	baseline = collections.defaultdict(dict)
-	histos = collections.defaultdict(dict)
-	histosunrolled = collections.defaultdict(dict)
-
-	for item in filesUsed:  
-		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
-		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(item).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."
-		frames[item]["all"] = samples[item].Filter("1.")
-		#baseline[item]
-		for region in regions: 
-			cut = (Ana.cut[region]+Ana.samples.at(item).cut).GetTitle()
-			#if "WS" in item: 
-			#	cut = Ana.cutstandalone[region].GetTitle()
-			if (options.debug): print("Using following cut string (from TCut): {}".format(cut))
-			frames[item][region] = samples[item].Filter(cut)
-			ROOT.SetOwnership(frames[item][region], 0)
-			# For histogram legacy compatibility
-			histos[item][region] = frames[item][region].Histo2D(("rhomass1", "rhomass2", nBins, rangeMin, rangeMax, nBins, rangeMin, rangeMax), "b_tau_rhomass1", "b_tau_rhomass2")
-			histosunrolled[item][region] = UnrollHist(histos[item][region])
+	frames, histosunrolled = PrepareRegions(6, 0.2, 1.5)
 
 	if options.debug: print(frames)
 
@@ -144,7 +131,10 @@ if __name__ == "__main__":
 
 	from anaPlotting import PlotComparison
 
-	PlotComparison(frames, "dataB2", "dataD2WS", regions, variables, outputfolder, False)
+	PlotComparison(frames, anaConfig.data, anaConfig.dataWS, anaConfig.regions, anaConfig.variables, outputfolder, False)
+
+
+	Ana.filemanager.CloseAll()
 
 
 

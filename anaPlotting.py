@@ -5,7 +5,8 @@ import os
 from ROOT import TCanvas, TLegend, THStack, gROOT
 
 
-gROOT.LoadMacro("FileFlow.h")
+#gROOT.LoadMacro("FileFlow.h")
+import ROOT
 from ROOT import Ana
 
 

@@ -3,12 +3,10 @@ from __future__ import division, print_function
 
 import ROOT
 import os
-import math
-import collections
 import copy
 import json
 from argparse import ArgumentParser
-from ROOT import TCanvas, TH1D, TPad, TLegend, THStack, RDataFrame
+from ROOT import RDataFrame
 from uncertainties import ufloat
 from uncertainties.umath import * 
 from collections import OrderedDict, defaultdict
@@ -19,14 +17,62 @@ from collections import OrderedDict, defaultdict
 #ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/FileManager/CFileManager.C")
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/Drawing/CMS/tdrstyle.C")
 ROOT.gROOT.LoadMacro("FileFlow.h")
-ROOT.gROOT.LoadMacro("Tau.h")
+#ROOT.gROOT.LoadMacro("Tau.h")
 #ROOT.setTDRStyle()
 #import CMS_lumi
 from ROOT import Ana
 
 
+ROOT.gInterpreter.Declare(''' 
+	template<typename T>
+	void fixStringVariables(T &dataframe)
+	{
+		#include "stringbranches.gcf"
 
-webpublication =False
+		for (auto branch : stringbranches) // Hack to fix string branche 
+		{
+			dataframe = dataframe.Redefine(branch, [](const ROOT::RVec<std::string> &v) {return std::vector<std::string>(v.begin(), v.end());}, {branch}); 
+		}
+	}
+	'''
+) # Move this somewehre else
+
+ROOT.gInterpreter.Declare('''
+	std::vector<std::string>& purgeColumns(std::vector<std::string> &&columns)
+	{
+		const std::vector<std::string> blacklist = {"v_taucandidates", "b_tau"};
+			// a lambda that checks if `s` is in the blacklist
+			auto is_blacklisted = [&blacklist](const std::string &s)  { return std::find(blacklist.begin(), blacklist.end(), s) != blacklist.end(); };
+
+			// removing elements from std::vectors is not pretty, see https://en.wikipedia.org/wiki/Erase%E2%80%93remove_idiom
+			columns.erase(std::remove_if(columns.begin(), columns.end(), is_blacklisted), columns.end());
+
+			return columns; 
+	}
+	'''
+) 
+
+
+def SaveRegions(frames, path, objectinfile="tree"): 
+	print("Saving files under: {}".format(path))
+	os.system("mkdir -p {}".format(path))
+	snapshotOptions = ROOT.RDF.RSnapshotOptions()
+
+	info = defaultdict(dict)
+	for item, content in frames.items(): 
+		for key, value in content.items(): 
+
+			filename = "{}/{}{}.root".format(path, item, key)
+			frame = frames[item][key]
+			ROOT.fixStringVariables(frame)
+			frame.Snapshot(objectinfile, filename, ROOT.purgeColumns(frame.GetColumnNames()), snapshotOptions)
+
+			info[item][key] = (filename, objectinfile)
+
+			print("Saved {}".format(filename))
+
+	with open(path+"/Info.json", "w") as file: 
+		json.dump(info, file, ensure_ascii=False, sort_keys=False) #encoding="utf8", 
 
 
 
@@ -61,8 +107,8 @@ if __name__ == "__main__":
 
 	# Starting script 
 	samples = {}
-	frames = collections.defaultdict(dict)
-	baseline = collections.defaultdict(dict)
+	frames = defaultdict(dict)
+	baseline = defaultdict(dict)
 
 	for item in filesUsed:  
 		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
@@ -83,57 +129,7 @@ if __name__ == "__main__":
 
 	# Add info on objects and folder composition into a json at saving, to complete filemanager 
 	# (sample, region name: file, tree, unrolled hist, ...)
-	def SaveRegions(frames, path, objectinfile="tree"): 
-		print("Saving files under: {}".format(path))
-		os.system("mkdir -p {}".format(path))
-		snapshotOptions = ROOT.RDF.RSnapshotOptions()
 
-		info = defaultdict(dict)
-		for item, content in frames.items(): 
-			for key, value in content.items(): 
-
-				filename = "{}/{}{}.root".format(path, item, key)
-				frame = frames[item][key]
-				ROOT.fixStringVariables(frame)
-				frame.Snapshot(objectinfile, filename, ROOT.purgeColumns(frame.GetColumnNames()), snapshotOptions)
-
-				info[item][key] = (filename, objectinfile)
-
-				print("Saved {}".format(filename))
-
-		with open(path+"/Info.json", "w") as file: 
-			json.dump(info, file, ensure_ascii=False, sort_keys=False) #encoding="utf8", 
-
-	ROOT.gInterpreter.Declare(''' 
-		template<typename T>
-		void fixStringVariables(T &dataframe)
-		{
-			#include "stringbranches.gcf"
-
-			for (auto branch : stringbranches) // Hack to fix string branche 
-			{
-				dataframe = dataframe.Redefine(branch, [](const ROOT::RVec<std::string> &v) {return std::vector<std::string>(v.begin(), v.end());}, {branch}); 
-			}
-		}
-		'''
-	) # Move this somewehre else
-
-	ROOT.gInterpreter.Declare('''
-		std::vector<std::string>& purgeColumns(std::vector<std::string> &&columns)
-		{
-			const std::vector<std::string> blacklist = {"v_taucandidates", "b_tau"};
-   			// a lambda that checks if `s` is in the blacklist
-   			auto is_blacklisted = [&blacklist](const std::string &s)  { return std::find(blacklist.begin(), blacklist.end(), s) != blacklist.end(); };
-
-   			// removing elements from std::vectors is not pretty, see https://en.wikipedia.org/wiki/Erase%E2%80%93remove_idiom
-   			columns.erase(std::remove_if(columns.begin(), columns.end(), is_blacklisted), columns.end());
-
-   			return columns; 
-		}
-		'''
-	) 
-
-	tosave = frames[data]["SB"]
 
 	SaveRegions(frames, os.path.dirname(Ana.filemanager.GetFile("Sig"))+"/testRegion")
 	

@@ -109,7 +109,7 @@ if __name__ == "__main__":
 	SaveRegions(frames, os.path.dirname(Ana.filemanager.GetFile("Sig"))+"/testRegion")
 	
 
-	Ana.filemanager.CloseAll()
+	anaConfig.CloseFiles()
 
 
 

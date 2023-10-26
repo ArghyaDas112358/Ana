@@ -88,11 +88,7 @@ if __name__ == "__main__":
 	options = parser.parse_args()
 
 
-	# Global initialisations
-	Ana.Init(options.version)
-	
-
-	anaConfig.OpenFiles()
+	anaConfig.OpenFiles(options.version)
 
 
 	from anaPrepareRegions import PrepareRegions

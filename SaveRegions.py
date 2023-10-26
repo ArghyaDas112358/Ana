@@ -16,10 +16,11 @@ from collections import OrderedDict, defaultdict
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/Drawing/ExperimentSpecificLayer.C")
 #ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/FileManager/CFileManager.C")
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/Drawing/CMS/tdrstyle.C")
-ROOT.gROOT.LoadMacro("FileFlow.h")
+#ROOT.gROOT.LoadMacro("FileFlow.h")
 #ROOT.gROOT.LoadMacro("Tau.h")
 #ROOT.setTDRStyle()
 #import CMS_lumi
+import anaConfig
 from ROOT import Ana
 
 
@@ -93,36 +94,15 @@ if __name__ == "__main__":
 
 	data = "dataD2" #"dataB2"
 	filesUsed = ["Sig", data, "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "B0toDstar3pi", "dataD2WS"] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
-
-	regions = ["SR", "CR", "SB"]
-
-	nBins = 6
-	rangeMin = 0.2 #0.37
-	rangeMax = 1.5 #1.43
 	
 
 	for file in filesUsed: 
 		Ana.filemanager.OpenItem(file)
 
 
-	# Starting script 
-	samples = {}
-	frames = defaultdict(dict)
-	baseline = defaultdict(dict)
+	from anaPrepareRegions import PrepareRegions
 
-	for item in filesUsed:  
-		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
-		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(item).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."
-		frames[item]["all"] = samples[item].Filter("1.")
-		#baseline[item]
-		for region in regions: 
-			cut = (Ana.cut[region]+Ana.samples.at(item).cut).GetTitle()
-			#if "WS" in item: 
-			#	cut = Ana.cutstandalone[region].GetTitle()
-			if (options.debug): print("Using following cut string (from TCut): {}".format(cut))
-			frames[item][region] = samples[item].Filter(cut)
-			ROOT.SetOwnership(frames[item][region], 0)
-			# For histogram legacy compatibility
+	frames, _ = PrepareRegions()
 
 	if options.debug: print(frames)
 

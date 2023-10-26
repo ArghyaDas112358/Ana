@@ -90,14 +90,9 @@ if __name__ == "__main__":
 
 	# Global initialisations
 	Ana.Init(options.version)
-
-
-	data = "dataD2" #"dataB2"
-	filesUsed = ["Sig", data, "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "B0toDstar3pi", "dataD2WS"] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
 	
 
-	for file in filesUsed: 
-		Ana.filemanager.OpenItem(file)
+	anaConfig.OpenFiles()
 
 
 	from anaPrepareRegions import PrepareRegions

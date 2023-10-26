@@ -11,6 +11,7 @@ from argparse import ArgumentParser
 from ROOT import TCanvas, TH1D, TPad, TLegend, THStack, RDataFrame
 from uncertainties import ufloat
 from uncertainties.umath import * 
+from collections import OrderedDict, defaultdict
 
 
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/libFunctions.C+")#ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/libFunctions.C")
@@ -80,9 +81,30 @@ if __name__ == "__main__":
 	if options.debug: print(frames)
 
 
-	tree = ROOT.TString("tree")
+	# Add info on objects and folder composition into a json at saving, to complete filemanager 
+	# (sample, region name: file, tree, unrolled hist, ...)
+	def SaveRegions(frames, path, objectinfile="tree"): 
+		print("Saving files under: {}".format(path))
+		os.system("mkdir -p {}".format(path))
+		snapshotOptions = ROOT.RDF.RSnapshotOptions()
 
-	ROOT.gInterpreter.Declare('''
+		info = defaultdict(dict)
+		for item, content in frames.items(): 
+			for key, value in content.items(): 
+
+				filename = "{}/{}{}.root".format(path, item, key)
+				frame = frames[item][key]
+				ROOT.fixStringVariables(frame)
+				frame.Snapshot(objectinfile, filename, ROOT.purgeColumns(tosave.GetColumnNames()), snapshotOptions)
+
+				info[item][key] = (filename, objectinfile)
+
+				print("Saved {}".format(filename))
+
+		with open(path+"/Info.json", "w") as file: 
+			json.dump(info, file, ensure_ascii=False, sort_keys=False) #encoding="utf8", 
+
+	ROOT.gInterpreter.Declare(''' 
 		template<typename T>
 		void fixStringVariables(T &dataframe)
 		{
@@ -94,7 +116,7 @@ if __name__ == "__main__":
 			}
 		}
 		'''
-	) 
+	) # Move this somewehre else
 
 	ROOT.gInterpreter.Declare('''
 		std::vector<std::string>& purgeColumns(std::vector<std::string> &&columns)
@@ -111,14 +133,9 @@ if __name__ == "__main__":
 		'''
 	) 
 
-
-	snapshotOptions = ROOT.RDF.RSnapshotOptions()
-
 	tosave = frames[data]["SB"]
 
-	ROOT.fixStringVariables(tosave)
-
-	tosave.Snapshot(Ana.filemanager.GetObject(data+"_SB"), Ana.filemanager.GetFile(data+"_SB"), ROOT.purgeColumns(tosave.GetColumnNames()), snapshotOptions)
+	SaveRegions(frames, os.path.dirname(Ana.filemanager.GetFile("Sig"))+"/testRegion")
 	
 
 	Ana.filemanager.CloseAll()

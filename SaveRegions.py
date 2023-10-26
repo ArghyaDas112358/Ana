@@ -95,7 +95,7 @@ if __name__ == "__main__":
 				filename = "{}/{}{}.root".format(path, item, key)
 				frame = frames[item][key]
 				ROOT.fixStringVariables(frame)
-				frame.Snapshot(objectinfile, filename, ROOT.purgeColumns(tosave.GetColumnNames()), snapshotOptions)
+				frame.Snapshot(objectinfile, filename, ROOT.purgeColumns(frame.GetColumnNames()), snapshotOptions)
 
 				info[item][key] = (filename, objectinfile)
 

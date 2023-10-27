@@ -23,3 +23,9 @@ def OpenFiles(version):
 
 def CloseFiles(): 
 	Ana.filemanager.CloseAll()
+
+def DebugMode(): 
+	global samples
+	samples = ["Sig","B0toDstarDs", "B0toDstarDsstar"]
+	global regions
+	regions = ["SR"]

@@ -110,6 +110,7 @@ if __name__ == "__main__":
 
 	anaConfig.OpenFiles(options.version)
 
+	anaConfig.DebugMode()
 
 	from anaPrepareRegions import PrepareRegions
 

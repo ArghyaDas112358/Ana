@@ -76,6 +76,26 @@ def SaveRegions(frames, path, objectinfile="tree"):
 		json.dump(info, file, ensure_ascii=False, sort_keys=False) #encoding="utf8", 
 
 
+def LoadRegions(path, openfile=True): 
+	frames = defaultdict(dict)
+	with open(path+"/Info.json", "r") as file: 
+		info = json.load(file) #, encoding="utf8"
+		for item, content in info.items(): 
+			for key, value in content.items(): 
+				inf = info[item][key]
+				assert(len(inf)==2)
+
+				reference = "{}_{}".format(item, key)
+				filename = inf[0]
+				objectinfile = inf[1]
+				Ana.filemanager.AddItem(reference, filename, objectinfile)
+				if (openfile): 
+					Ana.filemanager.OpenItem(reference)
+
+				frames[item][key] = RDataFrame(Ana.filemanager.GetItem(reference))
+	return frames
+
+
 
 if __name__ == "__main__":
 
@@ -102,7 +122,10 @@ if __name__ == "__main__":
 	# (sample, region name: file, tree, unrolled hist, ...)
 
 
-	SaveRegions(frames, os.path.dirname(Ana.filemanager.GetFile("Sig"))+"/testRegion")
+	folder = os.path.dirname(Ana.filemanager.GetFile("Sig"))+"/testRegion"
+	SaveRegions(frames, folder)
+
+	loadedframes = LoadRegions(folder)
 	
 
 	anaConfig.CloseFiles()

@@ -90,6 +90,14 @@ def PrepareRegionsSimple():
 	return frames
 
 
+def PurgeRegions(frames, excluded = ["all", "baseline"]): 
+	for item, content in frames.items(): 
+		for key, value in content.items(): 
+			if (key in excluded): 
+				frames[item].pop(key)
+	return frames
+
+
 if __name__ == "__main__":
 
 	parser = ArgumentParser(description="SignalBackground") 

@@ -112,9 +112,12 @@ if __name__ == "__main__":
 
 	anaConfig.DebugMode()
 
-	from anaPrepareRegions import PrepareRegions
+
+	from anaPrepareRegions import PrepareRegions, PurgeRegions
 
 	frames, _ = PrepareRegions()
+
+	frames = PurgeRegions(frames)
 
 	if options.debug: print(frames)
 

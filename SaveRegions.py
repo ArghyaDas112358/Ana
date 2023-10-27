@@ -63,7 +63,7 @@ def SaveRegions(frames, path, objectinfile="tree"):
 	for item, content in frames.items(): 
 		for key, value in content.items(): 
 
-			filename = "{}/{}{}.root".format(path, item, key)
+			filename = "{}/{}_{}.root".format(path, item, key)
 			frame = frames[item][key]
 			ROOT.fixStringVariables(frame)
 			frame.Snapshot(objectinfile, filename, ROOT.purgeColumns(frame.GetColumnNames()), snapshotOptions)

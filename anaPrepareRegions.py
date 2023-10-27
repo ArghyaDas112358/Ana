@@ -6,9 +6,11 @@ import os
 import math
 import collections
 import copy
+import json
 from argparse import ArgumentParser
 ROOT.gROOT.LoadMacro("FileFlow.h+")
 from ROOT import Ana, TCanvas, TH1D, TPad, TLegend, THStack, RDataFrame
+from collections import defaultdict
 import anaConfig
 
 
@@ -87,6 +89,79 @@ def PrepareRegionsSimple():
 			ROOT.SetOwnership(frames[item][region], 0)
 			# For histogram legacy compatibility
 
+	return frames
+
+
+ROOT.gInterpreter.Declare(''' 
+	template<typename T>
+	void fixStringVariables(T &dataframe)
+	{
+		#include "stringbranches.gcf"
+
+		for (auto branch : stringbranches) // Hack to fix string branche 
+		{
+			dataframe = dataframe.Redefine(branch, [](const ROOT::RVec<std::string> &v) {return std::vector<std::string>(v.begin(), v.end());}, {branch}); 
+		}
+	}
+	'''
+) # Move this somewehre else
+
+ROOT.gInterpreter.Declare('''
+	std::vector<std::string>& purgeColumns(std::vector<std::string> &&columns)
+	{
+		const std::vector<std::string> blacklist = {"v_taucandidates", "b_tau"};
+			// a lambda that checks if `s` is in the blacklist
+			auto is_blacklisted = [&blacklist](const std::string &s)  { return std::find(blacklist.begin(), blacklist.end(), s) != blacklist.end(); };
+
+			// removing elements from std::vectors is not pretty, see https://en.wikipedia.org/wiki/Erase%E2%80%93remove_idiom
+			columns.erase(std::remove_if(columns.begin(), columns.end(), is_blacklisted), columns.end());
+
+			return columns; 
+	}
+	'''
+) 
+
+
+def SaveRegions(frames, path, objectinfile="tree"): 
+	print("Saving files under: {}".format(path))
+	os.system("mkdir -p {}".format(path))
+	snapshotOptions = ROOT.RDF.RSnapshotOptions()
+
+	info = defaultdict(dict)
+	for item, content in frames.items(): 
+		for key, value in content.items(): 
+
+			filename = "{}/{}_{}.root".format(path, item, key)
+			frame = frames[item][key]
+			ROOT.fixStringVariables(frame)
+			frame.Snapshot(objectinfile, filename, ROOT.purgeColumns(frame.GetColumnNames()), snapshotOptions)
+
+			info[item][key] = (filename, objectinfile)
+
+			print("Saved {}".format(filename))
+
+	with open(path+"/Info.json", "w") as file: 
+		json.dump(info, file, ensure_ascii=False, sort_keys=False) #encoding="utf8", 
+
+
+def LoadRegions(path, openfile=True): 
+	frames = defaultdict(dict)
+	with open(path+"/Info.json", "r") as file: 
+		info = json.load(file) #, encoding="utf8"
+		for item, content in info.items(): 
+			for key, value in content.items(): 
+				inf = info[item][key]
+				assert(len(inf)==2)
+
+				reference = "{}_{}".format(item, key)
+				filename = inf[0]
+				objectinfile = inf[1]
+				Ana.filemanager.AddItem(reference, filename, objectinfile)
+				if (openfile): 
+					Ana.filemanager.OpenItem(reference)
+
+				frames[item][key] = RDataFrame(Ana.filemanager.GetItem(reference))
+				
 	return frames
 
 

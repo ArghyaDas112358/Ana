@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
 	anaConfig.OpenFiles(options.version)
 
-	anaConfig.DebugMode()
+	if (options.debug): anaConfig.DebugMode()
 
 
 	from anaPrepareRegions import PrepareRegions, PurgeRegions
@@ -130,6 +130,8 @@ if __name__ == "__main__":
 	SaveRegions(frames, folder)
 
 	loadedframes = LoadRegions(folder)
+
+	print(loadedframes)
 	
 
 	anaConfig.CloseFiles()

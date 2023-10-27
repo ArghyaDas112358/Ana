@@ -132,6 +132,11 @@ if __name__ == "__main__":
 	loadedframes = LoadRegions(folder)
 
 	print(loadedframes)
+
+	tree = Ana.filemanager.GetItem("Sig_SR")
+	canvas = ROOT.TCanvas("canvas", "canvas", 800, 600)
+	tree.Draw("b_B_m")
+	canvas.Print(folder+"/testhisto.pdf")
 	
 
 	anaConfig.CloseFiles()

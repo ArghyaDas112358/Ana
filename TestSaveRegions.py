@@ -35,6 +35,9 @@ if __name__ == "__main__":
 	options = parser.parse_args()
 
 
+	if (options.batch): 
+		ROOT.gROOT.SetBatch(1) 
+		
 	anaConfig.OpenFiles(options.version)
 
 	if (options.debug): anaConfig.DebugMode()

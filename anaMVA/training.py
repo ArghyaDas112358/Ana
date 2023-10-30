@@ -67,6 +67,14 @@ def WriteImportanceToFile(filename, standard = None, default = None, optimized =
 			file.write("\n")
 
 
+def WriteVariables(variables, dest): 
+	with open(dest+"/Variables.py", "w") as file: 
+		file.write("features_save = [\n")
+		for item in variables: 
+			assert(len(item)==2)
+			file.write("\t(\"{}\", \"{}\"),\n".format(item[0], item[1]))
+		file.write("]\n")
+
 
 debug = 1
 weighted = False
@@ -270,6 +278,9 @@ pickle.dump(model_default, open(options.outputpath+"/models/model_standard.pkcl"
 
 
 xgboost2tmva.convert_model(xgbo_classifier._models["optimized"].get_dump(), input_variables=features_save,output_xml=options.outputpath+'/model_optimized/xgboost.xml')
+
+
+WriteVariables(features_save, options.outputpath)
 
 
 

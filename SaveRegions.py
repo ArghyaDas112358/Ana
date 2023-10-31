@@ -29,6 +29,7 @@ if __name__ == "__main__":
 	parser = ArgumentParser(description="SaveRegions")
 	#parser.add_argument("tool", action="store", type=str, help="Which time list you want to analyse")
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v1", help="Which version (cycle) of files to run on")
+	parser.add_argument("--out", dest="out", action="store", type=str, default="SR/", help="Directory where the files should go")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
 	
@@ -47,7 +48,7 @@ if __name__ == "__main__":
 
 	frames, _ = PrepareRegions()
 
-	frames = PurgeRegions(frames)
+	frames = PurgeRegions(frames, ["all", "baseline", "SB", "CR"])
 
 	if options.debug: print(frames)
 
@@ -56,17 +57,8 @@ if __name__ == "__main__":
 	# (sample, region name: file, tree, unrolled hist, ...)
 
 
-	folder = os.path.dirname(Ana.filemanager.GetFile("Sig"))+"/testRegion"
+	folder = os.path.dirname(Ana.filemanager.GetFile("Sig"))+"/"+options.out
 	SaveRegions(frames, folder)
-
-	loadedframes = LoadRegions(folder)
-
-	print(loadedframes)
-
-	tree = Ana.filemanager.GetItem("Sig_SR")
-	canvas = ROOT.TCanvas("canvas", "canvas", 800, 600)
-	tree.Draw("b_B_m")
-	canvas.Print(folder+"/testhisto.pdf")
 	
 
 	anaConfig.CloseFiles()

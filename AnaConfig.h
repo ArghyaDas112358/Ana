@@ -37,10 +37,29 @@ namespace Ana
 		Json::Value regions;
 		file >> regions;
 
+		for (auto item : regions.getMemberNames()) 
+		{
+			std::cout << item << std::endl; 
+
+			for (auto region : regions[item].getMemberNames()) 
+			{
+				auto& regiondata = regions[item][region]; 
+				assert(regiondata.size() == 2); 
+
+				for (auto element : regiondata) 
+				{
+					std::cout << element << std::endl; 
+				}
+
+				filemanager.AddItem(TString::Format("%s_%s", item.c_str(), region.c_str()), regiondata[0].toStyledString().c_str(), regiondata[1].toStyledString().c_str()); 
+			}
+		}
+
 		for (auto item : regions)
 		{
 			std::cout << item << " " << std::endl; 
 		}
+
 
 	}
 

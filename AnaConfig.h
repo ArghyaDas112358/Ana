@@ -54,7 +54,7 @@ namespace Ana
 				}*/
 
 				TString name = TString::Format("%s_%s", item.c_str(), region.c_str());
-				filemanager.AddItem(name, regiondata[0].toStyledString().c_str(), regiondata[1].toStyledString().c_str()); 
+				filemanager.AddItem(name, regiondata[0].asString(), regiondata[1].asString()); 
 				loaded.push_back(name);
 			}
 		}

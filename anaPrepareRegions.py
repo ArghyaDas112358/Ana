@@ -146,6 +146,7 @@ def SaveRegions(frames, path, objectinfile="tree"):
 
 def LoadRegions(path, openfile=True): 
 	frames = defaultdict(dict)
+	addeditems = []
 	with open(path+"/Info.json", "r") as file: 
 		info = json.load(file) #, encoding="utf8"
 		for item, content in info.items(): 
@@ -161,8 +162,9 @@ def LoadRegions(path, openfile=True):
 					Ana.filemanager.OpenItem(reference)
 
 				frames[item][key] = RDataFrame(Ana.filemanager.GetItem(reference))
+				addeditems.append(reference)
 				
-	return frames
+	return frames, addeditems
 
 
 def PurgeRegions(frames, excluded = ["all", "baseline"]): 

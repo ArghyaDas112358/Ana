@@ -55,29 +55,29 @@ class VariableList : public TObject
 };
 
 
-void AddFinalMVASimple(const TString& inIdentifier, const TString& outIndentifier, const TString& cycle, const TString& weightfile = "newtest/model_optimized/weights.xml", const TString& branchName = "finalBDT", const TString& suffix = "_mva") 
+void AddFinalMVASimple(const TString& inIdentifier, const TString& region, const TString& weightfile, const TString& branchName = "finalBDT") 
 {
 	//Init(cycle); 
-	auto loaded = Ana::Load("../../data/v6.95/SR/"); 
+	auto loaded = Ana::Load(region); 
 	assert(std::find(loaded.begin(), loaded.end(), inIdentifier) != loaded.end()); 
 
-	for (auto item : loaded) 
+	/*for (auto item : loaded) 
 	{
 		TString newRef = item.ReplaceAll("_SR", "_AR"); 
 		filemanager.AddItem(newRef, TString(filemanager.GetFile(inIdentifier)).ReplaceAll("_SR", "_AR"), filemanager.GetObject(inIdentifier)); 
 	}
 
 	filemanager.ListCollection(); 
+	*/
 
 	filemanager.OpenItem(inIdentifier); 
-
-	std::cout << "After opening item" << std::endl; 
 
 	//TFile *inFile = TFile::Open(infile.Data(), "READ"); 
 
 	TTree *tree = filemanager.GetItem<TTree*>(inIdentifier); 
 
-	TString actualweightfile = Ana::FinalBDT[cycle.Data()]; 
+	TString actualweightfile = weightfile; 
+	//TString actualweightfile = Ana::FinalBDT[cycle.Data()]; 
 
 	std::cout << actualweightfile << std::endl; 
 
@@ -143,7 +143,7 @@ void AddFinalMVASimple(const TString& inIdentifier, const TString& outIndentifie
 
 	reader->BookMVA("BDT", actualweightfile); 
 
-	TFile *outFile = TFile::Open(filemanager.GetFile(TString(inIdentifier).ReplaceAll("_SR", "_AR")).data(), "RECREATE"); // TODO: create directory structure 
+	TFile *outFile = TFile::Open(TString(filemanager.GetFile(inIdentifier).data()).ReplaceAll("_SR", "_AR"), "RECREATE"); // TODO: create directory structure 
 
 	tree->SetBranchStatus("*", 1); 
 

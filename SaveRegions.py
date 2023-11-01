@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
 	from anaPrepareRegions import PrepareRegions, PurgeRegions, SaveRegions, LoadRegions
 
-	frames, _ = PrepareRegions()
+	frames, _ = PrepareRegions(anaConfig.samples.append("SigTest"))
 
 	frames = PurgeRegions(frames, ["all", "baseline", "SB", "CR"])
 

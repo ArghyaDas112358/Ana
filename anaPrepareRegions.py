@@ -45,14 +45,14 @@ def UnrollHist(histo2D, inverted=True):
 	return unrolled
 
 
-def PrepareRegions(nBins = 6, rangeMin = 0.2, rangeMax = 1.5, debug=False): 
+def PrepareRegions(samples = anaConfig.samples, nBins = 6, rangeMin = 0.2, rangeMax = 1.5, debug=False): 
 	samples = {}
 	frames = collections.defaultdict(dict)
 	histos = collections.defaultdict(dict)
 	histosunrolled = collections.defaultdict(dict)
 
 	for item in anaConfig.samples:  
-		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
+		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item, True))
 		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(item).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."
 		frames[item]["all"] = samples[item].Filter("1.")
 		#baseline[item]

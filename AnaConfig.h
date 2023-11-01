@@ -31,36 +31,41 @@ namespace Ana
 	std::unordered_map<std::string, SampleData> samples; 
 
 
-	void LoadRegions(const TString& path) 
+	std::vector<TString> LoadRegions(const TString& path) 
 	{
 		std::ifstream file(path+"/Info.json", std::ifstream::binary);
 		Json::Value regions;
 		file >> regions;
 
+		std::vector<TString> loaded; 
+
 		for (auto item : regions.getMemberNames()) 
 		{
-			std::cout << item << std::endl; 
+			//std::cout << item << std::endl; 
 
 			for (auto region : regions[item].getMemberNames()) 
 			{
 				auto& regiondata = regions[item][region]; 
 				assert(regiondata.size() == 2); 
 
-				for (auto element : regiondata) 
+				/*for (auto element : regiondata) 
 				{
 					std::cout << element << std::endl; 
-				}
+				}*/
 
-				filemanager.AddItem(TString::Format("%s_%s", item.c_str(), region.c_str()), regiondata[0].toStyledString().c_str(), regiondata[1].toStyledString().c_str()); 
+				TString name = TString::Format("%s_%s", item.c_str(), region.c_str());
+				filemanager.AddItem(name, regiondata[0].toStyledString().c_str(), regiondata[1].toStyledString().c_str()); 
+				loaded.push_back(name);
 			}
 		}
 
-		for (auto item : regions)
+		/*for (auto item : regions)
 		{
 			std::cout << item << " " << std::endl; 
-		}
+		}*/
 
 
+		return std::move(loaded); 
 	}
 
 
@@ -102,7 +107,15 @@ namespace Ana
 
 		samples = InitSamples(); 
 
-		if (regions != "") LoadRegions(regions); 
+		//if (regions != "") LoadRegions(regions); 
+		auto loaded = LoadRegions(regions); 
+
+		std::cout << "Size: " << loaded.size() << std::endl; 
+		for (auto item : loaded) 
+		{
+			std::cout << "item: "; 
+			std::cout << item << std::endl; 
+		}
 
 	}
 

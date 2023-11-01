@@ -31,6 +31,7 @@ if __name__ == "__main__":
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v1", help="Which version (cycle) of files to run on")
 	parser.add_argument("--out", dest="out", action="store", type=str, default="SR/", help="Directory where the files should go")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
+	parser.add_argument("--samples", dest="samples", action="store", nargs="+", type=str, default="", help="Which samples to process")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
 	
 	options = parser.parse_args()
@@ -46,7 +47,13 @@ if __name__ == "__main__":
 
 	from anaPrepareRegions import PrepareRegions, PurgeRegions, SaveRegions, LoadRegions
 
-	frames, _ = PrepareRegions(anaConfig.samples.append("SigTest"))
+
+	if (options.samples != ""):
+		samples = options.samples
+	else: 
+		samples = anaConfig.samples+["SigTest"]
+	print(samples)
+	frames, _ = PrepareRegions(samples)
 
 	frames = PurgeRegions(frames, ["all", "baseline", "SB", "CR"])
 

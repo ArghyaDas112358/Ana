@@ -55,7 +55,7 @@ class VariableList : public TObject
 };
 
 
-void AddFinalMVASimple(const TString& inIdentifier, const TString& outIndentifier, const TString& cycle, const TString& weightfile = "newtest/model_optimized/weights.xml", const TString& branchName = "mvaScore", const TString& suffix = "_mva") 
+void AddFinalMVASimple(const TString& inIdentifier, const TString& outIndentifier, const TString& cycle, const TString& weightfile = "newtest/model_optimized/weights.xml", const TString& branchName = "finalBDT", const TString& suffix = "_mva") 
 {
 	//Init(cycle); 
 	auto loaded = Ana::Load("../../data/v6.95/SR/"); 
@@ -143,7 +143,7 @@ void AddFinalMVASimple(const TString& inIdentifier, const TString& outIndentifie
 
 	reader->BookMVA("BDT", actualweightfile); 
 
-	TFile *outFile = TFile::Open(filemanager.GetFile(outIndentifier).data(), "RECREATE"); // TODO: create directory structure 
+	TFile *outFile = TFile::Open(filemanager.GetFile(TString(inIdentifier).ReplaceAll("_SR", "_AR")).data(), "RECREATE"); // TODO: create directory structure 
 
 	tree->SetBranchStatus("*", 1); 
 

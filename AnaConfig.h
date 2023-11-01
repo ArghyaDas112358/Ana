@@ -30,6 +30,8 @@ namespace Ana
 
 	std::unordered_map<std::string, SampleData> samples; 
 
+	std::unordered_map<std::string, std::string> FinalBDT; 
+
 
 	std::vector<TString> LoadRegions(const TString& path) 
 	{
@@ -69,7 +71,7 @@ namespace Ana
 	}
 
 
-	void Load(const TString& regions)
+	void CommonInitialisation()
 	{
 	
 		colorold = {{"Sig", 2}, {"BkgDstarDs", 3}, {"BkgDstarDsstar", 8}, {"BkgDstara1", 4}, {"dataD2WS", 6}, {"dataD2TauWS", 7}, {"other", 9}, {"yetanother", 1}}; // Legacy color scheme 
@@ -107,7 +109,21 @@ namespace Ana
 
 		samples = InitSamples(); 
 
+		// Filling the versions of final MVA discriminator
+		FinalBDT = {	
+			{"v6.9", "./anaMVA/MVAinSBdata/model_optimized/weights.xml"}, //LatestVsData
+			{"v6.95", "./anaMVA/MVAinSBdata/model_optimized/weights.xml"} //LatestVsData
+		}; 
+
 		//if (regions != "") LoadRegions(regions); 
+
+	}
+
+
+	std::vector<TString> Load(const TString& regions) 
+	{
+		CommonInitialisation(); 
+
 		auto loaded = LoadRegions(regions); 
 
 		std::cout << "Size: " << loaded.size() << std::endl; 
@@ -117,6 +133,7 @@ namespace Ana
 			std::cout << item << std::endl; 
 		}
 
+		return loaded; 
 	}
 
 }

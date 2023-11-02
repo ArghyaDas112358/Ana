@@ -122,12 +122,15 @@ ROOT.gInterpreter.Declare('''
 ) 
 
 
-def SaveRegions(frames, path, objectinfile="tree"): 
+def SaveRegions(frames, path, update = False, objectinfile="tree"): 
 	print("Saving files under: {}".format(path))
 	os.system("mkdir -p {}".format(path))
 	snapshotOptions = ROOT.RDF.RSnapshotOptions()
 
 	info = defaultdict(dict)
+	if (update): 
+		with open(path+"/Info.json", "r") as file: 
+			info = copy.deepcopy(json.load(file))
 	for item, content in frames.items(): 
 		for key, value in content.items(): 
 

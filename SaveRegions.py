@@ -32,6 +32,7 @@ if __name__ == "__main__":
 	parser.add_argument("--out", dest="out", action="store", type=str, default="SR/", help="Directory where the files should go")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument("--samples", dest="samples", action="store", nargs="+", type=str, default="", help="Which samples to process")
+	parser.add_argument('-u', "--update", dest="update", action="store_true", default=False, help="Run in batch mode")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
 	
 	options = parser.parse_args()
@@ -68,7 +69,7 @@ if __name__ == "__main__":
 
 
 	folder = os.path.dirname(Ana.filemanager.GetFile("Sig"))+"/"+options.out
-	SaveRegions(frames, folder)
+	SaveRegions(frames, folder, options.update)
 	
 
 	anaConfig.CloseFiles()

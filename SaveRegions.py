@@ -52,12 +52,15 @@ if __name__ == "__main__":
 		samples = options.samples
 	else: 
 		samples = anaConfig.samples+["SigTest"]
-	print(samples)
+
 	frames, _ = PrepareRegions(samples)
 
 	frames = PurgeRegions(frames, ["all", "baseline", "SB", "CR"])
 
 	if options.debug: print(frames)
+
+	regions = next(iter(frames.items()))[1].keys()
+	print("Saving regions {} for samples {}".format(regions, samples))
 
 
 	# Add info on objects and folder composition into a json at saving, to complete filemanager 

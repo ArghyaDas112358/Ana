@@ -488,7 +488,7 @@ def AtomicDraw(histo, name, options = ""):
 	canv.Print(name)
 
 
-def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields, outfolder, drawlegend=True): 
+def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields, outfolder, drawlegend=True, normalise=False): 
 	# Plotting distributions over each other 
 	outfolder+="overlay/"
 	os.system("mkdir -p "+outfolder)
@@ -521,18 +521,29 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 			i = 0
 			for component in components: 
 				histo = frames[component][region].Histo1D(examplehist, variable)
-				ROOT.SetOwnership(histo, 0)
+				#ROOT.SetOwnership(histo, 0)
+				if (histo.Integral()==0): 
+					continue
+				print(component)
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
-				histo.SetLineColor(Ana.colorold[component.replace("Part", "")]) #colors[i]Ana.color[component.replace("Part", "")]
+				color = Ana.samples.at(component.replace("Part", "")).color
+				if (not color): 
+					color = colors[i]
+				histo.SetLineColor(color) #colors[i]Ana.color[component.replace("Part", "")]
 				#histo.SetFillStyle(3003)
-				#histo.SetFillColorAlpha(Ana.color[component], 0.4)
-				if (yields[component][region].nominal_value > 0.): 
-					histo.Scale(yields[component][region].nominal_value/histo.Integral())
-				elif (yields[component][region].nominal_value != -1.):
-					histo.Scale(-yields[component][region].nominal_value*histo.Integral())
+				histo.SetFillColorAlpha(color, 0.4)
+				#histo = frames[component][region].Histo1D(examplehist, variable).GetPtr()
+				if normalise: 
+					if (yields[component][region] > 0. and histo.Integral() > 0): 
+						histo.Scale(yields[component][region].nominal_value/histo.Integral())
+					elif (yields[component][region].nominal_value != -1.):
+						histo.Scale(-yields[component][region].nominal_value*histo.Integral())
+				else:
+					if not (histo.Integral()==0): 
+						histo.Scale(data.Integral()/histo.Integral())
 				#histo.SetMarkerColor(Ana.color[component])
-				histo.Draw("HIST SAME")
+				histo.DrawCopy("HIST SAME")
 				maxes.append(histo.GetMaximum())
 				legend.AddEntry(histo.GetPtr(), component)
 				i+=1
@@ -542,7 +553,7 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 			legend.SetMargin(0.3)
 			legend.SetTextSize(0.04)
 
-			data.SetMaximum(factor*max(maxes))
+			if (not normalise): data.SetMaximum(factor*max(maxes))
 			canvas.Draw()
 
 			canvas.Print(outfolder+name+".png")
@@ -917,7 +928,7 @@ if __name__ == "__main__":
 
 	regions = ["SR", "CR", "SB"]
 
-	variables = ["b_tau_rhomass1", "b_tau_rhomass2", "b_B_q2", "b_B_m", "b_tau_m"]
+	variables = ["b_tau_rhomass1", "b_tau_rhomass2", "b_B_q2", "b_B_m", "b_tau_m", "b_B_proper_xi_rho1", "b_B_proper_xi_rho2", "b_tau_proper_alpha_rho1_pi", "b_tau_proper_alpha_rho2_pi", "b_tau_proper_theta_rho1", "b_tau_proper_theta_rho2"]
 
 
 	nBins = 6

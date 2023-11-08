@@ -67,6 +67,13 @@ namespace Ana {
 				"$B^0\\rightarrow D^{*-}\\tau^+\\nu_\\tau$", 
 				{"Sig"}}
 			}, 
+			{"SigTest", {
+				mycolors[0], 
+				"signal", 
+				genMatchCut, 
+				"$B^0\\rightarrow D^{*-}\\tau^+\\nu_\\tau$", 
+				{"Sig"}}
+			}, 
 			{"B0toDstarDs", SampleData(
 				mycolors[1], 
 				"B^{0}#rightarrowD*D_{s}", 

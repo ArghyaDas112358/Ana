@@ -14,3 +14,18 @@ samples = ["Sig", data, "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDst
 regions = ["SR", "CR", "SB"]
 
 variables = ["b_tau_rhomass1", "b_tau_rhomass2", "b_B_q2", "b_B_m", "b_tau_m"]
+
+
+def OpenFiles(version): 
+	Ana.Init(version)
+	for file in samples: 
+		Ana.filemanager.OpenItem(file)
+
+def CloseFiles(): 
+	Ana.filemanager.CloseAll()
+
+def DebugMode(): 
+	global samples
+	samples = ["Sig","B0toDstarDs", "B0toDstarDsstar"]
+	global regions
+	regions = ["SR"]

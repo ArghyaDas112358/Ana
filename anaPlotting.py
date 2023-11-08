@@ -5,11 +5,12 @@ import os
 from ROOT import TCanvas, TLegend, THStack, gROOT
 
 
-gROOT.LoadMacro("FileFlow.h")
+#gROOT.LoadMacro("FileFlow.h")
+import ROOT
 from ROOT import Ana
 
 
-def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields, outfolder, drawlegend=True): 
+def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields, outfolder, drawlegend=True, normalise=False): 
 	# Plotting distributions over each other 
 	#outfolder+="overlay/"
 	os.system("mkdir -p "+outfolder)
@@ -42,18 +43,29 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 			i = 0
 			for component in components: 
 				histo = frames[component][region].Histo1D(examplehist, variable)
-				ROOT.SetOwnership(histo, 0)
+				#ROOT.SetOwnership(histo, 0)
+				if (histo.Integral()==0): 
+					continue
+				print(component)
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
-				histo.SetLineColor(Ana.colorold[component.replace("Part", "")]) #colors[i]Ana.color[component.replace("Part", "")]
+				color = Ana.samples.at(component.replace("Part", "")).color
+				if (not color): 
+					color = colors[i]
+				histo.SetLineColor(color) #colors[i]Ana.color[component.replace("Part", "")]
 				#histo.SetFillStyle(3003)
-				#histo.SetFillColorAlpha(Ana.color[component], 0.4)
-				if (yields[component][region].nominal_value > 0.): 
-					histo.Scale(yields[component][region].nominal_value/histo.Integral())
-				elif (yields[component][region].nominal_value != -1.):
-					histo.Scale(-yields[component][region].nominal_value*histo.Integral())
+				#histo.SetFillColorAlpha(color, 0.4)
+				#histo = frames[component][region].Histo1D(examplehist, variable).GetPtr()
+				if normalise: 
+					if (yields[component][region] > 0. and histo.Integral() > 0): 
+						histo.Scale(yields[component][region].nominal_value/histo.Integral())
+					elif (yields[component][region].nominal_value != -1.):
+						histo.Scale(-yields[component][region].nominal_value*histo.Integral())
+				else:
+					if not (histo.Integral()==0): 
+						histo.Scale(data.Integral()/histo.Integral())
 				#histo.SetMarkerColor(Ana.color[component])
-				histo.Draw("HIST SAME")
+				histo.DrawCopy("HIST SAME")
 				maxes.append(histo.GetMaximum())
 				legend.AddEntry(histo.GetPtr(), component)
 				i+=1
@@ -63,7 +75,7 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 			legend.SetMargin(0.3)
 			legend.SetTextSize(0.04)
 
-			data.SetMaximum(factor*max(maxes))
+			if (not normalise): data.SetMaximum(factor*max(maxes))
 			canvas.Draw()
 
 			canvas.Print(outfolder+name+".png")
@@ -256,4 +268,128 @@ def PlotComparison(frames, referencename, comparisonname, regions, variables, ou
 
 			canvas.Print(outfolder+name+".png")
 			canvas.Print(outfolder+name+".pdf")
+
+
+def PlotFitResult(session, dataname, initialcomponents, variables, outfolder, drawlegend=False): 
+	# Plotting distributions over each other 
+	#outfolder+="stacked/"
+	os.system("mkdir -p "+outfolder)
+	name = "FitResult"
+	factor = 1.1 # how much overhead to add to the histos 
+	components = copy.deepcopy(initialcomponents)
+	if (dataname in components): components.remove(dataname)
+	components.reverse()
+	notYetDrawn = True
+
+	# Setting up plot 
+	canvas = TCanvas("fitresult", "Fit result", 800, 600)
+
+	legend = TLegend(canvas.GetLeftMargin()+0.35, 
+	                         	1.-canvas.GetTopMargin()-.2, 
+	                            canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
+	                           	1.-canvas.GetTopMargin() )
+
+
+	stack = THStack("stack", "Fit result")
+
+	data = session.Get(dataname)
+
+	data.SetMarkerStyle(8) # Large scalable dot
+	data.SetMarkerSize(0.5)
+	data.SetLineColor(ROOT.kBlack)
+	data.SetTitle("") #data.SetTitle("{}_{}".format(variable, region))
+	#data.SetFillColor(ROOT.kBlack)
+	legend.AddEntry(data, "data", "PE")
+	data.Draw("E")
+
+	numcomponents = 0 #1
+	for component in components: 
+		print(component)
+		#component = component.replace("Dist", "")
+		histo = session.Get(component)
+		#histo.Draw()
+		#HoldUntilKeyPress()
+
+		histo.SetLineStyle(1) # plain
+		histo.SetLineWidth(2)
+		color = Ana.samples.at(component.replace("Part", "")).color
+		if (not color): 
+			color = colors[0]
+		histo.SetLineColor(color)
+		#histo.SetMarkerColor(Ana.color[component])
+		histo.SetFillStyle(1)
+		histo.SetFillColor(color)
+		histo.SetTitle("")
+		#hists[component] = histo
+		legend.AddEntry(histo, Ana.samples.at(component).legend, "F")
+
+		stack.Add(histo)
+
+		#ROOT.SetOwnership(histo, 0)
+		numcomponents += 1
+
+	stack.Draw("HIST SAME") #"SAME"
+	data.Draw("E SAME") # Plot on top
+	if (drawlegend): legend.Draw()
+	legend.SetBorderSize(1)
+	legend.SetMargin(0.3)
+	legend.SetTextSize(0.04)
+
+	#data.GetXaxis().SetTitle(Ana.labels[variable])
+	data.GetXaxis().SetTitleSize(0.06)
+	data.GetXaxis().SetLabelSize(0.06)
+	data.GetYaxis().SetLabelSize(0.06)
+	#data.GetYaxis().SetTitle("Counts")
+	data.GetYaxis().SetTitleSize(0.06)
+	data.GetXaxis().SetTitleOffset(1.2)
+	canvas.SetBottomMargin(0.15)
+	canvas.SetTopMargin(0.01)
+	canvas.SetLeftMargin(0.15)
+	canvas.Draw()
+
+	maxes = [data.GetMaximum(), stack.GetMaximum()]
+
+	print(maxes)
+
+	data.SetMaximum(factor*max(maxes))
+	canvas.Update()
+
+	canvas.Print(outfolder+name+".png")
+	canvas.Print(outfolder+name+".pdf")
+
+
+	if ((not drawlegend) and notYetDrawn): 
+		#components.reverse()
+		canv = TCanvas("legendCanvas", "legenCanvas", 800, 200*numcomponents)
+		dummy = TCanvas("dummy", "dummy", 800, 600)
+		#legend.AddEntry(data, "data", "PE")
+		# for component, histo in hists.iteritems(): 
+		# 	#histo = frames[component][region].Histo1D(examplehist, variable)
+		# 	ROOT.SetOwnership(histo, 0)
+		# 	histo.SetLineStyle(1) # plain
+		# 	histo.SetLineWidth(2)
+		# 	color = Ana.samples.at(component.replace("Part", "")).color
+		# 	if "WS" in component: 
+		# 		color = Ana.samples.at("WS").color
+		# 	histo.SetLineColor(color)
+		# 	histo.SetFillStyle(1)
+		# 	histo.SetFillColor(color)
+		# 	legend.AddEntry(histo, Ana.samples.at(component.replace("Part", "")).legend, "F")
+		canv.cd()
+		data.SetMarkerSize(4.)
+		data.SetLineWidth(4)
+		legend.SetX1(0.)
+		legend.SetY1(0.)
+		legend.SetX2(1.)
+		legend.SetY2(1.)
+		legend.SetBorderSize(0)
+		legend.SetFillColor(0)
+		legend.SetFillStyle(0)
+		legend.SetTextFont(43)
+		legend.SetTextSize(canv.GetWh()/(2*stack.GetNhists()))
+		legend.Draw()
+		canv.Draw()
+		canv.Print(outfolder+"legend.png")
+		canv.Print(outfolder+"legend.pdf")
+		notYetDrawn = False
 

@@ -102,7 +102,7 @@ def WriteDatacard(frames, yields, variables, regions, dataname, datacardname="da
 def WriteWorkspace(frames, yields, variables, regions, dataname, filename="workspace.root", workspacename="w"): 
 	from ROOT import RooRealVar, RooDataHist, RooArgSet
 	from ROOT import Ana
-	
+
 	MC = frames.keys()
 	print(MC)
 	print(dataname)
@@ -118,7 +118,7 @@ def WriteWorkspace(frames, yields, variables, regions, dataname, filename="works
 			examplehist = Ana.binning[variable]
 
 			# Writing the data shapes for each region
-			name = "data_obs_{}".format(region)
+			name = "data_obs_{}".format(region, variable)
 	
 			hist = frames[dataname][region].Histo1D(examplehist, variable).GetPtr()
 			hist.SetName(name)
@@ -127,8 +127,59 @@ def WriteWorkspace(frames, yields, variables, regions, dataname, filename="works
 			getattr(workspace, "import")(histogram)
 			# Writing the MC shapes 
 			for item in MC: 
-				histname = item+"_"+region
+				histname = item+"_"+region #+"_"+variable
 				hist = frames[item][region].Histo1D(examplehist, variable).GetPtr()
+				norm = -1.
+				try: 
+					norm = yields[item][region].n
+					hist.Scale(norm/hist.Integral())
+				except:
+					pass
+				hist.SetName(histname)
+				roohist = ROOT.RooDataHist(histname, histname, fitspace, hist)
+				hist.Write()
+				getattr(workspace, "import")(roohist)
+
+		workspace.Write()
+		file.Write()
+		file.Close()
+
+
+def WriteWorkspaceWithSyst(frames, yields, variables, regions, dataname, filename="workspace.root", workspacename="w"): 
+	from ROOT import RooRealVar, RooDataHist, RooArgSet
+	from ROOT import Ana
+
+	MC = frames.keys()
+	print(MC)
+	print(dataname)
+	MC.remove(dataname)
+
+	for variable in variables: 
+		file = ROOT.TFile.Open(filename, "RECREATE")
+		workspace = ROOT.RooWorkspace(workspacename)
+		# Creating the variable on which we fit
+		var = RooRealVar(variable, variable, 0., 100.)
+		fitspace = RooArgSet(var)
+		for region in regions: 
+			examplehist = Ana.binning[variable]
+
+			# Writing the data shapes for each region
+			name = "data_obs_{}".format(region, variable)
+	
+			hist = frames[dataname][region].Histo1D(examplehist, variable).GetPtr()
+			hist.SetName(name)
+			histogram = RooDataHist(name, name, fitspace, hist)
+			hist.Write() # Also saving the ROOT hist
+			getattr(workspace, "import")(histogram)
+			# Writing the MC shapes 
+			for item in MC: 
+				histname = item+"_"+region #+"_"+variable
+				hist = frames[item][region].Histo1D(examplehist, variable).GetPtr()
+				try: 
+					norm = yields[item][region].n
+					hist.Scale(norm/hist.Integral())
+				except:
+					pass
 				#hist.Scale(yields[item][region].n/hist.Integral())
 				hist.SetName(histname)
 				roohist = ROOT.RooDataHist(histname, histname, fitspace, hist)
@@ -138,4 +189,85 @@ def WriteWorkspace(frames, yields, variables, regions, dataname, filename="works
 		workspace.Write()
 		file.Write()
 		file.Close()
+
+
+def WriteDatacardSimple(frames, yields, variables, regions, fitvariable, dataname, datacardname="datacard.txt", workspacefile="workspace.root", workspacename="w"): 
+	import os, copy
+	from datetime import datetime
+	from ROOT import RooRealVar, RooArgSet, RooWorkspace, RooDataHist
+	MC = copy.deepcopy(frames.keys())
+	MC.remove(dataname)
+	print(MC)
+
+	with open(datacardname, "w") as datacard: 
+		datacard.write("# Datacard generated automatically with {}{} on {}.\n".format(os.getcwd(), __file__, datetime.today().strftime("%d.%m.%y %H:%M:%S")))
+		datacard.write("# Simple fit \n\n")
+		datacard.write("imax {}\n".format(len(regions)))
+		datacard.write("jmax {}\n".format(len(MC)))
+		datacard.write("kmax {}\n".format(0)) # For now no systematics
+		datacard.write("\n"+"-"*50+"\n")
+
+		datacard.write("# Shapes and RooFit workspace\n")
+		for region in regions: 
+			# Writing the data shapes for each region
+			name = "data_obs_{}".format(region)
+			datacard.write("shapes data_obs {} {} {}\n".format(region, workspacefile, workspacename+":{}".format(name)))
+			# Writing the MC shapes 
+			for item in MC: 
+				histname = item+"_"+region
+				datacard.write("shapes {} {} {} {}\n".format(item, region, workspacefile, workspacename+":"+histname))
+		datacard.write("\n"+"-"*50+"\n")
+		
+		datacard.write("# Observed events (data)\n")
+		regionstring = "bin "
+		for item in regions: 
+			regionstring += (item+" ")
+		regionstring+="\n"
+		datacard.write(regionstring)
+
+		observationstring = "observation "
+		for item in regions: 
+			print(frames[dataname][item].Count().GetValue())
+			observationstring += ("-1 ") # "{} ".format(frames["dataD2"][item].Count().GetValue()) # TODO: fix
+		datacard.write(observationstring+"\n")
+		# We want to leave a few components floating 
+		datacard.write("\n"+"-"*50+"\n")
+
+		datacard.write("# Expected events (MC/model)\n")
+		binstring = "bin "
+		labelstring = "process "
+		indexstring = "process "
+		expectedstring = "rate "
+		count = 1
+		for region in regions: 
+			for item in MC: 
+				if ("data" in item): 
+					from uncertainties import ufloat
+					yields[item][region] = ufloat(1., 0.)
+				binstring += "{} ".format(region)
+				labelstring += "{} ".format(item)
+				factor = 1
+				if "Sig" in item: 
+					factor = -1 # make signal negative
+				indexstring += "{} ".format(factor*count)
+				# Hack for normalising WS
+				if (not "data" in item): 
+					expectedstring += "{} ".format(yields[item][region].n)
+				else: 
+					expectedstring += "1. "
+				count += 1
+		datacard.write(binstring+"\n")
+		datacard.write(labelstring+"\n")
+		datacard.write(indexstring+"\n")
+		datacard.write(expectedstring+"\n")
+		#datacard.write("\n"+"-"*50+"\n")
+		#datacard.write("lumi     lnN    1.10       1.0 		1.0\n")
+		datacard.write("\n"+"-"*50+"\n")
+		# Writing out the constraints
+		for region in regions: 
+			for item in MC: 
+				datacard.write("{}_{}_norm rateParam {} {} {} [{},{}]\n".format(item, region, region, item, yields[item][region].n, 0, yields[item][region].n*5.))
+		datacard.write("\n"+"-"*50+"\n")
+		#for item in variables: 
+			#datacard.write("{} flatParam\n".format(item.GetName()))
 

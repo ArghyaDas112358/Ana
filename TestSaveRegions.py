@@ -3,14 +3,13 @@ from __future__ import division, print_function
 
 import ROOT
 import os
-import math
-import collections
 import copy
 import json
 from argparse import ArgumentParser
-from ROOT import TCanvas, TH1D, TPad, TLegend, THStack, RDataFrame
+from ROOT import RDataFrame
 from uncertainties import ufloat
 from uncertainties.umath import * 
+from collections import OrderedDict, defaultdict
 
 
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/libFunctions.C+")#ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/libFunctions.C")
@@ -18,16 +17,11 @@ from uncertainties.umath import *
 #ROOT.gROOT.LoadMacro("/eos/home-m/mhuwiler/plugins/FileManager/CFileManager.C")
 #ROOT.gROOT.LoadMacro("/Users/mhuwiler/coding/plugins/Drawing/CMS/tdrstyle.C")
 #ROOT.gROOT.LoadMacro("FileFlow.h")
-ROOT.gROOT.LoadMacro("Tau.h")
+#ROOT.gROOT.LoadMacro("Tau.h")
 #ROOT.setTDRStyle()
 #import CMS_lumi
 import anaConfig
 from ROOT import Ana
-
-
-
-webpublication =False
-
 
 
 if __name__ == "__main__":
@@ -41,44 +35,41 @@ if __name__ == "__main__":
 	options = parser.parse_args()
 
 
-	# Global initialisations
-	Ana.Init(options.version)
+	if (options.batch): 
+		ROOT.gROOT.SetBatch(1) 
+		
+	anaConfig.OpenFiles(options.version)
 
-	nBins = 6
-	rangeMin = 0.2 #0.37
-	rangeMax = 1.5 #1.43
+	if (options.debug): anaConfig.DebugMode()
 
 
-	# Starting script 
-	from anaPrepareRegions import PrepareRegionsSimple
-	frames = PrepareRegionsSimple()
-	
+	from anaPrepareRegions import PrepareRegions, PurgeRegions, SaveRegions, LoadRegions
+
+	frames, _ = PrepareRegions()
+
+	frames = PurgeRegions(frames)
 
 	if options.debug: print(frames)
 
 
-	ROOT.gInterpreter.Declare('''
-		template<typename T>
-		void fixStringVariables(T &dataframe)
-		{
-			#include "stringbranches.gcf"
+	# Add info on objects and folder composition into a json at saving, to complete filemanager 
+	# (sample, region name: file, tree, unrolled hist, ...)
 
-			for (auto branch : stringbranches) // Hack to fix string branche 
-			{
-				dataframe = dataframe.Redefine(branch, [](const ROOT::RVec<std::string> &v) {return std::vector<std::string>(v.begin(), v.end());}, {branch}); 
-			}
-		}
-		'''
-	)
 
-	from libFitting import WriteWorkspace
-	from libEfficiencies import ReadEffs2D
+	folder = os.path.dirname(Ana.filemanager.GetFile("Sig"))+"/testRegion"
+	SaveRegions(frames, folder)
 
-	yields = ReadEffs2D("./data/etc/RegionEffs.json")
+	loadedframes = LoadRegions(folder)
 
-	WriteWorkspace(frames, yields, anaConfig.variables, anaConfig.regions, anaConfig.data, "workspaceFromExportTest.root", "w")
+	print(loadedframes)
 
-	Ana.filemanager.CloseAll()
+	tree = Ana.filemanager.GetItem("Sig_SR")
+	canvas = ROOT.TCanvas("canvas", "canvas", 800, 600)
+	tree.Draw("b_B_m")
+	canvas.Print(folder+"/testhisto.pdf")
+	
+
+	anaConfig.CloseFiles()
 
 
 

@@ -26,6 +26,8 @@ def CloseFiles():
 
 def DebugMode(): 
 	global samples
-	samples = ["Sig","B0toDstarDs", "B0toDstarDsstar"]
+	samples = ["Sig", "B0toDstarDs", "B0toDstarDsstar"] # Using a reduced set of files for debugging
 	global regions
 	regions = ["SR"]
+	global variables
+	variables = ["b_B_m"]

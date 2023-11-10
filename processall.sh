@@ -22,6 +22,8 @@ while [[ $1 =~ "--" ]]; do # Looping over all arguments, see shift
 		SAMPLELIST=( "${DATALIST[@]}" )
 	elif [[ $1 == "--WS" ]]; then 
 		SAMPLELIST=( "${WSLIST[@]}" )
+	elif [[ $1 == "--DATAWS" ]]; then 
+		SAMPLELIST=( "${DATALIST[@]}" "${WSLIST[@]}" )
 	elif [[ $1 == "--ALL" ]]; then 
 		SAMPLELIST=( "${BKGLIST[@]}" "${SIGNALLIST[@]}" "${DATALIST[@]}" "${WSLIST[@]}" )
 	elif [[ $1 == "--MIN" ]]; then 

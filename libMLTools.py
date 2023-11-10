@@ -112,7 +112,7 @@ if __name__ == "__main__":
 	options = parser.parse_args()
 
 
-	samples = ["Sig", "dataB2", "datD2WS"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
+	samples = ["Sig", "dataB2", "dataD2WS", "dataD2_SB"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
 
 	import ROOT
 
@@ -134,7 +134,7 @@ if __name__ == "__main__":
 	cutbkg = (Ana.cut["base"]+Ana.samples.at("dataB2").cut).GetTitle()
 
 	signal = RDataFrame(Ana.filemanager.GetItem("Sig")).Filter(cutsig)
-	background = RDataFrame(Ana.filemanager.GetItem("dataB2")).Filter(cutbkg)
+	background = RDataFrame(Ana.filemanager.GetItem("dataD2_SB")).Filter(cutbkg)
 
 	print("Starting to compute ROC curve... ")
 	roc, auc = GetROC(signal, background, options.variable)

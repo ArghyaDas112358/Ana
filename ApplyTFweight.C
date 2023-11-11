@@ -132,11 +132,15 @@ std::vector<double> castVector(std::vector<float> vec)
 
  
 
-void ApplyTFweight(const TString& inIdentifier, const TString& outIndentifier, const TString& version = "", const Int_t Nmax = 0, const Int_t Nmin = 0, const TString& destination = "") 
+void ApplyTFweight(const TString& identifier, const TString& version = "", const Int_t Nmax = 0, const Int_t Nmin = 0, const TString& destination = "") 
 {
 	//ROOT::EnableImplicitMT(); //ROOT::DisableImplicitMT(); 
 	Init(version); 
 
+
+	TString inIdentifier = identifier+"_ntuple"; 
+	TString outIndentifier = identifier+"_tf"; 
+	filemanager.AddItem("effInfo", filemanager.GetFile(inIdentifier), "ntuplizer/EffCalc"); 
 
 	filemanager.OpenItem(inIdentifier); 
 
@@ -264,6 +268,12 @@ void ApplyTFweight(const TString& inIdentifier, const TString& outIndentifier, c
 
 
 	withWeight.Snapshot(filemanager.GetObject(outIndentifier), outfile.Data()); 
+
+	// Update the created file with eff info
+	TFile *output = TFile::Open(outfile.Data(), "UPDATE"); 
+	filemanager.GetItem<TTree*>("effInfo", true)->CloneTree(); 
+	output->Write(); 
+	output->Close();
 
 	//Pause(5); 
 

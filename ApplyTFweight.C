@@ -271,6 +271,7 @@ void ApplyTFweight(const TString& identifier, const TString& version = "", const
 
 	// Update the created file with eff info
 	TFile *output = TFile::Open(outfile.Data(), "UPDATE"); 
+	output->cd("ntuplizer");
 	filemanager.GetItem<TTree*>("effInfo", true)->CloneTree(); 
 	output->Write(); 
 	output->Close();

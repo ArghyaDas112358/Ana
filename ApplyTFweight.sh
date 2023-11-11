@@ -18,6 +18,7 @@ elif [[ $# > 3 ]]; then
 fi 
 
 INITIALREF=${1}_ntuple
+REF=${1}
 VERSION=""
 FINALREF="${1}_tf" # Adding suffix to the ref
 #Remove suffix from string
@@ -55,6 +56,6 @@ echo $OUTPATH
 mkdir -p $OUTPATH
 
 #root -e 'gInterpreter->AddIncludePath("/opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/numpy/core/include");' TestApplyTFweightnew.C
-root -q -e 'gInterpreter->AddIncludePath("'$NUMPYLIBRARY'");' 'ApplyTFweight.C("'${1}'", "'$VERSION'", '$STOPEVT', '$STARTEVT')'
+root -q -e 'gInterpreter->AddIncludePath("'$NUMPYLIBRARY'");' 'ApplyTFweight.C("'$REF'", "'$VERSION'", '$STOPEVT', '$STARTEVT')'
 #root -e 'gInterpreter->AddIncludePath("/opt/local/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/numpy/core/include");' ApplyTFweight.C
 #root -e 'gInterpreter->AddIncludePath("/t3home/mhuwiler/.local/lib/python3.6/site-packages/numpy/core/include/");' ApplyTFweight.C

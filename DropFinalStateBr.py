@@ -37,7 +37,7 @@ if __name__ == "__main__":
 	finalstatebr["B0toDstarDs1"] = finalstatebr["B0toDstarDsstar"]*ufloat(0.48, 0.11) # Using Ds pi0 mode (largest frac. and unc.)
 	finalstatebr["B0toDstarDs0star"] = finalstatebr["B0toDstarDs"]*ufloat(1., 0.2) # Using Ds pi0 mode (only one determined)
 	# finalstatebr["B0toDstarD"] = [1.41e-3, 1.6e-4], 
-	# finalstatebr["B0toDstarD0K"] = [2.47e-3, 0.21e-3], 
+	finalstatebr["B0toDstarD0K"] = ufloat(1., 1.) 
 	# finalstatebr["B0toDstarD0Kstar"] = [2.47e-3, 0.21e-3], 
 	# finalstatebr["ButoDstarDK"] = [2.61e-3, 2.4e-4], 
 	# finalstatebr["ButoDstarD0K"] = [1.3e-2, 1.2e-3], 

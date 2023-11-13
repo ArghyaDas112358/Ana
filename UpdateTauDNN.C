@@ -258,6 +258,35 @@ void WriteEffInfo(std::string directory, const Double_t Initial, Double_t final 
 	outfile->Close(); 
 }
 
+void UpdateEffInfo(const TString& outIdentifier, const TString& effTreeName = "ntuplizer/EffCalc") 
+{
+	TString filename = filemanager.GetFile(outIdentifier);
+	TFile *file = TFile::Open(filename, "UPDATE");
+ 
+	//if (!selEff) std::cerr << "ERROR: No selection efficiency information found in file. Please make sure it was added or copied to the file under: " << effTreeName << std::endl;
+
+	TDirectory *dir = static_cast<TDirectory*>(file->Get("ntuplizer"));
+
+	auto selEffFrame = RDataFrame(*filemanager.GetItem<TTree*>("effInfo", true));
+
+	Double_t n = selEffFrame.Sum("numSelected").GetValue();
+
+	Double_t N = selEffFrame.Sum("numTotal").GetValue();
+
+	RDataFrame frame(*filemanager.GetItem<TTree*>(outIdentifier, true)); 
+
+	Double_t nsel = frame.Count().GetValue();
+
+	std::cout << "Yields: " << N << " " << n << " " << nsel << std::endl;
+
+	dir->cd(); 
+	TVectorD vec(3);
+	vec[0] = N; 
+	vec[1] = n;
+	vec[2] = nsel;   
+	vec.Write("EffInfo"); 
+}
+
 std::vector<std::string>& purgeColumns(std::vector<std::string> &&columns, const std::vector<std::string>& blacklist)
 {
    			// a lambda that checks if `s` is in the blacklist
@@ -379,6 +408,8 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 
 
 	auto dataframe = RDataFrame(*filemanager.GetItem<TTree*>(inIdentifier)); // tree100k
+
+	filemanager.AddItem("effInfo", filemanager.GetFile(inIdentifier), "ntuplizer/EffCalc"); 
 
 	Double_t Ninitial = (*filemanager.GetItem<TTree*>(inIdentifier)).GetEntries(); 
 	
@@ -655,6 +686,8 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 	//std::cout << "N initial: " << Ninitial << ", N final: " << Nfinal << std::endl; 
 
 	WriteEffInfo(outIndentifier.Data(), Ninitial); 
+
+	UpdateEffInfo(outIndentifier); 
 	
 
 	//filemanager.CloseAll(); 

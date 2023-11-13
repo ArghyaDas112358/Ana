@@ -400,7 +400,7 @@ float extractFirstElement(const ROOT::VecOps::RVec<float>& vec)
 
  
 
-void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, const TString& cycle, const bool ws = false) 
+void UpdateTauDNN(const TString& identifier, const TString& cycle, const bool ws = false) 
 {
 	ROOT::DisableImplicitMT(); 
 	//ROOT::EnableImplicitMT(); //ROOT::DisableImplicitMT(); 
@@ -410,6 +410,10 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 	Init(cycle); 
 
 	std::cout << "Starting processing" << std::endl; 
+
+
+	TString inIdentifier = identifier+"_tf";
+	TString outIndentifier = identifier+"_DNN";
 
 
 	filemanager.OpenItem(inIdentifier); 

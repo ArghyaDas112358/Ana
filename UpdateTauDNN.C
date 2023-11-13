@@ -258,14 +258,13 @@ void WriteEffInfo(std::string directory, const Double_t Initial, Double_t final 
 	outfile->Close(); 
 }
 
-void UpdateEffInfo(const TString& outIdentifier, const TString& effTreeName = "ntuplizer/EffCalc") 
+void UpdateEffInfo(const TString& outIdentifier, const TString& effTreeName = "ntuplizer/EffCalc", const TString& effInfoObject = "ntuplizer/EffInfo") 
 {
 	TString filename = filemanager.GetFile(outIdentifier);
-	TFile *file = TFile::Open(filename, "UPDATE");
  
 	//if (!selEff) std::cerr << "ERROR: No selection efficiency information found in file. Please make sure it was added or copied to the file under: " << effTreeName << std::endl;
 
-	TDirectory *dir = static_cast<TDirectory*>(file->Get("ntuplizer"));
+	//TDirectory *dir = static_cast<TDirectory*>(file->Get("ntuplizer"));
 
 	auto selEffFrame = RDataFrame(*filemanager.GetItem<TTree*>("effInfo", true));
 
@@ -277,14 +276,25 @@ void UpdateEffInfo(const TString& outIdentifier, const TString& effTreeName = "n
 
 	Double_t nsel = frame.Count().GetValue();
 
-	std::cout << "Yields: " << N << " " << n << " " << nsel << std::endl;
+	TFile *file = TFile::Open(filename, "UPDATE");
+
+	auto tokens = effInfoObject.Tokenize("/"); 
+	TString effInfoName = static_cast<TObjString*>(tokens->At(tokens->GetEntries()-1))->GetString(); 
+	TString effInfoFolder = effInfoObject; 
+	effInfoFolder.ReplaceAll("/"+effInfoName, "");
+
+	TDirectory *dir = static_cast<TDirectory*>(file->Get(effInfoFolder));
+
+	//std::cout << "Yields: " << N << " " << n << " " << nsel << std::endl;
 
 	dir->cd(); 
 	TVectorD vec(3);
 	vec[0] = N; 
 	vec[1] = n;
 	vec[2] = nsel;   
-	vec.Write("EffInfo"); 
+	vec.Write(effInfoName); 
+
+	file->Close(); 
 }
 
 std::vector<std::string>& purgeColumns(std::vector<std::string> &&columns, const std::vector<std::string>& blacklist)
@@ -685,7 +695,7 @@ void UpdateTauDNN(const TString& inIdentifier, const TString& outIndentifier, co
 
 	//std::cout << "N initial: " << Ninitial << ", N final: " << Nfinal << std::endl; 
 
-	WriteEffInfo(outIndentifier.Data(), Ninitial); 
+	WriteEffInfo(outIndentifier.Data(), Ninitial); // Todo: remove
 
 	UpdateEffInfo(outIndentifier); 
 	

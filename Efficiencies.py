@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
 	forcedbr = ReadEffs("./data/etc/ForcedBranchingFractions.json")
 
-	finalbr = ReadEffs("./data/etc/FinalStateBranchingFractions.json")
+	finalbr = ReadEffs("./data/etc/FinalStateBranchingFractionsGenerated.json")
 
 	#print(constants)
 
@@ -100,7 +100,12 @@ if __name__ == "__main__":
 
 			N = options.lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff*offlineeff #*genmatcheff*customeff
 			# Adding Br error ad hoc. 
-			BRerror = ufloat(1., finalbr[sample].s/finalbr[sample].n)
+			try: 
+				finalstatebr = finalbr[sample]
+			except: 
+				finalstatebr = ufloat(1., 0.1)
+				print("Warning: No final state branching fraction found for sample {}. Setting uncertainty to 0.1".format(sample))
+			BRerror = ufloat(1., finalstatebr.s/finalstatebr.n)
 			N = N*BRerror
 			Nexpected[sample] = N
 			Sum += N

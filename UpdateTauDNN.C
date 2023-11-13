@@ -290,8 +290,8 @@ void UpdateEffInfo(const TString& outIdentifier, const TString& effTreeName = "n
 	dir->cd(); 
 	TVectorD vec(3);
 	vec[0] = N; 
+	vec[2] = nsel; // Always the first two elements give the efficiency
 	vec[1] = n;
-	vec[2] = nsel;   
 	vec.Write(effInfoName); 
 
 	file->Close(); 

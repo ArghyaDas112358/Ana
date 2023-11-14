@@ -34,26 +34,35 @@ namespace Ana {
 	std::unordered_map<std::string, SampleData> InitSamples() 
 	{
 		// https://colorbrewer2.org/?type=diverging&scheme=RdYlBu&n=7#type=diverging&scheme=RdYlBu&n=11
-		std::vector<TColor*> colors = 
+		std::vector<std::vector<int> > colors = 
 		{	
-			new TColor(TColor::GetFreeColorIndex(), 165,0,38),
-			new TColor(TColor::GetFreeColorIndex(), 215,48,39), 
-			new TColor(TColor::GetFreeColorIndex(), 244,109,67), 
-			new TColor(TColor::GetFreeColorIndex(), 253,174,97), 
-			new TColor(TColor::GetFreeColorIndex(), 254,224,144), 
-			new TColor(TColor::GetFreeColorIndex(), 255,255,191), 
-			new TColor(TColor::GetFreeColorIndex(), 224,243,248), 
-			new TColor(TColor::GetFreeColorIndex(), 171,217,233), 
-			new TColor(TColor::GetFreeColorIndex(), 116,173,209), 
-			new TColor(TColor::GetFreeColorIndex(), 69,117,180), 
-			new TColor(TColor::GetFreeColorIndex(), 49,54,149)
+
+			{165,0,38},
+			{215,48,39}, 
+			{244,109,67}, 
+			{253,174,97}, 
+			{254,224,144}, 
+			{255,255,191}, 
+			{224,243,248}, 
+			{171,217,233}, 
+			{116,173,209}, 
+			{69,117,180}, 
+			{49,54,149}
 		}; 
 
 		std::vector<Int_t> mycolors; 
+		std::vector<TColor*> rootcolors; 
 		mycolors.reserve(colors.size()); 
+		rootcolors.reserve(colors.size()); 
+	
+		Float_t colorintmax = 256.; 
 		for (auto color : colors) 
 		{
-			mycolors.push_back(color->GetNumber()); 
+			//std::cout << color->GetNumber() << std::endl; 
+			assert(color.size() == 3); 
+			TColor *newcolor = new TColor(TColor::GetFreeColorIndex(), static_cast<Float_t>(color[0])/colorintmax, static_cast<Float_t>(color[1])/colorintmax, static_cast<Float_t>(color[2])/colorintmax);
+			rootcolors.push_back(newcolor); 
+			mycolors.push_back(newcolor->GetNumber()); 
 		}
 
 		TCut genMatchCut = "(Dstar_match)&&(b_tau_match)";

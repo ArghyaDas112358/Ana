@@ -7,10 +7,11 @@
 #include <unordered_map>
 #include "SampleData.C"
 #include "ROOT/RDataFrame.hxx"
-#include <json/value.h>
-#include <json/json.h>
+//#include <json/value.h>
+//#include <json/json.h>
 //R__ADD_LIBRARY_PATH($FOODIR) // if needed
-R__LOAD_LIBRARY(/opt/local/lib/libjsoncpp.dylib) // Load the library
+//R__LOAD_LIBRARY(/opt/local/lib/libjsoncpp.dylib) // Load the library
+#include "external/jsoncpp/dist/jsoncpp.cpp"
 #include <fstream>
 
 

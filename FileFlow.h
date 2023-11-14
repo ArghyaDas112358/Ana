@@ -367,7 +367,9 @@ namespace Ana
 			{"v4", "./data/tautagger/NewSelTopUpNoOverlap/serialized"}, 
 			{"v6.7", "./data/tautagger/FlightSigCorrNoCharge/serialized"}, 
 			{"v6.8", "./data/tautagger/FlightSigCorrNoCharge/serialized"},
-			{"v6.9", "./data/tautagger/FlightSigCorrNoCharge/serialized"}
+			{"v6.9", "./data/tautagger/FlightSigCorrNoCharge/serialized"}, 
+			{"v6.945", "./data/tautagger/FlightSigCorrNoCharge/serialized"},
+			{"v6.95", "./data/tautagger/FlightSigCorrNoCharge/serialized"}
 		}; 
 
 		MVA = {	
@@ -378,7 +380,8 @@ namespace Ana
 			{"v4", "./anaMVA/NewSelection/model_optimized/weights.xml"}, 
 			{"v6.7", "./anaMVA/NewFixTauFL/model_optimized/weights.xml"}, 
 			{"v6.8", "./anaMVA/NewIsoWithCutsvsdata/model_optimized/weights.xml"}, //./anaMVA/NewIsoVariablesAgainstWS/model_optimized/weights.xml" ./anaMVA/NewIsoVariables/model_optimized/weights.xml
-			{"v6.9", "./anaMVA/NewFixTauFL/model_optimized/weights.xml"} //LatestVsData
+			{"v6.9", "./anaMVA/NewFixTauFL/model_optimized/weights.xml"}, //LatestVsData
+			{"v6.95", "./anaMVA/TrimmedVariablesWS/model_optimized/weights.xml"} //LatestVsData
 		}; 
 
 		//legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"B0toDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"B0toDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"}, {"B0toDstar3pi", "B^{0}#rightarrowD^{*}3pi"}, {"B0toDstarD", "B^{0}#rightarrowD^{*}D"}, {"ButoDstarDK", "B^{+}#rightarrowD^{*}DK"}, {"B0toDstarD0K", "B^{0}#rightarrowD^{*}D^{0}K"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 

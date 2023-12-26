@@ -17,7 +17,7 @@ DummyOptions = namedtuple('DummyOptions', ['debug'])
 
 options = DummyOptions(True)
 
-shape_file = 'workspaceFromExport.root'
+shape_file = 'workspaceFromExportTest.root'
 HFSys = [] #"ABCD-sys-HFDown","ABCD-sys-HFUp"
 #HighNchSys = "highNch_" + str(sys.argv[2])
 
@@ -111,7 +111,7 @@ for chn in channels:
     cb.cp().channel([chn]).ExtractShapes(
         '%s' % (shape_file),
 #        '$BIN/$PROCESS', '$BIN/$PROCESS_$SYSTEMATIC')
-        'workspace:$PROCESS_$BIN', "") #, '$BIN/$SYSTEMATIC' 'workspace:$PROCESS_$BIN_$SYSTEMATIC'
+        'w:$PROCESS_$BIN', 'w:$PROCESS_$BIN_$SYSTEMATIC') #, '$BIN/$SYSTEMATIC' 'w:$PROCESS_$BIN_$SYSTEMATIC'
 
 
 """

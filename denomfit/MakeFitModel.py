@@ -82,7 +82,8 @@ if __name__ == "__main__":
 	nsig = RooRealVar("nsig", "nsig", 100, 0., 1000.)
 	nbkg = RooRealVar("nbkg", "nbkg", 100, 0., 4000.)
 	totalmodel = RooAddPdf("pdf", "pdf", RooArgList(signalmodel, bkgmodel), RooArgList(nsig, nbkg))
-	getattr(workspace, "import")(totalmodel)
+	from ROOT.RooFit import RecycleConflictNodes
+	getattr(workspace, "import")(totalmodel, RecycleConflictNodes())
 
 	# #datahist.Write()
 	#sig.Write()

@@ -7,7 +7,7 @@ import copy as cp
 if __name__ == "__main__":
 
 	import ROOT
-	from ROOT import RDataFrame, RooRealVar, RooDataHist, RooArgSet, RooWorkspace
+	from ROOT import RDataFrame, RooRealVar, RooDataHist, RooArgSet, RooWorkspace, RooExponential
 
 	examplehist = ("hist", "hist", 20, 4.5, 6.)
 	variable = "pttau_B_m"
@@ -29,6 +29,14 @@ if __name__ == "__main__":
 
 	datahist = RooDataHist("data_obs", "data_obs", fitspace, data.GetPtr())
 	getattr(workspace, "import")(datahist)
+
+	signalmodel = 1
+
+	# Background model
+	alpha = RooRealVar("alpha","alpha",-1.5,-5.0,1.0)
+	bkgmodel = RooExponential("combinatorial", "combinatorial", var, alpha)
+	getattr(workspace, "import")(bkgmodel)
+
 	# #datahist.Write()
 	#sig.Write()
 	data.Write()

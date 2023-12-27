@@ -9,7 +9,7 @@ if __name__ == "__main__":
 	import ROOT
 	from ROOT import RDataFrame, RooRealVar, RooDataHist, RooArgSet, RooWorkspace, RooExponential, RooCrystalBall, RooAddPdf, RooArgList
 
-	examplehist = ("hist", "hist", 20, 4.5, 6.)
+	examplehist = ("hist", "hist", 50, 4.5, 6.)
 	variable = "pttau_B_m"
 	#sigfile = ROOT.TFile.Open("B0toDstarDs_tauDNN.root", "READ")
 	#sig = cp.deepcopy(RDataFrame(sigfile.Get("ntuplizer/tree")).Histo1D(("sig", "sig", 40, 0., 20.), variable).GetPtr())

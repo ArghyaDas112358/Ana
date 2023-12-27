@@ -1,0 +1,28 @@
+# Simple denominator fit 
+
+imax 1
+jmax 1
+kmax *
+
+--------------------------------------------------
+# Shapes and RooFit workspace
+shapes 	sig 		bin0 	workspace.root 	w:dcbPdf
+shapes 	comb  		bin0 	workspace.root 	w:combinatorial
+shapes 	data_obs 	bin0 	workspace.root 	w:data_obs
+
+--------------------------------------------------
+# Observed events (data)
+bin bin0
+observation -1 
+
+--------------------------------------------------
+# Expected events (MC/model)
+bin 		bin0 	bin0
+process 	sig 	comb
+process 	0 		1
+rate 		1. 		1.
+
+--------------------------------------------------
+
+
+--------------------------------------------------

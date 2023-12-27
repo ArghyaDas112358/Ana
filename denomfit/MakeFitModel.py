@@ -7,7 +7,7 @@ import copy as cp
 if __name__ == "__main__":
 
 	import ROOT
-	from ROOT import RDataFrame, RooRealVar, RooDataHist, RooArgSet, RooWorkspace, RooExponential
+	from ROOT import RDataFrame, RooRealVar, RooDataHist, RooArgSet, RooWorkspace, RooExponential, RooCrystalBall
 
 	examplehist = ("hist", "hist", 20, 4.5, 6.)
 	variable = "pttau_B_m"
@@ -30,7 +30,49 @@ if __name__ == "__main__":
 	datahist = RooDataHist("data_obs", "data_obs", fitspace, data.GetPtr())
 	getattr(workspace, "import")(datahist)
 
-	signalmodel = 1
+	# Signal model
+
+	#DCB parameters
+	par = {}
+	par[0]=35000;
+	par[1]=5.27;
+	par[2]=0.08;
+	par[3]=1.;
+	par[4]=1.;
+	par[5]=1.;
+	par[6]=1.;
+	mu = RooRealVar("mu","mu",par[1],4.7,5.7);
+	width = RooRealVar("width","width",par[2],0.,1.);
+	a1 = RooRealVar("a1","a1",par[3],0.,100.);
+	p1 = RooRealVar("p1","p1",par[4],0.,100.);
+	a2 = RooRealVar("a2","a2",par[5],0.,100.);
+	p2 = RooRealVar("p2","p2",par[6],0.,100.);
+
+	signalmodel = RooCrystalBall("dcbPdf","DoubleSidedCB",var,mu,width,a1,p1,a2,p2);
+
+	getattr(workspace, "import")(signalmodel)
+
+	"""
+	RooFormulaVar mean("mean","@0+@1", RooArgList(meanvalue, mushift));
+	RooFormulaVar sigmap("sigmap","@0*@1",RooArgList(sigwidthscale,sigmapmc));
+	RooRealVar cbnp("cbnp","",myconfigs->fcbnp);  
+	RooRealVar cbap("cbap","",myconfigs->fcbap);//,-10.,0.);
+	RooCBShape CBp("CBp","", mvar, mean, sigmap, cbap, cbnp);
+
+	RooFormulaVar sigmam("sigmam","@0*@1",RooArgList(sigwidthscale,sigmammc));
+	RooRealVar cbnm("cbnm","",myconfigs->fcbnm);  
+	RooRealVar cbam("cbam","",myconfigs->fcbam);//,0.,10.);
+	RooCBShape CBm("CBm","", mvar, mean, sigmam, cbam, cbnm); 
+
+	RooRealVar fracm("fracm","",myconfigs->ffrac);
+
+	RooAddPdf  CB("CB","",RooArgList(CBm,CBp),RooArgList(fracm));
+
+	RooRealVar meanB("meanB","",myconfigs->fmean - 87.19, 5200, 5300); 
+	RooCBShape CBpB("CBpB","", mvar, meanB, sigmap, cbap, cbnp); 
+	RooCBShape CBmB("CBmB","", mvar, meanB, sigmam, cbam, cbnm); 
+	RooAddPdf  CBB("CBB","",RooArgList(CBmB,CBpB),RooArgList(fracm));
+	"""
 
 	# Background model
 	alpha = RooRealVar("alpha","alpha",-1.5,-5.0,1.0)

@@ -7,7 +7,7 @@ import copy as cp
 if __name__ == "__main__":
 
 	import ROOT
-	from ROOT import RDataFrame, RooRealVar, RooDataHist, RooArgSet, RooWorkspace, RooExponential, RooCrystalBall
+	from ROOT import RDataFrame, RooRealVar, RooDataHist, RooArgSet, RooWorkspace, RooExponential, RooCrystalBall, RooAddPdf, RooArgList
 
 	examplehist = ("hist", "hist", 20, 4.5, 6.)
 	variable = "pttau_B_m"
@@ -78,6 +78,11 @@ if __name__ == "__main__":
 	alpha = RooRealVar("alpha","alpha",-1.5,-5.0,1.0)
 	bkgmodel = RooExponential("combinatorial", "combinatorial", var, alpha)
 	getattr(workspace, "import")(bkgmodel)
+
+	nsig = RooRealVar("nsig", "nsig", 100, 0., 1000.)
+	nbkg = RooRealVar("nbkg", "nbkg", 100, 0., 4000.)
+	totalmodel = RooAddPdf("pdf", "pdf", RooArgList(signalmodel, bkgmodel), RooArgList(nsig, nbkg))
+	getattr(workspace, "import")(totalmodel)
 
 	# #datahist.Write()
 	#sig.Write()

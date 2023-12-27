@@ -4,7 +4,7 @@ VERSION=${1}
 
 STAGE=0
 
-BKGLIST=( B0toDstarDs B0toDstarDsstar B0toDstarDs1 B0toDstarD0K B0toDstarD0Kstar B0toDstarD B0toDstara1 B0toDstar3pi B0toDstar5pi ButoDstarXc ButoDstarDK ) #SigTrain  #Sig "SigTest" 
+BKGLIST=( B0toDstarDs B0toDstarDsstar B0toDstarDs1 B0toDstarDs0star B0toDstarD0K B0toDstarD0Kstar B0toDstarD B0toDstarDsX B0toDstara1 B0toDstar3pi B0toDstar3pipi0 B0toDstar5pi ButoDstarXc ButoDstarDK BstoDD ) #SigTrain  #Sig "SigTest" 
 SIGNALLIST=( Sig SigTest )
 DATALIST=( dataB2 dataD1 dataD2)
 WSLIST=( dataD1WS dataD2WS )

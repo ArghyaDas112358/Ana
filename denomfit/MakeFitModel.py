@@ -9,13 +9,13 @@ if __name__ == "__main__":
 	import ROOT
 	from ROOT import RDataFrame, RooRealVar, RooDataHist, RooArgSet, RooWorkspace, RooExponential, RooCrystalBall, RooAddPdf, RooArgList
 
-	examplehist = ("hist", "hist", 50, 4.5, 6.)
+	examplehist = ("hist", "hist", 70, 4.5, 6.)
 	variable = "pttau_B_m"
 	#sigfile = ROOT.TFile.Open("B0toDstarDs_tauDNN.root", "READ")
 	#sig = cp.deepcopy(RDataFrame(sigfile.Get("ntuplizer/tree")).Histo1D(("sig", "sig", 40, 0., 20.), variable).GetPtr())
 
 	datafile = ROOT.TFile.Open("../../../data/v7.01/dataD1.root", "READ")
-	data = RDataFrame(datafile.Get("ntuplizer/tree")).Histo1D(examplehist, variable)
+	data = RDataFrame(datafile.Get("ntuplizer/tree")).Filter("pttau_B_m>0.&&pttau_B_nmu<1&&pttau_B_nh<1&&pttau_B_ne<1&&(pttau_B_npi0+pttau_B_ngamma)<2").Histo1D(examplehist, variable)
 
 	var = RooRealVar(variable, variable, 0., 100.)
 	fitspace = RooArgSet(var)

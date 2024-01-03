@@ -23,6 +23,8 @@ process 	0 		1
 rate 		1. 		1.
 
 --------------------------------------------------
-
+# Normalisations
+sig_norm rateParam bin0 sig 20.0 [0.,200.]
+comb_norm rateParam bin0 comb 30. [0.,300.]
 
 --------------------------------------------------

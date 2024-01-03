@@ -7,6 +7,7 @@ import json
 from argparse import ArgumentParser
 from uncertainties import ufloat
 from uncertainties.umath import * 
+import os # TODO: remove 
 
 
 ROOT.gROOT.LoadMacro("FileFlow.h")
@@ -28,11 +29,11 @@ if __name__ == "__main__":
 	parser = ArgumentParser(description="GetEfficiency")
 	#parser.add_argument("filename", action="store", type=str, default="", help="Name of file")
 	#parser.add_argument("-N", "--version", dest="iteration", action="store", type=int, default=0, help="Which iteration of inference")
-	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v6.8", help="Which version (cycle) of files to run on")
+	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v7", help="Which version (cycle) of files to run on")
 	parser.add_argument("-l", "--lumi", dest="lumi", action="store", type=float, default=41.5, help="Luminostiy processed")
 	parser.add_argument("-e", "--object", dest="object", action="store", type=str, default="ntuplizer/EffCalc", help="Efficiency info object within file")
 	parser.add_argument("-g", "--cut", dest="cut", action="store", type=str, default="1", help="Custom cut to be included in eff calculation")
-	parser.add_argument("-t", "--table", dest="table", action="store", type=str, default="/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/Presentations/Presentation_23_12_19/efftable.tex", help="Latex fragment with summary table")
+	parser.add_argument("-t", "--table", dest="table", action="store", type=str, default="/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/Presentations/Presentation_24_1_9/efftable.tex", help="Latex fragment with summary table")
 	parser.add_argument("-o", "--out", dest="out", action="store", type=str, default="./data/etc/Expectedyields.json", help="Path for json with yield info")
 	parser.add_argument("-n", "--target", dest="target", action="store", type=float, default=10000., help="Target number of events after selection")
 
@@ -80,6 +81,9 @@ if __name__ == "__main__":
 			item = sample+"_ntuple"
 			Ana.filemanager.OpenItem(item)
 			file = ROOT.TFile.Open(Ana.filemanager.GetFile(item), "READ")
+			if file.IsZombie():
+				print("ERROR: File {} of item {} does not exist... Skipping.".format(Ana.filemanager.GetFile(item), item))
+				continue
 			info = file.Get(options.object)
 
 			if not info: 
@@ -88,12 +92,22 @@ if __name__ == "__main__":
 			eff = getEffFromInfo(info)
 
 			offlinesample = sample+"_DNN"
-			Ana.filemanager.OpenItem(offlinesample)
+			if not os.path.isfile(Ana.filemanager.GetFile(offlinesample)):
+				print("ERROR: File {} of item {} does not exist... Skipping.".format(Ana.filemanager.GetFile(offlinesample), offlinesample))
+				continue
+
+			if not Ana.filemanager.GetItem(offlinesample):
+				print("ERROR: Object {} of item {} does not exist... Skipping.".format(Ana.filemanager.GetFile(offlinesample), offlinesample))
+				continue
+
 			genmatcheff = getGenmatchingEff(Ana.filemanager.GetItem(offlinesample), Ana.samples.at(sample).cut.GetTitle())
 
 			customeff = getGenmatchingEff(Ana.filemanager.GetItem(item), options.cut)
 
 			file = TFile.Open(Ana.filemanager.GetFile(offlinesample))
+			if file.IsZombie():
+				print("ERROR: Object {} of item {} does not exist... Skipping.".format(Ana.filemanager.GetFile(offlinesample), offlinesample))
+				continue
 			vec = file.Get("ntuplizer/EffUpdateTau")
 			offlineeff = getOfflineEff(vec)
 			print(offlineeff)

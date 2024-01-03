@@ -2,6 +2,6 @@
 
 
 python3 MakeFitModel.py
-combine -M MultiDimFit datacard.txt --saveWorkspace --algo singles
-combine -M FitDiagnostics higgsCombineTest.MultiDimFit.mH120.root --snapshotName MultiDimFit --saveWorkspace -t 100 --expectSignal 1. --toysNoSystematics
+combine -M MultiDimFit datacard.txt --saveWorkspace --algo singles --saveFitResult
+PostFitShapesFromWorkspace -w higgsCombineTest.MultiDimFit.mH120.root --output postFitPlots.root --fitresult multidimfitTest.root:fit_mdf --postfit
 #python3 PlotDenomFit.py

@@ -1,7 +1,5 @@
 {	
 	"Sig": [1.84e-2, 2.2e-3],
-	"BkgDstarDs": [8e-3, 1.1e-3], 
-	"BkgDstarDsstar": [1.77e-2, 1.4e-3], 
 	"B0toDstarDs": [8e-3, 1.1e-3], 
 	"B0toDstarDsstar": [1.77e-2, 1.4e-3], 
 	"B0toDstarDs1": [5.0e-4, 1.4e-4], 
@@ -12,10 +10,8 @@
 	"ButoDstarDK": [2.61e-3, 2.4e-4], 
 	"ButoDstarD0K": [1.3e-2, 1.2e-3], 
 	"ButoDstarpi": [1.76e-2, 7e-3], 
-	"BkgDstara1": [1.3e-2, 2.7e-3], 
-	"BkgDstar3pi": [7.21e-3, 2.9e-4],
 	"B0toDstara1": [1.3e-2, 2.7e-3],
 	"B0toDstar3pi": [7.21e-3, 2.9e-4],
-	"BkgBuDXc": [0.0758, 0.01516], 
-	"BkgB0DD": [0.0501, 0.01002]
+	"ButoDXc": [0.0758, 0.01516], 
+	"B0toDD": [0.0501, 0.01002]
 }

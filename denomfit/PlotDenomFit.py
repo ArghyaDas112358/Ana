@@ -18,7 +18,7 @@ if __name__ == "__main__":
 	workspace.loadSnapshot("MultiDimFit")
 
 
-	model = workspace.pdf("pdf") #model_s
+	model = workspace.pdf("dcbPdf") #model_s
 
 	# Creating the RooFit plot
 	var = workspace.var("pttau_B_m")

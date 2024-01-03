@@ -7,7 +7,7 @@ import copy as cp
 if __name__ == "__main__":
 
 	import ROOT
-	from ROOT import RDataFrame, RooRealVar, RooDataHist, RooArgSet, RooWorkspace, RooExponential, RooCrystalBall, RooAddPdf, RooArgList
+	from ROOT import RDataFrame, RooRealVar, RooDataHist, RooArgSet, RooWorkspace, RooExponential, RooCrystalBall, RooGaussian, RooAddPdf, RooArgList
 
 	examplehist = ("hist", "hist", 70, 4.5, 6.)
 	variable = "pttau_B_m"
@@ -36,19 +36,19 @@ if __name__ == "__main__":
 	par = {}
 	par[0]=35000;
 	par[1]=5.27;
-	par[2]=0.08;
+	par[2]=0.2;
 	par[3]=1.;
 	par[4]=1.;
 	par[5]=1.;
 	par[6]=1.;
-	mu = RooRealVar("mu","mu",par[1],4.7,5.7);
-	width = RooRealVar("width","width",par[2],0.,1.);
+	mu = RooRealVar("mu","mu",par[1],5.1,5.5);
+	width = RooRealVar("width","width",par[2],0.,0.4);
 	a1 = RooRealVar("a1","a1",par[3],0.,100.);
 	p1 = RooRealVar("p1","p1",par[4],0.,100.);
 	a2 = RooRealVar("a2","a2",par[5],0.,100.);
 	p2 = RooRealVar("p2","p2",par[6],0.,100.);
 
-	signalmodel = RooCrystalBall("dcbPdf","DoubleSidedCB",var,mu,width,a1,p1,a2,p2);
+	signalmodel = RooGaussian("dcbPdf", "gaus", var, mu, width) #RooCrystalBall("dcbPdf","DoubleSidedCB",var,mu,width,a1,p1,a2,p2);
 
 	getattr(workspace, "import")(signalmodel)
 

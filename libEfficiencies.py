@@ -12,6 +12,9 @@ from collections import OrderedDict, defaultdict
 
 
 def getEff(n, N): 
+	if (N==0): 
+		print("(getEff) WARNING: N is 0, returning efficiency = 0")
+		return ufloat(0., 0.)
 	eff = float(n)/float(N)
 	#print eff
 	err = sqrt(eff*(1.-eff)/float(N))

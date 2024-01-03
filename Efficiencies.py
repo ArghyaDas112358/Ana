@@ -95,6 +95,7 @@ if __name__ == "__main__":
 			if not os.path.isfile(Ana.filemanager.GetFile(offlinesample)):
 				print("ERROR: File {} of item {} does not exist... Skipping.".format(Ana.filemanager.GetFile(offlinesample), offlinesample))
 				continue
+			Ana.filemanager.OpenItem(offlinesample)
 
 			if not Ana.filemanager.GetItem(offlinesample):
 				print("ERROR: Object {} of item {} does not exist... Skipping.".format(Ana.filemanager.GetFile(offlinesample), offlinesample))

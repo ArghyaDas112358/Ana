@@ -32,7 +32,7 @@ if __name__ == "__main__":
 	parser.add_argument("-l", "--lumi", dest="lumi", action="store", type=float, default=41.5, help="Luminostiy processed")
 	parser.add_argument("-e", "--object", dest="object", action="store", type=str, default="ntuplizer/EffCalc", help="Efficiency info object within file")
 	parser.add_argument("-g", "--cut", dest="cut", action="store", type=str, default="1", help="Custom cut to be included in eff calculation")
-	parser.add_argument("-t", "--table", dest="table", action="store", type=str, default="/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/Presentations/Presentation_23_7_25/efftable.tex", help="Latex fragment with summary table")
+	parser.add_argument("-t", "--table", dest="table", action="store", type=str, default="/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/Presentations/Presentation_23_12_19/efftable.tex", help="Latex fragment with summary table")
 	parser.add_argument("-o", "--out", dest="out", action="store", type=str, default="./data/etc/Expectedyields.json", help="Path for json with yield info")
 	parser.add_argument("-n", "--target", dest="target", action="store", type=float, default=10000., help="Target number of events after selection")
 
@@ -44,6 +44,8 @@ if __name__ == "__main__":
 	constants = ReadEffs("./data/etc/Constants.json")
 
 	forcedbr = ReadEffs("./data/etc/ForcedBranchingFractions.json")
+
+	finalbr = ReadEffs("./data/etc/FinalStateBranchingFractionsGenerated.json")
 
 	#print(constants)
 
@@ -65,6 +67,8 @@ if __name__ == "__main__":
 	numberafterselection = options.target
 
 	Nexpected = {}
+
+	Sum = 0
 
 	with open(options.table, "w") as outfile: 
 		outfile.write("\\begin{tabular}{lcccccr}\n")
@@ -95,7 +99,16 @@ if __name__ == "__main__":
 			print(offlineeff)
 
 			N = options.lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff*offlineeff #*genmatcheff*customeff
+			# Adding Br error ad hoc. 
+			try: 
+				finalstatebr = finalbr[sample]
+			except: 
+				finalstatebr = ufloat(1., 0.1)
+				print("Warning: No final state branching fraction found for sample {}. Setting uncertainty to 0.1".format(sample))
+			BRerror = ufloat(1., finalstatebr.s/finalstatebr.n)
+			N = N*BRerror
 			Nexpected[sample] = N
+			Sum += N
 			#print(10000./eff)
 			print("\tN expected for {}: {} (filter eff: {}, ana eff: {}, genmatch eff: {}, number requested: {})".format(sample, N, filtereffs[sample], eff, genmatcheff, numberafterselection/eff))
 			if (genmatcheff==0): genmatcheff=ufloat(1., 0) # Hack to avoid division by zero
@@ -105,6 +118,9 @@ if __name__ == "__main__":
 			outfile.write(template.format(Ana.samples.at(sample).latex, FormatLatex(filtereffs[sample].n), FormatLatex(eff.n), FormatLatex(genmatcheff.n), FormatLatex(forcedbr[sample].n), N, FormatLatex(numrequested.n), precision=2).replace("\\times", "\\cdot"))
 
 		outfile.write("\\end{tabular}\n")
+
+		# Add here computation for WS sample 
+		# e.g. data - sum 
 
 	DumpEffs(Nexpected, options.out)
 

@@ -2,7 +2,7 @@
 #include <TChain.h>
 #include <TFile.h>
 #include <iostream>
-#include "AnaConfig.h"
+#include "FileFlow.h"
 #include <TRandom3.h>
 #include <TSystem.h>
 #include <TPRegexp.h>
@@ -61,14 +61,14 @@ void AddFinalMVASimple(const TString& inIdentifier, const TString& region, const
 	auto loaded = Ana::Load(region); 
 	assert(std::find(loaded.begin(), loaded.end(), inIdentifier) != loaded.end()); 
 
-	/*for (auto item : loaded) 
+	for (auto item : loaded) 
 	{
 		TString newRef = item.ReplaceAll("_SR", "_AR"); 
 		filemanager.AddItem(newRef, TString(filemanager.GetFile(inIdentifier)).ReplaceAll("_SR", "_AR"), filemanager.GetObject(inIdentifier)); 
 	}
 
 	filemanager.ListCollection(); 
-	*/
+	
 
 	filemanager.OpenItem(inIdentifier); 
 

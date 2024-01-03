@@ -59,7 +59,7 @@ def PlotStack(session, dataname, initialcomponents, variables, outfolder, drawle
 			color = colors[0]
 		histo.SetLineColor(color)
 		#histo.SetMarkerColor(Ana.color[component])
-		histo.SetFillStyle(1)
+		histo.SetFillStyle(1001)
 		histo.SetFillColor(color)
 		histo.SetTitle("")
 		#hists[component] = histo

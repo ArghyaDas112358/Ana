@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import CombineHarvester.CombineTools.ch as ch
-import CombineHarvester.CombinePdfs.morphing as morphing
-from ROOT import TFile, TH1F, Double
+#import CombineHarvester.CombinePdfs.morphing as morphing
+from ROOT import TFile, TH1F, Double_t
 import os
 import sys
 
@@ -17,7 +17,7 @@ DummyOptions = namedtuple('DummyOptions', ['debug'])
 
 options = DummyOptions(True)
 
-shape_file = 'workspace.root'
+shape_file = 'workspaceFromExportTest.root'
 HFSys = [] #"ABCD-sys-HFDown","ABCD-sys-HFUp"
 #HighNchSys = "highNch_" + str(sys.argv[2])
 
@@ -25,6 +25,7 @@ file = TFile(shape_file)
 
 cb = ch.CombineHarvester()
 if (options.debug): cb.SetVerbosity(3)
+cb.SetVerbosity(3)
 
 sig_procs = ["Sig"] #['Sig']
 
@@ -32,8 +33,8 @@ bkg_procs = ["B0toDstarDs", "B0toDstarDsstar", "B0toDstarD0K"]
 
 categories = {
     'SR': [(1, 'SR')],
-    'CR': [(1, 'CR')],
-    'SB': [(2, 'SB')],
+    'CR': [(2, 'CR')],
+    'SB': [(3, 'SB')],
     }
 
 
@@ -58,6 +59,9 @@ for chn in channels:
     cb.AddProcesses(['*'], prefix, era, [chn], bkg_procs, categories[chn], False)
 
     
+
+cb.cp().process(sig_procs).AddSyst(cb, 'CMS_lumi', 'lnN', ch.SystMap()(1.05))
+print "CMS_lumi added."
 
 """
 print '>> Adding systematic uncertainties...'
@@ -107,7 +111,7 @@ for chn in channels:
     cb.cp().channel([chn]).ExtractShapes(
         '%s' % (shape_file),
 #        '$BIN/$PROCESS', '$BIN/$PROCESS_$SYSTEMATIC')
-        'workspace:$PROCESS_$BIN', 'workspace:$PROCESS_$BIN_$SYSTEMATIC') #, '$BIN/$SYSTEMATIC'
+        'w:$PROCESS_$BIN', 'w:$PROCESS_$BIN_$SYSTEMATIC') #, '$BIN/$SYSTEMATIC' 'w:$PROCESS_$BIN_$SYSTEMATIC'
 
 
 """

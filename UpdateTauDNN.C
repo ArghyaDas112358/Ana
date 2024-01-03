@@ -671,6 +671,9 @@ void UpdateTauDNN(const TString& identifier, const TString& cycle, const bool ws
 						.Define("b_tau_minpiphi", findMin, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}).Define("b_tau_maxpiphi", findMax, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"})
 						.Define("b_tau_rhomass_min", getMin, {"b_tau_rhomass1", "b_tau_rhomass2"}).Define("b_tau_rhomass_max", getMax, {"b_tau_rhomass1", "b_tau_rhomass2"}); 
 
+	//pimped = pimped.Define("b_tau_rho_m_unrolled", computeUnrolledMass, {"b_tau_rhomass1", "b_tau_rhomass2"}); 
+	pimped = pimped.Define("b_tau_rho_m_unrolled", "int((min(b_tau_rhomass2, float(1.3)) - 0.2)/0.22) + 6*int((min(b_tau_rhomass1, float(1.3)) - 0.2)/0.22)");
+
 	#include "stringbranches.gcf"
 
 	for (auto branch : stringbranches) // Hack to fix string branche 

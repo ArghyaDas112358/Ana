@@ -7,6 +7,12 @@
 #include <unordered_map>
 #include "SampleData.C"
 #include "ROOT/RDataFrame.hxx"
+//#include <json/value.h>
+//#include <json/json.h>
+//R__ADD_LIBRARY_PATH($FOODIR) // if needed
+//R__LOAD_LIBRARY(/opt/local/lib/libjsoncpp.dylib) // Load the library
+#include "external/jsoncpp/dist/jsoncpp.cpp"
+#include <fstream>
 
 
 namespace Ana 
@@ -28,6 +34,8 @@ namespace Ana
 
 	std::unordered_map<std::string, std::string> MVA; 
 
+	std::unordered_map<std::string, std::string> FinalBDT; 
+
 	//std::unordered_map<std::string, std::string> legends; 
 
 	std::unordered_map<std::string, ROOT::RDF::TH1DModel> binning; 
@@ -44,6 +52,55 @@ namespace Ana
 	Double_t mvaCutSR = 0.7; // TODO: make cuts per version 
 	Double_t mvaCutSB = -0.1; 
 	Double_t mvaCutCR = -0.5; 
+
+
+	void CommonInitialisation()
+	{
+	
+		colorold = {{"Sig", 2}, {"BkgDstarDs", 3}, {"BkgDstarDsstar", 8}, {"BkgDstara1", 4}, {"dataD2WS", 6}, {"dataD2TauWS", 7}, {"other", 9}, {"yetanother", 1}}; // Legacy color scheme 
+
+
+		Int_t nBins = 20; 
+
+		binning = {{"b_tau_rhomass1", {"", "#rho_{12} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
+				{"b_tau_rhomass2", {"", "rho_{23} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
+				{"b_B_m", {"", "B mass;Reconstructed m_{B} [GeV];Counts", nBins, 2., 6.}},
+				{"b_B_q2", {"", "q2;q^{2} [GeV];Counts", nBins, 0., 12.}},
+				//{"B_m", {"", ";B mass [GeV];Counts", nBins, 0., 6.}},
+				//{"B_q2", {"", ";B mass [GeV];Counts", nBins, 0., 12.}},
+				//{"tau_rhomass1", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},
+				//{"tau_rhomass2", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},
+				{"b_B_proper_xi_rho1", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
+				{"b_B_proper_xi_rho2", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
+				{"b_tau_proper_alpha_rho1_pi", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
+				{"b_tau_proper_alpha_rho2_pi", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
+				{"b_tau_proper_theta_rho1", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
+				{"b_tau_proper_theta_rho2", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
+		}; 
+
+		// Complete binning with default
+		std::unordered_map<std::string, ROOT::RDF::TH1DModel> defaultbinning = { 
+			#include "VariableDefinitions.ccf" 
+		}; 
+		for (auto item : defaultbinning) 
+		{
+			if (binning.find(item.first) == binning.end()) 
+			{
+				binning[item.first] = item.second; 
+			}
+		}
+
+		samples = InitSamples(); 
+
+		// Filling the versions of final MVA discriminator
+		FinalBDT = {	
+			{"v6.9", "./anaMVA/MVAinSBdata/model_optimized/weights.xml"}, //LatestVsData
+			{"v6.95", "./anaMVA/MVAinSBdata/model_optimized/weights.xml"} //LatestVsData
+		}; 
+
+		//if (regions != "") LoadRegions(regions); 
+
+	}
 
 
 	void Init(const TString& cycle = "") 
@@ -357,7 +414,7 @@ namespace Ana
 		//color = {{"Sig", mycolors[0]}, {"B0toDstarDs", mycolors[1]}, {"BkgDstarDs", mycolors[1]}, {"B0toDstarDsstar", mycolors[2]}, {"BkgDstarDsstar", mycolors[2]}, {"B0toDstarD", mycolors[3]}, {"B0toDstarD0K", mycolors[5]}, {"ButoDstarDK", mycolors[4]}, {"B0toDstar3pi", mycolors[7]}, {"BkgDstara1", mycolors[6]},{"WS", mycolors[10]}, {"WSTau", mycolors[10]}, {"dataD2WS", mycolors[10]}, {"dataD2TauWS", mycolors[10]}, }; 
 			// {{"Sig", mycolors[0]}, {"SigPart", mycolors[1]}, {"B0toDstarDs", mycolors[2]}, {"BkgDstarDs", mycolors[2]}, {"B0toDstarDsstar", mycolors[3]}, {"BkgDstarDsstar", mycolors[3]}, {"BkgDstara1", mycolors[4]},{"WS", mycolors[6]}, {"WSTau", mycolors[5]}, {"dataD2WS", mycolors[6]}, {"dataD2TauWS", mycolors[5]}, {"B0toDstarD0K", mycolors[5]}}; 
 
-		colorold = {{"Sig", 2}, {"BkgDstarDs", 3}, {"BkgDstarDsstar", 8}, {"BkgDstara1", 4}, {"dataD2WS", 6}, {"dataD2TauWS", 7}, {"other", 9}, {"yetanother", 1}}; // Legacy color scheme 
+		CommonInitialisation(); 
 
 		model = {	
 			{"v1", "./data/tautagger/batchsize_10/serialized"}, 
@@ -368,6 +425,8 @@ namespace Ana
 			{"v6.7", "./data/tautagger/FlightSigCorrNoCharge/serialized"}, 
 			{"v6.8", "./data/tautagger/FlightSigCorrNoCharge/serialized"},
 			{"v6.9", "./data/tautagger/FlightSigCorrNoCharge/serialized"},
+			{"v6.945", "./data/tautagger/FlightSigCorrNoCharge/serialized"},
+			{"v6.95", "./data/tautagger/FlightSigCorrNoCharge/serialized"},
 			{"v7", "./data/tautagger/trainingv18/serialized"}
 		}; 
 
@@ -380,6 +439,7 @@ namespace Ana
 			{"v6.7", "./anaMVA/NewFixTauFL/model_optimized/weights.xml"}, 
 			{"v6.8", "./anaMVA/NewIsoWithCutsvsdata/model_optimized/weights.xml"}, //./anaMVA/NewIsoVariablesAgainstWS/model_optimized/weights.xml" ./anaMVA/NewIsoVariables/model_optimized/weights.xml
 			{"v6.9", "./anaMVA/NewFixTauFL/model_optimized/weights.xml"}, //LatestVsData
+			{"v6.95", "./anaMVA/TrimmedVariablesWS/model_optimized/weights.xml"}, //LatestVsData
 			{"v7", "./anaMVA/LatestVsData/model_optimized/weights.xml"}
 		}; 
 
@@ -387,38 +447,62 @@ namespace Ana
 
 		//labels = {{"b_tau_rhomass1", "Invariant m_{#rho}"}, {"b_tau_rhomass2", "Invariant m_{#rho}"}, {"b_B_q2", "q2"}, {"b_B_m", "Reconstructed m_{B}"}}; 
 
-		Int_t nBins = 20; 
+	}
 
-		binning = {{"b_tau_rhomass1", {"", "#rho_{12} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
-				{"b_tau_rhomass2", {"", "rho_{23} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
-				{"b_B_m", {"", "B mass;Reconstructed m_{B} [GeV];Counts", nBins, 2., 6.}},
-				{"b_B_q2", {"", "q2;q^{2} [GeV];Counts", nBins, 0., 12.}},
-				//{"B_m", {"", ";B mass [GeV];Counts", nBins, 0., 6.}},
-				//{"B_q2", {"", ";B mass [GeV];Counts", nBins, 0., 12.}},
-				//{"tau_rhomass1", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},
-				//{"tau_rhomass2", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},
-				{"b_B_proper_xi_rho1", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
-				{"b_B_proper_xi_rho2", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
-				{"b_tau_proper_alpha_rho1_pi", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
-				{"b_tau_proper_alpha_rho2_pi", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
-				{"b_tau_proper_theta_rho1", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
-				{"b_tau_proper_theta_rho2", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
-		}; 
 
-		// Complete binning with default
-		std::unordered_map<std::string, ROOT::RDF::TH1DModel> defaultbinning = { 
-			#include "VariableDefinitions.ccf" 
-		}; 
-		for (auto item : defaultbinning) 
+	std::vector<TString> LoadRegions(const TString& path) 
+	{
+		std::ifstream file(path+"/Info.json", std::ifstream::binary);
+		Json::Value regions;
+		file >> regions;
+
+		std::vector<TString> loaded; 
+
+		for (auto item : regions.getMemberNames()) 
 		{
-			if (binning.find(item.first) == binning.end()) 
+			//std::cout << item << std::endl; 
+
+			for (auto region : regions[item].getMemberNames()) 
 			{
-				binning[item.first] = item.second; 
+				auto& regiondata = regions[item][region]; 
+				assert(regiondata.size() == 2); 
+
+				/*for (auto element : regiondata) 
+				{
+					std::cout << element << std::endl; 
+				}*/
+
+				TString name = TString::Format("%s_%s", item.c_str(), region.c_str());
+				filemanager.AddItem(name, regiondata[0].asString(), regiondata[1].asString()); 
+				loaded.push_back(name);
 			}
 		}
 
-		samples = InitSamples(); 
+		/*for (auto item : regions)
+		{
+			std::cout << item << " " << std::endl; 
+		}*/
 
+
+		return std::move(loaded); 
+	}
+
+
+
+	std::vector<TString> Load(const TString& regions) 
+	{
+		CommonInitialisation(); 
+
+		auto loaded = LoadRegions(regions); 
+
+		std::cout << "Size: " << loaded.size() << std::endl; 
+		for (auto item : loaded) 
+		{
+			std::cout << "item: "; 
+			std::cout << item << std::endl; 
+		}
+
+		return loaded; 
 	}
 
 }

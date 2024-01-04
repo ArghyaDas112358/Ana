@@ -698,16 +698,6 @@ static float WriteB_R(const Tau& tau)
 	 return tau.B_r;
 };
 
-static float WriteB_R_First(const Tau& tau)
-{
-	 return tau.B_r_first;
-};
-
-static float WriteB_R_Second(const Tau& tau)
-{
-	 return tau.B_r_second;
-};
-
 static float WriteB_Maxdz(const Tau& tau)
 {
 	 return tau.B_maxdz;

@@ -59,8 +59,8 @@ if __name__ == "__main__":
 	expected = {}
 
 
-	samples = ["Sig", "B0toDstarD0K", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarDs1", "B0toDstara1", "B0toDstarD", "B0toDstar3pi", "ButoDstarDK"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
-			
+	samples = ["Sig", "B0toDstarD0K", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarDs1", "B0toDstarD0Kstar", "B0toDstarDs0star", "B0toDstara1", "B0toDstarD", "B0toDstar3pi", "B0toDstar3pipi0", "B0toDstar5pi", "ButoDstarDK", "B0toDstarDsX", "ButoDstarXc", "ButoDstarDK", "BstoDD"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
+
 	Ana.Init(options.version)
 
 	template = "{} & ${}$ & ${}$ & ${}$ & ${}$ & ${:fL}$ \\\\\n" #"{} & ${}$ & ${}$ & ${}$ & ${}$ & ${:fL}$ & ${}$ \\\\\n" #{:.1e} "{} & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:fL}$ & ${}$ \\\\\n"

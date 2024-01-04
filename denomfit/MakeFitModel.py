@@ -49,7 +49,7 @@ if __name__ == "__main__":
 	p2 = RooRealVar("p2","p2",par[6],0.,100.);
 
 	signalmodel = RooGaussian("dcbPdf", "gaus", var, mu, width) #RooCrystalBall("dcbPdf","DoubleSidedCB",var,mu,width,a1,p1,a2,p2);
-	signalmodel = RooCrystalBall("dcbPdf","DoubleSidedCB",var,mu,width,a1,p1,a2,p2);
+	#signalmodel = RooCrystalBall("dcbPdf","DoubleSidedCB",var,mu,width,a1,p1,a2,p2);
 
 	getattr(workspace, "import")(signalmodel)
 

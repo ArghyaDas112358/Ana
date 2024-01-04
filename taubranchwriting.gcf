@@ -288,6 +288,41 @@ static int WriteMatch(const Tau& tau)
 	 return tau.match;
 };
 
+static float WriteDr1(const Tau& tau)
+{
+	 return tau.dr1;
+};
+
+static float WriteDr2(const Tau& tau)
+{
+	 return tau.dr2;
+};
+
+static float WriteDr3(const Tau& tau)
+{
+	 return tau.dr3;
+};
+
+static float WritePtres1(const Tau& tau)
+{
+	 return tau.ptres1;
+};
+
+static float WritePtres2(const Tau& tau)
+{
+	 return tau.ptres2;
+};
+
+static float WritePtres3(const Tau& tau)
+{
+	 return tau.ptres3;
+};
+
+static float WriteGen_Pt(const Tau& tau)
+{
+	 return tau.gen_pt;
+};
+
 static float WriteVchi2(const Tau& tau)
 {
 	 return tau.vChi2;
@@ -321,6 +356,11 @@ static float WriteR(const Tau& tau)
 static float WriteLegacymaxdr(const Tau& tau)
 {
 	 return tau.legacyMaxdr;
+};
+
+static float WriteMaxdz(const Tau& tau)
+{
+	 return tau.maxdz;
 };
 
 static float WriteFitb_Pt(const Tau& tau)
@@ -433,6 +473,11 @@ static int WriteNh(const Tau& tau)
 	 return tau.nh;
 };
 
+static int WriteNhpresel(const Tau& tau)
+{
+	 return tau.nhpresel;
+};
+
 static float WriteMin_Dr_Mu(const Tau& tau)
 {
 	 return tau.min_dr_mu;
@@ -446,6 +491,11 @@ static float WriteMin_Dr_E(const Tau& tau)
 static float WriteMin_Dr_H(const Tau& tau)
 {
 	 return tau.min_dr_h;
+};
+
+static float WriteMin_Dr_Hpre(const Tau& tau)
+{
+	 return tau.min_dr_hpre;
 };
 
 static int WriteNh_Doca3P(const Tau& tau)
@@ -511,6 +561,11 @@ static float WriteB_Phi(const Tau& tau)
 static float WriteB_M(const Tau& tau)
 {
 	 return tau.B_m;
+};
+
+static int WriteB_Q(const Tau& tau)
+{
+	 return tau.B_q;
 };
 
 static float WriteB_Prefit_Pt(const Tau& tau)
@@ -638,6 +693,26 @@ static float WriteB_Proper_Alpha_Dstar_Tau(const Tau& tau)
 	 return tau.B_proper_alpha_Dstar_tau;
 };
 
+static float WriteB_R(const Tau& tau)
+{
+	 return tau.B_r;
+};
+
+static float WriteB_R_First(const Tau& tau)
+{
+	 return tau.B_r_first;
+};
+
+static float WriteB_R_Second(const Tau& tau)
+{
+	 return tau.B_r_second;
+};
+
+static float WriteB_Maxdz(const Tau& tau)
+{
+	 return tau.B_maxdz;
+};
+
 static float WriteB_Proper_Xi_Rho1(const Tau& tau)
 {
 	 return tau.B_proper_xi_rho1;
@@ -683,9 +758,64 @@ static float WriteB_Mu_Alpha(const Tau& tau)
 	 return tau.B_mu_alpha;
 };
 
+static int WriteB_Npi0(const Tau& tau)
+{
+	 return tau.B_npi0;
+};
+
+static int WriteB_Ngamma(const Tau& tau)
+{
+	 return tau.B_ngamma;
+};
+
+static int WriteB_Nmu(const Tau& tau)
+{
+	 return tau.B_nmu;
+};
+
+static int WriteB_Ne(const Tau& tau)
+{
+	 return tau.B_ne;
+};
+
+static int WriteB_Nh(const Tau& tau)
+{
+	 return tau.B_nh;
+};
+
+static int WriteB_Nhpresel(const Tau& tau)
+{
+	 return tau.B_nhpresel;
+};
+
+static float WriteB_Min_Dr_Mu(const Tau& tau)
+{
+	 return tau.B_min_dr_mu;
+};
+
+static float WriteB_Min_Dr_E(const Tau& tau)
+{
+	 return tau.B_min_dr_e;
+};
+
+static float WriteB_Min_Dr_H(const Tau& tau)
+{
+	 return tau.B_min_dr_h;
+};
+
+static float WriteB_Min_Dr_Hpre(const Tau& tau)
+{
+	 return tau.B_min_dr_hpre;
+};
+
 static float WriteB_Proper_Dr_Tau_Mu(const Tau& tau)
 {
 	 return tau.B_proper_dr_tau_mu;
+};
+
+static float WriteB_Drfitdstar(const Tau& tau)
+{
+	 return tau.B_drFitDstar;
 };
 
 static float WriteB_Proper_Alpha_Tau_Mu(const Tau& tau)

@@ -28,8 +28,6 @@
     <Variable name="pvip" type="f" /> 
     <Variable name="pvipsig" type="f" /> 
     <Variable name="dr" type="f" /> 
-    <Variable name="dzK" type="f" />
-    <Variable name="dzpi" type="f" />
     <Variable name="prefit_kpt" type="f" /> 
     <Variable name="prefit_pipt" type="f" /> 
     <Variable name="prefit_keta" type="f" /> 
@@ -38,13 +36,6 @@
     <Variable name="prefit_piphi" type="f" /> 
     <Variable name="prefit_km" type="f" /> 
     <Variable name="prefit_pim" type="f" /> 
-    <Variable name="kpt" type="f" /> 
-    <Variable name="pipt" type="f" /> 
-    <Variable name="keta" type="f" /> 
-    <Variable name="pieta" type="f" /> 
-    <Variable name="kphi" type="f" /> 
-    <Variable name="piphi" type="f" /> 
-    <Variable name="ptfrac" type="f" /> 
     <Variable name="kq" type="i" /> 
     <Variable name="piq" type="i" /> 
     <Variable name="kidx" type="i" /> 
@@ -94,15 +85,10 @@
     <Variable name="pvip" type="f" /> 
     <Variable name="pvipsig" type="f" /> 
     <Variable name="dr" type="f" /> 
-    <Variable name="dzpi" type="f" />
     <Variable name="prefit_pispt" type="f" /> 
     <Variable name="prefit_piseta" type="f" /> 
     <Variable name="prefit_pisphi" type="f" /> 
     <Variable name="prefit_pism" type="f" /> 
-    <Variable name="pispt" type="f" /> 
-    <Variable name="piseta" type="f" /> 
-    <Variable name="pisphi" type="f" /> 
-    <Variable name="ptfrac" type="f" /> 
     <Variable name="pisq" type="i" /> 
     <Variable name="spidx" type="i" /> 
     <Variable name="genpistr" type="s" />  
@@ -185,13 +171,6 @@
     <Variable name="match2" type="b" /> 
     <Variable name="match3" type="b" /> 
     <Variable name="match" type="b" /> 
-    <Variable name="dr1" type="f" /> 
-    <Variable name="dr2" type="f" /> 
-    <Variable name="dr3" type="f" /> 
-    <Variable name="ptres1" type="f" /> 
-    <Variable name="ptres2" type="f" /> 
-    <Variable name="ptres3" type="f" /> 
-    <Variable name="gen_pt" type="f" /> 
     <Variable name="vChi2" type="f" />
     <Variable name="vChi2Ndof" type="f" /> 
     <Variable name="vx" type="f" />
@@ -199,7 +178,6 @@
     <Variable name="vz" type="f" />
     <Variable name="r" type="f" />
     <Variable name="legacyMaxdr" type="f" /> 
-    <Variable name="maxdz" type="f" />
     <Variable name="fitB_pt" type="f" />
     <Variable name="fitB_eta" type="f" />
     <Variable name="fitB_phi" type="f" />
@@ -222,11 +200,9 @@
     <Variable name="nmu" type="i"  default="0" />
     <Variable name="ne" type="i" default="0" />
     <Variable name="nh" type="i" default="0" />
-    <Variable name="nhpresel" type="i" default="0" />
     <Variable name="min_dr_mu" type="f" default="5." />
     <Variable name="min_dr_e" type="f" default="5."/>
     <Variable name="min_dr_h" type="f" default="5." />
-    <Variable name="min_dr_hpre" type="f" default="5"/>
     <Variable name="nh_doca3p" type="i" default="0" />
     <Variable name="iso_mindoca" type="f" default="1." />
     <Variable name="vtx4trkDeltaChi2" type="f" default="999." />
@@ -242,7 +218,6 @@
     <Variable name="eta" type="f" /> 
     <Variable name="phi" type="f" /> 
     <Variable name="m" type="f" /> 
-    <Variable name="q" type="i" /> 
     <Variable name="prefit_pt" type="f" /> 
     <Variable name="prefit_eta" type="f" /> 
     <Variable name="prefit_phi" type="f" />
@@ -268,10 +243,6 @@
     <Variable name="mcorr_phi" type="f" /> 
     <Variable name="proper_tau_E" type="f" /> 
     <Variable name="proper_alpha_Dstar_tau" type="f" /> 
-    <Variable name="r" type="f" />
-    <Variable name="r_first" type="f" />
-    <Variable name="r_second" type="f" />
-    <Variable name="maxdz" type="f" />
     <Variable name="proper_xi_rho1" type="f" /> 
     <Variable name="proper_xi_rho2" type="f" /> 
     <Variable name="proper_xi_rho_max" type="f" /> 
@@ -281,18 +252,7 @@
     <Variable name="proper_xi_phi_max" type="f" /> 
     <Variable name="proper_xi_phi_min" type="f" /> 
     <Variable name="mu_alpha" type="f" /> 
-    <Variable name="npi0" type="i" default="0" />
-    <Variable name="ngamma" type="i" default="0" />
-    <Variable name="nmu" type="i"  default="0" />
-    <Variable name="ne" type="i" default="0" />
-    <Variable name="nh" type="i" default="0" />
-    <Variable name="nhpresel" type="i" default="0" />
-    <Variable name="min_dr_mu" type="f" default="5." />
-    <Variable name="min_dr_e" type="f" default="5."/>
-    <Variable name="min_dr_h" type="f" default="5." />
-    <Variable name="min_dr_hpre" type="f" default="5"/>
     <Variable name="proper_dr_tau_mu" type="f" /> 
-    <Variable name="drFitDstar" type="f" /> 
     <Variable name="proper_alpha_tau_mu" type="f" /> 
 </Object>
 </Candidates>

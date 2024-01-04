@@ -175,6 +175,27 @@ namespace Ana {
 				"", 
 				{"ButoDstarDK"})
 			}, 
+			{"B0toDstarDsX", SampleData(
+				mycolors[4], 
+				"B^{+}#rightarrowD*D_{s}X", 
+				genMatchCut, 
+				"", 
+				{"B0toDstarDsX"})
+			}, 
+			{"ButoDstarDK", SampleData(
+				mycolors[4], 
+				"B^{+}#rightarrowD*DK", 
+				genMatchCut, 
+				"", 
+				{"ButoDstarDK"})
+			}, 
+			{"ButoDstarXc", SampleData(
+				mycolors[4], 
+				"B^{+}#rightarrowD*X_{c}", 
+				genMatchCut, 
+				"", 
+				{"ButoDstarXc"})
+			}, 
 			// To be completed
 			{"BkgBuDXc", SampleData(
 				mycolors[8], 
@@ -189,6 +210,13 @@ namespace Ana {
 				genMatchCut, 
 				"$B^0\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$", 
 				{"BkgB0DD"})
+			},
+			{"BstoDD", SampleData(
+				mycolors[8], 
+				"B^{s}#rightarrowDD", 
+				genMatchCut, 
+				"$B_{s}^{0}\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$", 
+				{"BstoDD"})
 			},
 			{"dataD1", SampleData(
 				 mycolors[10], 

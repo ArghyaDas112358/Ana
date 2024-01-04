@@ -195,6 +195,11 @@ namespace Ana
 			filemanager.AddItem("B0toDstar3pi_DNN", folder+"B0toDstar3pi_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstar3pi", folder+"B0toDstar3pi_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("B0toDstar3pipi0_ntuple", folder+"B0toDstar3pipi0.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstar3pipi0_tf", folder+"B0toDstar3pipi0_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstar3pipi0_DNN", folder+"B0toDstar3pipi0_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("B0toDstar3pipi0", folder+"B0toDstar3pipi0_tauDNN_mva.root", "tree"); 
+
 			filemanager.AddItem("B0toDstar5pi_ntuple", folder+"B0toDstar5pi.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstar5pi_tf", folder+"B0toDstar5pi_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstar5pi_DNN", folder+"B0toDstar5pi_tauDNN.root", "ntuplizer/tree"); 

@@ -104,6 +104,13 @@ namespace Ana {
 				"$B^{0}\\rightarrow D^{*}D_{s1}$", 
 				{"B0toDstarDs1"})
 			},
+			{"B0toDstarDs0star", SampleData(
+				mycolors[2], 
+				"B^{0}#rightarrowD*D_{s0}*", 
+				genMatchCut, 
+				"$B^{0}\\rightarrow D^{*}D_{s0}^{*}$", 
+				{"B0toDstarDs0star"})
+			},
 			{"B0toDstarD", SampleData(
 				mycolors[3], 
 				"B^{0}#rightarrowD*D", 
@@ -118,6 +125,13 @@ namespace Ana {
 				"$B^0\\rightarrow D^{*}D^{0}K$", 
 				{"B0toDstarD0K"})
 			},
+			{"B0toDstarD0Kstar", SampleData(
+				mycolors[6], 
+				"B^{0}#rightarrowD*D^{0}K*", 
+				genMatchCut, 
+				"$B^0\\rightarrow D^{*}D^{0}K^{*}$", 
+				{"B0toDstarD0K"})
+			},
 			{"BkgDstara1", SampleData(
 				mycolors[6], 
 				"B^{0}#rightarrowD*a_{1}", 
@@ -126,18 +140,32 @@ namespace Ana {
 				{"BkgDstara1"})
 			},
 			{"B0toDstara1", SampleData(
-				mycolors[6], 
+				mycolors[7], 
 				"B^{0}#rightarrowD*a_{1}", 
 				"1", 
 				"$B^0\\rightarrow D^{*-}a_{1}^+$", 
 				{"BkgDstara1"})
 			},
 			{"B0toDstar3pi", SampleData(
-				mycolors[7], 
+				mycolors[8], 
 				"B^{0}#rightarrowD*3pi", 
 				genMatchCut, 
 				"", 
 				{"B0toDstar3pi"})
+			},
+			{"B0toDstar3pipi0", SampleData(
+				mycolors[9], 
+				"B^{0}#rightarrowD*3#pi#pi^0", 
+				genMatchCut, 
+				"", 
+				{"B0toDstar3pipi0"})
+			},
+			{"B0toDstar5pi", SampleData(
+				mycolors[7], 
+				"B^{0}#rightarrowD*35#pi", 
+				genMatchCut, 
+				"", 
+				{"B0toDstar5pi"})
 			},
 			// Bu decays 
 			{"ButoDstarDK", SampleData(

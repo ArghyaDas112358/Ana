@@ -34,7 +34,7 @@ if __name__ == "__main__":
 	totalpdf.plotOn(frame)
 
 	totalpdf.plotOn(frame, Components("shapeSig_sig_bin0"), LineColor(ROOT.kRed), DrawOption("LF"), FillColor(TColor.GetColorTransparent(ROOT.kRed-7,0.3)), LineWidth(1), Name("Signal"))
-	totalpdf.plotOn(frame, Components("shapeBkg_comb_bin0"), LineColor(ROOT.kBlue+3), LineWidth(1), LineStyle(ROOT.kDotted), Name("Combinatorial"))
+	totalpdf.plotOn(frame, Components("shapeBkg_comb_bin0"), LineColor(ROOT.kBlue+3), LineWidth(2), LineStyle(ROOT.kDotted), Name("Combinatorial"))
 
 	canvas = ROOT.TCanvas("canvas", "canvas", 800, 600)
 	frame.Draw()

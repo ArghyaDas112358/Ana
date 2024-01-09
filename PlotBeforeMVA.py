@@ -23,6 +23,7 @@ if __name__ == "__main__":
 	parser.add_argument("-o", "--out", dest="out", action="store", type=str, default="TauSelectionv7", help="Which version (cycle) of files to run on")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
+	parser.add_argument('-d', "--denom", dest="denom", action="store_true", default=False, help="Denominator analysis")
 	
 
 	options = parser.parse_args()
@@ -39,16 +40,17 @@ if __name__ == "__main__":
 	os.system("mkdir -p "+outputfolder)
 
 
+	samples = [anaConfig.data, anaConfig.Sig] #anaConfig.samples
 	sample = {}
-	for item in anaConfig.samples:
-		sample[item] = item+"_DNN"
+	for item in samples:
+		sample[item] = item+"_ntuple"
 
 
 	# Global initialisations
-	Ana.Init(options.version)
+	Ana.Init(options.version, options.denom)
 	
 
-	for file in sample: 
+	for file in sample.values(): 
 		Ana.filemanager.OpenItem(file)
 
 

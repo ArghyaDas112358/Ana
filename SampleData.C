@@ -218,6 +218,13 @@ namespace Ana {
 				"$B_{s}^{0}\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$", 
 				{"BstoDD"})
 			},
+			{"data", SampleData(
+				 mycolors[10], 
+				"data", 
+				"1", 
+				"data", 
+				{"dataD1", "dataD2", "dataD3", "dataD4", "dataD5"})
+			},
 			{"dataD1", SampleData(
 				 mycolors[10], 
 				"data", 

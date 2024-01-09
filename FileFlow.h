@@ -646,7 +646,7 @@ namespace Ana
 			{"v6.8", "./anaMVA/NewIsoWithCutsvsdata/model_optimized/weights.xml"}, //./anaMVA/NewIsoVariablesAgainstWS/model_optimized/weights.xml" ./anaMVA/NewIsoVariables/model_optimized/weights.xml
 			{"v6.9", "./anaMVA/NewFixTauFL/model_optimized/weights.xml"}, //LatestVsData
 			{"v6.95", "./anaMVA/TrimmedVariablesWS/model_optimized/weights.xml"}, //LatestVsData
-			{"v7", "./anaMVA/trainingv7onD1/model_optimized/weights.xml"}
+			{"v7", "./anaMVA/trainingv7BvariablesonB/model_optimized/weights.xml"} //trainingv7onD1
 		}; 
 
 		//legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"B0toDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"B0toDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"}, {"B0toDstar3pi", "B^{0}#rightarrowD^{*}3pi"}, {"B0toDstarD", "B^{0}#rightarrowD^{*}D"}, {"ButoDstarDK", "B^{+}#rightarrowD^{*}DK"}, {"B0toDstarD0K", "B^{0}#rightarrowD^{*}D^{0}K"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 

@@ -498,6 +498,11 @@ namespace Ana
 			filemanager.AddItem("dataC_DNN", folder+"dataC_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataC", folder+"dataC_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("data_ntuple", folder+"data.root", "ntuplizer/tree"); 
+			filemanager.AddItem("data_tf", folder+"data_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("data_DNN", folder+"data_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("data", folder+"data_tauDNN_mva.root", "tree"); 
+
 
 			filemanager.AddItem("dataD2TauWS_ntuple", folder+"ParkingBPHULA2WSTau.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataD2TauWS_tf", folder+"ParkingBPHULA2WSTau_withTFweight.root", "ntuplizer/tree"); 

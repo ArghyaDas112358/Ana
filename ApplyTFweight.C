@@ -178,7 +178,7 @@ void ApplyTFweight(const TString& identifier, const TString& version = "", const
 		phi.insert(phi.begin(), Dstarphi); 
 		//q.insert(q.begin(), Dstarcharge[0]); 
 
-		std::cout << "Event no: " << counter << std::endl; 
+		if (counter % 1000 == 0) std::cout << "Event no: " << counter << std::endl; 
 		counter++; 
 
 		// create vector saying whether it is a Dstar 
@@ -268,6 +268,8 @@ void ApplyTFweight(const TString& identifier, const TString& version = "", const
 
 
 	withWeight.Snapshot(filemanager.GetObject(outIndentifier), outfile.Data()); 
+
+	std::cout << "Processed " << counter << " events. " << std::endl;
 
 	// Update the created file with eff info
 	TFile *output = TFile::Open(outfile.Data(), "UPDATE"); 

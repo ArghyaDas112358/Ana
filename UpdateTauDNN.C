@@ -538,7 +538,7 @@ void UpdateTauDNN(const TString& identifier, const TString& cycle, const bool ws
 			mytaus.push_back(tau); 
 		}
 		count++; 
-		std::cout << "Built tau candidates for event " << count << std::endl; 
+		if (count % 1000 == 0) std::cout << "Built tau candidates for event " << count << std::endl; 
 		assert(mytaus.size() == taupt.size()); 
 		return mytaus; 
 	};
@@ -684,6 +684,8 @@ void UpdateTauDNN(const TString& identifier, const TString& cycle, const bool ws
 	const std::vector<std::string> blacklist = {"v_taucandidates", "b_tau"};
 
 	pimped.Snapshot(filemanager.GetObject(outIndentifier), filemanager.GetFile(outIndentifier), purgeColumns(pimped.GetColumnNames(), blacklist)); 
+
+	std::cout << "Processed " << count << " events. " << std::endl;
 
 	//Pause(5); 
 

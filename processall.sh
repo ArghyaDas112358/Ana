@@ -6,7 +6,7 @@ STAGE=0
 
 BKGLIST=( B0toDstarDs B0toDstarDsstar B0toDstarDs1 B0toDstarDs0star B0toDstarD0K B0toDstarD0Kstar B0toDstarD B0toDstarDsX B0toDstara1 B0toDstar3pi B0toDstar3pipi0 B0toDstar5pi ButoDstarXc ButoDstarDK BstoDD ) #SigTrain  #Sig "SigTest" 
 SIGNALLIST=( Sig SigTest )
-DATALIST=( dataD1 dataD2 dataD3 dataD4 dataD5) #dataB2 dataD1 
+DATALIST=( dataD1 dataD2 dataD3 dataD4 dataD5 dataB1 dataB2 dataB3 dataB4 dataB5) #dataB2 dataD1 
 WSLIST=( dataD1WS dataD2WS dataD3WS dataD4WS dataD5WS) #dataD1WS 
 
 SAMPLELIST=( ) #( "${BKGLIST[@]}" "${SIGNALLIST[@]}" )
@@ -42,6 +42,11 @@ while [[ $1 =~ "--" ]]; do # Looping over all arguments, see shift
 	elif [[ $1 == "--STEP" ]]; then 
 		shift
 		STAGE=$1
+	elif [[ $1 == "--CUST" ]]; then 
+		while [[ ! $2 =~ "--" ]] && [[ ! -z $2 ]]; do
+			SAMPLELIST=( "${SAMPLELIST[@]}" $2 )
+			shift
+		done
 	else 
 		echo "WARNING: Unknown argument: $1"
 	fi

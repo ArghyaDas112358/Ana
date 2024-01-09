@@ -92,6 +92,25 @@ def PrepareRegionsSimple():
 	return frames
 
 
+def PrepareSamples(samplelist = anaConfig.samples): 
+	samples = {}
+	frames = collections.defaultdict(dict)
+
+	for item in samplelist:  
+		Ana.filemanager.OpenItem(item)
+		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
+		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(GetBaseName(item)).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."
+		frames[item]["all"] = samples[item].Filter("1.")
+
+	return frames
+
+
+def GetBaseName(samplename): 
+	items = samplename.split("_")
+	sample = items[0]
+	return sample
+
+
 ROOT.gInterpreter.Declare(''' 
 	template<typename T>
 	void fixStringVariables(T &dataframe)

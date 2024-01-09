@@ -25,6 +25,22 @@ def HoldUntilKeyPress(otherThanEnter=False):
 		rep = raw_input( "Press a key to continue... " ).lower()
 	
 	return
-	
+
+
+def GetDate(invert=True): 
+	from datetime import datetime
+	date = datetime.today().strftime("%d_%m_%y") 
+	if invert: 
+		date = date = datetime.today().strftime("%y_%m_%d") 
+	return date
+
+
+def GetFullDate(): 
+	from datetime import datetime
+	date = datetime.today().strftime("%d_%m_%y__%H_%M_%S")
+	if invert: 
+		date = datetime.today().strftime("%y_%m_%d__%H_%M_%S")
+		return date
+
 
 

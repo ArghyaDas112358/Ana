@@ -398,6 +398,11 @@ float extractFirstElement(const ROOT::VecOps::RVec<float>& vec)
 	return vec.at(0); 
 }
 
+float ratioOfRadius(const float r1, const float r2) 
+{
+	return r1/r2; 
+}
+
  
 
 void UpdateTauDNN(const TString& identifier, const TString& cycle, const bool ws = false) 
@@ -646,7 +651,10 @@ void UpdateTauDNN(const TString& identifier, const TString& cycle, const bool ws
 				.Define("b_tau_dnn1", Tau::WriteDNN1, {"b_tau"})
 				.Define("b_tau_dnn2", Tau::WriteDNN2, {"b_tau"})
 				.Define("b_tau_dnn3", Tau::WriteDNN3, {"b_tau"})
-				.Define("b_tau_sumdnn", Tau::WriteSumDNN, {"b_tau"});
+				.Define("b_tau_sumdnn", Tau::WriteSumDNN, {"b_tau"})
+				.Define("b_tau_rrh", ratioOfRadius, {"b_tau_min_dr_h", "b_tau_r"})
+				.Define("b_tau_rre", ratioOfRadius, {"b_tau_min_dr_e", "b_tau_r"})
+				.Define("b_tau_rrmu", ratioOfRadius, {"b_tau_min_dr_mu", "b_tau_r"});
 
 	/*withDNN = withDNN.Define("b_D0_pt", extractFirstElement, {"BsDstarTauNu_D0_pt"})
 				.Define("b_D0_eta", extractFirstElement, {"BsDstarTauNu_D0_eta"})

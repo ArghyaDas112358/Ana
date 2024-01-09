@@ -178,7 +178,7 @@ void ApplyTFweight(const TString& identifier, const TString& version = "", const
 		phi.insert(phi.begin(), Dstarphi); 
 		//q.insert(q.begin(), Dstarcharge[0]); 
 
-		if (counter % 1000 == 0) std::cout << "Event no: " << counter << std::endl; 
+		if ((counter % 1000 == 0) || ((counter % 100 == 0) && (counter < 1000)) || (counter < 11)) std::cout << "Event no: " << counter << std::endl; 
 		counter++; 
 
 		// create vector saying whether it is a Dstar 

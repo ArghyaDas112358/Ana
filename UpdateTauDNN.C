@@ -538,6 +538,10 @@ void UpdateTauDNN(const TString& identifier, const TString& cycle, const bool ws
 			mytaus.push_back(tau); 
 		}
 		count++; 
+		if ((count <= 10)) std::cout << "Built tau candidates for event " << count << std::endl;
+		if (count == 10) std::cout << "..." << std::endl;
+		if ((count % 100 == 0) && (count < 1000)) std::cout << "Built tau candidates for event " << count << std::endl;
+		if (count == 1001) std::cout << "..." << std::endl;
 		if (count % 1000 == 0) std::cout << "Built tau candidates for event " << count << std::endl; 
 		assert(mytaus.size() == taupt.size()); 
 		return mytaus; 

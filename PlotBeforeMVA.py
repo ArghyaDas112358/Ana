@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
 	from anaPlotting import PlotComparison
 
-	PlotComparison(frames, sample[anaConfig.data], sample["Sig"], ["baseline"], anaConfig.variables, outputfolder, False)
+	PlotComparison(frames, sample[anaConfig.data], sample[anaConfig.Sig], ["baseline"], anaConfig.variables, outputfolder, False)
 
 
 	Ana.filemanager.CloseAll()

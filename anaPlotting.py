@@ -10,6 +10,9 @@ import ROOT
 from ROOT import Ana
 
 
+ROOT.gStyle.SetOptStat(0) 
+
+
 def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields, outfolder, drawlegend=True, normalise=False): 
 	# Plotting distributions over each other 
 	#outfolder+="overlay/"
@@ -238,7 +241,7 @@ def PlotComparison(frames, referencename, comparisonname, regions, variables, ou
 			reference.SetFillStyle(3003)
 			reference.SetFillColor(ROOT.kBlack)
 			reference.SetTitle("{}_{}".format(variable, region))
-			legend.AddEntry(reference.GetPtr(), referencename, "L")
+			legend.AddEntry(reference.GetPtr(), referencename, "F")
 			reference.Draw("HIST E")
 
 			comparison = frames[comparisonname][region].Histo1D(examplehist, variable)
@@ -246,7 +249,7 @@ def PlotComparison(frames, referencename, comparisonname, regions, variables, ou
 			comparison.SetLineColor(ROOT.kRed)
 			comparison.SetFillStyle(3356)
 			comparison.SetFillColor(ROOT.kRed)
-			legend.AddEntry(comparison.GetPtr(), comparisonname, "L")
+			legend.AddEntry(comparison.GetPtr(), comparisonname, "F")
 			if normalise: 
 				if "data" in comparisonname: 
 					comparison.Scale(dirtynorm[comparisonname][region])

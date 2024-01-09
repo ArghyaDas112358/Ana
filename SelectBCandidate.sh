@@ -12,8 +12,5 @@ if [[ $# -ge 3 ]]; then
 	WS=${3}
 fi
 
-echo $INITIALREF
-echo $FINALREF
-
 . clean_tau.sh
 root -q -e ".L Tau.h+"  'ProcessingDenominatorOffline.C("'$REF'", "'$VERSION'", '$WS')'

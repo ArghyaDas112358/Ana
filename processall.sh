@@ -12,6 +12,7 @@ WSLIST=( dataD1WS dataD2WS dataD3WS dataD4WS dataD5WS) #dataD1WS
 SAMPLELIST=( ) #( "${BKGLIST[@]}" "${SIGNALLIST[@]}" )
 WSPROCLIST=( ) #( "${WSLIST[@]}" )
 DATAPROCESSED=0
+COMMAND=process.sh
 shift
 while [[ $1 =~ "--" ]]; do # Looping over all arguments, see shift
 	if [[ $1 == "--BKG" ]]; then 
@@ -47,6 +48,8 @@ while [[ $1 =~ "--" ]]; do # Looping over all arguments, see shift
 			SAMPLELIST=( "${SAMPLELIST[@]}" $2 )
 			shift
 		done
+	elif [[ $1 == "--DENOM" ]]; then
+		COMMAND=processdenominator.sh
 	else 
 		echo "WARNING: Unknown argument: $1"
 	fi
@@ -67,7 +70,7 @@ echo $DATESTRING >> failprocessing.txt
 
 for ITEM in "${SAMPLELIST[@]}"; do
 	#echo $ITEM
-	. process.sh $ITEM $VERSION $STAGE
+	. $COMMAND $ITEM $VERSION $STAGE
 	RETURNCODE=$?
 	if [ $RETURNCODE -ne 0 ]; then 
 		echo $ITEM >> failprocessing.txt
@@ -79,7 +82,7 @@ if (( $DATAPROCESSED )) && [[ $STAGE -lt 1 ]]; then
 fi
 for ITEM in "${WSPROCLIST[@]}"; do
 	#echo $ITEM
-	. process.sh $ITEM $VERSION $STAGE 1
+	. $COMMAND $ITEM $VERSION $STAGE 1
 	RETURNCODE=$?
 	if [ $RETURNCODE -ne 0 ]; then 
 		echo $ITEM >> failprocessing.txt

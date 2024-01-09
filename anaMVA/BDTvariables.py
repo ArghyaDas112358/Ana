@@ -94,7 +94,7 @@ features_save = [("D0_pt", "F"), ("D0_eta", "F"), ("D0_phi", "F"), ("D0_vprob", 
 	] #("BsDstarTauNu_mu1_vx", "F"), ("BsDstarTauNu_mu1_vy", "F"), ("BsDstarTauNu_tau_pi1_charge", "F"), ("BsDstarTauNu_tau_pi2_charge", "F"), ("BsDstarTauNu_tau_pi3_charge", "F"), ("BsDstarTauNu_mu1_q", "I"), ("BsDstarTauNu_tau_q", "I"), ("BsDstarTauNu_mu1_vz", "F")
 
 
-eatures_save = [("D0_vprob", "F"), 
+features_save = [("D0_vprob", "F"), 
 	#("Dstar_pt", "F"), ("Dstar_eta", "F"), ("Dstar_phi", "F"), 
 	("Dstar_vprob", "F"), ("Dstar_fl", "F"), ("Dstar_fsig", "F"), 
 	("Dstar_lip", "F"), ("Dstar_lipsig", "F"), ("Dstar_pvip", "F"), 
@@ -105,9 +105,9 @@ eatures_save = [("D0_vprob", "F"),
 	("b_tau_sumdnn", "F"), 
 	("b_B_pt", "F"), ("b_B_eta", "F"), ("b_B_phi", "F"), 
 	("b_B_fl", "F"), ("b_B_vprob", "F"), 
-	("b_B_lip", "F"), ("b_B_lipsig", "F"), ("b_B_fpvip", "F"), ("b_B_pvipsig", "F"), 
+	("b_B_lip", "F"), ("b_B_lipsig", "F"), ("b_B_pvip", "F"), ("b_B_pvipsig", "F"), 
 	("b_B_fsig", "F"), 
-	("b_B_dr", "F"), ("b_B_dr_second", "F"), 
+	("b_B_r", "F"), ("b_B_r_second", "F"), 
 	#("BsDstarTauNu_k_charge", "F"), ("BsDstarTauNu_pi_charge", "F"), ("BsDstarTauNu_spi_charge", "F"), 
 	]
 

@@ -652,9 +652,15 @@ void UpdateTauDNN(const TString& identifier, const TString& cycle, const bool ws
 				.Define("b_tau_dnn2", Tau::WriteDNN2, {"b_tau"})
 				.Define("b_tau_dnn3", Tau::WriteDNN3, {"b_tau"})
 				.Define("b_tau_sumdnn", Tau::WriteSumDNN, {"b_tau"})
-				.Define("b_tau_rrh", ratioOfRadius, {"b_tau_min_dr_h", "b_tau_r"})
-				.Define("b_tau_rre", ratioOfRadius, {"b_tau_min_dr_e", "b_tau_r"})
-				.Define("b_tau_rrmu", ratioOfRadius, {"b_tau_min_dr_mu", "b_tau_r"});
+				.Define("b_B_rrh", ratioOfRadius, {"b_B_min_dr_h", "b_B_r"})
+				.Define("b_B_rre", ratioOfRadius, {"b_B_min_dr_e", "b_B_r"})
+				.Define("b_B_rrmu", ratioOfRadius, {"b_B_min_dr_mu", "b_B_r"})
+				.Define("b_B_rrh_first", ratioOfRadius, {"b_B_min_dr_h", "b_B_r_first"})
+				.Define("b_B_rre_first", ratioOfRadius, {"b_B_min_dr_e", "b_B_r_first"})
+				.Define("b_B_rrmu_first", ratioOfRadius, {"b_B_min_dr_mu", "b_B_r_frist"})
+				.Define("b_B_rrh_second", ratioOfRadius, {"b_B_min_dr_h", "b_B_r_second"})
+				.Define("b_B_rre_second", ratioOfRadius, {"b_B_min_dr_e", "b_B_r_second"})
+				.Define("b_B_rrmu_second", ratioOfRadius, {"b_B_min_dr_mu", "b_B_r_second"});
 
 	/*withDNN = withDNN.Define("b_D0_pt", extractFirstElement, {"BsDstarTauNu_D0_pt"})
 				.Define("b_D0_eta", extractFirstElement, {"BsDstarTauNu_D0_eta"})

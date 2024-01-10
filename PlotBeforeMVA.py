@@ -84,7 +84,7 @@ if __name__ == "__main__":
 	datestring = GetDate()
 
 	from webInterface import PublishToWeb
-	PublishToWeb(outputfolder, "Variables_{}_beforeBDT_data".format(datestring)) #Variables_23_8_14_beforeBDT_Sigvsdata
+	PublishToWeb(outputfolder, "Variables_{}_{}".format(options.out, datestring)) #Variables_23_8_14_beforeBDT_Sigvsdata
 
 
 

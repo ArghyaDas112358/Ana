@@ -615,6 +615,7 @@ namespace Ana
 		else 
 		{
 			cut.emplace(std::make_pair("base", "pttau_B_m>0.&&pttau_B_nmu<1&&pttau_B_nh<1&&pttau_B_ne<1&&(pttau_B_npi0+pttau_B_ngamma)<2"));
+			// superclean: pttau_B_m>0.&&pttau_B_nmu<1&&pttau_B_nh<1&&pttau_B_ne<1&&(pttau_B_npi0+pttau_B_ngamma)<2&&pttau_B_mm2<1.&&pttau_B_fl>0.2 (or with fsig > 7.)
 		}
 
 		cutstandalone.emplace(std::make_pair("SR", TCut("base", "(b_Ds_vprob>0.1) && (b_D0_vprob>0.1) && (mvaScore>-2.)")+TCut(TString::Format("mvaScore>=%f", mvaCutSR)))); 

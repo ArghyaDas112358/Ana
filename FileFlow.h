@@ -54,7 +54,7 @@ namespace Ana
 	Double_t mvaCutCR = -0.5; 
 
 
-	void CommonInitialisation()
+	void CommonInitialisation(const bool denominator)
 	{
 	
 		colorold = {{"Sig", 2}, {"BkgDstarDs", 3}, {"BkgDstarDsstar", 8}, {"BkgDstara1", 4}, {"dataD2WS", 6}, {"dataD2TauWS", 7}, {"other", 9}, {"yetanother", 1}}; // Legacy color scheme 
@@ -82,9 +82,16 @@ namespace Ana
 		std::unordered_map<std::string, ROOT::RDF::TH1DModel> defaultbinning = { 
 			#include "VariableDefinitions.ccf" 
 		}; 
+
+		std::vector<std::string> excluded; 
+		if (denominator) 
+		{
+			excluded = {"b_tau_dnn1", "b_tau_dnn2","b_tau_dnn3","b_tau_sumdnn"};
+		}
+
 		for (auto item : defaultbinning) 
 		{
-			if (binning.find(item.first) == binning.end()) 
+			if ((binning.find(item.first) == binning.end()) && (std::find(excluded.begin(), excluded.end(), item.first) == excluded.end())) 
 			{
 				binning[item.first] = item.second; 
 			}
@@ -627,7 +634,7 @@ namespace Ana
 		//color = {{"Sig", mycolors[0]}, {"B0toDstarDs", mycolors[1]}, {"BkgDstarDs", mycolors[1]}, {"B0toDstarDsstar", mycolors[2]}, {"BkgDstarDsstar", mycolors[2]}, {"B0toDstarD", mycolors[3]}, {"B0toDstarD0K", mycolors[5]}, {"ButoDstarDK", mycolors[4]}, {"B0toDstar3pi", mycolors[7]}, {"BkgDstara1", mycolors[6]},{"WS", mycolors[10]}, {"WSTau", mycolors[10]}, {"dataD2WS", mycolors[10]}, {"dataD2TauWS", mycolors[10]}, }; 
 			// {{"Sig", mycolors[0]}, {"SigPart", mycolors[1]}, {"B0toDstarDs", mycolors[2]}, {"BkgDstarDs", mycolors[2]}, {"B0toDstarDsstar", mycolors[3]}, {"BkgDstarDsstar", mycolors[3]}, {"BkgDstara1", mycolors[4]},{"WS", mycolors[6]}, {"WSTau", mycolors[5]}, {"dataD2WS", mycolors[6]}, {"dataD2TauWS", mycolors[5]}, {"B0toDstarD0K", mycolors[5]}}; 
 
-		CommonInitialisation(); 
+		CommonInitialisation(denominator); 
 
 		model = {	
 			{"v1", "./data/tautagger/batchsize_10/serialized"}, 
@@ -702,9 +709,9 @@ namespace Ana
 
 
 
-	std::vector<TString> Load(const TString& regions) 
+	std::vector<TString> Load(const TString& regions, const bool denominator = false) 
 	{
-		CommonInitialisation(); 
+		CommonInitialisation(denominator); 
 
 		auto loaded = LoadRegions(regions); 
 

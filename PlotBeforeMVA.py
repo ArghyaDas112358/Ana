@@ -24,6 +24,7 @@ if __name__ == "__main__":
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
 	parser.add_argument('-d', "--denom", dest="denom", action="store_true", default=False, help="Denominator analysis")
+	parser.add_argument('-f', "--full", dest="allvars", action="store_true", default=False, help="Plot all variables")
 	
 
 	options = parser.parse_args()
@@ -40,16 +41,24 @@ if __name__ == "__main__":
 	os.system("mkdir -p "+outputfolder)
 
 
+	postfix = "_DNN"
 	if (options.denom): anaConfig.Denominator()
 
-	samples = [anaConfig.data, anaConfig.Sig] #anaConfig.samples
-	sample = {}
-	for item in samples:
-		sample[item] = item+"_ntuple"
+
 
 
 	# Global initialisations
 	Ana.Init(options.version, options.denom)
+
+	variables = anaConfig.variables
+	if options.allvars: 
+		variables = [item.first for item in Ana.binning]
+	print(variables)
+
+	samples = [anaConfig.data, anaConfig.Sig] #anaConfig.samples
+	sample = {}
+	for item in samples:
+		sample[item] = item+postfix
 	
 
 	for file in sample.values(): 
@@ -65,7 +74,7 @@ if __name__ == "__main__":
 
 	from anaPlotting import PlotComparison
 
-	PlotComparison(frames, sample[anaConfig.data], sample[anaConfig.Sig], ["baseline"], anaConfig.variables, outputfolder, False)
+	PlotComparison(frames, sample[anaConfig.data], sample[anaConfig.Sig], ["baseline"], variables, outputfolder, False)
 
 
 	Ana.filemanager.CloseAll()

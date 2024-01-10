@@ -35,3 +35,7 @@ def DebugMode():
 	regions = ["SR"]
 	global variables
 	variables = ["b_B_m"]
+
+def Denominator(): 
+	global Sig
+	Sig = "B0toDstar3pi"

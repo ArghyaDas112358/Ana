@@ -251,12 +251,13 @@ def PlotComparison(frames, referencename, comparisonname, regions, variables, ou
 			comparison.SetFillColor(ROOT.kRed)
 			legend.AddEntry(comparison.GetPtr(), comparisonname, "F")
 			if normalise: 
-				if "data" in comparisonname: 
-					comparison.Scale(dirtynorm[comparisonname][region])
-				else: 
-					comparison.Scale(dirtynorm[comparisonname][region]/comparison.Integral())
-			else: 
-				comparison.Scale(reference.Integral()/comparison.Integral())
+				if (yields[component][region] > 0. and comparison.Integral() > 0): 
+					comparison.Scale(yields[component][region].nominal_value/comparison.Integral())
+				elif (yields[component][region].nominal_value != -1.):
+					comparison.Scale(-yields[component][region].nominal_value*comparison.Integral())
+			else:
+				if not (comparison.Integral()==0): 
+					comparison.Scale(reference.Integral()/comparison.Integral())
 
 			comparison.Draw("HIST SAME E") #"SAME"
 			legend.Draw()

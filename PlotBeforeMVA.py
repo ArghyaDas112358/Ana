@@ -40,6 +40,8 @@ if __name__ == "__main__":
 	os.system("mkdir -p "+outputfolder)
 
 
+	if (options.denom): anaConfig.Denominator()
+
 	samples = [anaConfig.data, anaConfig.Sig] #anaConfig.samples
 	sample = {}
 	for item in samples:

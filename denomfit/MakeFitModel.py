@@ -14,7 +14,7 @@ if __name__ == "__main__":
 	#sigfile = ROOT.TFile.Open("B0toDstarDs_tauDNN.root", "READ")
 	#sig = cp.deepcopy(RDataFrame(sigfile.Get("ntuplizer/tree")).Histo1D(("sig", "sig", 40, 0., 20.), variable).GetPtr())
 
-	datafile = ROOT.TFile.Open("../../../data/v7.01/dataD1-2.root", "READ")
+	datafile = ROOT.TFile.Open("/tmp/mhuwiler/data.root", "READ")
 	data = RDataFrame(datafile.Get("ntuplizer/tree")).Filter("pttau_B_m>0.&&pttau_B_nmu<1&&pttau_B_nh<1&&pttau_B_ne<1&&(pttau_B_npi0+pttau_B_ngamma)<10").Histo1D(examplehist, variable)
 
 	var = RooRealVar(variable, variable, 0., 100.)
@@ -49,7 +49,7 @@ if __name__ == "__main__":
 	p2 = RooRealVar("p2","p2",par[6],0.,100.);
 
 	signalmodel = RooGaussian("dcbPdf", "gaus", var, mu, width) #RooCrystalBall("dcbPdf","DoubleSidedCB",var,mu,width,a1,p1,a2,p2);
-	#signalmodel = RooCrystalBall("dcbPdf","DoubleSidedCB",var,mu,width,a1,p1,a2,p2);
+	signalmodel = RooCrystalBall("dcbPdf","DoubleSidedCB",var,mu,width,a1,p1,a2,p2);
 
 	getattr(workspace, "import")(signalmodel)
 

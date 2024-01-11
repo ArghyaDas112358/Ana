@@ -62,7 +62,9 @@ namespace Ana
 
 		Int_t nBins = 20; 
 
-		binning = {{"b_tau_rhomass1", {"", "#rho_{12} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
+		if (!denominator) 
+		{
+			binning = {{"b_tau_rhomass1", {"", "#rho_{12} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
 				{"b_tau_rhomass2", {"", "rho_{23} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
 				{"b_B_m", {"", "B mass;Reconstructed m_{B} [GeV];Counts", nBins, 2., 6.}},
 				{"b_B_q2", {"", "q2;q^{2} [GeV];Counts", nBins, 0., 12.}},
@@ -76,7 +78,27 @@ namespace Ana
 				{"b_tau_proper_alpha_rho2_pi", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
 				{"b_tau_proper_theta_rho1", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
 				{"b_tau_proper_theta_rho2", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
-		}; 
+			}; 
+		}
+		else 
+		{
+			nBins = 50;
+			binning = {{"b_tau_rhomass1", {"", "#rho_{12} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
+				{"b_tau_rhomass2", {"", "rho_{23} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
+				{"b_B_m", {"", "B mass;Reconstructed m_{B} [GeV];Counts", nBins, 4.5, 6.}},
+				{"b_B_q2", {"", "q2;q^{2} [GeV];Counts", nBins, 0., 12.}},
+				//{"B_m", {"", ";B mass [GeV];Counts", nBins, 0., 6.}},
+				//{"B_q2", {"", ";B mass [GeV];Counts", nBins, 0., 12.}},
+				//{"tau_rhomass1", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},
+				//{"tau_rhomass2", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},
+				{"b_B_proper_xi_rho1", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
+				{"b_B_proper_xi_rho2", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
+				{"b_tau_proper_alpha_rho1_pi", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
+				{"b_tau_proper_alpha_rho2_pi", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
+				{"b_tau_proper_theta_rho1", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
+				{"b_tau_proper_theta_rho2", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
+			}; 
+		}
 
 		// Complete binning with default
 		std::unordered_map<std::string, ROOT::RDF::TH1DModel> defaultbinning = { 

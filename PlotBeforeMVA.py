@@ -66,15 +66,30 @@ if __name__ == "__main__":
 
 
 
-	frames = PrepareSamples(list(sample.values()))
+	frames, effs = PrepareSamples(list(sample.values()))
 
 	if options.debug: print(frames)
 
 	# from here on starts teting
 
-	from anaPlotting import PlotComparison
+	from anaPlotting import PlotComparison, PlotStack
 
-	PlotComparison(frames, sample[anaConfig.data], sample[anaConfig.Sig], ["baseline"], variables, outputfolder, False)
+	PlotComparison(frames, sample[anaConfig.data], sample[anaConfig.Sig], ["baseline"], variables, outputfolder+"/comp/", False)
+
+	from libEfficiencies import MultiplyFinalEffs, ReadEffs, PrintEfficiencies2D
+	from uncertainties import ufloat
+
+	selectioneffs = ReadEffs("./data/etc/Expectedyields.json")
+	selectioneffs["dataB2WS"] = ufloat(1.39e-5*-12.0*7*8, 0.)
+	selectioneffs["dataDBWS"] = ufloat(1.39e-5*-12.0*11*3.3, 0.)
+
+	PrintEfficiencies2D(effs)
+
+	regioneffs = MultiplyFinalEffs(selectioneffs, effs)
+
+	PrintEfficiencies2D(regioneffs)
+
+	PlotStack(frames, sample[anaConfig.data], list(sample.values()), ["baseline"], variables, regioneffs, outputfolder+"/stack/", False)
 
 
 	Ana.filemanager.CloseAll()

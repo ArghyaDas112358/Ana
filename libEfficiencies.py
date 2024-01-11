@@ -209,15 +209,17 @@ def ReadEffsFromFile(item, version, filemanager):
 	return efficiency
 
 def MultiplyFinalEffs(effs, regioneffs):
+	from anaPrepareRegions import GetBaseName
 	for item, content in regioneffs.items(): 
+		#item = GetBaseName(item)
 		print("{}:".format(item))
 		for key, value in content.items(): 
 			try:
-				regioneffs[item][key] = effs[item]*regioneffs[item][key]
-				if (effs[item].nominal_value < 0.): 
-					regioneffs[item][key]=effs[item]
+				regioneffs[item][key] = effs[GetBaseName(item)]*regioneffs[item][key]
+				if (effs[GetBaseName(item)].nominal_value < 0.): 
+					regioneffs[item][key]=effs[GetBaseName(item)]
 			except:
-				regioneffs[item][key] = -1.
+				regioneffs[item][key] = ufloat(-1., 0.)
 	return regioneffs
 
 

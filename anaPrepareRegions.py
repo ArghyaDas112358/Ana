@@ -102,7 +102,10 @@ def PrepareSamples(samplelist = anaConfig.samples):
 		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(GetBaseName(item)).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."
 		frames[item]["all"] = samples[item].Filter("1.")
 
-	return frames
+	from libEfficiencies import ComputeEfficiencies
+	effs = ComputeEfficiencies(frames)
+
+	return frames, effs
 
 
 def GetBaseName(samplename): 

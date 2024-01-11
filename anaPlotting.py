@@ -2,6 +2,7 @@
 from __future__ import division, print_function
 
 import os
+import copy
 from ROOT import TCanvas, TLegend, THStack, gROOT
 
 
@@ -87,6 +88,7 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 
 def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, outfolder, drawlegend=True): 
 	# Plotting distributions over each other 
+	from anaPrepareRegions import GetBaseName
 	#outfolder+="stacked/"
 	os.system("mkdir -p "+outfolder)
 	factor = 1.1 # how much overhead to add to the histos 
@@ -143,7 +145,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 				ROOT.SetOwnership(histo, 0)
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
-				color = Ana.samples.at(component.replace("Part", "")).color
+				color = Ana.samples.at(GetBaseName(component.replace("Part", ""))).color
 				if (not color): 
 					color = colors[0]
 				histo.SetLineColor(color)
@@ -190,13 +192,13 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 					ROOT.SetOwnership(histo, 0)
 					histo.SetLineStyle(1) # plain
 					histo.SetLineWidth(2)
-					color = Ana.samples.at(component.replace("Part", "")).color
+					color = Ana.samples.at(GetBaseName(component.replace("Part", ""))).color
 					if "WS" in component: 
 						color = Ana.samples.at("WS").color
 					histo.SetLineColor(color)
 					histo.SetFillStyle(1)
 					histo.SetFillColor(color)
-					legend.AddEntry(histo, Ana.samples.at(component.replace("Part", "")).legend, "F")
+					legend.AddEntry(histo, Ana.samples.at(GetBaseName(component.replace("Part", ""))).legend, "F")
 				canv.cd()
 				data.SetMarkerSize(4.)
 				data.SetLineWidth(4)

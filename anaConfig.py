@@ -5,9 +5,9 @@ ROOT.gROOT.LoadMacro("FileFlow.h+")
 from ROOT import Ana
 
 
-data = "dataD1" #"dataB2"
+data = "dataB" #"dataB2"
 
-dataWS = "dataD1WS"
+dataWS = "dataB1WS"
 
 Sig = "Sig"
 

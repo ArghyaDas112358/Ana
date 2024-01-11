@@ -94,7 +94,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 	factor = 1.1 # how much overhead to add to the histos 
 	components = copy.deepcopy(initialcomponents)
 	if (dataname in components): components.remove(dataname)
-	components.reverse()
+	#components.reverse()
 	notYetDrawn = True
 	for region in regions: 
 		for variable in variables: 
@@ -150,7 +150,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 					color = colors[0]
 				histo.SetLineColor(color)
 				#histo.SetMarkerColor(Ana.color[component])
-				histo.SetFillStyle(1)
+				histo.SetFillStyle(1001)
 				histo.SetFillColor(color)
 				hists[component] = histo
 				stack.Add(histo)
@@ -208,7 +208,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 				legend.SetY2(1.)
 				legend.SetBorderSize(0)
   				legend.SetFillColor(0)
-  				legend.SetFillStyle(0)
+  				legend.SetFillStyle(1001)
 				legend.SetTextFont(43)
 				legend.SetTextSize(canv.GetWh()/(2*stack.GetNhists()))
 				legend.Draw()

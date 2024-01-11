@@ -41,7 +41,7 @@ if __name__ == "__main__":
 	os.system("mkdir -p "+outputfolder)
 
 
-	postfix = "_DNN"
+	postfix = "" #"_DNN_m"
 	if (options.denom): anaConfig.Denominator()
 
 
@@ -55,7 +55,7 @@ if __name__ == "__main__":
 		variables = [item.first for item in Ana.binning]
 	print(variables)
 
-	samples = [anaConfig.data, anaConfig.Sig] #anaConfig.samples
+	samples = anaConfig.samples #[anaConfig.data, anaConfig.Sig] #anaConfig.samples
 	sample = {}
 	for item in samples:
 		sample[item] = item+postfix

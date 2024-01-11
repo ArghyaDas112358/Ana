@@ -657,7 +657,7 @@ void UpdateTauDNN(const TString& identifier, const TString& cycle, const bool ws
 				.Define("b_B_rrmu", ratioOfRadius, {"b_B_min_dr_mu", "b_B_r"})
 				.Define("b_B_rrh_first", ratioOfRadius, {"b_B_min_dr_h", "b_B_r_first"})
 				.Define("b_B_rre_first", ratioOfRadius, {"b_B_min_dr_e", "b_B_r_first"})
-				.Define("b_B_rrmu_first", ratioOfRadius, {"b_B_min_dr_mu", "b_B_r_frist"})
+				.Define("b_B_rrmu_first", ratioOfRadius, {"b_B_min_dr_mu", "b_B_r_first"})
 				.Define("b_B_rrh_second", ratioOfRadius, {"b_B_min_dr_h", "b_B_r_second"})
 				.Define("b_B_rre_second", ratioOfRadius, {"b_B_min_dr_e", "b_B_r_second"})
 				.Define("b_B_rrmu_second", ratioOfRadius, {"b_B_min_dr_mu", "b_B_r_second"});

@@ -22,7 +22,7 @@ if __name__ == "__main__":
 	model = workspace.pdf("model_s") #model_s
 
 	# Creating the RooFit plot
-	var = workspace.var("pttau_B_m")
+	var = workspace.var("b_B_m")
 	frame = var.frame()
 
 	datahist = workspace.data("data_obs")

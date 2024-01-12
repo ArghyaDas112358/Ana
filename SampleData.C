@@ -28,10 +28,23 @@ public:
 }; 
 
 
+template<typename S, typename T>
+class RedirectingMap 
+{
+	public:
+		inline RedirectingMap() = default; 
+		inline RedirectingMap(std::unordered_map<S, T> list) : map(list) {}; 
+
+		inline T at(S key) { return map.at(key); };
+
+		std::unordered_map<S, T> map; 
+};
+
+
 
 namespace Ana {
 	
-	std::unordered_map<std::string, SampleData> InitSamples() 
+	RedirectingMap<std::string, SampleData> InitSamples() 
 	{
 		// https://colorbrewer2.org/?type=diverging&scheme=RdYlBu&n=7#type=diverging&scheme=RdYlBu&n=11
 		std::vector<std::vector<int> > colors = 
@@ -67,7 +80,7 @@ namespace Ana {
 
 		TCut genMatchCut = "(Dstar_match)&&(b_tau_match)";
 
-		std::unordered_map<std::string, SampleData> samples = {
+		std::unordered_map<std::string, SampleData> samplelist = {
 			// B0 decays
 			{"Sig", {
 				mycolors[0], 
@@ -298,6 +311,8 @@ namespace Ana {
 				{"BkgDstarDsstar"})
 			},
 		};
+
+		RedirectingMap<std::string, SampleData> samples = samplelist; 
 
 		return samples; 
 	}

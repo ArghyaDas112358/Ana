@@ -42,7 +42,7 @@ namespace Ana
 
 	//std::unordered_map<std::string, std::string> labels; 
 
-	std::unordered_map<std::string, SampleData> samples; 
+	RedirectingMap<std::string, SampleData> samples; 
 
 
 	std::map<std::string, TCut> cutstandalone;

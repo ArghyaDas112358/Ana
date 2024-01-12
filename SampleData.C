@@ -168,19 +168,12 @@ namespace Ana {
 				"$B^0\\rightarrow D^{*}D^{0}K^{*}$", 
 				{"B0toDstarD0K"})
 			},
-			{"BkgDstara1", SampleData(
-				mycolors[6], 
-				"B^{0}#rightarrowD*a_{1}", 
-				"1", 
-				"$B^0\\rightarrow D^{*-}a_{1}^+$", 
-				{"BkgDstara1"})
-			},
 			{"B0toDstara1", SampleData(
 				mycolors[7], 
 				"B^{0}#rightarrowD*a_{1}", 
 				"1", 
 				"$B^0\\rightarrow D^{*-}a_{1}^+$", 
-				{"BkgDstara1"})
+				{"B0toDstara1"})
 			},
 			{"B0toDstar3pi", SampleData(
 				mycolors[8], 
@@ -233,19 +226,12 @@ namespace Ana {
 				{"ButoDstarXc"})
 			}, 
 			// To be completed
-			{"BkgBuDXc", SampleData(
-				mycolors[8], 
-				"B^{+}#rightarrowD*D", 
-				"1",
-				"$B^+\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$", 
-				{"BkgBuDXc"})
-			},
-			{"BkgB0DD", SampleData(
+			{"B0toDD", SampleData(
 				mycolors[8], 
 				"B^{0}#rightarrowDD", 
 				genMatchCut, 
 				"$B^0\\rightarrow D_{(s)}^{(*)}D_{(s)}^{(*)}$", 
-				{"BkgB0DD"})
+				{"B0toB0DD"})
 			},
 			{"BstoDD", SampleData(
 				mycolors[8], 
@@ -261,27 +247,6 @@ namespace Ana {
 				"data", 
 				{"dataD1", "dataD2", "dataD3", "dataD4", "dataD5"})
 			},
-			{"dataD1", SampleData(
-				 mycolors[10], 
-				"data", 
-				"1", 
-				"data", 
-				{"dataD1"})
-			},
-			{"dataD2", SampleData(
-				 mycolors[10], 
-				"data", 
-				"1", 
-				"data", 
-				{"dataD2"})
-			},
-			{"dataB2", SampleData(
-				 mycolors[10], 
-				"data", 
-				"1", 
-				"data", 
-				{"dataB2"})
-			},
 			// data driven components
 			{"WS", SampleData(
 				 mycolors[10], 
@@ -296,42 +261,6 @@ namespace Ana {
 				"1", 
 				"$WS~|q_{#tau}|~=~3$", 
 				{"WSTau"})
-			},
-			{"dataD2WS", SampleData(
-				 mycolors[10], 
-				"|q_{B}| = 2  WS", 
-				"1", 
-				"$WS~|q_{B}|}~=~2$", 
-				{"dataD2WS"})
-			},
-			{"dataD1WS", SampleData(
-				 mycolors[10], 
-				"|q_{B}| = 2  WS", 
-				"1", 
-				"$WS~|q_{B}|}~=~2$", 
-				{"dataD1WS"})
-			},
-			{"dataD2TauWS", SampleData(
-				 mycolors[10], 
-				"|q_{#tau}| = 3  WS", 
-				"1", 
-				"$WS~|q_{#tau}|~=~3$", 
-				{"dataD2TauWS"})
-			},
-			// For backwards compatibility purposes # TODO: make a maping for sample names 
-			{"BkgDstarDs", SampleData(
-				mycolors[1], 
-				"B^{0}#rightarrowD*D_{s}", 
-				genMatchCut, 
-				"$B^0\\rightarrow D^{*-}D_{s}^+$", 
-				{"BkgDstarDs"})
-			},
-			{"BkgDstarDsstar", SampleData(
-				mycolors[2], 
-				"B^{0}#rightarrowD*D*_{s}", 
-				genMatchCut, 
-				"$B^0\\rightarrow D^{*-}D_{s}^{*+}$", 
-				{"BkgDstarDsstar"})
 			},
 		};
 

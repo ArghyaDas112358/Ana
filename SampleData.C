@@ -33,11 +33,34 @@ class RedirectingMap
 {
 	public:
 		inline RedirectingMap() = default; 
-		inline RedirectingMap(std::unordered_map<S, T> list) : map(list) {}; 
+		inline RedirectingMap(std::unordered_map<S, T> list, std::unordered_map<S, S> mapping = {}) : map(list), redirections(mapping) {}; 
 
-		inline T at(S key) { return map.at(key); };
+		inline T at(S key) 
+		{ 
+			if (map.find(key) == map.end()) 
+			{
+				return map.at(redirections.at(key)); 
+			}
+			else 
+			{
+				return map.at(key); 
+			}
+		};
 
+		inline T operator[](S key) 
+		{
+			if (map.find(key) == map.end()) key = redirections.at(key);
+
+			return map[key]; 
+		};
+
+
+		inline void SetRedirections(std::unordered_map<S, S> mapping) { redirections = mapping; };
+
+	private:
 		std::unordered_map<S, T> map; 
+
+		std::unordered_map<S, S> redirections; 
 };
 
 
@@ -313,6 +336,12 @@ namespace Ana {
 		};
 
 		RedirectingMap<std::string, SampleData> samples = samplelist; 
+
+		samples.SetRedirections({
+			{"dataB1", "data"}, 
+			{"dataB2", "data"}, 
+			{"dataC2", "data"}
+		}); 
 
 		return samples; 
 	}

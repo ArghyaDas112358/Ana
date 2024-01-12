@@ -338,9 +338,38 @@ namespace Ana {
 		RedirectingMap<std::string, SampleData> samples = samplelist; 
 
 		samples.SetRedirections({
+			{"dataA1", "data"}, 
+			{"dataA2", "data"}, 
+			{"dataA3", "data"}, 
+			{"dataA4", "data"}, 
+			{"dataA5", "data"}, 
 			{"dataB1", "data"}, 
 			{"dataB2", "data"}, 
-			{"dataC2", "data"}
+			{"dataB3", "data"}, 
+			{"dataB4", "data"}, 
+			{"dataB5", "data"}, 
+			{"dataC1", "data"}, 
+			{"dataC2", "data"},
+			{"dataC3", "data"}, 
+			{"dataC4", "data"}, 
+			{"dataC5", "data"}, 
+			{"dataD1", "data"}, 
+			{"dataD2", "data"}, 
+			{"dataD3", "data"}, 
+			{"dataD4", "data"}, 
+			{"dataD5", "data"}, 
+			{"dataA", "data"}, 
+			{"dataB", "data"}, 
+			{"dataC", "data"}, 
+			{"dataD", "data"}, 
+			{"data1", "data"}, 
+			{"data2", "data"}, 
+			{"data3", "data"}, 
+			{"data4", "data"}, 
+			{"data5", "data"}, 
+			{"dataAB", "data"}, 
+			{"dataABC", "data"}, 
+			{"dataBC", "data"}
 		}); 
 
 		return samples; 

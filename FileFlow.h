@@ -3,6 +3,7 @@
 #include "plugins/FileManager/CFileManager.C"
 #include <string>
 #include "TString.h"
+#include "TObjString.h"
 #include "TCut.h"
 #include <unordered_map>
 #include "SampleData.C"
@@ -751,21 +752,28 @@ namespace Ana
 
 	TChain* GetSample(const TString& name) 
 	{
+		TString samplename; 
+		TString suffix;
 		if (name.Contains("_")) 
 		{
 			// Split and get back after
+			auto tokens = name.Tokenize("_"); 
+			samplename = static_cast<TObjString*>(tokens->At(0))->GetString(); 
+			suffix = TString(name).ReplaceAll(samplename, ""); 
+			std::cout << samplename << " " << suffix << std::endl;
 		}
-		TChain *chain = filemanager.GetItem<TChain*>(name); 
+		TChain *chain = filemanager.GetItem<TChain*>(name, true); 
 		if (!chain) 
 		{
 			chain = new TChain(name, name); 
-			for (auto item : samples.at(name.Data()).fileRefs) 
+			for (auto item : samples.at(samplename.Data()).fileRefs) 
 			{
-				std::cout << item << std::endl;
-				chain->AddFile(TString::Format("%s/%s", filemanager.GetFile(item).c_str(), filemanager.GetObject(item).c_str())); 
+				TString itemname = item+suffix; 
+				std::cout << itemname << std::endl;
+				chain->AddFile(TString::Format("%s/%s", filemanager.GetFile(itemname).c_str(), filemanager.GetObject(itemname).c_str())); 
 			}
 		}
-		std::cout << "Number of events" << chain->GetEntries() << std::endl;
+		std::cout << "Number of events " << chain->GetEntries() << std::endl;
 
 		return chain; 
 	}

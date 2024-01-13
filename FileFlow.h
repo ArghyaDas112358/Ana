@@ -751,15 +751,19 @@ namespace Ana
 
 	TChain* GetSample(const TString& name) 
 	{
-		TChain *chain = new TChain(name, name); 
 		if (name.Contains("_")) 
 		{
 			// Split and get back after
 		}
-		for (auto item : samples.at(name.Data()).fileRefs) 
+		TChain *chain = filemanager.GetItem<TChain*>(name); 
+		if (!chain) 
 		{
-			std::cout << item << std::endl;
-			chain->AddFile(TString::Format("%s/%s", filemanager.GetFile(item).c_str(), filemanager.GetObject(item).c_str())); 
+			chain = new TChain(name, name); 
+			for (auto item : samples.at(name.Data()).fileRefs) 
+			{
+				std::cout << item << std::endl;
+				chain->AddFile(TString::Format("%s/%s", filemanager.GetFile(item).c_str(), filemanager.GetObject(item).c_str())); 
+			}
 		}
 		std::cout << "Number of events" << chain->GetEntries() << std::endl;
 

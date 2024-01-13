@@ -61,8 +61,8 @@ if __name__ == "__main__":
 		sample[item] = item+postfix
 	
 
-	for file in sample.values(): 
-		Ana.filemanager.OpenItem(file)
+	#for file in sample.values(): 
+	#	Ana.filemanager.OpenItem(file)
 
 
 

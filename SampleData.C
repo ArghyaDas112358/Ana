@@ -19,6 +19,8 @@ public:
 		}
 	}; 
 
+	SampleData() = default;
+
 	int color = -999.; 
 	std::string legend = ""; 
 	TCut cut = ""; 
@@ -39,7 +41,15 @@ class RedirectingMap
 		{ 
 			if (map.find(key) == map.end()) 
 			{
-				return map.at(redirections.at(key)); 
+				if (redirections.find(key) != redirections.end()) 
+				{
+					return map.at(redirections.at(key)); 
+				}
+				else 
+				{
+					printWarning(key); 
+					return SampleData();  
+				}
 			}
 			else 
 			{
@@ -56,6 +66,8 @@ class RedirectingMap
 
 
 		inline void SetRedirections(std::unordered_map<S, S> mapping) { redirections = mapping; };
+
+		inline void printWarning(const std::string key) { std::cout << "Warning: key " << key << " not in map nor redirects. " << std::endl; };
 
 	private:
 		std::unordered_map<S, T> map; 

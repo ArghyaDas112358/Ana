@@ -265,7 +265,7 @@ namespace Ana {
 				"|q_{B}| = 2  WS", 
 				"1", 
 				"$WS~|q_{B}|}~=~2$", 
-				{"WS"})
+				{"dataD1WS"})
 			},
 			{"WSTau", SampleData(
 				 mycolors[10], 

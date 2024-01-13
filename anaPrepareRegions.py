@@ -97,8 +97,10 @@ def PrepareSamples(samplelist = anaConfig.samples):
 	frames = collections.defaultdict(dict)
 
 	for item in samplelist:  
-		Ana.filemanager.OpenItem(item)
-		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
+		#Ana.filemanager.OpenItem(item)
+		sample = Ana.GetSample(item)
+		print(sample.GetEntries())
+		samples[item] = ROOT.RDataFrame(sample) #ROOT.RDataFrame(Ana.filemanager.GetItem(item))
 		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(GetBaseName(item)).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."
 		frames[item]["all"] = samples[item].Filter("1.")
 

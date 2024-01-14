@@ -752,19 +752,21 @@ namespace Ana
 
 	TChain* GetSample(const TString& name) 
 	{
-		TString samplename; 
-		TString suffix;
-		if (name.Contains("_")) 
-		{
-			// Split and get back after
-			auto tokens = name.Tokenize("_"); 
-			samplename = static_cast<TObjString*>(tokens->At(0))->GetString(); 
-			suffix = TString(name).ReplaceAll(samplename, ""); 
-			std::cout << samplename << " " << suffix << std::endl;
-		}
+		TString samplename = name; 
+		TString suffix = "";
+		
 		TChain *chain = filemanager.GetItem<TChain*>(name, true); 
 		if (!chain) 
 		{
+			if (name.Contains("_")) 
+			{
+				// Split and get back after
+				auto tokens = name.Tokenize("_"); 
+				samplename = static_cast<TObjString*>(tokens->At(0))->GetString(); 
+				suffix = TString(name).ReplaceAll(samplename, ""); 
+			}
+			std::cout << samplename << " " << suffix << std::endl;
+		
 			chain = new TChain(name, name); 
 			for (auto item : samples.at(samplename.Data()).fileRefs) 
 			{

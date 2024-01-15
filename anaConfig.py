@@ -7,7 +7,7 @@ from ROOT import Ana
 
 data = "data" #"dataB2"
 
-dataWS = "dataD1WS"
+dataWS = "WS"
 
 Sig = "Sig"
 

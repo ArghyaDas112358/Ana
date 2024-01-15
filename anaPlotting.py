@@ -94,7 +94,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 	factor = 1.1 # how much overhead to add to the histos 
 	components = copy.deepcopy(initialcomponents)
 	if (dataname in components): components.remove(dataname)
-	#components.reverse()
+	components.reverse()
 	notYetDrawn = True
 	for region in regions: 
 		for variable in variables: 
@@ -196,7 +196,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 					if "WS" in component: 
 						color = Ana.samples.at("WS").color
 					histo.SetLineColor(color)
-					histo.SetFillStyle(1)
+					histo.SetFillStyle(1001)
 					histo.SetFillColor(color)
 					legend.AddEntry(histo, Ana.samples.at(GetBaseName(component.replace("Part", ""))).legend, "F")
 				canv.cd()

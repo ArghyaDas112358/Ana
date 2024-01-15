@@ -257,7 +257,7 @@ namespace Ana {
 				"data", 
 				"1", 
 				"data", 
-				{"dataD1", "dataD2", "dataD3", "dataD4", "dataD5"})
+				{"dataD1", "dataD2", "dataD3", "dataD4", "dataD5", "dataA1", "dataA2", "dataA3", "dataA4", "dataA5", "dataB1", "dataB2", "dataB3", "dataB4", "dataB5", "dataC1", "dataC2", "dataC3", "dataC4", "dataC5"})
 			},
 			// data driven components
 			{"WS", SampleData(
@@ -265,7 +265,7 @@ namespace Ana {
 				"|q_{B}| = 2  WS", 
 				"1", 
 				"$WS~|q_{B}|}~=~2$", 
-				{"dataD1WS"})
+				{"dataD1WS", "dataD2WS", "dataD3WS", "dataD4WS", "dataD5WS", "dataA1WS", "dataA2WS", "dataA3WS", "dataA4WS", "dataA5WS", "dataB1WS", "dataB2WS", "dataB3WS", "dataB4WS", "dataB5WS", "dataC1WS", "dataC2WS", "dataC3WS", "dataC4WS", "dataC5WS"})
 			},
 			{"WSTau", SampleData(
 				 mycolors[10], 

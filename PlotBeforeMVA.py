@@ -25,6 +25,8 @@ if __name__ == "__main__":
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
 	parser.add_argument('-d', "--denom", dest="denom", action="store_true", default=False, help="Denominator analysis")
 	parser.add_argument('-f', "--full", dest="allvars", action="store_true", default=False, help="Plot all variables")
+	parser.add_argument("--comp", dest="comp", action="store_true", default=False, help="Plot comparisons")
+	parser.add_argument("--stack", dest="stack", action="store_true", default=True, help="Plot stacked distributions")
 	
 
 	options = parser.parse_args()
@@ -74,22 +76,25 @@ if __name__ == "__main__":
 
 	from anaPlotting import PlotComparison, PlotStack
 
-	PlotComparison(frames, sample[anaConfig.data], sample[anaConfig.Sig], ["baseline"], variables, outputfolder+"/comp/", False)
+	if (options.comp): 
+		PlotComparison(frames, sample[anaConfig.data], sample[anaConfig.Sig], ["baseline"], variables, outputfolder+"/comp/", False)
 
-	from libEfficiencies import MultiplyFinalEffs, ReadEffs, PrintEfficiencies2D
-	from uncertainties import ufloat
+	if (options.stack):
+		from libEfficiencies import MultiplyFinalEffs, ReadEffs, PrintEfficiencies2D
+		from uncertainties import ufloat
 
-	selectioneffs = ReadEffs("./data/etc/Expectedyields.json")
-	selectioneffs["dataB2WS"] = ufloat(1.39e-5*-12.0*7*8, 0.)
-	selectioneffs["dataDBWS"] = ufloat(1.39e-5*-12.0*11*3.3, 0.)
+		selectioneffs = ReadEffs("./data/etc/Expectedyields.json")
+		selectioneffs["dataB2WS"] = ufloat(1.39e-5*-12.0*7*8, 0.)
+		selectioneffs["dataDBWS"] = ufloat(1.39e-5*-12.0*11*3.3, 0.)
+		selectioneffs["WS"] = ufloat(310000.,0.)
 
-	PrintEfficiencies2D(effs)
+		PrintEfficiencies2D(effs)
 
-	regioneffs = MultiplyFinalEffs(selectioneffs, effs)
+		regioneffs = MultiplyFinalEffs(selectioneffs, effs)
 
-	PrintEfficiencies2D(regioneffs)
+		PrintEfficiencies2D(regioneffs)
 
-	PlotStack(frames, sample[anaConfig.data], list(sample.values()), ["baseline"], variables, regioneffs, outputfolder+"/stack/", False)
+		PlotStack(frames, sample[anaConfig.data], list(sample.values()), ["baseline"], variables, regioneffs, outputfolder+"/stack/", False)
 
 
 	Ana.filemanager.CloseAll()

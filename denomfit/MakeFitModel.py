@@ -43,10 +43,10 @@ if __name__ == "__main__":
 	par[6]=1.;
 	mu = RooRealVar("mu","mu",par[1],5.1,5.5);
 	width = RooRealVar("width","width",par[2],0.,0.4);
-	a1 = RooRealVar("a1","a1",par[3],1.,100.);
+	a1 = RooRealVar("a1","a1",par[3],1.,10.);
 	p1 = RooRealVar("p1","p1",par[4],0.,100.);
-	a2 = RooRealVar("a2","a2",par[5],1.,100.);
-	p2 = RooRealVar("p2","p2",par[6],0.,100.);
+	a2 = RooRealVar("a2","a2",par[5],1.,3.);
+	p2 = RooRealVar("p2","p2",par[6],2.,100.);
 
 	signalmodel = RooGaussian("dcbPdf", "gaus", var, mu, width) #RooCrystalBall("dcbPdf","DoubleSidedCB",var,mu,width,a1,p1,a2,p2);
 	signalmodel = RooCrystalBall("dcbPdf","DoubleSidedCB",var,mu,width,a1,p1,a2,p2);

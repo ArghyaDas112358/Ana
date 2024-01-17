@@ -50,8 +50,9 @@ if __name__ == "__main__":
 
 
 	# Starting script 
-	from anaPrepareRegions import PrepareRegionsSimple
-	frames = PrepareRegionsSimple()
+	from anaPrepareRegions import PrepareRegionsSimple, PrepareSamples
+	#frames = PrepareRegionsSimple()
+	frames, effs = PrepareSamples(anaConfig.samples)
 	
 
 	if options.debug: print(frames)
@@ -74,9 +75,9 @@ if __name__ == "__main__":
 	from libFitting import WriteWorkspace
 	from libEfficiencies import ReadEffs2D
 
-	yields = ReadEffs2D("./data/etc/RegionEffs.json")
+	# yields = ReadEffs2D("./data/etc/RegionEffs.json")
 
-	WriteWorkspace(frames, yields, anaConfig.variables, anaConfig.regions, anaConfig.data, "workspaceFromExportTest.root", "w")
+	WriteWorkspace(frames, effs, anaConfig.variables, ["baseline", "all"], anaConfig.data, "workspaceFromExportHists.root")
 
 	Ana.filemanager.CloseAll()
 

@@ -81,13 +81,14 @@ namespace Ana
 				{"b_tau_proper_theta_rho2", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
 			}; 
 		}
-		else 
+		else // denominator
 		{
 			nBins = 50;
 			binning = {{"b_tau_rhomass1", {"", "#rho_{12} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
 				{"b_tau_rhomass2", {"", "rho_{23} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
 				{"b_B_m", {"", "B mass;Reconstructed m_{B} [GeV];Counts", nBins, 4.5, 6.}},
 				{"b_B_q2", {"", "q2;q^{2} [GeV];Counts", nBins, 0., 12.}},
+				{"b_tau_m", {"", "\tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, 1., 3.}},
 				//{"B_m", {"", ";B mass [GeV];Counts", nBins, 0., 6.}},
 				//{"B_q2", {"", ";B mass [GeV];Counts", nBins, 0., 12.}},
 				//{"tau_rhomass1", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},

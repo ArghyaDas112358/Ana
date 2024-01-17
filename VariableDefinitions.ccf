@@ -17,7 +17,7 @@
 {"b_tau_legacyMaxdr", {"", "b_tau_legacyMaxdr;b_tau_legacyMaxdr;Counts", nBins, -0.2, 2.}},
 {"b_tau_lip", {"", "b_tau_lip;b_tau_lip;Counts", nBins, -0.1, 0.1}},
 {"b_tau_lipsig", {"", "b_tau_lipsig;b_tau_lipsig;Counts", nBins, -10., 10.}},
-{"b_tau_m", {"", "b_tau_m;b_tau_m;Counts", nBins, 0., 5.}},
+{"b_tau_m", {"", "b_tau_m;b_tau_m;Counts", nBins, 1., 2.}},
 {"b_tau_m_KKpi1", {"", "b_tau_m_KKpi1;b_tau_m_KKpi1;Counts", nBins, 0., 5.}},
 {"b_tau_m_KKpi2", {"", "b_tau_m_KKpi2;b_tau_m_KKpi2;Counts", nBins, 0., 5.}},
 {"b_tau_m_Kpipi", {"", "b_tau_m_Kpipi;b_tau_m_Kpipi;Counts", nBins, 0., 5.}},

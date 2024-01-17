@@ -398,6 +398,12 @@ float extractFirstElement(const ROOT::VecOps::RVec<float>& vec)
 	return vec.at(0); 
 }
 
+
+float ratioOfRadius(const float r1, const float r2) 
+{
+	return r1/r2; 
+}
+
  
 
 void ProcessingDenominatorOffline(const TString& identifier, const TString& cycle, const bool ws = false) 
@@ -587,6 +593,15 @@ void ProcessingDenominatorOffline(const TString& identifier, const TString& cycl
 				// .Define("b_B_m", Tau::WriteBmass, {"b_tau"})
 				// .Define("b_B_q2", Tau::WriteBq2, {"b_tau"});
 				#include "taubranchcreation.gcf" 
+				.Define("b_B_rrh", ratioOfRadius, {"b_B_min_dr_h", "b_B_r"})
+				.Define("b_B_rre", ratioOfRadius, {"b_B_min_dr_e", "b_B_r"})
+				.Define("b_B_rrmu", ratioOfRadius, {"b_B_min_dr_mu", "b_B_r"})
+				.Define("b_B_rrh_first", ratioOfRadius, {"b_B_min_dr_h", "b_B_r_first"})
+				.Define("b_B_rre_first", ratioOfRadius, {"b_B_min_dr_e", "b_B_r_first"})
+				.Define("b_B_rrmu_first", ratioOfRadius, {"b_B_min_dr_mu", "b_B_r_first"})
+				.Define("b_B_rrh_second", ratioOfRadius, {"b_B_min_dr_h", "b_B_r_second"})
+				.Define("b_B_rre_second", ratioOfRadius, {"b_B_min_dr_e", "b_B_r_second"})
+				.Define("b_B_rrmu_second", ratioOfRadius, {"b_B_min_dr_mu", "b_B_r_second"});
 	;
 
 	/*withB = withB.Define("b_D0_pt", extractFirstElement, {"BsDstarTauNu_D0_pt"})

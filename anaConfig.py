@@ -2,8 +2,12 @@ import ROOT
 
 
 import os
-print(os.environ["PLATFORM"])
-if (os.environ["PLATFORM"] == "lxplus"): 
+environment=""
+try: 
+	environment = os.environ["PLATFORM"]
+except: 
+	pass
+if (environment == "lxplus"): 
 	ROOT.gROOT.LoadMacro("FileFlow.h")
 else:
 	ROOT.gROOT.LoadMacro("FileFlow.h+")

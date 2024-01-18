@@ -1,7 +1,13 @@
 import ROOT
 
 
-ROOT.gROOT.LoadMacro("FileFlow.h+")
+import os
+print(os.environ["PLATFORM"])
+if (os.environ["PLATFORM"] == "lxplus"): 
+	ROOT.gROOT.LoadMacro("FileFlow.h")
+else:
+	ROOT.gROOT.LoadMacro("FileFlow.h+")
+#ROOT.gROOT.LoadMacro("FileFlow.h+")
 from ROOT import Ana
 
 

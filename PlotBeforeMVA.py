@@ -44,7 +44,9 @@ if __name__ == "__main__":
 
 
 	postfix = "" #"_DNN_m"
-	if (options.denom): anaConfig.Denominator()
+	if (options.denom): 
+		anaConfig.Denominator()
+		postfix = "_DNN"
 
 
 
@@ -87,6 +89,8 @@ if __name__ == "__main__":
 		selectioneffs["dataB2WS"] = ufloat(1.39e-5*-12.0*7*8, 0.)
 		selectioneffs["dataDBWS"] = ufloat(1.39e-5*-12.0*11*3.3, 0.)
 		selectioneffs["WS"] = ufloat(310000.,0.)
+		if (options.denom): 
+			selectioneffs["WS"] = ufloat(35000.,0.)
 
 		PrintEfficiencies2D(effs)
 

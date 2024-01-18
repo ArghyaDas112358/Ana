@@ -20,7 +20,7 @@ cb.SetVerbosity(3)
 
 sig_procs = ["Sig"] #['Sig']
 
-#bkg_procs = ["B0toDstarDs", "B0toDstarDsstar", "B0toDstarD0K"]
+bkg_procs = ["B0toDstarDs", "B0toDstarDsstar", "B0toDstarD0K"]
 
 categories = {
     'SR': [(1, 'SR')],
@@ -32,17 +32,17 @@ categories = {
 
 
 channels = ['baseline'] # Channels for which to write datacards
-prefix = ['fitFirst'] # also called analysis
-era = ['2018']
+prefix = 'fitFirst' # also called analysis
+era = '2018'
 
 
 for chn in channels:
 
-    cb.AddObservations(['*'], prefix, era, [chn], categories[chn])
+    cb.AddObservations(['*'], [prefix], [era], [chn], categories[chn])
 
-    cb.AddProcesses(sig_procs, prefix, era, [chn], sig_procs, categories[chn], True)
+    cb.AddProcesses(sig_procs, [prefix], [era], [chn], sig_procs, categories[chn], True)
 
-    #cb.AddProcesses(['*'], prefix, era, [chn], bkg_procs, categories[chn], False)
+    cb.AddProcesses(['*'], [prefix], [era], [chn], bkg_procs, categories[chn], False)
 
     
 
@@ -72,8 +72,9 @@ print('>> Setting standardised bin names...')
 ch.SetStandardBinNames(cb)
 cb.PrintAll()
 
-writer = ch.CardWriter('{}/$ANALYSIS_$CHANNEL_$BINID_$ERA_$MASS.txt'.format(outdir),
-                       '{}/common/$ANALYSIS_$CHANNEL_$BINID_$ERA_$MASS.input.root'.format(outdir))
+
+writer = ch.CardWriter('{}/$ANALYSIS_$CHANNEL_$BINID.txt'.format(outdir),
+                       '{}/common/$ANALYSIS_$CHANNEL_$BINID.input.root'.format(outdir))
 
 writer.SetVerbosity(1)
 
@@ -87,17 +88,21 @@ for chn in channels:  # plus a subdir per channel
 print('>> Done!')
 
 
-outcard = outdir + '/ggtautau_3prong_1_2015_120.txt'
-
 #os.system(command)
 
 # overwrite extra rateParam
-if os.path.isfile(outcard):
+# for channel in channels: 
+#     print(categories[channel])
+#     print(categories[channel][0])
+#     print(categories[channel][0][0])
+#     outcard = outdir + "/{}_{}_{}.txt".format(prefix, channel, categories[channel][0][0])
+#     print(outcard)
+#     if os.path.isfile(outcard):
 
-    f = open(outcard, 'a')
-#    f.write(extraStr)
-    f.write('* autoMCStats 0 1\n')
-    f.close()
+#         f = open(outcard, 'a')
+#     #    f.write(extraStr)
+#         f.write('* autoMCStats 0 1\n')
+#         f.close()
 
-command = 'text2workspace.py ' + outcard + ' -o ' + outdir + '/workspace.root -m 120'
-os.system(command)
+#     command = 'text2workspace.py ' + outcard + ' -o ' + outdir + '/workspace{}.root -m 120'.format(channel)
+#     os.system(command)

@@ -771,7 +771,7 @@ namespace Ana
 			chain = new TChain(name, name); 
 			for (auto item : samples.at(samplename.Data()).fileRefs) 
 			{
-				TString itemname = item+suffix; 
+				TString itemname = TString(item)+suffix; 
 				std::cout << itemname << std::endl;
 				chain->AddFile(TString::Format("%s/%s", filemanager.GetFile(itemname).c_str(), filemanager.GetObject(itemname).c_str())); 
 			}

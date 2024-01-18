@@ -99,7 +99,48 @@ def WriteDatacard(frames, yields, variables, regions, dataname, datacardname="da
 			#datacard.write("{} flatParam\n".format(item.GetName()))
 
 
-def WriteWorkspace(frames, yields, variables, regions, dataname, filename="workspace.root", workspacename="w"): 
+def WriteWorkspace(frames, yields, variables, regions, dataname, filename="workspace.root"): 
+	from ROOT import RooRealVar, RooDataHist, RooArgSet
+	from ROOT import Ana
+
+	MC = frames.keys()
+	print(MC)
+	print(dataname)
+	MC.remove(dataname)
+
+	for variable in variables: 
+		file = ROOT.TFile.Open(filename, "RECREATE")
+		# Creating the variable on which we fit
+		for region in regions: 
+			directory = file.mkdir(region)
+			directory.cd()
+			examplehist = Ana.binning[variable]
+
+			# Writing the data shapes for each region
+			name = "data_obs"
+	
+			hist = frames[dataname][region].Histo1D(examplehist, variable).GetPtr()
+			hist.SetName(name)
+			hist.Write() # Also saving the ROOT hist
+			# Writing the MC shapes 
+			for item in MC: 
+				histname = item #+"_"+region #+"_"+variable
+				hist = frames[item][region].Histo1D(examplehist, variable).GetPtr()
+				norm = -1.
+				try: 
+					norm = yields[item][region].n
+					hist.Scale(norm/hist.Integral())
+				except:
+					pass
+				hist.SetName(histname)
+				hist.Write()
+		file.cd()
+
+		file.Write()
+		file.Close()
+
+
+def WriteWorkspaceRooType(frames, yields, variables, regions, dataname, filename="workspace.root", workspacename="w"): 
 	from ROOT import RooRealVar, RooDataHist, RooArgSet
 	from ROOT import Ana
 

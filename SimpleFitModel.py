@@ -58,22 +58,25 @@ if __name__ == "__main__":
 	baseline = collections.defaultdict(dict)
 	anasamples = anaConfig.samples
 
-	anasamples = {"Sig", "dataD2", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "dataD2WS"}
+	#anasamples = {"Sig", "data", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "WS"}
 
-	for item in anasamples:  
-		Ana.filemanager.OpenItem(item)
-		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
-		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(item).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."
-		frames[item]["all"] = samples[item].Filter("1.")
-		#baseline[item]
-		for region in anaConfig.regions: 
-			cut = (Ana.cut[region]+Ana.samples.at(item).cut).GetTitle()
-			#if "WS" in item: 
-			#	cut = Ana.cutstandalone[region].GetTitle()
-			if (options.debug): print("Using following cut string (from TCut): {}".format(cut))
-			frames[item][region] = samples[item].Filter(cut)
-			ROOT.SetOwnership(frames[item][region], 0)
-			# For histogram legacy compatibility
+	# for item in anasamples:  
+	# 	Ana.filemanager.OpenItem(item)
+	# 	samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
+	# 	frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(item).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."
+	# 	frames[item]["all"] = samples[item].Filter("1.")
+	# 	#baseline[item]
+	# 	for region in anaConfig.regions: 
+	# 		cut = (Ana.cut[region]+Ana.samples.at(item).cut).GetTitle()
+	# 		#if "WS" in item: 
+	# 		#	cut = Ana.cutstandalone[region].GetTitle()
+	# 		if (options.debug): print("Using following cut string (from TCut): {}".format(cut))
+	# 		frames[item][region] = samples[item].Filter(cut)
+	# 		ROOT.SetOwnership(frames[item][region], 0)
+	# 		# For histogram legacy compatibility
+
+	from anaPrepareRegions import PrepareSamples
+	frames, effs = PrepareSamples(anasamples) #samples = Ana.GetSamples(anasamples)
 
 	if options.debug: print(frames)
 
@@ -97,15 +100,15 @@ if __name__ == "__main__":
 
 	yields = ReadEffs2D("./data/etc/RegionEffs.json")
 
-	regions = ["SR"] #anaConfig.regions
+	regions = ["baseline"] #anaConfig.regions
 
 	variables = ["b_B_m"] #anaConfig.variables
 
 	fitvariable = "b_B_m"
 
-	WriteWorkspace(frames, yields, variables, regions, anaConfig.data, "workspaceFromExport.root", "w")
+	WriteWorkspace(frames, effs, variables, regions, anaConfig.data, "workspaceFromExportLatest.root")
 
-	WriteDatacardSimple(frames, yields, variables, regions, fitvariable, anaConfig.data, "datacardGeneratedSimple.txt", "workspaceFromExport.root")
+	WriteDatacardSimple(frames, effs, variables, regions, fitvariable, anaConfig.data, "datacardGeneratedSimpleLatest.txt", "workspaceFromExportLatest.root")
 
 	Ana.filemanager.CloseAll()
 

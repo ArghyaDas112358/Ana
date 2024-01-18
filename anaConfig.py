@@ -17,7 +17,17 @@ regions = ["SR", "CR", "SB"]
 
 variables = ["b_tau_rhomass1", "b_tau_rhomass2", "b_B_q2", "b_B_m", "b_tau_m"]
 
+fitvariables = ["b_B_m"]
+
 MVAsamples = ["Sig", "dataD1"] #, "dataA1"
+
+categories = {
+	'SR': [(1, 'SR')],
+	'CR': [(2, 'CR')],
+	'SB': [(3, 'SB')],
+	'baseline': [(4, 'baseline')],
+	'all': [(5, 'all')],
+ }
 
 
 def OpenFiles(version): 

@@ -2,90 +2,113 @@
 from __future__ import division, print_function
 
 import CombineHarvester.CombineTools.ch as ch
+import anaConfig
 from ROOT import TFile, TH1F, Double_t
 import os
 import sys
-
-print(sys.argv)
-
-
-file = "./workspaceFromExportHists.root" #TFile("workspacereproducer.root") workspacereproducerharvester.root
-
-outdir = "fitmodel"
-
-os.system("mkdir -p {}".format(outdir))
-
-cb = ch.CombineHarvester()
-cb.SetVerbosity(3)
-
-sig_procs = ["Sig"] #['Sig']
-
-bkg_procs = ["B0toDstarDs", "B0toDstarDsstar", "B0toDstarD0K"]
-
-categories = {
-    'SR': [(1, 'SR')],
-    'CR': [(2, 'CR')],
-    'SB': [(3, 'SB')],
-    'baseline': [(4, 'baseline')],
-    'all': [(5, 'all')],
-    }
+import copy as cp
+from argparse import ArgumentParser
 
 
-channels = ['baseline'] # Channels for which to write datacards
-prefix = 'fitFirst' # also called analysis
-era = '2018'
 
+if __name__ == "__main__":
 
-for chn in channels:
-
-    cb.AddObservations(['*'], [prefix], [era], [chn], categories[chn])
-
-    cb.AddProcesses(sig_procs, [prefix], [era], [chn], sig_procs, categories[chn], True)
-
-    cb.AddProcesses(['*'], [prefix], [era], [chn], bkg_procs, categories[chn], False)
-
+    parser = ArgumentParser(description="Model") 
+    #parser.add_argument("tool", action="store", type=str, help="Which time list you want to analyse")
+    parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v7", help="Which version (cycle) of files to run on")
+    parser.add_argument("-o", "--out", dest="out", action="store", type=str, default="fitmodel", help="Which version (cycle) of files to run on")
+    parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
+    parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
+    parser.add_argument('-d', "--denom", dest="denom", action="store_true", default=False, help="Denominator analysis")
+    parser.add_argument("-t", "--tag", dest="tag", action="store", type=str, default="fitFirst", help="Tag fir this version of fit")
+    parser.add_argument("-w", "--workspace", dest="workspace", action="store", type=str, default="workspaceFromExportHists.root", help="Name of the workspace file with the distributions (and fit model)")
     
 
-cb.cp().process(sig_procs).AddSyst(cb, 'CMS_lumi', 'lnN', ch.SystMap()(1.05))
-print("CMS_lumi added.")
+    options = parser.parse_args()
+
+    
+    if (options.batch): 
+        ROOT.gROOT.SetBatch(1) 
+
+
+    #Ana.Init(options.version, options.denom)
+    print("Starting datacard creation")
+
+
+    variables = anaConfig.fitvariables
+
+
+    os.system("mkdir -p {}".format(options.out))
+
+
+    cb = ch.CombineHarvester()
+    cb.SetVerbosity(3)
+
+    sig_procs = [anaConfig.Sig] #['Sig']
+
+    allsamples = cp.deepcopy(anaConfig.samples)
+    allsamples.remove(anaConfig.Sig)
+    allsamples.remove(anaConfig.data)
+    bkg_procs = allsamples
+
+    categories = anaConfig.categories
+
+
+    channels = ['baseline'] # Channels for which to write datacards
+    prefix = 'fitFirst' # also called analysis
+    era = '2018'
+
+
+    for chn in channels:
+
+        cb.AddObservations(['*'], [prefix], [era], [chn], categories[chn])
+
+        cb.AddProcesses(sig_procs, [prefix], [era], [chn], sig_procs, categories[chn], True)
+
+        cb.AddProcesses(['*'], [prefix], [era], [chn], bkg_procs, categories[chn], False)
+
+        
+    # Systematics
+    cb.cp().process(sig_procs).AddSyst(cb, 'CMS_lumi', 'lnN', ch.SystMap()(1.05))
+    print("CMS_lumi added.")
 
 
 
-print('>> Extracting histograms from input root files...')
+    print('>> Extracting histograms from input root files...')
 
-# for chn in channels:
-#     cb.cp().channel([chn]).ExtractShapes(
-#         '%s' % (file),
-# #        '$BIN/$PROCESS', '$BIN/$PROCESS_$SYSTEMATIC')
-#         'w:$PROCESS', 'w:$PROCESS_$BIN_$SYSTEMATIC') #, '$BIN/$SYSTEMATIC' 'w:$PROCESS_$BIN_$SYSTEMATIC'
+    # for chn in channels:
+    #     cb.cp().channel([chn]).ExtractShapes(
+    #         '%s' % (file),
+    # #        '$BIN/$PROCESS', '$BIN/$PROCESS_$SYSTEMATIC')
+    #         'w:$PROCESS', 'w:$PROCESS_$BIN_$SYSTEMATIC') #, '$BIN/$SYSTEMATIC' 'w:$PROCESS_$BIN_$SYSTEMATIC'
 
-cb.cp().backgrounds().ExtractShapes(
-    file, 
-    "$BIN/$PROCESS", "");
-cb.cp().signals().ExtractShapes(
-    file, 
-    "$BIN/$PROCESS", "");
-
-
-
-print('>> Setting standardised bin names...')
-ch.SetStandardBinNames(cb)
-cb.PrintAll()
+    cb.cp().backgrounds().ExtractShapes(
+        options.workspace, 
+        "$BIN/$PROCESS", "");
+    cb.cp().signals().ExtractShapes(
+        options.workspace, 
+        "$BIN/$PROCESS", "");
 
 
-writer = ch.CardWriter('{}/$ANALYSIS_$CHANNEL_$BINID.txt'.format(outdir),
-                       '{}/common/$ANALYSIS_$CHANNEL_$BINID.input.root'.format(outdir))
 
-writer.SetVerbosity(1)
-
-#outdir = 'output/sm_cards/LIMITS'
-
-for chn in channels:  # plus a subdir per channel
-    print('writing', chn, cb.cp().channel([chn]))
-    writer.WriteCards(outdir, cb.cp().channel([chn]))
+    print('>> Setting standardised bin names...')
+    ch.SetStandardBinNames(cb)
+    cb.PrintAll()
 
 
-print('>> Done!')
+    writer = ch.CardWriter('{}/$ANALYSIS_$CHANNEL_$BINID.txt'.format(options.out),
+                           '{}/$ANALYSIS_$CHANNEL_$BINID.root'.format(options.out))
+
+    writer.SetVerbosity(1)
+
+    #options.out = 'output/sm_cards/LIMITS'
+
+    for chn in channels:  # plus a subdir per channel
+        print('writing', chn, cb.cp().channel([chn]))
+        writer.WriteCards(options.out, cb.cp().channel([chn]))
+
+
+    print('>> Done!')
 
 
 #os.system(command)
@@ -95,7 +118,7 @@ print('>> Done!')
 #     print(categories[channel])
 #     print(categories[channel][0])
 #     print(categories[channel][0][0])
-#     outcard = outdir + "/{}_{}_{}.txt".format(prefix, channel, categories[channel][0][0])
+#     outcard = options.out + "/{}_{}_{}.txt".format(prefix, channel, categories[channel][0][0])
 #     print(outcard)
 #     if os.path.isfile(outcard):
 
@@ -104,5 +127,5 @@ print('>> Done!')
 #         f.write('* autoMCStats 0 1\n')
 #         f.close()
 
-#     command = 'text2workspace.py ' + outcard + ' -o ' + outdir + '/workspace{}.root -m 120'.format(channel)
+#     command = 'text2workspace.py ' + outcard + ' -o ' + options.out + '/workspace{}.root -m 120'.format(channel)
 #     os.system(command)

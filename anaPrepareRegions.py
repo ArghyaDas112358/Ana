@@ -117,6 +117,29 @@ def GetBaseName(samplename):
 
 
 ROOT.gInterpreter.Declare(''' 
+	namespace Ana 
+	{
+		std::vector<std::string>& purgeColumns(std::vector<std::string> &&columns, const std::vector<std::string>& blacklist)
+		{
+	   			// a lambda that checks if `s` is in the blacklist
+	   			auto is_blacklisted = [&blacklist](const std::string &s)  { return std::find(blacklist.begin(), blacklist.end(), s) != blacklist.end(); };
+
+	   			// removing elements from std::vectors is not pretty, see https://en.wikipedia.org/wiki/Erase%E2%80%93remove_idiom
+	   			columns.erase(std::remove_if(columns.begin(), columns.end(), is_blacklisted), columns.end());
+
+	   			return columns; 
+		}
+	}
+''')
+
+
+def SaveDataframe(tosave, filename, objectname = "tree", blacklist = anaConfig.blacklist):
+	ROOT.fixStringVariables(tosave)
+	tosave.Snapshot(objectname, filename, Ana.purgeColumns(tosave.GetColumnNames(), anaConfig.blacklist))
+	print("Written frame to {} in {}".format(objectname, filename))
+
+
+ROOT.gInterpreter.Declare(''' 
 	template<typename T>
 	void fixStringVariables(T &dataframe)
 	{

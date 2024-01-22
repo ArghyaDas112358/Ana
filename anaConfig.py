@@ -31,6 +31,8 @@ fitvariables = ["b_B_m"]
 
 MVAsamples = ["Sig", "dataD1"] #, "dataA1"
 
+blacklist = ROOT.vector("std::string")(["v_taucandidates", "b_tau"])
+
 categories = {
 	'SR': [(1, 'SR')],
 	'CR': [(2, 'CR')],

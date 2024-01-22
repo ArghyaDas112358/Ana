@@ -14,6 +14,7 @@
 //R__LOAD_LIBRARY(/opt/local/lib/libjsoncpp.dylib) // Load the library
 #include "external/jsoncpp/dist/jsoncpp.cpp"
 #include <fstream>
+#include "AnaBuildingBlocks.C"
 
 
 namespace Ana 

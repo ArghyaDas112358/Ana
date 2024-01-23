@@ -117,10 +117,10 @@ def GetBaseName(samplename):
 
 
 def SaveDataframe(tosave, filename, objectname = "tree", blacklist = anaConfig.blacklist):
-	ROOT.fixStringVariables(tosave)
+	Ana.fixStringVariables(tosave)
 	tosave.Snapshot(objectname, filename, Ana.purgeColumns(tosave.GetColumnNames(), anaConfig.blacklist))
 	print("Written frame to {} in {}".format(objectname, filename))
-	
+
 
 # ROOT.gInterpreter.Declare('''
 # 	std::vector<std::string>& purgeColumns(std::vector<std::string> &&columns)

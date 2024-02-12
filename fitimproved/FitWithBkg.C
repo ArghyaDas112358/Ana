@@ -135,10 +135,10 @@ void fit_jpsikpipi() {
   // plot
   RooPlot *frame_data_fit = b_B_m.frame(Title("b_B_m 1 fit"), Bins(Bc_bins));
   data->plotOn(frame_data_fit, XErrorSize(0), Name("plotmc"));
-  total_signal_data.plotOn(frame_data_fit, LineColor(kPink-1), Name("total_data"));
-  total_signal_data.plotOn(frame_data_fit, Components("e_data_mSig"), LineColor(kAzure+2));
-  total_signal_data.plotOn(frame_data_fit, Components("etotalbackground"), LineColor(kAzure+3));
-  total_signal_data.plotOn(frame_data_fit, Components("Erf"), LineColor(kAzure+5));
+  total_signal_data.plotOn(frame_data_fit, Name("total_data"));
+  total_signal_data.plotOn(frame_data_fit, Components("e_data_mSig"), LineColor(kRed), DrawOption("LF"), FillColor(TColor::GetColorTransparent(kRed-7,0.3)), LineWidth(1), Name("Signal"));
+  total_signal_data.plotOn(frame_data_fit, Components("mBkg0"), LineColor(kBlue+3), LineWidth(2), LineStyle(kDotted));
+  total_signal_data.plotOn(frame_data_fit, Components("Erf"), LineColor(kViolet+4), DrawOption("LF"), FillColor(TColor::GetColorTransparent(kViolet+4,0.3)));
   data->plotOn(frame_data_fit, XErrorSize(0));
 
   TCanvas *c = new TCanvas("c", "c", 1000, 1000); c->cd();

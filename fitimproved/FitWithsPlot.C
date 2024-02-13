@@ -68,6 +68,7 @@
 #include "TTree.h"
 #include "RooKeysPdf.h"
 #include "RooNDKeysPdf.h"
+#include "../FileFlow.h"
 
 #define DrawResiduals
 
@@ -80,6 +81,8 @@ void fit_jpsikpipi() {
 
   gStyle->SetOptStat(0);
   gStyle->SetOptFit(0);
+
+  Ana::Init("v7.01", 1);
 
   Int_t ci1 = 1756;
   TColor *color1 = new TColor(ci1, 215./255., 48. /255., 39. /255.);
@@ -95,11 +98,11 @@ void fit_jpsikpipi() {
   TFile *ntuple_data = new TFile("/eos/home-m/mhuwiler/public/RDstarHadronic/data/dataWithCuts.root"); // datanal MC
   TTree* tree_data   = (TTree*) ntuple_data->Get("tree");
   RooArgSet Variablesd(b_B_m, b_B_eta, b_B_pt, b_B_phi, b_tau_rhomass1, b_tau_phimass1);
-  RooDataSet *data = new RooDataSet("data", "data", tree_data, Variablesd); //, puweight.GetName());
+  RooDataSet *data = new RooDataSet("data", "data", Ana::GetSample("dataD123_DNN"), Variablesd); //, puweight.GetName());
 
   TFile *ntuple_mc = new TFile("../B0toDstarrho0piWithCuts.root"); 
   TTree* tree_mc   = (TTree*) ntuple_mc->Get("tree");
-  RooDataSet *mc = new RooDataSet("mc", "mc", tree_mc, Variablesd);
+  RooDataSet *mc = new RooDataSet("mc", "mc", Ana::GetSample("B0toDstar3pi_DNN"), Variablesd);
 
   int Bc_bins = 55;
 

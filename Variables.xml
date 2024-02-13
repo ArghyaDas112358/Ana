@@ -268,6 +268,9 @@
     <Variable name="mcorr_phi" type="f" /> 
     <Variable name="proper_tau_E" type="f" /> 
     <Variable name="proper_alpha_Dstar_tau" type="f" /> 
+    <Variable name="m_KKpi1" type="f" /> 
+    <Variable name="m_KKpi2" type="f" /> 
+    <Variable name="m_Kpipi" type="f" /> 
     <Variable name="r" type="f" />
     <Variable name="r_first" type="f" />
     <Variable name="r_second" type="f" />

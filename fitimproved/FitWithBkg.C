@@ -106,9 +106,9 @@ void fit_jpsikpipi() {
 
   
   RooRealVar sigBr     ("sigBr",     "sigBr",    7e-3, 1e-3, 1e-2); // Observable
-  RooRealVar sigEff     ("sigEff",     "sigEff",  2.95e4, 0., 1e7); // G constrain this //1.281e5 
+  RooRealVar sigEff     ("sigEff",     "sigEff",  2.89e4, 0., 1e7); // G constrain this //1.281e5 
   RooRealVar sigSigma("sigSigma", "Uncertainty signal eff.", 1.1e3); 
-  RooGaussian sigConst("sigConst", "Constraint on signal eff.", sigEff, RooConst(2.95e4), sigSigma); 
+  RooGaussian sigConst("sigConst", "Constraint on signal eff.", sigEff, RooConst(2.89e4), sigSigma); 
 
   RooFormulaVar N_data_mSig     ("N_data_mSig",     "@0*@1",   RooArgList(sigBr, sigEff) );
 //  RooExtendPdf e_data_mSig   ("e_data_mSig",  "e_data_mSig",  mSig0,  N_data_mSig);  //  << -- -- -- -- in case you want to use CB+Gauss

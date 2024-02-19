@@ -16,6 +16,7 @@ ROOT.gStyle.SetOptStat(0)
 
 def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields, outfolder, drawlegend=True, normalise=False): 
 	# Plotting distributions over each other 
+	from anaPrepareRegions import GetBaseName
 	#outfolder+="overlay/"
 	os.system("mkdir -p "+outfolder)
 	factor = 1.1 # how much overhead to add to the histos 
@@ -53,7 +54,7 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 				print(component)
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)
-				color = Ana.samples.at(component.replace("Part", "")).color
+				color = Ana.samples.at(GetBaseName(component.replace("Part", ""))).color
 				if (not color): 
 					color = colors[i]
 				histo.SetLineColor(color) #colors[i]Ana.color[component.replace("Part", "")]
@@ -71,7 +72,7 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 				#histo.SetMarkerColor(Ana.color[component])
 				histo.DrawCopy("HIST SAME")
 				maxes.append(histo.GetMaximum())
-				legend.AddEntry(histo.GetPtr(), component)
+				legend.AddEntry(histo.GetPtr(), GetBaseName(component))
 				i+=1
 
 			if (drawlegend): legend.Draw()

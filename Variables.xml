@@ -181,6 +181,8 @@
     <Variable name="m_KKpi1" type="f" /> 
     <Variable name="m_KKpi2" type="f" /> 
     <Variable name="m_Kpipi" type="f" /> 
+    <Variable name="m_Kpipi1" type="f" /> 
+    <Variable name="m_Kpipi2" type="f" /> 
     <Variable name="match1" type="b" /> 
     <Variable name="match2" type="b" /> 
     <Variable name="match3" type="b" /> 
@@ -271,10 +273,17 @@
     <Variable name="m_KKpi1" type="f" /> 
     <Variable name="m_KKpi2" type="f" /> 
     <Variable name="m_Kpipi" type="f" /> 
+    <Variable name="m_Kpipi1" type="f" /> 
+    <Variable name="m_Kpipi2" type="f" /> 
     <Variable name="r" type="f" />
     <Variable name="r_first" type="f" />
     <Variable name="r_second" type="f" />
     <Variable name="maxdz" type="f" />
+    <Variable name="vtx4trkProb" type="f" />
+    <Variable name="vtx4trkChi2" type="f" default="999." />
+    <Variable name="vtx4trkChi2ndof" type="f" default="999." />
+    <Variable name="vtx4trkDeltaChi2" type="f" default="999." />
+    <Variable name="vtx4trkDeltaChi2Ndof" type="f" default="999." />
     <Variable name="proper_xi_rho1" type="f" /> 
     <Variable name="proper_xi_rho2" type="f" /> 
     <Variable name="proper_xi_rho_max" type="f" /> 

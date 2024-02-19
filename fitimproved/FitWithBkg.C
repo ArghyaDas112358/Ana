@@ -104,7 +104,13 @@ void fit_jpsikpipi() {
 
   RooAddPdf mSig0 ("mSig0", "mSig0", RooArgList(mSig01, mSig31), frac);
 
-  RooRealVar N_data_mSig     ("N_data_mSig",     "N_data_mSig",    80000., 0., 100000000.);
+  
+  RooRealVar sigBr     ("sigBr",     "sigBr",    7e-3, 1e-3, 1e-2); // Observable
+  RooRealVar sigEff     ("sigEff",     "sigEff",  2.95e4, 0., 1e7); // G constrain this //1.281e5 
+  RooRealVar sigSigma("sigSigma", "Uncertainty signal eff.", 1.1e3); 
+  RooGaussian sigConst("sigConst", "Constraint on signal eff.", sigEff, RooConst(2.95e4), sigSigma); 
+
+  RooFormulaVar N_data_mSig     ("N_data_mSig",     "@0*@1",   RooArgList(sigBr, sigEff) );
 //  RooExtendPdf e_data_mSig   ("e_data_mSig",  "e_data_mSig",  mSig0,  N_data_mSig);  //  << -- -- -- -- in case you want to use CB+Gauss
   RooExtendPdf e_data_mSig   ("e_data_mSig",  "e_data_mSig",  mSig01,  N_data_mSig);  // << -- -- -- -- only Gauss
 
@@ -130,7 +136,10 @@ void fit_jpsikpipi() {
 
   RooAddPdf total_signal_data ("total_signal_data", "total_signal_data", RooArgSet(etotalbackground, e_data_mSig));
 
-  RooFitResult *fr_data = total_signal_data.fitTo(*data, NumCPU(4, kTRUE), Save(), Extended());
+  RooArgSet constraints(sigConst);
+  //sigEff.setConstant(true);
+
+  RooFitResult *fr_data = total_signal_data.fitTo(*data, ExternalConstraints(constraints), NumCPU(4, kTRUE), Save(), Extended()); 
 
   // plot
   RooPlot *frame_data_fit = b_B_m.frame(Title("b_B_m 1 fit"), Bins(Bc_bins));

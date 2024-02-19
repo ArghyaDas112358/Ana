@@ -83,7 +83,7 @@ void fit_jpsikpipi() {
 
   RooRealVar b_B_m ("b_B_m", "b_B_m", 4.9, 6.0);
 
-  TFile *ntuple_data = new TFile("/eos/home-m/mhuwiler/public/RDstarHadronic/data/dataWithCuts.root"); // datanal MC
+  TFile *ntuple_data = new TFile("/eos/home-m/mhuwiler/public/RDstarHadronic/data/dataWithCuts60fl.root"); // datanal MC
   TTree* tree_data   = (TTree*) ntuple_data->Get("tree");
   RooArgSet Variablesd(b_B_m);
   RooDataSet *data = new RooDataSet("data", "data", tree_data, Variablesd); //, puweight.GetName());

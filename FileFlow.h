@@ -654,7 +654,7 @@ namespace Ana
 		}
 		else 
 		{
-			cut.emplace(std::make_pair("base", "b_B_m>0.&&b_B_nmu<1&&b_B_nh<1&&b_B_ne<1&&(b_B_npi0+b_B_ngamma)<2&&b_B_mm2<1.&&pttau_B_fl>0.2"));
+			cut.emplace(std::make_pair("base", "b_B_m>0.&&b_B_nmu<1&&b_B_nh<1&&b_B_ne<1&&(b_B_npi0+b_B_ngamma)<2&&b_B_fsig>2")); //&&b_B_mm2<1.&&pttau_B_fl>0.2 &&b_B_mm2<1.&&pttau_B_fsig>3
 			// superclean: pttau_B_m>0.&&pttau_B_nmu<1&&pttau_B_nh<1&&pttau_B_ne<1&&(pttau_B_npi0+pttau_B_ngamma)<2&&pttau_B_mm2<1.&&pttau_B_fl>0.2 (or with fsig > 7.)
 		}
 

@@ -85,9 +85,11 @@ namespace Ana
 		else // denominator
 		{
 			nBins = 50;
+			std::vector<double> bins = {4.5, 4.6, 4.7, 4.8, 4.9, 5., 5.07, 5.15, 5.2, 5.21, 5.22, 5.23, 5.24, 5.25, 5.26, 5.27, 5.28, 5.29, 5.3, 5.31, 5.32, 5.33, 5.34, 5.35, 5.36, 5.37, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9, 6.};
 			binning = {{"b_tau_rhomass1", {"", "#rho_{12} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
 				{"b_tau_rhomass2", {"", "rho_{23} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
-				{"b_B_m", {"", "B mass;Reconstructed m_{B} [GeV];Counts", nBins, 4.5, 6.}},
+				//{"b_B_m", {"", "B mass;Reconstructed m_{B} [GeV];Counts", nBins, 4.5, 6.}},
+				{"b_B_m", {"", "B mass;Reconstructed m_{B} [GeV];Counts", static_cast<int>(bins.size()-1), bins.data()}},
 				{"b_B_q2", {"", "q2;q^{2} [GeV];Counts", nBins, 0., 12.}},
 				{"b_tau_m", {"", "\tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, 1., 3.}},
 				//{"B_m", {"", ";B mass [GeV];Counts", nBins, 0., 6.}},

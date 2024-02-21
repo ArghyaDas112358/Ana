@@ -79,7 +79,7 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 				histo.SetLineWidth(2)
 				color = Ana.samples.at(GetBaseName(component.replace("Part", ""))).color
 				if (not color): 
-					color = colors[i]
+					color = defaultcolors.next()
 				histo.SetLineColor(color) #colors[i]Ana.color[component.replace("Part", "")]
 				#histo.SetFillStyle(3003)
 				#histo.SetFillColorAlpha(color, 0.4)
@@ -347,7 +347,7 @@ def PlotFitResult(session, dataname, initialcomponents, variables, outfolder, dr
 		histo.SetLineWidth(2)
 		color = Ana.samples.at(component.replace("Part", "")).color
 		if (not color): 
-			color = colors[0]
+			color = defaultcolors.next()
 		histo.SetLineColor(color)
 		#histo.SetMarkerColor(Ana.color[component])
 		histo.SetFillStyle(1)

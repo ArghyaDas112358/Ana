@@ -13,6 +13,26 @@ from ROOT import Ana
 
 ROOT.gStyle.SetOptStat(0) 
 
+class Colors: 
+	def __init__(self, colorlist): 
+		self.colorlist = colorlist
+		self.idx = 0
+		self.maxidx = len(colorlist)
+		assert(self.maxidx > 0)
+	def next(self): 
+		color = self.idx
+		self.idx+=1
+		if (self.idx>self.maxidx): 
+			self.idx = 0
+		return self.colorlist[color]
+
+	colorlist = []
+	idx = 0
+	maxidx = 0
+
+
+defaultcolors = Colors([2, 3, 8, 4, 6, 7, 9, 1])
+
 normalisebinwidth = False
 
 
@@ -152,7 +172,8 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 				histo.SetLineWidth(2)
 				color = Ana.samples.at(GetBaseName(component.replace("Part", ""))).color
 				if (not color): 
-					color = colors[0]
+					print("No color for sample {}".format(component))
+					color = defaultcolors.next()
 				histo.SetLineColor(color)
 				#histo.SetMarkerColor(Ana.color[component])
 				histo.SetFillStyle(1001)

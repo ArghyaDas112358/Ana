@@ -34,7 +34,7 @@ namespace Ana
 
 	void normaliseBinContent(TH1* hist) 
 	{
-	  	for (unsigned int i=0; i<hist->GetNbinsX(); i++) 
+	  	for (Int_t i=0; i<hist->GetNbinsX(); i++) 
 	  	{
 	    	hist->SetBinContent(i, hist->GetBinContent(i)/hist->GetBinWidth(i)); 
 	  	}

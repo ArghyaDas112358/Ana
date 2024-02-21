@@ -36,6 +36,7 @@ if __name__ == "__main__":
 	parser.add_argument("-t", "--table", dest="table", action="store", type=str, default="/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/Presentations/Presentation_24_1_9/efftable.tex", help="Latex fragment with summary table")
 	parser.add_argument("-o", "--out", dest="out", action="store", type=str, default="./data/etc/Expectedyields.json", help="Path for json with yield info")
 	parser.add_argument("-n", "--target", dest="target", action="store", type=float, default=10000., help="Target number of events after selection")
+	parser.add_argument('-m', "--denom", dest="denom", action="store_true", default=False, help="Denominator analysis")
 
 	options = parser.parse_args()
 
@@ -59,9 +60,9 @@ if __name__ == "__main__":
 	expected = {}
 
 
-	samples = ["Sig", "B0toDstarD0K", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarDs1", "B0toDstarD0Kstar", "B0toDstarDs0star", "B0toDstara1", "B0toDstarD", "B0toDstar3pi", "B0toDstar3pipi0", "B0toDstar5pi", "ButoDstarDK", "B0toDstarDsX", "ButoDstarXc", "ButoDstarDK", "BstoDD"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
+	samples = ["Sig", "B0toDstarD0K", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarDs1", "B0toDstarD0Kstar", "B0toDstarDs0star", "B0toDstara1", "B0toDstarD", "B0toDstar3pi", "B0toDstar3pipi0", "B0toDstar5pi", "ButoDstarDK", "B0toDstarDsX", "ButoDstarXc", "ButoDstarDK", "BstoDD", "B0toDstarrho0pi", "B0toDstarKKstar", "B0toDstarKpipi"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
 
-	Ana.Init(options.version)
+	Ana.Init(options.version, options.denom)
 
 	template = "{} & ${}$ & ${}$ & ${}$ & ${}$ & ${:fL}$ \\\\\n" #"{} & ${}$ & ${}$ & ${}$ & ${}$ & ${:fL}$ & ${}$ \\\\\n" #{:.1e} "{} & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:.{precision}eL}$ & ${:fL}$ & ${}$ \\\\\n"
 
@@ -103,6 +104,8 @@ if __name__ == "__main__":
 
 			genmatcheff = getGenmatchingEff(Ana.filemanager.GetItem(offlinesample), Ana.samples.at(sample).cut.GetTitle())
 
+			finaleff = getGenmatchingEff(Ana.filemanager.GetItem(offlinesample), Ana.cut.at("base").GetTitle())
+
 			customeff = getGenmatchingEff(Ana.filemanager.GetItem(item), options.cut)
 
 			file = TFile.Open(Ana.filemanager.GetFile(offlinesample))
@@ -114,6 +117,7 @@ if __name__ == "__main__":
 			print(offlineeff)
 
 			N = options.lumi*constants["sigmabb"]*constants["fB0"]*2*forcedbr[sample]*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff*offlineeff #*genmatcheff*customeff
+			print("Eff for fit: {}".format(options.lumi*constants["sigmabb"]*constants["fB0"]*2*constants["BrDstar2D0pi"]*constants["BrD02Kpi"]*1000*filtereffs[sample]*eff*offlineeff*finaleff))
 			# Adding Br error ad hoc. 
 			try: 
 				finalstatebr = finalbr[sample]

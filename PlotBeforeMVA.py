@@ -74,6 +74,9 @@ if __name__ == "__main__":
 
 	if options.debug: print(frames)
 
+	from anaPrepareRegions import SaveDataframe
+	#SaveDataframe(frames[sample["data"]]["baseline"].Filter("b_B_fsig>2."), "dataFullWithCuts.root")
+
 	# from here on starts teting
 
 	from anaPlotting import PlotComparison, PlotStack
@@ -99,6 +102,8 @@ if __name__ == "__main__":
 		PrintEfficiencies2D(regioneffs)
 
 		PlotStack(frames, sample[anaConfig.data], list(sample.values()), ["baseline"], variables, regioneffs, outputfolder+"/stack/", False)
+		from anaPlotting import PlotOverlay
+		#PlotOverlay(frames, sample[anaConfig.data], list(sample.values()), ["baseline"], variables, regioneffs, outputfolder+"/comp/", False)
 
 
 	Ana.filemanager.CloseAll()

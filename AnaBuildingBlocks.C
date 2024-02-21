@@ -32,6 +32,14 @@ namespace Ana
 		}
 	}
 
+	void normaliseBinContent(TH1* hist) 
+	{
+	  	for (unsigned int i=0; i<hist->GetNbinsX(); i++) 
+	  	{
+	    	hist->SetBinContent(i, hist->GetBinContent(i)/hist->GetBinWidth(i)); 
+	  	}
+	}
+
 
 
 	// Kept for legacy purposes

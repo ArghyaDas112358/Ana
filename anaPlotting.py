@@ -114,6 +114,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 			data.SetLineColor(ROOT.kBlack)
 			data.SetTitle("") #data.SetTitle("{}_{}".format(variable, region))
 			#data.SetFillColor(ROOT.kBlack)
+			Ana.normaliseBinContent(data.GetPtr())
 			legend.AddEntry(data.GetPtr(), "data", "PE")
 			data.Draw("E")
 
@@ -154,6 +155,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 				histo.SetFillStyle(1001)
 				histo.SetFillColor(color)
 				hists[component] = histo
+				Ana.normaliseBinContent(histo)
 				stack.Add(histo)
 				#legend.AddEntry(histo.GetPtr(), Ana.legends[component], "F")
 

@@ -13,6 +13,9 @@ from ROOT import Ana
 
 ROOT.gStyle.SetOptStat(0) 
 
+normalisebinwidth = False
+
+
 
 def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields, outfolder, drawlegend=True, normalise=False): 
 	# Plotting distributions over each other 

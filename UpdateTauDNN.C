@@ -297,16 +297,16 @@ void UpdateEffInfo(const TString& outIdentifier, const TString& effTreeName = "n
 	file->Close(); 
 }
 
-std::vector<std::string>& purgeColumns(std::vector<std::string> &&columns, const std::vector<std::string>& blacklist)
-{
-   			// a lambda that checks if `s` is in the blacklist
-   			auto is_blacklisted = [&blacklist](const std::string &s)  { return std::find(blacklist.begin(), blacklist.end(), s) != blacklist.end(); };
+// std::vector<std::string>& purgeColumns(std::vector<std::string> &&columns, const std::vector<std::string>& blacklist)
+// {
+//    			// a lambda that checks if `s` is in the blacklist
+//    			auto is_blacklisted = [&blacklist](const std::string &s)  { return std::find(blacklist.begin(), blacklist.end(), s) != blacklist.end(); };
 
-   			// removing elements from std::vectors is not pretty, see https://en.wikipedia.org/wiki/Erase%E2%80%93remove_idiom
-   			columns.erase(std::remove_if(columns.begin(), columns.end(), is_blacklisted), columns.end());
+//    			// removing elements from std::vectors is not pretty, see https://en.wikipedia.org/wiki/Erase%E2%80%93remove_idiom
+//    			columns.erase(std::remove_if(columns.begin(), columns.end(), is_blacklisted), columns.end());
 
-   			return columns; 
-}
+//    			return columns; 
+// }
 
 Tau SelectTauCandidate(std::vector<Tau> collection, const int q) 
 {

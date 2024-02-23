@@ -104,7 +104,8 @@ if __name__ == "__main__":
 
 			genmatcheff = getGenmatchingEff(Ana.filemanager.GetItem(offlinesample), Ana.samples.at(sample).cut.GetTitle())
 
-			finaleff = getGenmatchingEff(Ana.filemanager.GetItem(offlinesample), Ana.cut.at("base").GetTitle())
+			finaleff = ufloat(1., 0.)
+			if (options.denom): getGenmatchingEff(Ana.filemanager.GetItem(offlinesample), Ana.cut.at("base").GetTitle())
 
 			customeff = getGenmatchingEff(Ana.filemanager.GetItem(item), options.cut)
 

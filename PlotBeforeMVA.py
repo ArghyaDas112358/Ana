@@ -88,7 +88,7 @@ if __name__ == "__main__":
 		from libEfficiencies import MultiplyFinalEffs, ReadEffs, PrintEfficiencies2D
 		from uncertainties import ufloat
 
-		selectioneffs = ReadEffs("./data/etc/Expectedyields.json")
+		selectioneffs = ReadEffs(Ana.folder+"/Expectedyields.json")
 		selectioneffs["dataB2WS"] = ufloat(1.39e-5*-12.0*7*8, 0.)
 		selectioneffs["dataDBWS"] = ufloat(1.39e-5*-12.0*11*3.3, 0.)
 		selectioneffs["WS"] = ufloat(310000.,0.)

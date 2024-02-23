@@ -22,6 +22,8 @@ namespace Ana
 
 	FileManager filemanager; 
 
+	TString folder = "";
+
 	std::map<std::string, TCut> cut; //std::map<std::string, std::map<std::sting, TCut> > cuts; 
 
 	//std::vector<TColor*> colors; 
@@ -142,7 +144,7 @@ namespace Ana
 		if (cycle != "") // For legacy purpose 
 		{
 
-			TString folder = "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/"+cycle+"/"; 
+			folder = "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/"+cycle+"/"; 
 
 			filemanager.AddItem("Sig_ntuple", folder+"Sig.root", "ntuplizer/tree"); 
 			filemanager.AddItem("Sig_tf", folder+"Sig_withTFweight.root", "ntuplizer/tree"); 

@@ -9,6 +9,8 @@ from ROOT import RDataFrame, TGraph, TH1D
 
 
 
+debugmode = False
+
 
 def GetROC(sig, bkg, mvavar = "mvaScore", sigtarget=1., bkgtarget=-1.): 
 	from sklearn.metrics import auc
@@ -61,7 +63,7 @@ def GetFom(sig, bkg,  mvavar = "mvaScore", sigInSample=1., bkgInSample=1.,sigtar
 	assert(len(sigeffs) == len(bkgeffs))
 	numPoints = len(sigeffs)
 
-	print(sigeffs)
+	if (debugmode): print(sigeffs)
 
 	FOM = TH1D("FOM", "", numPoints, -1., 1.)
 
@@ -69,7 +71,7 @@ def GetFom(sig, bkg,  mvavar = "mvaScore", sigInSample=1., bkgInSample=1.,sigtar
 		sigEff = sigeffs[point]
 		bkgEff = bkgeffs[point]
 		
-		print("Sig eff: {}, bkg eff: {}".format(sigEff, bkgEff))
+		if (debugmode): print("Sig eff: {}, bkg eff: {}".format(sigEff, bkgEff))
 
 		B = bkgInSample*bkgEff
 		S = sigInSample*sigEff
@@ -134,7 +136,7 @@ if __name__ == "__main__":
 	cutbkg = (Ana.cut["base"]+Ana.samples.at("dataB2").cut).GetTitle()
 
 	signal = RDataFrame(Ana.filemanager.GetItem("Sig")).Filter(cutsig)
-	background = RDataFrame(Ana.filemanager.GetItem("dataD2_SB")).Filter(cutbkg)
+	background = RDataFrame(Ana.filemanager.GetItem("dataD1")).Filter(cutbkg)
 
 	print("Starting to compute ROC curve... ")
 	roc, auc = GetROC(signal, background, options.variable)

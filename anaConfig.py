@@ -52,11 +52,15 @@ def CloseFiles():
 
 def DebugMode(): 
 	global samples
-	samples = ["Sig", "B0toDstarDs", "B0toDstarDsstar"] # Using a reduced set of files for debugging
+	samples = ["Sig", "B0toDstarDs", "B0toDstarDsstar", "dataD1"] # Using a reduced set of files for debugging
 	global regions
 	regions = ["SR"]
 	global variables
 	variables = ["b_B_m"]
+	global data
+	data = "dataD1"
+	import libMLTools
+	libMLTools.debugmode = True
 
 def Denominator(): 
 	global Sig

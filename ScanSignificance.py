@@ -50,7 +50,7 @@ for item in samples:
 
 frames, effs = PrepareSamples(list(sample.values()))
 
-print(frames)
+#print(frames)
 
 
 variables = [("mvaScore", 1), ("b_tau_min_dr_mu", 1), ("b_tau_alpha", 1), ("b_B_fsig", 1), ("b_B_m", 1), ("b_B_nmu", 0), ("b_B_nh", 0), ("b_B_ne", 0), ("b_B_npi0", 0), ("b_B_ngamma", 0), ("Dstar_vprob", 1)] #"b_tau_m", "mvaScore", "b_tau_min_dr_mu", "b_tau_alpha", "b_B_fsig", "b_B_m", "b_B_nmu", "b_B_nh", "b_B_ne", "b_B_npi0", "b_B_ngamma", "Dstar_vprob"
@@ -73,7 +73,7 @@ for variable, inverted in variables:
 
 	#fom, maxsig, cutvalue = GetFom(signal, background, variable)
 	
-	print("Maximum significance for variable {} of {} with cut at value {}, auc {}".format(variable, sigma, cutvalue, auc))
+	print("\nMaximum significance for variable {} of {} with cut at value {}, auc {}".format(variable, sigma, cutvalue, auc))
 
 	if (options.save): 
 		canvas = TCanvas("canvas_{}".format(variable), "canvas_{}".format(variable), 1600, 600)
@@ -93,7 +93,9 @@ for variable, inverted in variables:
 		fom.SetLineColor(ROOT.kGreen)
 		fom.SetTitle("F.o.M.")
 		fom.GetXaxis().SetTitle(variable)
-		canvas.Print(outputfolder+"/ROCandFOM_{}.pdf".format(variable))
+		name = outputfolder+"/ROCandFOM_{}".format(variable)
+		canvas.Print("{}.pdf".format(name))
+		canvas.SaveAs("{}.root".format(name))
 		if (options.debug): HoldUntilKeyPress()
 
 

@@ -76,7 +76,7 @@ for variable, inverted in variables:
 	print("\nMaximum significance for variable {} of {} with cut at value {}, auc {}".format(variable, sigma, cutvalue, auc))
 
 	if (options.save): 
-		canvas = TCanvas("canvas_{}".format(variable), "canvas_{}".format(variable), 1600, 600)
+		canvas = TCanvas("canvas", "canvas", 1600, 600)
 		canvas.Divide(2, 1)
 		canvas.cd(1)
 		roc.Draw("AP")
@@ -97,6 +97,7 @@ for variable, inverted in variables:
 		canvas.Print("{}.pdf".format(name))
 		canvas.SaveAs("{}.root".format(name))
 		if (options.debug): HoldUntilKeyPress()
+		del canvas
 
 
 Ana.filemanager.CloseAll()

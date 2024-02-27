@@ -83,7 +83,8 @@ for variable, inverted in variables:
 		import ROOT
 		roc.SetMarkerColor(ROOT.kBlue)
 		roc.SetTitle("ROC")
-		roc.GetXaxis().SetTitle(variable)
+		roc.GetXaxis().SetTitle("#epsilon_{bkg}")
+		roc.GetYaxis().SetTitle("#epsilon_{sig}")
 		ROOT.gStyle.SetOptStat(0) 
 		canvas.cd(2)
 		fom.Draw("E")

@@ -12,6 +12,93 @@ from ROOT import RDataFrame, TGraph, TH1D
 debugmode = False
 
 
+def FindVariableRange(sample, variable, threshold=0.): 
+	#hist = sample.Histo1D(variable)
+	#maxvar = hist.GetXaxis().GetBinCenter(hist.FindFirstBinAbove(threshold))
+	#minvar = hist.GetXaxis().GetBinCenter(hist.FindLastBinAbove(threshold))
+	npvariable = sample.AsNumpy([variable])
+	maxvar = max(npvariable[variable])
+	minvar = min(npvariable[variable])
+	return minvar, maxvar
+
+def GetROCgeneral(sig, bkg, variable, direction=True, bkgInSample=1., sigInSample=1.): 
+	minvar, maxvar = FindVariableRange(sig, variable)
+	from sklearn.metrics import roc_curve, auc
+	columns = [variable]
+	signal = sig.AsNumpy(columns)
+	background = bkg.AsNumpy(columns)
+
+	siglabels = signal[variable]
+	siglabels = (siglabels - minvar)/(maxvar - minvar)
+	#print(siglabels)
+	#print(min(siglabels))
+	#print(max(siglabels))
+
+	#print(siglabels)
+
+	sigtruth = np.ones(len(siglabels))
+
+	#print(sigtruth)
+
+	bkglabels = background[variable]
+	bkgtruth = np.zeros(len(bkglabels))
+	bkglabels = (bkglabels - minvar)/(maxvar - minvar)
+
+	#print(bkglabels)
+	
+	#print(bkgtruth)
+
+	labels = np.concatenate([siglabels, bkglabels])
+
+	#print(labels)
+
+	truths = np.concatenate([sigtruth, bkgtruth])
+
+	bkgeff, sigeff, _ = roc_curve(truths, labels)
+
+	graph = TGraph(len(bkgeff), np.asarray(bkgeff, "d"), np.asarray(sigeff, "d"))
+
+	area = auc(bkgeff, sigeff)
+
+	#Computing the FOM
+	sigeffs = np.sort(sigeff)
+	bkgeffs = np.sort(bkgeff)
+	assert(len(sigeffs) == len(bkgeffs))
+	numPoints = len(sigeffs)
+
+	FOM = TH1D("FOM{}".format(variable), "", numPoints, minvar, maxvar)
+
+	for point in range(0, numPoints): 
+		sigEff = sigeffs[point]
+		bkgEff = bkgeffs[point]
+		
+		if (debugmode): print("Sig eff: {}, bkg eff: {}".format(sigEff, bkgEff))
+
+		B = bkgInSample*bkgEff
+		S = sigInSample*sigEff
+
+		Sigma = 0 if (B == 0) else S/math.sqrt(B) #Sigma = 0 if (S+B == 0) else S/math.sqrt(S+B)
+
+		factor = 0.1
+		factordenom = 0.0000001
+		corrB = factor if (bkgInSample*bkgEff < factor) else bkgInSample*bkgEff
+		corrS = factor if (sigInSample*sigEff < factor) else sigInSample*sigEff
+		corrSigma = factordenom if (Sigma < factordenom) else Sigma
+
+		# Error commputation taken from slide 13 in: /https://indico.cern.ch/event/66256/contributions/2071577/attachments/1017176/1447814/EfficiencyErrors.pdf
+		error = math.sqrt((S+1)*(S+2) - (S+1)*(S+1))/((B+2)*(B+3)-(B+2)*(B+2)) #(math.sqrt(corrB)/corrB)*(math.sqrt(corrS)/corrS)*corrSigma # *bkgInSample*sigInSample
+
+		FOM.SetBinContent(numPoints -1 - point, Sigma)
+		FOM.SetBinError(numPoints -1 - point, error)
+		#FOM.SetBinError(point, error)
+
+		maxvalue = FOM.GetMaximum()
+
+		maxbin = FOM.GetMaximumBin()
+		maxcut = FOM.GetXaxis().GetBinCenter(maxbin)
+
+	return maxvalue, area, maxcut, graph, FOM
+
 def GetROC(sig, bkg, mvavar = "mvaScore", sigtarget=1., bkgtarget=-1.): 
 	from sklearn.metrics import auc
 	bkgeff, sigeff = ComputeRoc(sig, bkg, mvavar, sigtarget, bkgtarget)
@@ -114,7 +201,7 @@ if __name__ == "__main__":
 	options = parser.parse_args()
 
 
-	samples = ["Sig", "dataB2", "dataD2WS", "dataD2_SB"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
+	samples = ["Sig", "dataD1"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part" # "dataB2", "dataD2WS", "dataD2_SB", 
 
 	import ROOT
 

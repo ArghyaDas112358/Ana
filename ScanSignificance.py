@@ -76,13 +76,14 @@ for variable, inverted in variables:
 	print("Maximum significance for variable {} of {} with cut at value {}, auc {}".format(variable, sigma, cutvalue, auc))
 
 	if (options.save): 
-		canvas = TCanvas("canvas", "canvas", 1600, 600)
+		canvas = TCanvas("canvas_{}".format(variable), "canvas_{}".format(variable), 1600, 600)
 		canvas.Divide(2, 1)
 		canvas.cd(1)
 		roc.Draw("AP")
 		import ROOT
 		roc.SetMarkerColor(ROOT.kBlue)
 		roc.SetTitle("ROC")
+		roc.GetXaxis().SetTitle(variable)
 		ROOT.gStyle.SetOptStat(0) 
 		canvas.cd(2)
 		fom.Draw("E")
@@ -90,6 +91,7 @@ for variable, inverted in variables:
 		fom.SetMarkerColor(ROOT.kGreen)
 		fom.SetLineColor(ROOT.kGreen)
 		fom.SetTitle("F.o.M.")
+		fom.GetXaxis().SetTitle(variable)
 		canvas.Print(outputfolder+"/ROCandFOM_{}.pdf".format(variable))
 		if (options.debug): HoldUntilKeyPress()
 

@@ -47,6 +47,9 @@ def GetROCgeneral(sig, bkg, variable, direction=True, bkgInSample=1., sigInSampl
 	#print(bkglabels)
 	
 	#print(bkgtruth)
+	if (not direction):
+		siglabels = (-1.*siglabels)+1.
+		bkglabels = (-1.*bkglabels)+1.
 
 	labels = np.concatenate([siglabels, bkglabels])
 

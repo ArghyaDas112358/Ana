@@ -53,9 +53,9 @@ frames, effs = PrepareSamples(list(sample.values()))
 print(frames)
 
 
-variables = ["mvaScore", "b_tau_min_dr_mu", "b_tau_alpha", "b_B_fsig", "b_B_m", "b_B_nmu", "b_B_nh", "b_B_ne", "b_B_npi0", "b_B_ngamma", "Dstar_vprob"] #"b_tau_m", "mvaScore", "b_tau_min_dr_mu", "b_tau_alpha", "b_B_fsig", "b_B_m", "b_B_nmu", "b_B_nh", "b_B_ne", "b_B_npi0", "b_B_ngamma", "Dstar_vprob"
+variables = [("mvaScore", 1), ("b_tau_min_dr_mu", 1), ("b_tau_alpha", 1), ("b_B_fsig", 1), ("b_B_m", 1), ("b_B_nmu", 0), ("b_B_nh", 0), ("b_B_ne", 0), ("b_B_npi0", 0), ("b_B_ngamma", 0), ("Dstar_vprob", 1)] #"b_tau_m", "mvaScore", "b_tau_min_dr_mu", "b_tau_alpha", "b_B_fsig", "b_B_m", "b_B_nmu", "b_B_nh", "b_B_ne", "b_B_npi0", "b_B_ngamma", "Dstar_vprob"
 
-for variable in variables: 
+for variable, inverted in variables: 
 	#print(variable)
 	# Loading signal and background 
 	cutsig = (Ana.cut["base"]+Ana.samples.at("Sig").cut).GetTitle()
@@ -66,7 +66,7 @@ for variable in variables:
 	background = frames[sample[anaConfig.data]][stage] #RDataFrame(Ana.filemanager.GetItem(anaConfig.data)).Filter(cutbkg)
 
 	#print("Starting to compute ROC curve... ")
-	sigma, auc, cutvalue, roc, fom = GetROCgeneral(signal, background, variable)
+	sigma, auc, cutvalue, roc, fom = GetROCgeneral(signal, background, variable, inverted)
 	#print("Computed ROC curve. ")
 
 	#print("Area under curve (A.U.C.): {}".format(auc))

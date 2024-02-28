@@ -9,6 +9,7 @@ from ROOT import Ana, RDataFrame, TCanvas, kBlue, kGreen
 from libMLTools import GetROC, GetFom, GetROCgeneral
 from libUtils import HoldUntilKeyPress
 from anaPrepareRegions import PrepareRegions, PrepareRegionsSimple, PrepareSamples
+from libEfficiencies import ReadEffs
 
 
 
@@ -55,6 +56,8 @@ frames, effs = PrepareSamples(list(sample.values()))
 
 variables = [("mvaScore", 1), ("b_tau_min_dr_mu", 1), ("b_tau_alpha", 1), ("b_B_fsig", 1), ("b_B_m", 1), ("b_B_nmu", 0), ("b_B_nh", 0), ("b_B_ne", 0), ("b_B_npi0", 0), ("b_B_ngamma", 0), ("Dstar_vprob", 1)] #"b_tau_m", "mvaScore", "b_tau_min_dr_mu", "b_tau_alpha", "b_B_fsig", "b_B_m", "b_B_nmu", "b_B_nh", "b_B_ne", "b_B_npi0", "b_B_ngamma", "Dstar_vprob"
 
+yields = ReadEffs(Ana.folder+"/Expectedyields.json")
+
 for variable, inverted in variables: 
 	#print(variable)
 	# Loading signal and background 
@@ -65,8 +68,16 @@ for variable, inverted in variables:
 	signal = frames[sample[anaConfig.Sig]][stage] #RDataFrame(Ana.filemanager.GetItem(anaConfig.Sig)).Filter(cutsig)
 	background = frames[sample[anaConfig.data]][stage] #RDataFrame(Ana.filemanager.GetItem(anaConfig.data)).Filter(cutbkg)
 
+	N = background.Count().GetValue()
+	#n = signal.Filter(cutsig).Count().GetValue()
+	S = yields["Sig"].n
+
+	#print("s: {}, b: {}".format(S, N))
+
+	#print("effs: {} {} {}".format(N, n, effs["Sig"][stage]))
+
 	#print("Starting to compute ROC curve... ")
-	sigma, auc, cutvalue, roc, fom = GetROCgeneral(signal, background, variable, inverted)
+	sigma, auc, cutvalue, roc, fom = GetROCgeneral(signal, background, variable, inverted, N, S)
 	#print("Computed ROC curve. ")
 
 	#print("Area under curve (A.U.C.): {}".format(auc))

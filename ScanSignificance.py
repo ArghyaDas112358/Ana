@@ -149,12 +149,13 @@ if (options.perm):
 	options.chain = True
 	sigmas = []
 	from itertools import combinations, permutations
-	for r in range(1, len(variables)):
+	for r in range(1, len(variables)+1):
 		allcombinations = combinations(variables, r)
 		for combination in allcombinations: 
-			for permutation in permutations(combination):
-				sigma, cutstring = ScanSignificance(permutation, frames, yields)
-				sigmas.append((sigma, cutstring))
+			#for permutation in permutations(combination):
+			print("Scaning combination: {}".format(combination))
+			sigma, cutstring = ScanSignificance(combination, frames, yields)
+			sigmas.append((sigma, cutstring))
 
 	bestcut = sorted(sigmas, key=lambda tup: tup[0], reverse=True)[0]
 	print("Best significance of {} with cut: {}".format(bestcut[0], bestcut[1]))

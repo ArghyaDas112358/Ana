@@ -89,10 +89,10 @@ def ScanSignificance(variables, frames, yields):
 			del canvas
 
 
-	sigmas = sorted(sigmas, key=lambda tup: tup[0], reverse=True)
+	#sigmas = sorted(sigmas, key=lambda tup: tup[0], reverse=True)
 	if (options.debug): print("\nMaximum significance: {} for cut on variable {}".format(sigmas[0][0], sigmas[0][1]))
 
-	return sigmas[0][0], cutstring
+	return sigmas[-1][0], cutstring
 
 
 from argparse import ArgumentParser

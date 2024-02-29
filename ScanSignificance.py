@@ -24,6 +24,7 @@ parser.add_argument("--debug", dest="debug", action="store_true", default=False,
 parser.add_argument("-o", "--out", dest="out", action="store", type=str, default="./plots/testroc/", help="Path for saving plots")
 parser.add_argument("-s", "--save", dest="save", action="store_true", default=False, help="Save output")
 parser.add_argument('-l', "--variable", dest="variable", action="store", default="mvaScore", help="Variable to reprocess")
+parser.add_argument("-f", "--chain", dest="chain", action="store_true", default=False, help="Plot stacked distributions")
 parser.add_argument("-n", "--target", dest="target", action="store", type=float, default=10000., help="Target number of events after selection")
 parser.add_argument('-m', "--denom", dest="denom", action="store_true", default=False, help="Denominator analysis")
 
@@ -58,16 +59,20 @@ variables = [("mvaScore", 1), ("b_tau_min_dr_mu", 1), ("b_tau_alpha", 1), ("b_B_
 
 yields = ReadEffs(Ana.folder+"/Expectedyields.json")
 
+
+cutsig = (Ana.cut["base"]+Ana.samples.at("Sig").cut).GetTitle()
+cutbkg = (Ana.cut["base"]+Ana.samples.at("data").cut).GetTitle()
+
+stage = "all"
+signal = frames[sample[anaConfig.Sig]][stage] #RDataFrame(Ana.filemanager.GetItem(anaConfig.Sig)).Filter(cutsig)
+background = frames[sample[anaConfig.data]][stage] #RDataFrame(Ana.filemanager.GetItem(anaConfig.data)).Filter(cutbkg)
+Nsig = signal.Count().GetValue()
+
+
 for variable, inverted in variables: 
 	#print(variable)
 	# Loading signal and background 
-	cutsig = (Ana.cut["base"]+Ana.samples.at("Sig").cut).GetTitle()
-	cutbkg = (Ana.cut["base"]+Ana.samples.at("data").cut).GetTitle()
-
-	stage = "all"
-	signal = frames[sample[anaConfig.Sig]][stage] #RDataFrame(Ana.filemanager.GetItem(anaConfig.Sig)).Filter(cutsig)
-	background = frames[sample[anaConfig.data]][stage] #RDataFrame(Ana.filemanager.GetItem(anaConfig.data)).Filter(cutbkg)
-
+	
 	N = background.Count().GetValue()
 	#n = signal.Filter(cutsig).Count().GetValue()
 	S = yields["Sig"].n
@@ -79,6 +84,16 @@ for variable, inverted in variables:
 	#print("Starting to compute ROC curve... ")
 	sigma, auc, cutvalue, roc, fom = GetROCgeneral(signal, background, variable, inverted, N, S)
 	#print("Computed ROC curve. ")
+
+	if (options.chain): 
+		cut = "{}{}{}".format(variable, ">" if inverted else "<", cutvalue)
+		signal = signal.Filter(cut)
+		background = background.Filter(cut)
+		nsig = signal.Count().GetValue()
+		eff = float(nsig)/float(Nsig)
+		#print("S: {}, eff: {}, n: {}, N: {}".format(S, eff, nsig, Nsig))
+		S = S*eff
+		Nsig = nsig
 
 	#print("Area under curve (A.U.C.): {}".format(auc))
 

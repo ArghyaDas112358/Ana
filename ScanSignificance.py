@@ -97,7 +97,7 @@ for variable, inverted in variables:
 		S = S*eff
 		Nsig = nsig
 
-	sigmas.append(sigma)
+	sigmas.append((sigma, variable))
 
 	#print("Area under curve (A.U.C.): {}".format(auc))
 
@@ -130,7 +130,8 @@ for variable, inverted in variables:
 		del canvas
 
 
-print("\nMaximum significance: {}".format(max(sigmas)))
+sigmas = sorted(sigmas, key=lambda tup: tup[1])
+print("\nMaximum significance: {} for cut on variable {}".format(sigmas[0][0], sigmas[0][1]))
 
 Ana.filemanager.CloseAll()
 

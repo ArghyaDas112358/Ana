@@ -67,6 +67,7 @@ stage = "all"
 signal = frames[sample[anaConfig.Sig]][stage] #RDataFrame(Ana.filemanager.GetItem(anaConfig.Sig)).Filter(cutsig)
 background = frames[sample[anaConfig.data]][stage] #RDataFrame(Ana.filemanager.GetItem(anaConfig.data)).Filter(cutbkg)
 Nsig = signal.Count().GetValue()
+S = yields["Sig"].n
 
 
 for variable, inverted in variables: 
@@ -75,7 +76,6 @@ for variable, inverted in variables:
 	
 	N = background.Count().GetValue()
 	#n = signal.Filter(cutsig).Count().GetValue()
-	S = yields["Sig"].n
 
 	#print("s: {}, b: {}".format(S, N))
 

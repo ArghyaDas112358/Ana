@@ -13,6 +13,81 @@ from libEfficiencies import ReadEffs
 
 
 
+def ScanSignificance(variables, frames, yields): 
+	cutsig = (Ana.cut["base"]+Ana.samples.at("Sig").cut).GetTitle()
+	cutbkg = (Ana.cut["base"]+Ana.samples.at("data").cut).GetTitle()
+
+	stage = "all"
+	signal = frames[sample[anaConfig.Sig]][stage] #RDataFrame(Ana.filemanager.GetItem(anaConfig.Sig)).Filter(cutsig)
+	background = frames[sample[anaConfig.data]][stage] #RDataFrame(Ana.filemanager.GetItem(anaConfig.data)).Filter(cutbkg)
+	Nsig = signal.Count().GetValue()
+	S = yields["Sig"].n
+
+	sigmas = []
+
+
+	for variable, inverted in variables: 
+		#print(variable)
+		# Loading signal and background 
+		
+		N = background.Count().GetValue()
+		#n = signal.Filter(cutsig).Count().GetValue()
+
+		#print("s: {}, b: {}".format(S, N))
+
+		#print("effs: {} {} {}".format(N, n, effs["Sig"][stage]))
+
+		#print("Starting to compute ROC curve... ")
+		sigma, auc, cutvalue, roc, fom = GetROCgeneral(signal, background, variable, inverted, N, S)
+		#print("Computed ROC curve. ")
+
+		if (options.chain): 
+			cut = "{}{}{}".format(variable, ">" if inverted else "<", cutvalue)
+			signal = signal.Filter(cut)
+			background = background.Filter(cut)
+			nsig = signal.Count().GetValue()
+			eff = float(nsig)/float(Nsig)
+			#print("S: {}, eff: {}, n: {}, N: {}".format(S, eff, nsig, Nsig))
+			S = S*eff
+			Nsig = nsig
+
+		sigmas.append((sigma, variable))
+
+		#print("Area under curve (A.U.C.): {}".format(auc))
+
+		#fom, maxsig, cutvalue = GetFom(signal, background, variable)
+		
+		print("\nMaximum significance for variable {} of {} with cut at value {}, auc {}".format(variable, sigma, cutvalue, auc))
+
+		if (options.save): 
+			canvas = TCanvas("canvas", "canvas", 1600, 600)
+			canvas.Divide(2, 1)
+			canvas.cd(1)
+			roc.Draw("AP")
+			import ROOT
+			roc.SetMarkerColor(ROOT.kBlue)
+			roc.SetTitle("ROC")
+			roc.GetXaxis().SetTitle("#epsilon_{bkg}")
+			roc.GetYaxis().SetTitle("#epsilon_{sig}")
+			ROOT.gStyle.SetOptStat(0) 
+			canvas.cd(2)
+			fom.Draw("E")
+			canvas.Draw()
+			fom.SetMarkerColor(ROOT.kGreen)
+			fom.SetLineColor(ROOT.kGreen)
+			fom.SetTitle("F.o.M.")
+			fom.GetXaxis().SetTitle(variable)
+			name = outputfolder+"/ROCandFOM_{}".format(variable)
+			canvas.Print("{}.pdf".format(name))
+			canvas.SaveAs("{}.root".format(name))
+			if (options.debug): HoldUntilKeyPress()
+			del canvas
+
+
+	sigmas = sorted(sigmas, key=lambda tup: tup[1])
+	print("\nMaximum significance: {} for cut on variable {}".format(sigmas[0][0], sigmas[0][1]))
+
+
 from argparse import ArgumentParser
 
 parser = ArgumentParser(description="GetEfficiency")
@@ -60,78 +135,8 @@ variables = [("mvaScore", 1), ("b_tau_min_dr_mu", 1), ("b_tau_alpha", 1), ("b_B_
 yields = ReadEffs(Ana.folder+"/Expectedyields.json")
 
 
-cutsig = (Ana.cut["base"]+Ana.samples.at("Sig").cut).GetTitle()
-cutbkg = (Ana.cut["base"]+Ana.samples.at("data").cut).GetTitle()
+ScanSignificance(variables, frames, yields)
 
-stage = "all"
-signal = frames[sample[anaConfig.Sig]][stage] #RDataFrame(Ana.filemanager.GetItem(anaConfig.Sig)).Filter(cutsig)
-background = frames[sample[anaConfig.data]][stage] #RDataFrame(Ana.filemanager.GetItem(anaConfig.data)).Filter(cutbkg)
-Nsig = signal.Count().GetValue()
-S = yields["Sig"].n
-
-sigmas = []
-
-
-for variable, inverted in variables: 
-	#print(variable)
-	# Loading signal and background 
-	
-	N = background.Count().GetValue()
-	#n = signal.Filter(cutsig).Count().GetValue()
-
-	#print("s: {}, b: {}".format(S, N))
-
-	#print("effs: {} {} {}".format(N, n, effs["Sig"][stage]))
-
-	#print("Starting to compute ROC curve... ")
-	sigma, auc, cutvalue, roc, fom = GetROCgeneral(signal, background, variable, inverted, N, S)
-	#print("Computed ROC curve. ")
-
-	if (options.chain): 
-		cut = "{}{}{}".format(variable, ">" if inverted else "<", cutvalue)
-		signal = signal.Filter(cut)
-		background = background.Filter(cut)
-		nsig = signal.Count().GetValue()
-		eff = float(nsig)/float(Nsig)
-		#print("S: {}, eff: {}, n: {}, N: {}".format(S, eff, nsig, Nsig))
-		S = S*eff
-		Nsig = nsig
-
-	sigmas.append((sigma, variable))
-
-	#print("Area under curve (A.U.C.): {}".format(auc))
-
-	#fom, maxsig, cutvalue = GetFom(signal, background, variable)
-	
-	print("\nMaximum significance for variable {} of {} with cut at value {}, auc {}".format(variable, sigma, cutvalue, auc))
-
-	if (options.save): 
-		canvas = TCanvas("canvas", "canvas", 1600, 600)
-		canvas.Divide(2, 1)
-		canvas.cd(1)
-		roc.Draw("AP")
-		import ROOT
-		roc.SetMarkerColor(ROOT.kBlue)
-		roc.SetTitle("ROC")
-		roc.GetXaxis().SetTitle("#epsilon_{bkg}")
-		roc.GetYaxis().SetTitle("#epsilon_{sig}")
-		ROOT.gStyle.SetOptStat(0) 
-		canvas.cd(2)
-		fom.Draw("E")
-		canvas.Draw()
-		fom.SetMarkerColor(ROOT.kGreen)
-		fom.SetLineColor(ROOT.kGreen)
-		fom.SetTitle("F.o.M.")
-		fom.GetXaxis().SetTitle(variable)
-		name = outputfolder+"/ROCandFOM_{}".format(variable)
-		canvas.Print("{}.pdf".format(name))
-		canvas.SaveAs("{}.root".format(name))
-		if (options.debug): HoldUntilKeyPress()
-		del canvas
-
-
-sigmas = sorted(sigmas, key=lambda tup: tup[1])
-print("\nMaximum significance: {} for cut on variable {}".format(sigmas[0][0], sigmas[0][1]))
 
 Ana.filemanager.CloseAll()
 

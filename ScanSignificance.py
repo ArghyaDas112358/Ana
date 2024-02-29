@@ -69,6 +69,8 @@ background = frames[sample[anaConfig.data]][stage] #RDataFrame(Ana.filemanager.G
 Nsig = signal.Count().GetValue()
 S = yields["Sig"].n
 
+sigmas = []
+
 
 for variable, inverted in variables: 
 	#print(variable)
@@ -94,6 +96,8 @@ for variable, inverted in variables:
 		#print("S: {}, eff: {}, n: {}, N: {}".format(S, eff, nsig, Nsig))
 		S = S*eff
 		Nsig = nsig
+
+	sigmas.append(sigma)
 
 	#print("Area under curve (A.U.C.): {}".format(auc))
 
@@ -125,6 +129,8 @@ for variable, inverted in variables:
 		if (options.debug): HoldUntilKeyPress()
 		del canvas
 
+
+print("\nMaximum significance: {}".format(max(sigmas)))
 
 Ana.filemanager.CloseAll()
 

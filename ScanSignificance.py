@@ -24,6 +24,7 @@ def ScanSignificance(variables, frames, yields):
 	S = yields["Sig"].n
 
 	sigmas = []
+	cutstring = ""
 
 
 	for variable, inverted in variables: 
@@ -50,6 +51,10 @@ def ScanSignificance(variables, frames, yields):
 			#print("S: {}, eff: {}, n: {}, N: {}".format(S, eff, nsig, Nsig))
 			S = S*eff
 			Nsig = nsig
+			if (len(cutstring)==0):
+				cutstring = cutstring+"({})".format(cut)
+			else:
+				cutstring = cutstring+"&&({})".format(cut)
 
 		sigmas.append((sigma, variable))
 
@@ -57,7 +62,7 @@ def ScanSignificance(variables, frames, yields):
 
 		#fom, maxsig, cutvalue = GetFom(signal, background, variable)
 		
-		print("\nMaximum significance for variable {} of {} with cut at value {}, auc {}".format(variable, sigma, cutvalue, auc))
+		if (options.debug): print("\nMaximum significance for variable {} of {} with cut at value {}, auc {}, S: {}, B: {}".format(variable, sigma, cutvalue, auc, S, N))
 
 		if (options.save): 
 			canvas = TCanvas("canvas", "canvas", 1600, 600)
@@ -85,7 +90,9 @@ def ScanSignificance(variables, frames, yields):
 
 
 	sigmas = sorted(sigmas, key=lambda tup: tup[0], reverse=True)
-	print("\nMaximum significance: {} for cut on variable {}".format(sigmas[0][0], sigmas[0][1]))
+	if (options.debug): print("\nMaximum significance: {} for cut on variable {}".format(sigmas[0][0], sigmas[0][1]))
+
+	return sigmas[0][0], cutstring
 
 
 from argparse import ArgumentParser
@@ -99,9 +106,11 @@ parser.add_argument("--debug", dest="debug", action="store_true", default=False,
 parser.add_argument("-o", "--out", dest="out", action="store", type=str, default="./plots/testroc/", help="Path for saving plots")
 parser.add_argument("-s", "--save", dest="save", action="store_true", default=False, help="Save output")
 parser.add_argument('-l', "--variable", dest="variable", action="store", default="mvaScore", help="Variable to reprocess")
+parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
 parser.add_argument("-f", "--chain", dest="chain", action="store_true", default=False, help="Plot stacked distributions")
 parser.add_argument("-n", "--target", dest="target", action="store", type=float, default=10000., help="Target number of events after selection")
 parser.add_argument('-m', "--denom", dest="denom", action="store_true", default=False, help="Denominator analysis")
+parser.add_argument("-p", "--perm", dest="perm", action="store_true", default=False, help="Save output")
 
 options = parser.parse_args()
 
@@ -135,7 +144,23 @@ variables = [("mvaScore", 1), ("b_tau_min_dr_mu", 1), ("b_tau_alpha", 1), ("b_B_
 yields = ReadEffs(Ana.folder+"/Expectedyields.json")
 
 
-ScanSignificance(variables, frames, yields)
+if (options.perm): 
+	options.save = False
+	options.chain = True
+	sigmas = []
+	from itertools import combinations, permutations
+	for r in range(1, len(variables)):
+		allcombinations = combinations(variables, r)
+		for combination in allcombinations: 
+			for permutation in permutations(combination):
+				sigma, cutstring = ScanSignificance(permutation, frames, yields)
+				sigmas.append((sigma, cutstring))
+
+	bestcut = sorted(sigmas, key=lambda tup: tup[0], reverse=True)[0]
+	print("Best significance of {} with cut: {}".format(bestcut[0], bestcut[1]))
+
+else: 
+	ScanSignificance(variables, frames, yields)
 
 
 Ana.filemanager.CloseAll()

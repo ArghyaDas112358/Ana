@@ -280,6 +280,34 @@ namespace Ana {
 				"data", 
 				{"dataD1", "dataD2", "dataD3", "dataD4", "dataD5", "dataA1", "dataA2", "dataA3", "dataA4", "dataA5", "dataB1", "dataB2", "dataB3", "dataB4", "dataB5", "dataC1", "dataC2", "dataC3", "dataC4", "dataC5"})
 			},
+			{"dataD", SampleData(
+				 mycolors[10], 
+				"data", 
+				"1", 
+				"data", 
+				{"dataD1", "dataD2", "dataD3", "dataD4", "dataD5"})
+			},
+			{"dataA", SampleData(
+				 mycolors[10], 
+				"data", 
+				"1", 
+				"data", 
+				{"dataA1", "dataA2", "dataA3", "dataA4", "dataA5"})
+			},
+			{"dataB", SampleData(
+				 mycolors[10], 
+				"data", 
+				"1", 
+				"data", 
+				{"dataB1", "dataB2", "dataB3", "dataB4", "dataB5"})
+			},
+			{"dataC", SampleData(
+				 mycolors[10], 
+				"data", 
+				"1", 
+				"data", 
+				{"dataC1", "dataC2", "dataC3", "dataC4", "dataC5"})
+			},
 			// data driven components
 			{"WS", SampleData(
 				 mycolors[10], 

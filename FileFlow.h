@@ -368,10 +368,15 @@ namespace Ana
 			filemanager.AddItem("dataD5WS_DNN", folder+"dataD5WS_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataD5WS", folder+"dataD5WS_tauDNN_mva.root", "tree"); 
 
-			filemanager.AddItem("dataD_ntuple", folder+"dataD.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD_tf", folder+"dataD_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD_DNN", folder+"dataD_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataD", folder+"dataD_tauDNN_mva.root", "tree"); 
+			//filemanager.AddItem("dataD_ntuple", folder+"dataD.root", "ntuplizer/tree"); 
+			//filemanager.AddItem("dataD_tf", folder+"dataD_withTFweight.root", "ntuplizer/tree"); 
+			//filemanager.AddItem("dataD_DNN", folder+"dataD_tauDNN.root", "ntuplizer/tree"); 
+			//filemanager.AddItem("dataD", folder+"dataD_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("data123_ntuple", folder+"data123.root", "ntuplizer/tree"); 
+			filemanager.AddItem("data123_tf", folder+"data123_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("data123_DNN", folder+"data123_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("data123", folder+"data123_tauDNN_mva.root", "tree"); 
 
 			// data from A era
 			filemanager.AddItem("dataA1_ntuple", folder+"dataA1.root", "ntuplizer/tree"); 
@@ -425,10 +430,10 @@ namespace Ana
 			filemanager.AddItem("dataA5WS_DNN", folder+"dataA5WS_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataA5WS", folder+"dataA5WS_tauDNN_mva.root", "tree"); 
 
-			filemanager.AddItem("dataA_ntuple", folder+"dataA.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataA_tf", folder+"dataA_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataA_DNN", folder+"dataA_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataA", folder+"dataA_tauDNN_mva.root", "tree"); 
+			//filemanager.AddItem("dataA_ntuple", folder+"dataA.root", "ntuplizer/tree"); 
+			//filemanager.AddItem("dataA_tf", folder+"dataA_withTFweight.root", "ntuplizer/tree"); 
+			//filemanager.AddItem("dataA_DNN", folder+"dataA_tauDNN.root", "ntuplizer/tree"); 
+			//filemanager.AddItem("dataA", folder+"dataA_tauDNN_mva.root", "tree"); 
 
 			// data from B era
 			filemanager.AddItem("dataB1_ntuple", folder+"dataB1.root", "ntuplizer/tree"); 
@@ -457,10 +462,10 @@ namespace Ana
 			filemanager.AddItem("dataB5_DNN", folder+"dataB5_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataB5", folder+"dataB5_tauDNN_mva.root", "tree"); 
 
-			filemanager.AddItem("dataB_ntuple", folder+"dataB.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataB_tf", folder+"dataB_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataB_DNN", folder+"dataB_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataB", folder+"dataB_tauDNN_mva.root", "tree"); 
+			//filemanager.AddItem("dataB_ntuple", folder+"dataB.root", "ntuplizer/tree"); 
+			//filemanager.AddItem("dataB_tf", folder+"dataB_withTFweight.root", "ntuplizer/tree"); 
+			//filemanager.AddItem("dataB_DNN", folder+"dataB_tauDNN.root", "ntuplizer/tree"); 
+			//filemanager.AddItem("dataB", folder+"dataB_tauDNN_mva.root", "tree"); 
 
 			filemanager.AddItem("dataB1WS_ntuple", folder+"dataB1.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataB1WS_tf", folder+"dataB1_withTFweight.root", "ntuplizer/tree"); 
@@ -539,10 +544,10 @@ namespace Ana
 			filemanager.AddItem("dataC5WS_DNN", folder+"dataC5WS_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataC5WS", folder+"dataC5WS_tauDNN_mva.root", "tree"); 
 
-			filemanager.AddItem("dataC_ntuple", folder+"dataC.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataC_tf", folder+"dataC_withTFweight.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataC_DNN", folder+"dataC_tauDNN.root", "ntuplizer/tree"); 
-			filemanager.AddItem("dataC", folder+"dataC_tauDNN_mva.root", "tree"); 
+			//filemanager.AddItem("dataC_ntuple", folder+"dataC.root", "ntuplizer/tree"); 
+			//filemanager.AddItem("dataC_tf", folder+"dataC_withTFweight.root", "ntuplizer/tree"); 
+			//filemanager.AddItem("dataC_DNN", folder+"dataC_tauDNN.root", "ntuplizer/tree"); 
+			//filemanager.AddItem("dataC", folder+"dataC_tauDNN_mva.root", "tree"); 
 
 			//filemanager.AddItem("data_ntuple", folder+"data.root", "ntuplizer/tree"); 
 			//filemanager.AddItem("data_tf", folder+"data_withTFweight.root", "ntuplizer/tree"); 

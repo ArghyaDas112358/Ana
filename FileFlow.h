@@ -256,6 +256,21 @@ namespace Ana
 			filemanager.AddItem("B0toDstarKKstar_DNN", folder+"B0toDstarKKstar_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstarKKstar", folder+"B0toDstarKKstar_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("ButoDstarpipipipi0_ntuple", folder+"ButoDstarpipipipi0.root", "ntuplizer/tree"); 
+			filemanager.AddItem("ButoDstarpipipipi0_tf", folder+"ButoDstarpipipipi0_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("ButoDstarpipipipi0_DNN", folder+"ButoDstarpipipipi0_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("ButoDstarpipipipi0", folder+"ButoDstarpipipipi0_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("ButoDstarpipipi_ntuple", folder+"ButoDstarpipipi.root", "ntuplizer/tree"); 
+			filemanager.AddItem("ButoDstarpipipi_tf", folder+"ButoDstarpipipi_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("ButoDstarpipipi_DNN", folder+"ButoDstarpipipi_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("ButoDstarpipipi", folder+"ButoDstarpipipi_tauDNN_mva.root", "tree"); 
+
+			filemanager.AddItem("ButoDstarpipipi0_ntuple", folder+"ButoDstarpipipi0.root", "ntuplizer/tree"); 
+			filemanager.AddItem("ButoDstarpipipi0_tf", folder+"ButoDstarpipipi0_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("ButoDstarpipipi0_DNN", folder+"ButoDstarpipipi0_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("ButoDstarpipipi0", folder+"ButoDstarpipipi0_tauDNN_mva.root", "tree"); 
+
 			filemanager.AddItem("B0toDstarDsX_ntuple", folder+"B0toDstarDsX.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstarDsX_tf", folder+"B0toDstarDsX_withTFweight.root", "ntuplizer/tree"); 
 			filemanager.AddItem("B0toDstarDsX_DNN", folder+"B0toDstarDsX_tauDNN.root", "ntuplizer/tree"); 

@@ -17,18 +17,31 @@ def FindVariableRange(sample, variable, threshold=0.):
 	#maxvar = hist.GetXaxis().GetBinCenter(hist.FindFirstBinAbove(threshold))
 	#minvar = hist.GetXaxis().GetBinCenter(hist.FindLastBinAbove(threshold))
 	npvariable = sample.AsNumpy([variable])
-	maxvar = max(npvariable[variable])
-	minvar = min(npvariable[variable])
+	print(len(npvariable[variable]))
+	if (len(npvariable[variable])):
+		maxvar = max(npvariable[variable])
+		minvar = min(npvariable[variable])
+	else: 
+		maxvar = 0. 
+		minvar = 0.
 	return minvar, maxvar
 
 def GetROCgeneral(sig, bkg, variable, direction=True, bkgInSample=1., sigInSample=1.): 
 	minvar, maxvar = FindVariableRange(sig, variable)
+	if (maxvar == minvar): 
+		graph = TGraph(100, np.zeros(100), np.ones(100))
+		FOM = TH1D("FOM{}".format(variable), "", 100, 0., 100.)
+		return -9999., -1., -999., graph, FOM
 	from sklearn.metrics import roc_curve, auc
 	columns = [variable]
 	signal = sig.AsNumpy(columns)
 	background = bkg.AsNumpy(columns)
 
 	siglabels = signal[variable]
+	if (maxvar == minvar): 
+		dx=0.5
+		maxvar = maxvar+dx
+		minvar = minvar-dx
 	siglabels = (siglabels - minvar)/(maxvar - minvar)
 	#print(siglabels)
 	#print(min(siglabels))

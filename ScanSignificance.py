@@ -9,19 +9,18 @@ from ROOT import Ana, RDataFrame, TCanvas, kBlue, kGreen
 from libMLTools import GetROC, GetFom, GetROCgeneral
 from libUtils import HoldUntilKeyPress
 from anaPrepareRegions import PrepareRegions, PrepareRegionsSimple, PrepareSamples
-from libEfficiencies import ReadEffs
+from libEfficiencies import ReadEffs, MultiplyEffs
 
 
 
-def ScanSignificance(variables, frames, yields): 
+def ScanSignificance(variables, frames, yields, stage = "all"): 
 	cutsig = (Ana.cut["base"]+Ana.samples.at("Sig").cut).GetTitle()
 	cutbkg = (Ana.cut["base"]+Ana.samples.at("data").cut).GetTitle()
 
-	stage = "all"
 	signal = frames[sample[anaConfig.Sig]][stage] #RDataFrame(Ana.filemanager.GetItem(anaConfig.Sig)).Filter(cutsig)
 	background = frames[sample[anaConfig.data]][stage] #RDataFrame(Ana.filemanager.GetItem(anaConfig.data)).Filter(cutbkg)
 	Nsig = signal.Count().GetValue()
-	S = yields["Sig"].n
+	S = yields[anaConfig.Sig].n
 
 	sigmas = []
 	cutstring = ""
@@ -47,7 +46,10 @@ def ScanSignificance(variables, frames, yields):
 			signal = signal.Filter(cut)
 			background = background.Filter(cut)
 			nsig = signal.Count().GetValue()
-			eff = float(nsig)/float(Nsig)
+			if (nsig == 0): 
+				eff = 0.
+			else: 
+				eff = float(nsig)/float(Nsig)
 			#print("S: {}, eff: {}, n: {}, N: {}".format(S, eff, nsig, Nsig))
 			S = S*eff
 			Nsig = nsig
@@ -62,7 +64,7 @@ def ScanSignificance(variables, frames, yields):
 
 		#fom, maxsig, cutvalue = GetFom(signal, background, variable)
 		
-		if (options.debug): print("\nMaximum significance for variable {} of {} with cut at value {}, auc {}, S: {}, B: {}".format(variable, sigma, cutvalue, auc, S, N))
+		if (not options.perm): print("\nMaximum significance for variable {} of {} with cut at value {}, auc {}, S: {}, B: {}".format(variable, sigma, cutvalue, auc, S, N))
 
 		if (options.save): 
 			canvas = TCanvas("canvas", "canvas", 1600, 600)
@@ -139,9 +141,15 @@ frames, effs = PrepareSamples(list(sample.values()))
 #print(frames)
 
 
-variables = [("mvaScore", 1), ("b_tau_min_dr_mu", 1), ("b_tau_alpha", 1), ("b_B_fsig", 1), ("b_B_m", 1), ("b_B_nmu", 0), ("b_B_nh", 0), ("b_B_ne", 0), ("b_B_npi0", 0), ("b_B_ngamma", 0), ("Dstar_vprob", 1)] #"b_tau_m", "mvaScore", "b_tau_min_dr_mu", "b_tau_alpha", "b_B_fsig", "b_B_m", "b_B_nmu", "b_B_nh", "b_B_ne", "b_B_npi0", "b_B_ngamma", "Dstar_vprob"
+variables = [("b_B_nh", 0), ("b_B_nmu", 0), ("b_B_ne", 0), ("b_B_npi0", 0), ("b_B_ngamma", 0), ("Dstar_vprob", 1)] #"b_tau_m", "mvaScore", "b_tau_min_dr_mu", "b_tau_alpha", "b_B_fsig", "b_B_m", "b_B_nmu", "b_B_nh", "b_B_ne", "b_B_npi0", "b_B_ngamma", "Dstar_vprob"
+#("b_tau_min_dr_mu", 1), ("b_tau_alpha", 1), ("b_B_fsig", 1), ("b_B_m", 1), ("b_B_m", 0), ("b_B_nmu", 0), ("b_B_nh", 0), ("b_B_ne", 0), ("b_B_npi0", 0), ("b_B_ngamma", 0), ("Dstar_vprob", 1)
 
 yields = ReadEffs(Ana.folder+"/Expectedyields.json")
+
+finalyields = MultiplyEffs(yields, effs, "mw")
+print(effs[sample[anaConfig.Sig]]["mw"])
+print(finalyields)
+print("Yield: {}".format(finalyields[anaConfig.Sig]))
 
 
 if (options.perm): 
@@ -154,14 +162,15 @@ if (options.perm):
 		for combination in allcombinations: 
 			#for permutation in permutations(combination):
 			print("Scaning combination: {}".format(combination))
-			sigma, cutstring = ScanSignificance(combination, frames, yields)
+			sigma, cutstring = ScanSignificance(combination, frames, finalyields)
+			print(sigma)
 			sigmas.append((sigma, cutstring))
 
 	bestcut = sorted(sigmas, key=lambda tup: tup[0], reverse=True)[0]
 	print("Best significance of {} with cut: {}".format(bestcut[0], bestcut[1]))
 
 else: 
-	ScanSignificance(variables, frames, yields)
+	ScanSignificance(variables, frames, finalyields, "mw")
 
 
 Ana.filemanager.CloseAll()

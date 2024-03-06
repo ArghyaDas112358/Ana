@@ -79,6 +79,7 @@ def PrepareRegionsSimple():
 		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item))
 		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(item).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."
 		frames[item]["all"] = samples[item].Filter("1.")
+		frames[item]["mw"] =  samples[item].Filter((Ana.cut["mw"]+Ana.samples.at(item).cut).GetTitle())
 		#baseline[item]
 		for region in anaConfig.regions: 
 			cut = (Ana.cut[region]+Ana.samples.at(item).cut).GetTitle()
@@ -103,6 +104,7 @@ def PrepareSamples(samplelist = anaConfig.samples):
 		samples[item] = ROOT.RDataFrame(sample) #ROOT.RDataFrame(Ana.filemanager.GetItem(item))
 		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(GetBaseName(item)).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."
 		frames[item]["all"] = samples[item].Filter("1.")
+		frames[item]["mw"] =  samples[item].Filter((Ana.cut["mw"]+Ana.samples.at(item).cut).GetTitle())
 
 	from libEfficiencies import ComputeEfficiencies
 	effs = ComputeEfficiencies(frames)

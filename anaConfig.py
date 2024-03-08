@@ -8,7 +8,7 @@ try:
 except: 
 	pass
 if (environment == "lxplus"): 
-	ROOT.gROOT.LoadMacro("FileFlow.h")
+	ROOT.gROOT.LoadMacro("FileFlow.h+")
 else:
 	ROOT.gROOT.LoadMacro("FileFlow.h+")
 #ROOT.gROOT.LoadMacro("FileFlow.h+")

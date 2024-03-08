@@ -143,14 +143,14 @@ def WriteWorkspace(frames, yields, variables, regions, dataname, filename="works
 def WriteWorkspaceDataset(frames, yields, variables, regions, dataname, filename="workspace.root"): 
 	from ROOT import RooRealVar, RooDataHist, RooArgSet, RooDataSetHelper
 	from ROOT import Ana
-	import anaConfig
+	#import anaConfig
 
 	workspacename = "w"
 
 	MC = frames.keys()
 	print(MC)
 	print(dataname)
-	MC.remove(anaConfig.data)
+	MC.remove(dataname)
 
 	for region in regions: 
 		file = ROOT.TFile.Open(filename.replace(".root", "_"+region+".root"), "RECREATE")
@@ -176,11 +176,11 @@ def WriteWorkspaceDataset(frames, yields, variables, regions, dataname, filename
 
 		# https://root.cern/doc/master/rf408__RDataFrameToRooFit_8py.html
 		roodatasethelper = RooDataSetHelper("data_obs", "data_obs", roovars)
-		dataset = frames[anaConfig.data][regions[0]].Book(ROOT.std.move(roodatasethelper), variablenames)
+		dataset = frames[dataname][regions[0]].Book(ROOT.std.move(roodatasethelper), variablenames)
 		getattr(workspace, "import")(dataset.GetValue())
 		for item in MC: 
 			roodatasethelper = RooDataSetHelper(item, item, roovars)
-			roodataset = frames[anaConfig.data][regions[0]].Book(ROOT.std.move(roodatasethelper), variablenames)
+			roodataset = frames[item][regions[0]].Book(ROOT.std.move(roodatasethelper), variablenames)
 			getattr(workspace, "import")(roodataset.GetValue())
 
 

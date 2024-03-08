@@ -15,9 +15,9 @@ else:
 from ROOT import Ana
 
 
-data = "data" #"dataB2"
+data = "dataD" #"dataB2"
 
-dataWS = "WS"
+dataWS = "dataDWS"
 
 Sig = "Sig"
 

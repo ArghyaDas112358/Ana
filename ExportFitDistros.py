@@ -79,8 +79,8 @@ if __name__ == "__main__":
 	selectioneffs = ReadEffs(Ana.folder+"/Expectedyields.json")
 	yields = MultiplyFinalEffs(selectioneffs, effs)
 
-	#WriteWorkspace(frames, effs, anaConfig.variables, ["baseline", "all"], anaConfig.data, "workspaceFromExportHistsUpdate.root")
-	WriteWorkspaceDataset(frames, effs, anaConfig.variables, ["baseline"], anaConfig.data, "workspaceFromExportHistsUpdate.root")
+	WriteWorkspace(frames, effs, anaConfig.variables, ["baseline", "all"], anaConfig.data, "workspaceFromExportHistsUpdate.root")
+	#WriteWorkspaceDataset(frames, effs, anaConfig.variables, ["baseline"], anaConfig.data, "workspaceFromExportHistsUpdate.root")
 
 	Ana.filemanager.CloseAll()
 

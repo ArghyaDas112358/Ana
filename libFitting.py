@@ -140,6 +140,56 @@ def WriteWorkspace(frames, yields, variables, regions, dataname, filename="works
 		file.Close()
 
 
+def WriteWorkspaceDataset(frames, yields, variables, regions, dataname, filename="workspace.root"): 
+	from ROOT import RooRealVar, RooDataHist, RooArgSet, RooDataSetHelper
+	from ROOT import Ana
+	import anaConfig
+
+	workspacename = "w"
+
+	MC = frames.keys()
+	print(MC)
+	print(dataname)
+	MC.remove(anaConfig.data)
+
+	for region in regions: 
+		file = ROOT.TFile.Open(filename.replace(".root", "_"+region+".root"), "RECREATE")
+		workspace = ROOT.RooWorkspace(workspacename)
+
+		roovariables = []
+		variablenames = ()
+		roovars = RooArgSet()
+		for variable in variables: 
+			
+			# Creating the variable on which we fit
+			binning = Ana.binning[variable]
+			var = RooRealVar(variable, variable, binning.fXLow, binning.fXUp)
+			roovariables.append(var)
+			variablenames += (variable, )
+			roovars.add(var)
+			ROOT.SetOwnership(var, 0)
+
+
+		print(variablenames)
+		print(roovars)
+
+
+		# https://root.cern/doc/master/rf408__RDataFrameToRooFit_8py.html
+		roodatasethelper = RooDataSetHelper("data_obs", "data_obs", roovars)
+		dataset = frames[anaConfig.data][regions[0]].Book(ROOT.std.move(roodatasethelper), variablenames)
+		getattr(workspace, "import")(dataset.GetValue())
+		for item in MC: 
+			roodatasethelper = RooDataSetHelper(item, item, roovars)
+			roodataset = frames[anaConfig.data][regions[0]].Book(ROOT.std.move(roodatasethelper), variablenames)
+			getattr(workspace, "import")(roodataset.GetValue())
+
+
+		workspace.Write()
+
+		file.Write()
+		file.Close()
+
+
 def WriteWorkspaceRooType(frames, yields, variables, regions, dataname, filename="workspace.root", workspacename="w"): 
 	from ROOT import RooRealVar, RooDataHist, RooArgSet
 	from ROOT import Ana

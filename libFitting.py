@@ -8,7 +8,7 @@ import ROOT
 def WriteDatacard(frames, yields, variables, regions, dataname, datacardname="datacard.txt", workspacefile="workspace.root", workspacename="w"): 
 	from datetime import datetime
 	from ROOT import RooRealVar, RooArgSet, RooWorkspace, RooDataHist
-	MC = frames.keys()
+	MC = list(frames.keys())
 	MC.remove(dataname)
 	variable = "b_tau_rhomass1"
 
@@ -286,7 +286,7 @@ def WriteDatacardSimple(frames, yields, variables, regions, fitvariable, datanam
 	import os, copy
 	from datetime import datetime
 	from ROOT import RooRealVar, RooArgSet, RooWorkspace, RooDataHist
-	MC = copy.deepcopy(frames.keys())
+	MC = copy.deepcopy(list(frames.keys()))
 	MC.remove(dataname)
 	print(MC)
 
@@ -294,19 +294,19 @@ def WriteDatacardSimple(frames, yields, variables, regions, fitvariable, datanam
 		datacard.write("# Datacard generated automatically with {}{} on {}.\n".format(os.getcwd(), __file__, datetime.today().strftime("%d.%m.%y %H:%M:%S")))
 		datacard.write("# Simple fit \n\n")
 		datacard.write("imax {}\n".format(len(regions)))
-		datacard.write("jmax {}\n".format(len(MC)))
+		datacard.write("jmax {}\n".format(len(MC)-1))
 		datacard.write("kmax {}\n".format(0)) # For now no systematics
 		datacard.write("\n"+"-"*50+"\n")
 
 		datacard.write("# Shapes and RooFit workspace\n")
 		for region in regions: 
 			# Writing the data shapes for each region
-			name = "data_obs_{}".format(region)
-			datacard.write("shapes data_obs {} {} {}\n".format(region, workspacefile, workspacename+":{}".format(name)))
+			name = "data_obs" #"data_obs_{}".format(region)
+			datacard.write("shapes data_obs {} {} {}\n".format(region, workspacefile, region+"/{}".format(name)))
 			# Writing the MC shapes 
 			for item in MC: 
-				histname = item+"_"+region
-				datacard.write("shapes {} {} {} {}\n".format(item, region, workspacefile, workspacename+":"+histname))
+				histname = item #+"_"+region
+				datacard.write("shapes {} {} {} {}\n".format(item, region, workspacefile, region+"/"+histname))
 		datacard.write("\n"+"-"*50+"\n")
 		
 		datacard.write("# Observed events (data)\n")

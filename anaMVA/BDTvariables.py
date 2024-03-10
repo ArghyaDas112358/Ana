@@ -112,6 +112,44 @@ features_save = [("D0_vprob", "F"),
 	]
 
 
+"""
+features_save = [("D0_vprob", "F"), 
+	#("Dstar_pt", "F"), ("Dstar_eta", "F"), ("Dstar_phi", "F"), 
+	("Dstar_vprob", "F"), ("Dstar_fl", "F"), ("Dstar_fsig", "F"), 
+	("b_tau_fl", "F"), ("b_tau_fsig", "F"), ("b_tau_vprob", "F"), 
+	("b_tau_lip", "F"), 
+	("b_tau_alpha", "F"), ("b_tau_legacyMaxdr", "F"), 
+	("b_tau_sumdnn", "F"), 
+	("b_B_pt", "F"), ("b_B_eta", "F"), ("b_B_phi", "F"), 
+	("b_B_fl", "F"), ("b_B_vprob", "F"), 
+	("b_B_pvip", "F"), 
+	("b_B_fsig", "F"), 
+	("b_B_r_second", "F"), 
+	#("BsDstarTauNu_k_charge", "F"), ("BsDstarTauNu_pi_charge", "F"), ("BsDstarTauNu_spi_charge", "F"), 
+	]
+"""
+
+features_save = [("D0_vprob", "F"), ("D0_fl", "F"), ("D0_fsig", "F"),
+	#("Dstar_pt", "F"), ("Dstar_eta", "F"), ("Dstar_phi", "F"), 
+	("Dstar_vprob", "F"), ("Dstar_fl", "F"), ("Dstar_fsig", "F"), 
+	("b_tau_fl", "F"), ("b_tau_fsig", "F"), ("b_tau_vprob", "F"), 
+	#("b_tau_lip", "F"), 
+	("b_tau_alpha", "F"), ("b_tau_legacyMaxdr", "F"), 
+	("b_tau_sumdnn", "F"), 
+	("b_B_pt", "F"), ("b_B_eta", "F"), ("b_B_phi", "F"), 
+	("b_B_fl", "F"), ("b_B_vprob", "F"), 
+	("b_B_pvip", "F"), 
+	("b_B_fsig", "F"), 
+	("b_B_r_second", "F"), 
+	("b_B_rrh", "F"), 
+	("b_B_rrmu", "F"), 
+	("b_B_rre", "F"), 
+	#("b_B_rrgamma", "F"), 
+	#("b_B_rrpi0", "F"), 
+	#("BsDstarTauNu_k_charge", "F"), ("BsDstarTauNu_pi_charge", "F"), ("BsDstarTauNu_spi_charge", "F"), 
+	]
+
+
 
 
 features = [item[0] for item in features_save]

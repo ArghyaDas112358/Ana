@@ -51,8 +51,8 @@ def loadSamples(features, version, eventFraction=-1) :
 	for key, item in trainingsamples.iteritems(): 
 		filemanager.OpenItem(item)
 	
-	samples["signal"] = pd.DataFrame(ROOT.RDataFrame(filemanager.GetItem(trainingsamples["signal"])).Filter((Ana.samples.at("Sig").cut+Ana.cut["base"]).GetTitle()).Range(int(numEvents)).AsNumpy(features))
-	samples["background"] = pd.DataFrame(ROOT.RDataFrame(filemanager.GetItem(trainingsamples["background"])).Filter((Ana.samples.at("data").cut+Ana.cut["base"]).GetTitle()).Range(int(numEvents)).AsNumpy(features))
+	samples["signal"] = pd.DataFrame(ROOT.RDataFrame(filemanager.GetItem(trainingsamples["signal"])).Filter((Ana.samples.at("Sig").cut+Ana.cut["training"]).GetTitle()).Range(int(numEvents)).AsNumpy(features))
+	samples["background"] = pd.DataFrame(ROOT.RDataFrame(Ana.GetSample(trainingsamples["background"])).Filter((Ana.samples.at("data").cut+Ana.cut["training"]).GetTitle()).Range(int(numEvents)).AsNumpy(features))
 
 
 

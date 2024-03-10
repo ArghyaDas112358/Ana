@@ -332,7 +332,7 @@ def WriteDatacardSimple(frames, yields, variables, regions, fitvariable, datanam
 		count = 1
 		for region in regions: 
 			for item in MC: 
-				if ("data" in item): 
+				if (("data" in item) and not ("WS" in item)): 
 					from uncertainties import ufloat
 					yields[item][region] = ufloat(1., 0.)
 				binstring += "{} ".format(region)
@@ -342,7 +342,7 @@ def WriteDatacardSimple(frames, yields, variables, regions, fitvariable, datanam
 					factor = -1 # make signal negative
 				indexstring += "{} ".format(factor*count)
 				# Hack for normalising WS
-				if (not "data" in item): 
+				if ((not "data" in item) or ("WS" in item)): 
 					expectedstring += "{} ".format(yields[item][region].n)
 				else: 
 					expectedstring += "1. "

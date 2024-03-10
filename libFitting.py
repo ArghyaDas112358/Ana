@@ -103,7 +103,7 @@ def WriteWorkspace(frames, yields, variables, regions, dataname, filename="works
 	from ROOT import RooRealVar, RooDataHist, RooArgSet
 	from ROOT import Ana
 
-	MC = frames.keys()
+	MC = list(frames.keys())
 	print(MC)
 	print(dataname)
 	MC.remove(dataname)

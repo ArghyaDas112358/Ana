@@ -59,12 +59,13 @@ def DumpEffs(effs, path):
 			eff = effs[item]
 			effsForWrite[item] = (eff.n, eff.s)
 	with open(path, "w") as file: 
+		effsForWrote = effsForWrote.encode("utf-8")
 		json.dump(effsForWrite, file, ensure_ascii=False, encoding="utf8", sort_keys=False) #indent=4, 
 
 def ReadEffs(path): 
 	effs = OrderedDict()
 	with open(path, "r") as file: 
-		effsFromFile = json.load(file, encoding="utf8", object_pairs_hook=OrderedDict)
+		effsFromFile = json.load(file, object_pairs_hook=OrderedDict) #json.load(file, encoding="utf8", object_pairs_hook=OrderedDict)
 		for item, content in effsFromFile.items(): 
 				eff = effsFromFile[item]
 				assert(len(eff)==2)

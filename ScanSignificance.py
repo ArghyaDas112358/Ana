@@ -25,6 +25,12 @@ def ScanSignificance(variables, frames, yields, stage = "all"):
 	sigmas = []
 	cutstring = ""
 
+	print("Initial signal: {}".format(S))
+	B = background.Count().GetValue()
+	print("Initial background: {}".format(B))
+	sigma = S/B if (B>0.) else 0.
+	print("Significance: {}".format(sigma))
+
 
 	for variable, inverted in variables: 
 		#print(variable)
@@ -64,7 +70,21 @@ def ScanSignificance(variables, frames, yields, stage = "all"):
 
 		#fom, maxsig, cutvalue = GetFom(signal, background, variable)
 		
-		if (not options.perm): print("\nMaximum significance for variable {} of {} with cut at value {}, auc {}, S: {}, B: {}".format(variable, sigma, cutvalue, auc, S, N))
+		if (not options.perm and options.chain): print("\nMaximum significance for variable {} of {} with cut at value {}, auc {}, S: {}, B: {}".format(variable, sigma, cutvalue, auc, S, N))
+
+		if (not options.perm and not options.chain): 
+			cut = "{}{}{}".format(variable, ">" if inverted else "<", cutvalue)
+			actualsignal = signal.Filter(cut)
+			actualbackground = background.Filter(cut)
+			actualnsig = actualsignal.Count().GetValue()
+			if (actualnsig == 0): 
+				eff = 0.
+			else: 
+				eff = float(actualnsig)/float(Nsig)
+			#print("S: {}, eff: {}, n: {}, N: {}".format(S, eff, nsig, Nsig))
+			actualS = S*eff
+			actualB = actualbackground.Count().GetValue()
+			print("\nMaximum significance for variable {} of {} with cut at value {}, auc {}, S: {}, B: {}".format(variable, sigma, cutvalue, auc, actualS, actualB))
 
 		if (options.save): 
 			canvas = TCanvas("canvas", "canvas", 1600, 600)
@@ -121,11 +141,13 @@ outputfolder = "./plots/"+options.out+"/"
 
 os.system("mkdir -p "+outputfolder)
 
+region = "all"
 
 postfix = "" #"_DNN_m"
 if (options.denom): 
 	anaConfig.Denominator()
 	postfix = "_DNN"
+	region = "mw"
 
 		
 Ana.Init(options.version, options.denom)
@@ -138,16 +160,20 @@ for item in samples:
 
 frames, effs = PrepareSamples(list(sample.values()))
 
+print(Ana.folder)
+print(region)
+
 #print(frames)
 
 
-variables = [("b_B_nh", 0), ("b_B_nmu", 0), ("b_B_ne", 0), ("b_B_npi0", 0), ("b_B_ngamma", 0), ("Dstar_vprob", 1)] #"b_tau_m", "mvaScore", "b_tau_min_dr_mu", "b_tau_alpha", "b_B_fsig", "b_B_m", "b_B_nmu", "b_B_nh", "b_B_ne", "b_B_npi0", "b_B_ngamma", "Dstar_vprob"
+variables = [("b_tau_min_dr_mu", 1), ("b_tau_alpha", 1), ("b_B_fsig", 1), ("b_B_m", 1), ("mvaScore", 0), ("b_B_m", 0), ("b_B_nmu", 0), ("b_B_nh", 0), ("b_B_ne", 0), ("b_B_npi0", 0), ("b_B_ngamma", 0), ("Dstar_vprob", 1)] #"b_tau_m", "mvaScore", "b_tau_min_dr_mu", "b_tau_alpha", "b_B_fsig", "b_B_m", "b_B_nmu", "b_B_nh", "b_B_ne", "b_B_npi0", "b_B_ngamma", "Dstar_vprob"
 #("b_tau_min_dr_mu", 1), ("b_tau_alpha", 1), ("b_B_fsig", 1), ("b_B_m", 1), ("b_B_m", 0), ("b_B_nmu", 0), ("b_B_nh", 0), ("b_B_ne", 0), ("b_B_npi0", 0), ("b_B_ngamma", 0), ("Dstar_vprob", 1)
+#("b_B_nh", 0), ("b_B_nmu", 0), ("b_B_ne", 0), ("b_B_npi0", 0), ("b_B_ngamma", 0), ("Dstar_vprob", 1)
 
 yields = ReadEffs(Ana.folder+"/Expectedyields.json")
 
-finalyields = MultiplyEffs(yields, effs, "mw")
-print(effs[sample[anaConfig.Sig]]["mw"])
+finalyields = MultiplyEffs(yields, effs, region)
+print(effs[sample[anaConfig.Sig]][region])
 print(finalyields)
 print("Yield: {}".format(finalyields[anaConfig.Sig]))
 
@@ -170,7 +196,7 @@ if (options.perm):
 	print("Best significance of {} with cut: {}".format(bestcut[0], bestcut[1]))
 
 else: 
-	ScanSignificance(variables, frames, finalyields, "mw")
+	ScanSignificance(variables, frames, finalyields, region)
 
 
 Ana.filemanager.CloseAll()

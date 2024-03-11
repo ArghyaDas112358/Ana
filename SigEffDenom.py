@@ -91,15 +91,25 @@ if __name__ == "__main__":
 			continue
 		vec = file.Get("ntuplizer/EffUpdateTau")
 		offlineeff = getOfflineEff(vec)
-		print(offlineeff)
+		#print(offlineeff)
 
 		effs[sample] = filtereffs[sample]*eff*offlineeff 
 
-	
-	Eff = forcedbr["B0toDstar3pi"]*effs["B0toDstar3pi"] + forcedbr["B0toDstarrho0pi"]*effs["B0toDstarrho0pi"]+(forcedbr["B0toDstar3pitotal"]-forcedbr["B0toDstar3pi"])*effs["B0toDstara1"]
+		print("Efficiency: {}".format(effs[sample]))
+
+
+	Br3pi = forcedbr["B0toDstar3pi"]
+	Brrho0pi = forcedbr["B0toDstarrho0pi"]
+	Bra1 = (forcedbr["B0toDstar3pitotal"]-forcedbr["B0toDstar3pi"]-forcedbr["B0toDstarrho0pi"])
+
+	Eff = Br3pi*effs["B0toDstar3pi"] + Brrho0pi*effs["B0toDstarrho0pi"]+Bra1*effs["B0toDstara1"]
 			
 
 	print("Denominator signal efficiency: {}".format(Eff))
+
+	print("Denominator 3pi efficiency: {}".format(forcedbr["B0toDstar3pi"]*effs["B0toDstar3pi"]))
+	print("Denominator rho0 pi efficiency: {}".format(forcedbr["B0toDstarrho0pi"]*effs["B0toDstarrho0pi"]))
+	print("Denominator a1 efficiency: {}".format(forcedbr["B0toDstara1"]*effs["B0toDstara1"]))
 
 	Ana.filemanager.CloseAll()
 

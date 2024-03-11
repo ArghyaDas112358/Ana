@@ -672,14 +672,14 @@ namespace Ana
 		if (!denominator) 
 		{
 			cut.emplace(std::make_pair("training", "(b_B_fsig>2.)"));
-			cut.emplace(std::make_pair("base", "(b_tau_m<1.7)&&(b_B_m>3.)&&(b_B_fsig>2.)&&(mvaScore>0.3)")); // &&b_B_nmu<1&&b_B_ne<1&&b_B_nh<3 &&(b_tau_min_dr_mu>0.5)&&(b_tau_alpha>0)Dstar_vprob>0.1 (b_tau_m<1.7)&&(mvaScore>0.3)&&(b_tau_min_dr_mu>0.5)&&(b_tau_alpha>0)&&(b_B_fsig>2.)&&b_B_m>3.&&b_B_nmu<1&&b_B_nh<1&&b_B_ne<1&&(b_B_npi0+b_B_ngamma)<2&&Dstar_vprob>0.1       (b_tau_m<1.7)&&(mvaScore>0.7)&&(b_tau_min_dr_mu>0.5)&&(b_tau_alpha>0)&&(D0_fsig>3.)&&(b_B_m>3.)     (b_tau_m<1.7)&&(b_tau_min_dr_mu>0.5)&&(b_tau_alpha>0)&&(D0_fsig>3.)&&(b_B_m>3.) //&&(b_tau_min_dr_mu>0.5)&&(b_tau_min_dr_e>0.5)//&& (b_B_q2 > 6.) // (b_Ds_vprob>0.1) && (b_D0_vprob>0.1) && (mvaScore>-2.) && (b_B_mu_alpha > 1.) &&((b_tau_m_KKpi1>2.)||(b_tau_m_KKpi1<1.9))&&((b_tau_m_KKpi2>2.)||(b_tau_m_KKpi2<1.9)) &&(b_tau_min_dr_mu>0.5)&&(b_tau_min_dr_e>0.5)&&(b_tau_alpha>0) (b_tau_m<1.7)&&(b_tau_alpha>0)&&(D0_fsig>3.)&&(b_B_m>3.)&&(b_tau_vtx4trkProb<0.2)
+			cut.emplace(std::make_pair("base", "(b_tau_m<1.7)&&(b_B_m>3.)&&(b_B_fsig>2.)&&b_B_nmu<1&&b_B_ne<1&&b_B_nh<1&&(mvaScore>-0.7)&&Dstar_vprob>0.1&&(b_tau_alpha>0)&&(b_tau_min_dr_mu>0.5)&&b_tau_fsig>3")); // &&b_B_nmu<1&&b_B_ne<1&&b_B_nh<3 &&(b_tau_min_dr_mu>0.5)&&(b_tau_alpha>0)Dstar_vprob>0.1 (b_tau_m<1.7)&&(mvaScore>0.3)&&(b_tau_min_dr_mu>0.5)&&(b_tau_alpha>0)&&(b_B_fsig>2.)&&b_B_m>3.&&b_B_nmu<1&&b_B_nh<1&&b_B_ne<1&&(b_B_npi0+b_B_ngamma)<2&&Dstar_vprob>0.1       (b_tau_m<1.7)&&(mvaScore>0.7)&&(b_tau_min_dr_mu>0.5)&&(b_tau_alpha>0)&&(D0_fsig>3.)&&(b_B_m>3.)     (b_tau_m<1.7)&&(b_tau_min_dr_mu>0.5)&&(b_tau_alpha>0)&&(D0_fsig>3.)&&(b_B_m>3.) //&&(b_tau_min_dr_mu>0.5)&&(b_tau_min_dr_e>0.5)//&& (b_B_q2 > 6.) // (b_Ds_vprob>0.1) && (b_D0_vprob>0.1) && (mvaScore>-2.) && (b_B_mu_alpha > 1.) &&((b_tau_m_KKpi1>2.)||(b_tau_m_KKpi1<1.9))&&((b_tau_m_KKpi2>2.)||(b_tau_m_KKpi2<1.9)) &&(b_tau_min_dr_mu>0.5)&&(b_tau_min_dr_e>0.5)&&(b_tau_alpha>0) (b_tau_m<1.7)&&(b_tau_alpha>0)&&(D0_fsig>3.)&&(b_B_m>3.)&&(b_tau_vtx4trkProb<0.2)
 			cut.emplace(std::make_pair("SR", cut["base"]+TCut(TString::Format("mvaScore>=%f", mvaCutSR)))); 
 			cut.emplace(std::make_pair("SB", cut["base"]+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutSB, mvaCutSR)))); 
 			cut.emplace(std::make_pair("CR", cut["base"]+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutCR, mvaCutSB)))); 
 		}
 		else 
 		{
-			cut.emplace(std::make_pair("base", "b_B_m>0.&&b_B_nmu<2&&b_B_nh<15&&b_B_ne<1&&b_B_npi0<15&&b_B_fsig>2")); //&&b_B_mm2<1.&&pttau_B_fl>0.2 &&b_B_mm2<1.&&pttau_B_fsig>3
+			cut.emplace(std::make_pair("base", "b_B_m>0.&&b_B_nmu<1&&b_B_nh<3&&b_B_ne<1&&b_B_fsig>2")); //&&b_B_npi0<15 &&b_B_mm2<1.&&pttau_B_fl>0.2 &&b_B_mm2<1.&&pttau_B_fsig>3
 			cut.emplace(std::make_pair("mw", "b_B_m>5.15&&b_B_m<5.4&&b_B_fsig>2.&&b_B_nmu<1&&b_B_ne<1&&b_B_nh<3")); //&&b_B_npi0<3&&pttau_B_ngamma<5
 			// superclean: pttau_B_m>0.&&pttau_B_nmu<1&&pttau_B_nh<1&&pttau_B_ne<1&&(pttau_B_npi0+pttau_B_ngamma)<2&&pttau_B_mm2<1.&&pttau_B_fl>0.2 (or with fsig > 7.)
 		}
@@ -727,7 +727,7 @@ namespace Ana
 			{"v6.8", "./anaMVA/NewIsoWithCutsvsdata/model_optimized/weights.xml"}, //./anaMVA/NewIsoVariablesAgainstWS/model_optimized/weights.xml" ./anaMVA/NewIsoVariables/model_optimized/weights.xml
 			{"v6.9", "./anaMVA/NewFixTauFL/model_optimized/weights.xml"}, //LatestVsData
 			{"v6.95", "./anaMVA/TrimmedVariablesWS/model_optimized/weights.xml"}, //LatestVsData
-			{"v7", "./anaMVA/trainingv7BvariablesonB/model_optimized/weights.xml"} //trainingv7onD1
+			{"v7", "./anaMVA/withIsolation/model_optimized/weights.xml"} //trainingv7onD1
 		}; 
 
 		//legends = {{"Sig", "signal"}, {"SigPart", "part. signal"}, {"B0toDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"BkgDstarDs", "B^{0}#rightarrowD*D_{s}"}, {"B0toDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstarDsstar", "B^{0}#rightarrowD*D*_{s}"}, {"BkgDstara1", "B^{0}#rightarrowD*a_{1}"}, {"B0toDstar3pi", "B^{0}#rightarrowD^{*}3pi"}, {"B0toDstarD", "B^{0}#rightarrowD^{*}D"}, {"ButoDstarDK", "B^{+}#rightarrowD^{*}DK"}, {"B0toDstarD0K", "B^{0}#rightarrowD^{*}D^{0}K"},{"WS", "|q_{B}| = 2  WS"}, {"WSTau", "|q_{#tau}| = 3  WS"}, {"dataD2WS", "|q_{B}|=2 WS"}, {"dataD2TauWS", "|q_{#tau}|=3 WS"}}; 

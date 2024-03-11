@@ -90,8 +90,8 @@ if __name__ == "__main__":
 
 		selectioneffs = ReadEffs(Ana.folder+"/Expectedyields.json")
 		selectioneffs["dataB2WS"] = ufloat(1.39e-5*-12.0*7*8, 0.)
-		selectioneffs["dataDBWS"] = ufloat(1.39e-5*-12.0*11*3.3, 0.)
-		selectioneffs["WS"] = ufloat(310000.,0.)
+		selectioneffs["dataDWS"] = ufloat(1.39e-5*-12.0*11*3.3*1.5, 0.)
+		selectioneffs["WS"] = ufloat(310000,0.)
 		if (options.denom): 
 			selectioneffs["WS"] = ufloat(35000.,0.)
 

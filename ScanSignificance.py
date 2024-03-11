@@ -14,6 +14,7 @@ from libEfficiencies import ReadEffs, MultiplyEffs
 
 
 def ScanSignificance(variables, frames, yields, stage = "all"): 
+	from math import sqrt
 	cutsig = (Ana.cut["base"]+Ana.samples.at("Sig").cut).GetTitle()
 	cutbkg = (Ana.cut["base"]+Ana.samples.at("data").cut).GetTitle()
 
@@ -28,7 +29,7 @@ def ScanSignificance(variables, frames, yields, stage = "all"):
 	print("Initial signal: {}".format(S))
 	B = background.Count().GetValue()
 	print("Initial background: {}".format(B))
-	sigma = S/B if (B>0.) else 0.
+	sigma = S/sqrt(B) if (B>0.) else 0.
 	print("Significance: {}".format(sigma))
 
 

@@ -25,7 +25,7 @@ samples = [Sig, data, "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstar
 
 regions = ["SR", "CR", "SB"]
 
-variables = ["b_tau_rhomass1", "b_tau_rhomass2", "b_B_q2", "b_B_m", "b_tau_m"]
+variables = ["b_B_q2", "b_B_m", "b_tau_m", "b_B_mm2"] #"b_tau_rhomass1", "b_tau_rhomass2", 
 
 fitvariables = ["b_B_m"]
 

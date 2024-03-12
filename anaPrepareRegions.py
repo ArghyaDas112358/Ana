@@ -93,7 +93,7 @@ def PrepareRegionsSimple():
 	return frames
 
 
-def PrepareSamples(samplelist = anaConfig.samples): 
+def PrepareSamples(samplelist = anaConfig.samples, externalcut = ""): 
 	samples = {}
 	frames = collections.defaultdict(dict)
 
@@ -102,9 +102,9 @@ def PrepareSamples(samplelist = anaConfig.samples):
 		sample = Ana.GetSample(item)
 		print(sample.GetEntries())
 		samples[item] = ROOT.RDataFrame(sample) #ROOT.RDataFrame(Ana.filemanager.GetItem(item))
-		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(GetBaseName(item)).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."
+		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(GetBaseName(item)).cut).GetTitle()+"&&({})".format(externalcut)) #Ana.cut["base"].GetTitle() "1."
 		frames[item]["all"] = samples[item].Filter("1.")
-		frames[item]["mw"] =  samples[item].Filter((Ana.cut["mw"]+Ana.samples.at(item).cut).GetTitle())
+		frames[item]["mw"] =  samples[item].Filter((Ana.cut["mw"]+Ana.samples.at(item).cut).GetTitle()+"&&({})".format(externalcut))
 
 	from libEfficiencies import ComputeEfficiencies
 	effs = ComputeEfficiencies(frames)

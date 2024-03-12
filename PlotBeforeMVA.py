@@ -25,6 +25,7 @@ if __name__ == "__main__":
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
 	parser.add_argument('-d', "--denom", dest="denom", action="store_true", default=False, help="Denominator analysis")
 	parser.add_argument('-f', "--full", dest="allvars", action="store_true", default=False, help="Plot all variables")
+	parser.add_argument("-g", "--cut", dest="cut", action="store", type=str, default="", help="Custom cut to be included added")
 	parser.add_argument("--comp", dest="comp", action="store_true", default=False, help="Plot comparisons")
 	parser.add_argument("--stack", dest="stack", action="store_true", default=True, help="Plot stacked distributions")
 	
@@ -70,7 +71,7 @@ if __name__ == "__main__":
 
 
 
-	frames, effs = PrepareSamples(list(sample.values()))
+	frames, effs = PrepareSamples(list(sample.values()), options.cut)
 
 	if options.debug: print(frames)
 

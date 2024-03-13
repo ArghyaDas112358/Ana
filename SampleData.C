@@ -237,6 +237,27 @@ namespace Ana {
 				"", 
 				{"ButoDstarDK"})
 			}, 
+			{"ButoDstarpipipipi0", SampleData(
+				mycolors[4], 
+				"B^{+}#rightarrowD*3#pi#pi^{0}", 
+				genMatchCut, 
+				"", 
+				{"ButoDstarpipipipi0"})
+			}, 
+			{"ButoDstarpipipi", SampleData(
+				mycolors[4], 
+				"B^{+}#rightarrowD*3#pi", 
+				genMatchCut, 
+				"", 
+				{"ButoDstarpipipi"})
+			}, 
+			{"ButoDstarpipipi0", SampleData(
+				mycolors[4], 
+				"B^{+}#rightarrowD*#pi#pi#pi^{0}", 
+				genMatchCut, 
+				"", 
+				{"ButoDstarpipipi0"})
+			}, 
 			{"B0toDstarDsX", SampleData(
 				mycolors[4], 
 				"B^{+}#rightarrowD*D_{s}X", 

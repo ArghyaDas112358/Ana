@@ -67,6 +67,6 @@ def Denominator():
 	Sig = "B0toDstarrho0pi"
 	global samples
 	global data
-	samples = [data, Sig, "B0toDstar3pi", "B0toDstar5pi", "B0toDstar3pipi0", "B0toDstara1", "B0toDstarrho0pi", "B0toDstarKpipi", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarKpipi", "B0toDstarKKstar"]
+	samples = [data, Sig, "B0toDstar3pi", "B0toDstar5pi", "B0toDstar3pipi0", "B0toDstara1", "B0toDstarrho0pi", "B0toDstarKpipi", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarKpipi", "B0toDstarKKstar", "ButoDstarpipipipi0", "ButoDstarpipipi"]
 	import anaPlotting 
 	anaPlotting.normalisebinwidth = True

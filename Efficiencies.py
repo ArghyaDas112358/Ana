@@ -10,7 +10,8 @@ from uncertainties.umath import *
 import os # TODO: remove 
 
 
-ROOT.gROOT.LoadMacro("FileFlow.h")
+#ROOT.gROOT.LoadMacro("FileFlow.h")
+import anaConfig
 
 from ROOT import Ana, TFile
 
@@ -33,7 +34,7 @@ if __name__ == "__main__":
 	parser.add_argument("-l", "--lumi", dest="lumi", action="store", type=float, default=41.5, help="Luminostiy processed")
 	parser.add_argument("-e", "--object", dest="object", action="store", type=str, default="ntuplizer/EffCalc", help="Efficiency info object within file")
 	parser.add_argument("-g", "--cut", dest="cut", action="store", type=str, default="1", help="Custom cut to be included in eff calculation")
-	parser.add_argument("-t", "--table", dest="table", action="store", type=str, default="/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/Presentations/Presentation_24_2_27/efftable.tex", help="Latex fragment with summary table")
+	parser.add_argument("-t", "--table", dest="table", action="store", type=str, default="/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/Presentations/PresentationVFS_24_3_12/efftable.tex", help="Latex fragment with summary table")
 	parser.add_argument("-o", "--out", dest="out", action="store", type=str, default="Expectedyields.json", help="Path for json with yield info")
 	parser.add_argument("-n", "--target", dest="target", action="store", type=float, default=10000., help="Target number of events after selection")
 	parser.add_argument('-m', "--denom", dest="denom", action="store_true", default=False, help="Denominator analysis")
@@ -49,6 +50,8 @@ if __name__ == "__main__":
 
 	finalbr = ReadEffs("./data/etc/FinalStateBranchingFractionsGenerated.json")
 
+	if (options.denom): anaConfig.Denominator()
+
 	#print(constants)
 
 	#print(filtereffs)
@@ -60,7 +63,8 @@ if __name__ == "__main__":
 	expected = {}
 
 
-	samples = ["Sig", "B0toDstarD0K", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarDs1", "B0toDstarD0Kstar", "B0toDstarDs0star", "B0toDstara1", "B0toDstarD", "B0toDstar3pi", "B0toDstar3pipi0", "B0toDstar5pi", "ButoDstarDK", "B0toDstarDsX", "ButoDstarXc", "ButoDstarDK", "BstoDD", "B0toDstarrho0pi", "B0toDstarKKstar", "B0toDstarKpipi"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
+	samples = anaConfig.samples #["Sig", "B0toDstarD0K", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarDs1", "B0toDstarD0Kstar", "B0toDstarDs0star", "B0toDstara1", "B0toDstarD", "B0toDstar3pi", "B0toDstar3pipi0", "B0toDstar5pi", "ButoDstarDK", "B0toDstarDsX", "ButoDstarXc", "ButoDstarDK", "BstoDD", "B0toDstarrho0pi", "B0toDstarKKstar", "B0toDstarKpipi"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
+	samples.remove(anaConfig.data)
 
 	Ana.Init(options.version, options.denom)
 

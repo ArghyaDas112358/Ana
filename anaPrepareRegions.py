@@ -93,7 +93,7 @@ def PrepareRegionsSimple():
 	return frames
 
 
-def PrepareSamples(samplelist = anaConfig.samples, externalcut = ""): 
+def PrepareSamples(samplelist = anaConfig.samples, externalcut = "1"): 
 	samples = {}
 	frames = collections.defaultdict(dict)
 

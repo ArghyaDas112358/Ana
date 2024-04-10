@@ -48,6 +48,11 @@ while [[ $1 =~ "--" ]]; do # Looping over all arguments, see shift
 			SAMPLELIST=( "${SAMPLELIST[@]}" $2 )
 			shift
 		done
+	elif [[ $1 == "--CUSTWS" ]]; then 
+		while [[ ! $2 =~ "--" ]] && [[ ! -z $2 ]]; do
+			WSPROCLIST=( "${WSPROCLIST[@]}" $2 )
+			shift
+		done
 	elif [[ $1 == "--DENOM" ]]; then
 		COMMAND=processdenominator.sh
 	else 

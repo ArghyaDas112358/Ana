@@ -702,7 +702,12 @@ void UpdateTauDNN(const TString& identifier, const TString& cycle, const bool ws
 		pimped = pimped.Redefine(branch, [](const ROOT::RVec<std::string> &v) {return std::vector<std::string>(v.begin(), v.end());}, {branch}); 
 	}
 
-	const std::vector<std::string> blacklist = {"v_taucandidates", "b_tau"};
+	std::vector<std::string> blacklist = {"v_taucandidates", "b_tau"};
+
+	for (auto item : pimped.GetColumnNames()) 
+	{
+		if (item.rfind("v_", 0) == 0) blacklist.push_back(item); // drop vector branches
+	}
 
 	pimped.Snapshot(filemanager.GetObject(outIndentifier), filemanager.GetFile(outIndentifier), purgeColumns(pimped.GetColumnNames(), blacklist)); 
 

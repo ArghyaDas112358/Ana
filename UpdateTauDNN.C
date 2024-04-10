@@ -556,11 +556,14 @@ void UpdateTauDNN(const TString& identifier, const TString& cycle, const bool ws
 	{
 		std::sort(collection.begin(), collection.end(), SortTauCandidates); //std::greater<>()
 
-		int charge = ws ? q : -q; 
+		//int charge = ws ? q : -q; 
 
 		for (auto candidate : collection) 
 		{
-			if (candidate.q == charge) return candidate; // candidate.m < 1.7 candidate.q == q
+			int select = (!ws && (candidate.q == -q)) || (ws && (candidate.q != -q)); 
+			//std::cout << "Selection " << ws << " (" << candidate.q << ", " << q << ") : " << select << std::endl; 
+
+			if (select) return candidate; // candidate.m < 1.7 candidate.q == q
 		}
 
 		return Tau(); // This wil return an invalid tau

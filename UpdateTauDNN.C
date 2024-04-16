@@ -707,6 +707,7 @@ void UpdateTauDNN(const TString& identifier, const TString& cycle, const bool ws
 	for (auto item : pimped.GetColumnNames()) 
 	{
 		if (item.rfind("v_", 0) == 0) blacklist.push_back(item); // drop vector branches
+		if (item.rfind("pttau_", 0) == 0) blacklist.push_back(item); // drop vector branches
 	}
 
 	pimped.Snapshot(filemanager.GetObject(outIndentifier), filemanager.GetFile(outIndentifier), purgeColumns(pimped.GetColumnNames(), blacklist)); 

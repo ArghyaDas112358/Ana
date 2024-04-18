@@ -33,6 +33,19 @@ class EventLoopFactory
 		etaphi->Draw();
 		canvas->Draw();
 
+		K = TMarker(0., 0., 20);
+		K.SetMarkerColor(kOrange+7);
+		pi = TMarker(0., 0., 20);
+		pi.SetMarkerColor(kGreen+2);
+		pis = TMarker(0., 0., 20);
+		pis.SetMarkerColor(kGreen+4);
+		pi1 = TMarker(0., 0., 20);
+		pi1.SetMarkerColor(kBlue+1);
+		pi2 = TMarker(0., 0., 20);
+		pi2.SetMarkerColor(kBlue+1);
+		pi3 = TMarker(0., 0., 20);
+		pi3.SetMarkerColor(kBlue+1);
+
 		
 
 		// Event string printing
@@ -112,10 +125,26 @@ class EventLoopFactory
 		std::cout << "Plotting eta phi " << Keta << ", " << Kphi << std::endl;
 		//etaphi->Reset();
 		//etaphi->Fill(Keta, Kphi); 
-		delete K; 
-		K = new TMarker(Keta, Kphi, 20); 
-		K->SetMarkerColor(kOrange+7);
-		K->Draw(); 
+		//auto  = new TMarker(Keta, Kphi, 20); 
+		//K->SetMarkerColor(kOrange+7);
+		K.SetX(Keta);
+		K.SetY(Kphi);
+		K.Draw(); 
+		pi.SetX(pieta);
+		pi.SetY(piphi);
+		pi.Draw(); 
+		pis.SetX(piseta);
+		pis.SetY(pisphi);
+		pis.Draw(); 
+		pi1.SetX(pi1eta);
+		pi1.SetY(pi1phi);
+		pi1.Draw(); 
+		pi2.SetX(pi2eta);
+		pi2.SetY(pi2phi);
+		pi2.Draw(); 
+		pi3.SetX(pi3eta);
+		pi3.SetY(pi3phi);
+		pi3.Draw(); 
 		canvas->Modified();
     	canvas->Update();
     	gSystem->ProcessEvents();
@@ -151,6 +180,13 @@ class EventLoopFactory
 	TCanvas *canvas = nullptr; 
 	TH2D *etaphi = nullptr; 
 
+	TMarker K; 
+	TMarker pi;
+	TMarker pis;
+	TMarker pi1;
+	TMarker pi2;
+	TMarker pi3;
+
 	float Keta; 
 	float Kphi; 
 	float pieta; 
@@ -163,8 +199,6 @@ class EventLoopFactory
 	float pi2phi; 
 	float pi3eta; 
 	float pi3phi; 
-
-	TMarker *K;
 
 	std::thread plotting; 
 	std::thread pause; 

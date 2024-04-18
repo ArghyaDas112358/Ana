@@ -1,5 +1,6 @@
 #include "TChain.h"
 #include "TFile.h"
+#include "AnaBuildingBlocks.C"
 
 
 
@@ -13,16 +14,46 @@ class EventLoopFactory
 
 	void Initialise() 
 	{
+		canvas = new TCanvas("canvas", "canvas", 800, 600);
+		etaphi = new TH2D("etaphi", "Phase space of the decay;#eta;#phi", 100, -3., 3., 100, -3., 3.); 	
+
+		fTree->SetBranchAddress("D0_keta", &Keta); 
+		fTree->SetBranchAddress("D0_kphi", &Kphi); 
+
+		etaphi->Draw();
+		canvas->Draw();
+
 		
+
 		// Event string printing
-		fTree->SetBranchAddress("pttau_tau_gen1str", &decaystring1); 
-		fTree->SetBranchAddress("pttau_tau_gen2str", &decaystring2); 
-		fTree->SetBranchAddress("pttau_tau_gen3str", &decaystring3); 
+		decaystring = new std::string(); 
+		decaystring1 = new std::string(); 
+		decaystring2 = new std::string(); 
+		decaystring3 = new std::string(); 
+		decaystringK = new std::string(); 
+		decaystringpi = new std::string(); 
+		decaystringspi = new std::string(); 	
+
+		fTree->SetBranchAddress("b_tau_gen1str", &decaystring1); 
+		fTree->SetBranchAddress("b_tau_gen2str", &decaystring2); 
+		fTree->SetBranchAddress("b_tau_gen3str", &decaystring3); 
 		fTree->SetBranchAddress("D0_genkstr", &decaystringK); 
 		fTree->SetBranchAddress("D0_genpistr", &decaystringpi); 
 		fTree->SetBranchAddress("Dstar_genpistr", &decaystringspi); 	
 
 		fTree->SetBranchAddress("genstring", &decaystring); 	
+	}
+
+	~EventLoopFactory() {
+		delete decaystring;
+		delete decaystring1;
+		delete decaystring2;
+		delete decaystring3;
+		delete decaystringK;
+		delete decaystringpi;
+		delete decaystringspi;	
+
+		delete canvas; 
 	}
 
 	void PrintEvents() // Event loop 
@@ -40,10 +71,16 @@ class EventLoopFactory
 			{
 				std::cout << "-"; 
 			}
-			std::cout << endl; 	
+			std::cout << endl << endl; 	
 
 			// Start doing stuff per event
 			PrintDecayString(); 
+			PrintEtaPhiLive(); 
+			//plotting = std::thread(&EventLoopFactory::PrintEtaPhiLive, this); 
+			//plotting.join(); 
+
+			pause = std::thread(&PauseUntilEnter); 
+			pause.join();
 		}
 		std::cout << std::endl << "Analyzed " << max << " events. " << std::endl; 
 	}
@@ -58,6 +95,16 @@ class EventLoopFactory
 		std::cout << "pi1: " << *decaystring1 << std::endl; 
 		std::cout << "pi2: " << *decaystring2 << std::endl; 
 		std::cout << "pi3: " << *decaystring3 << std::endl; 
+	}
+
+	void PrintEtaPhiLive() 
+	{
+		std::cout << "Plotting eta phi " << Keta << ", " << Kphi << std::endl;
+		etaphi->Reset();
+		etaphi->Fill(Keta, Kphi); 
+		canvas->Modified();
+    	canvas->Update();
+    	gSystem->ProcessEvents();
 	}
 
 
@@ -78,13 +125,32 @@ class EventLoopFactory
 	int fMaxNum = -1; 
 
 	// Variables for decay string printing
-	std::string *decaystring = new std::string(); 
-	std::string *decaystring1 = new std::string(); 
-	std::string *decaystring2 = new std::string(); 
-	std::string *decaystring3 = new std::string(); 
-	std::string *decaystringK = new std::string(); 
-	std::string *decaystringpi = new std::string(); 
-	std::string *decaystringspi = new std::string(); 	
+	std::string *decaystring = nullptr; 
+	std::string *decaystring1 = nullptr; 
+	std::string *decaystring2 = nullptr; 
+	std::string *decaystring3 = nullptr; 
+	std::string *decaystringK = nullptr; 
+	std::string *decaystringpi = nullptr; 
+	std::string *decaystringspi = nullptr; 	
 
+	// Variables for eta phi printing
+	TCanvas *canvas = nullptr; 
+	TH2D *etaphi = nullptr; 
+
+	float Keta; 
+	float Kphi; 
+	float pieta; 
+	float piphi; 
+	float piseta; 
+	float pisphi; 
+	float pi1eta; 
+	float pi1phi; 
+	float pi2eta; 
+	float pi2phi; 
+	float pi3eta; 
+	float pi3phi; 
+
+	std::thread plotting; 
+	std::thread pause; 
 };
 

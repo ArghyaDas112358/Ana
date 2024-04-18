@@ -19,6 +19,16 @@ class EventLoopFactory
 
 		fTree->SetBranchAddress("D0_keta", &Keta); 
 		fTree->SetBranchAddress("D0_kphi", &Kphi); 
+		fTree->SetBranchAddress("D0_pieta", &pieta); 
+		fTree->SetBranchAddress("D0_piphi", &piphi); 
+		fTree->SetBranchAddress("Dstar_piseta", &piseta); 
+		fTree->SetBranchAddress("Dstar_pisphi", &pisphi); 
+		fTree->SetBranchAddress("b_tau_pi1eta", &pi1eta); 
+		fTree->SetBranchAddress("b_tau_pi1phi", &pi1phi); 
+		fTree->SetBranchAddress("b_tau_pi2eta", &pi2eta); 
+		fTree->SetBranchAddress("b_tau_pi2phi", &pi2phi); 
+		fTree->SetBranchAddress("b_tau_pi3eta", &pi3eta); 
+		fTree->SetBranchAddress("b_tau_pi3phi", &pi3phi); 
 
 		etaphi->Draw();
 		canvas->Draw();
@@ -100,8 +110,12 @@ class EventLoopFactory
 	void PrintEtaPhiLive() 
 	{
 		std::cout << "Plotting eta phi " << Keta << ", " << Kphi << std::endl;
-		etaphi->Reset();
-		etaphi->Fill(Keta, Kphi); 
+		//etaphi->Reset();
+		//etaphi->Fill(Keta, Kphi); 
+		delete K; 
+		K = new TMarker(Keta, Kphi, 20); 
+		K->SetMarkerColor(kOrange+7);
+		K->Draw(); 
 		canvas->Modified();
     	canvas->Update();
     	gSystem->ProcessEvents();
@@ -149,6 +163,8 @@ class EventLoopFactory
 	float pi2phi; 
 	float pi3eta; 
 	float pi3phi; 
+
+	TMarker *K;
 
 	std::thread plotting; 
 	std::thread pause; 

@@ -15,7 +15,7 @@ class EventLoopFactory
 	void Initialise() 
 	{
 		canvas = new TCanvas("canvas", "canvas", 800, 600);
-		etaphi = new TH2D("etaphi", "Phase space of the decay;#eta;#phi", 100, -3., 3., 100, -3., 3.); 	
+		etaphi = new TH2D("etaphi", "Phase space of the decay;#eta;#phi", 100, -2.5, 2.5, 100, -3.5, 3.5); 
 
 		fTree->SetBranchAddress("D0_keta", &Keta); 
 		fTree->SetBranchAddress("D0_kphi", &Kphi); 

@@ -61,7 +61,7 @@ if __name__ == "__main__":
 	parser.add_argument("-f", "--forcepath", dest="forcepath", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
 	parser.add_argument("--stats", dest="stats", action="store_true", default=False, help="Show stats box in ROOT")
-	parser.add_argument("--max", dest="max", action="store", default=10, help="How many events to plot")
+	parser.add_argument("--max", dest="max", action="store", default=-1, help="How many events to plot")
 	#parser.add_argument("--cache", dest="cache", action="store", type=str, default="./cache/", help="Cached tree for cuts")
 	parser.add_argument("--cache", dest="cache", action="store_true", default=False, help="Cache tree for cuts")
 

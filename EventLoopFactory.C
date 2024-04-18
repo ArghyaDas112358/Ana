@@ -135,7 +135,7 @@ class EventLoopFactory
 
 	void PrintEtaPhiLive() 
 	{
-		std::cout << "Plotting eta phi " << Keta << ", " << Kphi << std::endl;
+		//std::cout << "Plotting eta phi " << Keta << ", " << Kphi << std::endl;
 		//etaphi->Reset();
 		//etaphi->Fill(Keta, Kphi); 
 		//auto  = new TMarker(Keta, Kphi, 20); 

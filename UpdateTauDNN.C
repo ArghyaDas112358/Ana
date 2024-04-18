@@ -320,6 +320,18 @@ Tau SelectTauCandidate(std::vector<Tau> collection, const int q)
 	return Tau(); // This wil return an invalid tau
 }
 
+std::vector<const Tau*> FilterTauCandidates(const std::vector<Tau> collection) 
+{
+	std::vector<const Tau*> filtered; 
+	for (auto element : collection) 
+	{
+		if (element.pt < 3.) continue; 
+		if (element.m > 1.7) continue; 
+		filtered.push_back(&element); 
+	}
+	return filtered; 
+}
+
 Tau SelectGenmatchedTauCandidate(std::vector<Tau> collection) // For taking explicitly candidates in the list that are genmatched with a certain number of pions 
 {
 	// Sort the taus by pT 
@@ -556,6 +568,8 @@ void UpdateTauDNN(const TString& identifier, const TString& cycle, const bool ws
 	{
 		std::sort(collection.begin(), collection.end(), SortTauCandidates); //std::greater<>()
 
+		auto coll = FilterTauCandidates(collection); 
+
 		//int charge = ws ? q : -q; 
 
 		/*for (auto candidate : collection) 
@@ -566,9 +580,9 @@ void UpdateTauDNN(const TString& identifier, const TString& cycle, const bool ws
 			if (select) return candidate; // candidate.m < 1.7 candidate.q == q
 		}*/
 
-		if (collection.size()) 
+		if (coll.size()) 
 		{
-			auto tauCand = collection.at(0); 
+			auto tauCand = *coll.at(0); 
 
 			if (!ws && (tauCand.q == -q)) return tauCand; 
 			else if (ws && (tauCand.q != -q)) return tauCand; 

@@ -30,6 +30,13 @@ class EventLoopFactory
 		fTree->SetBranchAddress("b_tau_pi3eta", &pi3eta); 
 		fTree->SetBranchAddress("b_tau_pi3phi", &pi3phi); 
 
+		fTree->SetBranchAddress("b_B_eta", &Beta); 
+		fTree->SetBranchAddress("b_B_phi", &Bphi); 
+		fTree->SetBranchAddress("Dstar_eta", &Dstareta); 
+		fTree->SetBranchAddress("Dstar_phi", &Dstarphi); 
+		fTree->SetBranchAddress("b_tau_eta", &taueta); 
+		fTree->SetBranchAddress("b_tau_phi", &tauphi); 
+
 		etaphi->Draw();
 		canvas->Draw();
 
@@ -45,6 +52,12 @@ class EventLoopFactory
 		pi2.SetMarkerColor(kBlue+1);
 		pi3 = TMarker(0., 0., 20);
 		pi3.SetMarkerColor(kBlue+1);
+		B = TMarker(0., 0., 5);
+		B.SetMarkerColor(kRed);
+		Dstar = TMarker(0., 0., 4);
+		Dstar.SetMarkerColor(kOrange+4);
+		tau = TMarker(0., 0., 4);
+		tau.SetMarkerColor(kRed+3);
 
 		
 
@@ -145,6 +158,15 @@ class EventLoopFactory
 		pi3.SetX(pi3eta);
 		pi3.SetY(pi3phi);
 		pi3.Draw(); 
+		B.SetX(Beta);
+		B.SetY(Bphi);
+		B.Draw(); 
+		Dstar.SetX(Dstareta);
+		Dstar.SetY(Dstarphi);
+		Dstar.Draw(); 
+		tau.SetX(taueta);
+		tau.SetY(tauphi);
+		tau.Draw(); 
 		canvas->Modified();
     	canvas->Update();
     	gSystem->ProcessEvents();
@@ -186,6 +208,9 @@ class EventLoopFactory
 	TMarker pi1;
 	TMarker pi2;
 	TMarker pi3;
+	TMarker B;
+	TMarker Dstar;
+	TMarker tau;
 
 	float Keta; 
 	float Kphi; 
@@ -199,6 +224,12 @@ class EventLoopFactory
 	float pi2phi; 
 	float pi3eta; 
 	float pi3phi; 
+	float Beta; 
+	float Bphi;
+	float Dstareta;
+	float Dstarphi;
+	float taueta;
+	float tauphi;
 
 	std::thread plotting; 
 	std::thread pause; 

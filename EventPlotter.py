@@ -37,7 +37,7 @@ def PrintEvents(tree, options):
 			ROOT.gROOT.cd(); # Making sure the tree with the cut is memory resident 
 		tree = tree.CopyTree(options.cut)
 
-	eventLoopFactory = ROOT.EventLoopFactory(tree, options.full)
+	eventLoopFactory = ROOT.EventLoopFactory(tree, options.full, options.max)
 	eventLoopFactory.PrintEvents()
 
 	if (cache.open): 
@@ -61,6 +61,7 @@ if __name__ == "__main__":
 	parser.add_argument("-f", "--forcepath", dest="forcepath", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
 	parser.add_argument("--stats", dest="stats", action="store_true", default=False, help="Show stats box in ROOT")
+	parser.add_argument("--max", dest="max", action="store", default=10, help="How many events to plot")
 	#parser.add_argument("--cache", dest="cache", action="store", type=str, default="./cache/", help="Cached tree for cuts")
 	parser.add_argument("--cache", dest="cache", action="store_true", default=False, help="Cache tree for cuts")
 

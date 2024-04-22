@@ -303,10 +303,12 @@ Tau SelectTauCandidate(std::vector<Tau> collection, const int q)
 std::vector<const Tau*> FilterTauCandidates(const std::vector<Tau> collection) 
 {
 	std::vector<const Tau*> filtered; 
-	for (auto element : collection) 
+	for (auto &element : collection) 
 	{
-		if (element.pt < 3.) continue; 
+		//if (element.pt > 3.) continue; 
 		if (element.m > 1.7) continue; 
+		if (element.B_m < 3.) continue;
+		if (element.B_r>1.) continue;
 		filtered.push_back(&element); 
 	}
 	return filtered; 

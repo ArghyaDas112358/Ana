@@ -204,7 +204,7 @@ struct
 
     float measure(const Tau& tau) const 
     {
-    	return tau.pt * tau.sumdnn; 
+    	return tau.pt; // * tau.sumdnn; 
     }
 
 } SortTauCandidates; 
@@ -306,9 +306,11 @@ std::vector<const Tau*> FilterTauCandidates(const std::vector<Tau> collection)
 	for (auto &element : collection) 
 	{
 		//if (element.pt > 3.) continue; 
-		if (element.m > 1.7) continue; 
-		if (element.B_m < 3.) continue;
+		//if (element.m > 1.7) continue; 
+		if (element.fsig < 3.) continue;
+		//if (element.B_m < 3.) continue;
 		if (element.B_r>1.) continue;
+		if (element.B_mu_alpha < 1.) continue;
 		filtered.push_back(&element); 
 	}
 	return filtered; 

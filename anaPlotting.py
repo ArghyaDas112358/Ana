@@ -143,6 +143,8 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 
 			stack = THStack("stack", "Background modelling")
 			hists = {}
+			MCstats = 0.
+			WS = data
 			for component in components: 
 				if "-" in component: 
 					comps = component.split("-")
@@ -167,6 +169,11 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 						histo.Scale(yields[component][region].nominal_value/histo.Integral())
 					elif (yields[component][region].nominal_value != -1.):
 						histo.Scale(-yields[component][region].nominal_value*histo.Integral())
+				if (not "WS" in component):
+					MCstats += histo.Integral()
+				else:
+					WS = histo
+				WS.Scale((data.Integral()-MCstats)/WS.Integral())
 				ROOT.SetOwnership(histo, 0)
 				histo.SetLineStyle(1) # plain
 				histo.SetLineWidth(2)

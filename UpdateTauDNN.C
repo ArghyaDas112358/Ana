@@ -288,7 +288,7 @@ void UpdateEffInfo(const TString& outIdentifier, const TString& effTreeName = "n
 //    			return columns; 
 // }
 
-Tau SelectTauCandidate(std::vector<Tau> collection, const int q) 
+/*Tau SelectTauCandidate(std::vector<Tau> collection, const int q) 
 {
 	std::sort(collection.begin(), collection.end(), SortTauCandidates); //std::greater<>()
 
@@ -312,7 +312,7 @@ std::vector<const Tau*> FilterTauCandidates(const std::vector<Tau> collection)
 		filtered.push_back(&element); 
 	}
 	return filtered; 
-}
+}*/
 
 Tau SelectGenmatchedTauCandidate(std::vector<Tau> collection) // For taking explicitly candidates in the list that are genmatched with a certain number of pions 
 {

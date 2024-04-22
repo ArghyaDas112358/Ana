@@ -298,7 +298,7 @@ void UpdateEffInfo(const TString& outIdentifier, const TString& effTreeName = "n
 	}
 
 	return Tau(); // This wil return an invalid tau
-}
+}*/
 
 std::vector<const Tau*> FilterTauCandidates(const std::vector<Tau> collection) 
 {
@@ -312,7 +312,7 @@ std::vector<const Tau*> FilterTauCandidates(const std::vector<Tau> collection)
 		filtered.push_back(&element); 
 	}
 	return filtered; 
-}*/
+}
 
 Tau SelectGenmatchedTauCandidate(std::vector<Tau> collection) // For taking explicitly candidates in the list that are genmatched with a certain number of pions 
 {

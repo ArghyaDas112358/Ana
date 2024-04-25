@@ -72,6 +72,7 @@ if __name__ == "__main__":
 
 
 	frames, effs = PrepareSamples(list(sample.values()), options.cut)
+	if (not options.denom): print("WS yield {}".format(frames[anaConfig.dataWS]["baseline"].Count().GetValue()))
 
 	if options.debug: print(frames)
 

@@ -70,7 +70,7 @@ namespace Ana
 		{
 			binning = {{"b_tau_rhomass1", {"", "#rho_{12} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
 				{"b_tau_rhomass2", {"", "rho_{23} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
-				{"b_B_m", {"", "B mass;Reconstructed m_{B} [GeV];Counts", nBins, 2., 6.}},
+				{"b_B_m", {"", "B mass;Reconstructed m_{B} [GeV];Counts", 40, 2., 6.}},
 				{"b_B_q2", {"", "q2;q^{2} [GeV];Counts", nBins, 0., 12.}},
 				//{"B_m", {"", ";B mass [GeV];Counts", nBins, 0., 6.}},
 				//{"B_q2", {"", ";B mass [GeV];Counts", nBins, 0., 12.}},

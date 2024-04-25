@@ -45,7 +45,7 @@ def UnrollHist(histo2D, inverted=True):
 	return unrolled
 
 
-def PrepareRegions(sampleslist = anaConfig.samples, nBins = 6, rangeMin = 0.2, rangeMax = 1.5, debug=False): 
+def PrepareRegions(sampleslist = anaConfig.samples, externalcut = "", nBins = 6, rangeMin = 0.2, rangeMax = 1.5, debug=False): 
 	samples = {}
 	frames = collections.defaultdict(dict)
 	histos = collections.defaultdict(dict)
@@ -53,11 +53,11 @@ def PrepareRegions(sampleslist = anaConfig.samples, nBins = 6, rangeMin = 0.2, r
 
 	for item in sampleslist:  
 		samples[item] = ROOT.RDataFrame(Ana.filemanager.GetItem(item, True))
-		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(item).cut).GetTitle()) #Ana.cut["base"].GetTitle() "1."
+		frames[item]["baseline"] =  samples[item].Filter((Ana.cut["base"]+Ana.samples.at(item).cut).GetTitle()+"&&({})".format(externalcut)) #Ana.cut["base"].GetTitle() "1."
 		frames[item]["all"] = samples[item].Filter("1.")
 		#baseline[item]
 		for region in anaConfig.regions: 
-			cut = (Ana.cut[region]+Ana.samples.at(item).cut).GetTitle()
+			cut = (Ana.cut[region]+Ana.samples.at(item).cut).GetTitle()+"&&({})".format(externalcut)
 			#if "WS" in item: 
 			#	cut = Ana.cutstandalone[region].GetTitle()
 			if (debug): print("Using following cut string (from TCut): {}".format(cut))

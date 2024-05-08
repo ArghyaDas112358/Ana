@@ -3,7 +3,7 @@
 
 
 
-void PrintDecayString(TTree *tree, bool fulldecay = false, int maxnum = -1) 
+void PrintDecayString(TTree *tree, bool fulldecay = false, int maxnum = -1, bool skipincomplete = false) 
 {
 
 	std::string *decaystring = new std::string(); 
@@ -31,6 +31,8 @@ void PrintDecayString(TTree *tree, bool fulldecay = false, int maxnum = -1)
 	for (int i=0; i<max; i++) 
 	{
 		tree->GetEntry(i);
+
+		if (skipincomplete && (*decaystringK == "" || *decaystringpi == "" || *decaystringspi == "" || *decaystring1 == "" || *decaystring2 == "" || *decaystring3 == "" || *decaystring1 == "|" || *decaystring2 == "|" || *decaystring3 == "|" )) continue; 
 
 		for (unsigned int i=0; i<45; i++) 
 		{

@@ -112,7 +112,8 @@ def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields,
 
 def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, outfolder, drawlegend=True): 
 	# Plotting distributions over each other 
-	from anaPrepareRegions import GetBaseName
+	from anaPrepareRegions import GetBaseName, GetABCDcomponent
+	import anaConfig
 	#outfolder+="stacked/"
 	os.system("mkdir -p "+outfolder)
 	factor = 1.1 # how much overhead to add to the histos 
@@ -141,54 +142,71 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 			legend.AddEntry(data.GetPtr(), "data", "PE")
 			data.Draw("E")
 
+			comb = GetABCDcomponent(anaConfig.data, "(b_tau_sumdnn>2.)", "b_B_nmu<1&&b_B_ne<1&&b_B_nh<1", examplehist, variable)
+
 			stack = THStack("stack", "Background modelling")
 			hists = {}
 			MCstats = 0.
-			WS = data
+			WS = comb
 			for component in components: 
-				if "-" in component: 
-					comps = component.split("-")
-					assert(len(comps)>=2)
-					print(component)
-					histo = copy.deepcopy(frames[comps[0]][region].Histo1D(examplehist, variable).GetPtr())
-					if (yields[comps[0]][region] > 0. ): 
-						histo.Scale(yields[comps[0]][region].nominal_value/histo.Integral())
-					elif (yields[comps[0]][region].nominal_value != -1.):
-						histo.Scale(-yields[comps[0]][region].nominal_value*histo.Integral())
-					comps.remove(comps[0])
-					for comp in comps: 
-						hist = copy.deepcopy(frames[comp][region].Histo1D(examplehist, variable).GetPtr())
-						if (yields[comp][region] > 0. ): 
-							hist.Scale(yields[comp][region].nominal_value/hist.Integral())
-						elif (yields[comp][region].nominal_value != -1.):
-							hist.Scale(-yields[comp][region].nominal_value*hist.Integral())
-						histo.Add(hist, -1.)
-				else: 
-					histo = frames[component][region].Histo1D(examplehist, variable).GetPtr()
-					if (yields[component][region] > 0. and histo.Integral() > 0): 
-						histo.Scale(yields[component][region].nominal_value/histo.Integral())
-					elif (yields[component][region].nominal_value != -1.):
-						histo.Scale(-yields[component][region].nominal_value*histo.Integral())
-				if (not "WS" in component):
-					MCstats += histo.Integral()
-				else:
-					WS = histo
-				WS.Scale((data.Integral()-MCstats)/WS.Integral())
-				ROOT.SetOwnership(histo, 0)
-				histo.SetLineStyle(1) # plain
-				histo.SetLineWidth(2)
-				color = Ana.samples.at(GetBaseName(component.replace("Part", ""))).color
-				if (not color): 
-					print("No color for sample {}".format(component))
-					color = defaultcolors.next()
-				histo.SetLineColor(color)
-				#histo.SetMarkerColor(Ana.color[component])
-				histo.SetFillStyle(1001)
-				histo.SetFillColor(color)
-				hists[component] = histo
-				if (normalisebinwidth): Ana.normaliseBinContent(histo)
-				stack.Add(histo)
-				#legend.AddEntry(histo.GetPtr(), Ana.legends[component], "F")
+				if not "WS" in component: 
+					if "-" in component: 
+						comps = component.split("-")
+						assert(len(comps)>=2)
+						print(component)
+						histo = copy.deepcopy(frames[comps[0]][region].Histo1D(examplehist, variable).GetPtr())
+						if (yields[comps[0]][region] > 0. ): 
+							histo.Scale(yields[comps[0]][region].nominal_value/histo.Integral())
+						elif (yields[comps[0]][region].nominal_value != -1.):
+							histo.Scale(-yields[comps[0]][region].nominal_value*histo.Integral())
+						comps.remove(comps[0])
+						for comp in comps: 
+							hist = copy.deepcopy(frames[comp][region].Histo1D(examplehist, variable).GetPtr())
+							if (yields[comp][region] > 0. ): 
+								hist.Scale(yields[comp][region].nominal_value/hist.Integral())
+							elif (yields[comp][region].nominal_value != -1.):
+								hist.Scale(-yields[comp][region].nominal_value*hist.Integral())
+							histo.Add(hist, -1.)
+					else: 
+						histo = frames[component][region].Histo1D(examplehist, variable).GetPtr()
+						if (yields[component][region] > 0. and histo.Integral() > 0): 
+							histo.Scale(yields[component][region].nominal_value/histo.Integral())
+						elif (yields[component][region].nominal_value != -1.):
+							histo.Scale(-yields[component][region].nominal_value*histo.Integral())
+					if (not "WS" in component):
+						MCstats += histo.Integral()
+					else:
+						WS = comb #histo
+					ROOT.SetOwnership(histo, 0)
+					histo.SetLineStyle(1) # plain
+					histo.SetLineWidth(2)
+					color = Ana.samples.at(GetBaseName(component.replace("Part", ""))).color
+					if (not color): 
+						print("No color for sample {}".format(component))
+						color = defaultcolors.next()
+					histo.SetLineColor(color)
+					#histo.SetMarkerColor(Ana.color[component])
+					histo.SetFillStyle(1001)
+					histo.SetFillColor(color)
+					hists[component] = histo
+					if (normalisebinwidth): Ana.normaliseBinContent(histo)
+					stack.Add(histo)
+					#legend.AddEntry(histo.GetPtr(), Ana.legends[component], "F")
+
+			WS.SetLineStyle(1) # plain
+			WS.SetLineWidth(2)
+			color = Ana.samples.at(GetBaseName("WS")).color
+			if (not color): 
+				print("No color for sample {}".format(component))
+				color = defaultcolors.next()
+			WS.SetLineColor(color)
+			#WS.SetMarkerColor(Ana.color[component])
+			WS.SetFillStyle(1001)
+			WS.SetFillColor(color)
+			hists["WS"] = WS
+			if (normalisebinwidth): Ana.normaliseBinContent(WS)
+			stack.Add(WS)
+			WS.Scale((data.Integral()-MCstats)/WS.Integral())
 
 			stack.Draw("HIST SAME") #"SAME"
 			data.Draw("E SAME") # Plot on top

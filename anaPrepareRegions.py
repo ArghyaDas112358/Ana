@@ -112,6 +112,29 @@ def PrepareSamples(samplelist = anaConfig.samples, externalcut = "1"):
 	return frames, effs
 
 
+def GetABCDcomponent(source, cutA, cutB, examplehist, variable): 
+	sample = Ana.GetSample(source)
+	full = RDataFrame(sample)
+	frame = full.Filter(Ana.cut["bare"].GetTitle())
+	#vertical = ROOT.TCut(cutA)
+	#horizontal = ROOT.TCut(cutB)
+	B = frame.Filter("({}) && (!({}))".format(cutA, cutB)).Histo1D(examplehist, variable)
+	C = frame.Filter("(!({})) && ({})".format(cutA, cutB)).Histo1D(examplehist, variable).GetPtr()
+	D = frame.Filter("(!({})) && (!({}))".format(cutA, cutB)).Histo1D(examplehist, variable).GetPtr()
+	B.Sumw2()
+	C.Sumw2()
+	D.Sumw2()
+
+	A = copy.deepcopy(B.GetPtr()) #frame.Histo1D(examplehist, variable)
+
+	A.Multiply(C)
+	A.Divide(D)
+
+	return A
+
+
+
+
 def GetBaseName(samplename): 
 	items = samplename.split("_")
 	sample = items[0]

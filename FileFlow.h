@@ -331,6 +331,11 @@ namespace Ana
 			filemanager.AddItem("BstoDD_DNN", folder+"BstoDD_tauDNN.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BstoDD", folder+"BstoDD_tauDNN_mva.root", "tree"); 
 
+			filemanager.AddItem("InclusiveRun3_ntuple", folder+"InclusiveRun3.root", "ntuplizer/tree"); 
+			filemanager.AddItem("InclusiveRun3_tf", folder+"InclusiveRun3_withTFweight.root", "ntuplizer/tree"); 
+			filemanager.AddItem("InclusiveRun3_DNN", folder+"InclusiveRun3_tauDNN.root", "ntuplizer/tree"); 
+			filemanager.AddItem("InclusiveRun3", folder+"InclusiveRun3_tauDNN_mva.root", "tree"); 
+
 			// data from D era
 			filemanager.AddItem("dataD1_ntuple", folder+"dataD1.root", "ntuplizer/tree"); 
 			filemanager.AddItem("dataD1_tf", folder+"dataD1_withTFweight.root", "ntuplizer/tree"); 

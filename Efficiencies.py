@@ -65,6 +65,7 @@ if __name__ == "__main__":
 
 	samples = anaConfig.samples #["Sig", "B0toDstarD0K", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarDs1", "B0toDstarD0Kstar", "B0toDstarDs0star", "B0toDstara1", "B0toDstarD", "B0toDstar3pi", "B0toDstar3pipi0", "B0toDstar5pi", "ButoDstarDK", "B0toDstarDsX", "ButoDstarXc", "ButoDstarDK", "BstoDD", "B0toDstarrho0pi", "B0toDstarKKstar", "B0toDstarKpipi"] #["Sig", "BkgDstarDs", "BkgDstarDsstar", "BkgB0DD", "BkgBuDXc"] , "BkgDstara1Part"
 	samples.remove(anaConfig.data)
+	samples.remove(anaConfig.dataWS)
 
 	Ana.Init(options.version, options.denom)
 

@@ -163,6 +163,50 @@ def SaveDataframe(tosave, filename, objectname = "tree", blacklist = anaConfig.b
 # ) 
 
 
+def GetEventList(frame, output="numveto.json"): 
+	import numpy as np
+	eventsDF = frame.AsNumpy(columns=["EVENT_run", "EVENT_lumiBlock", "EVENT_event"])
+	events = np.concatenate((eventsDF["EVENT_run"], eventsDF["EVENT_lumiBlock"], eventsDF["EVENT_event"])).reshape((-1, 3), order='F')
+	events = np.array(events, dtype = np.uint32)
+	runs = events[:,0]
+	lumisections = events[:,1]
+	#print(events)
+	#print(events.shape)
+	selected = defaultdict(dict)
+	for run in runs: 
+		blocks = {}
+		sections = events[events[:,0] == run][:,1]
+		#print(sections.shape)
+		for section in sections: 
+			evts = events[np.logical_and((events[:,0] == run), (events[:,1] == section))][:,2]
+			blocks[str(section)] = evts.tolist()
+
+		selected[str(run)] = blocks
+	#print(selected)
+	return selected
+
+
+
+def GetEventListSlow(frame, output="numveto.json"): 
+	events = frame.AsNumpy(columns=["EVENT_run", "EVENT_lumiBlock", "EVENT_event"])
+	runs = events["EVENT_run"]
+	lumisections = events["EVENT_lumiBlock"]
+	print(runs)
+	selected = defaultdict(dict)
+	for run in runs: 
+		blocks = {}
+		sections = frame.Filter("EVENT_run == {}".format(run)).AsNumpy(["EVENT_lumiBlock"])["EVENT_lumiBlock"]
+		for section in sections: 
+			evts = frame.Filter("(EVENT_run == {}) && (EVENT_lumiBlock == {})".format(run, section)).AsNumpy(["EVENT_event"])["EVENT_event"]
+			blocks[section] = evts
+			print(section, evts)
+
+		selected[run] = blocks
+	with open(output, "w") as file: 
+		json.dump(selected, file, ensure_ascii=False, sort_keys=False) #encoding="utf8", 
+
+
+
 def SaveRegions(frames, path, update = False, objectinfile="tree"): 
 	print("Saving files under: {}".format(path))
 	os.system("mkdir -p {}".format(path))

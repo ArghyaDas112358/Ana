@@ -78,10 +78,10 @@ if __name__ == "__main__":
 
 	if options.debug: print(frames)
 
-	if (options.vetofile != ""): 
+	if ((options.vetofile != "") and (not options.denom)): 
 		events = GetEventList(frames[anaConfig.data]["baseline"])
 
-		with open(options.vetofile, "w") as vetofile: 
+		with open(Ana.folder+"/"+options.vetofile, "w") as vetofile: 
 			json.dump(events, vetofile, ensure_ascii=False, sort_keys=False) #encoding="utf8", 
 	#import pickle
 	#with open(options.vetofile, "w") as vetofile: 

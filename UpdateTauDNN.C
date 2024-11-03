@@ -204,7 +204,7 @@ struct
 
     float measure(const Tau& tau) const 
     {
-    	return tau.pt; // * tau.sumdnn; 
+    	return tau.sumdnn; //tau.pt; // * tau.sumdnn; 
     }
 
 } SortTauCandidates; 
@@ -696,7 +696,8 @@ void UpdateTauDNN(const TString& identifier, const TString& cycle, const bool ws
 	auto pimped = filtered.Define("b_tau_minpipt", findMin, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"}).Define("b_tau_maxpipt", findMax, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"})
 						.Define("b_tau_minpieta", findMin, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"}).Define("b_tau_maxpieta", findMax, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"})
 						.Define("b_tau_minpiphi", findMin, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"}).Define("b_tau_maxpiphi", findMax, {"b_tau_pi1phi", "b_tau_pi2phi", "b_tau_pi3phi"})
-						.Define("b_tau_rhomass_min", getMin, {"b_tau_rhomass1", "b_tau_rhomass2"}).Define("b_tau_rhomass_max", getMax, {"b_tau_rhomass1", "b_tau_rhomass2"}); 
+						.Define("b_tau_rhomass_min", getMin, {"b_tau_rhomass1", "b_tau_rhomass2"}).Define("b_tau_rhomass_max", getMax, {"b_tau_rhomass1", "b_tau_rhomass2"})
+						.Define("b_tau_mindnn", findMin, {"b_tau_dnn1", "b_tau_dnn2", "b_tau_dnn3"}).Define("b_tau_maxdnn", findMax, {"b_tau_dnn1", "b_tau_dnn2", "b_tau_dnn3"}); 
 
 	//pimped = pimped.Define("b_tau_rho_m_unrolled", computeUnrolledMass, {"b_tau_rhomass1", "b_tau_rhomass2"}); 
 	pimped = pimped.Define("b_tau_rho_m_unrolled", "int((min(b_tau_rhomass2, float(1.3)) - 0.2)/0.22) + 6*int((min(b_tau_rhomass1, float(1.3)) - 0.2)/0.22)");

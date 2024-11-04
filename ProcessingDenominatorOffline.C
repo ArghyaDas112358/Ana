@@ -371,6 +371,55 @@ float ratioOfRadius(const float r1, const float r2)
 	return r1/r2; 
 }
 
+std::map<unsigned int, std::map<unsigned int, std::vector<unsigned int> > > LoadEventList(const TString& path) 
+{
+		std::ifstream file(path, std::ifstream::binary);
+		Json::Value events;
+		file >> events;
+
+		std::map<unsigned int, std::map<unsigned int, std::vector<unsigned int> > > loaded; 
+
+		for (auto item : events.getMemberNames()) 
+		{
+			//std::cout << item << std::endl; 
+			unsigned int run = std::stol(item);
+
+			//std::cout << run << std::endl;
+
+			std::map<unsigned int, std::vector<unsigned int> > lumis; 
+
+			for (auto block : events[item].getMemberNames()) 
+			{
+				unsigned int lumiblock = std::stol(block); 
+				auto& eventlist = events[item][block]; 
+				//assert(eventlist.size() == 2); 
+
+				/*for (auto element : eventlist) 
+				{
+					std::cout << element << std::endl; 
+				}*/
+
+				//std::cout << eventlist.size() << std::endl; 
+
+				std::vector<unsigned int> vec; 
+				vec.reserve(eventlist.size()); 
+				std::transform(eventlist.begin(), eventlist.end(), std::back_inserter(vec), [](const auto& e) { return e.asDouble(); });
+				lumis.emplace(std::piecewise_construct, std::make_tuple(lumiblock), std::make_tuple(vec));
+			}
+
+			loaded.insert(std::make_pair(run, std::move(lumis))); 
+		}
+
+		/*for (auto item : events)
+		{
+			std::cout << item << " " << std::endl; 
+		}*/
+
+
+		file.close();
+		return std::move(loaded); 
+}
+
  
 
 void ProcessingDenominatorOffline(const TString& identifier, const TString& cycle, const bool ws = false) 
@@ -469,6 +518,26 @@ void ProcessingDenominatorOffline(const TString& identifier, const TString& cycl
 		std::vector<float> response; 
 
 		return response; 
+	};
+
+	auto veto = LoadEventList("numveto.json"); 
+
+	auto numeratorVeto = [&veto](unsigned int run, unsigned int block, unsigned int event) 
+	{
+		bool isFound = false; 
+		const auto& evt = veto.find(run);
+		if (!(evt == veto.end())) 
+		{
+			auto lumiblock = (*evt).second.find(block); 
+			if (!(lumiblock == (*evt).second.end())) 
+			{
+				auto& vec = (*lumiblock).second; 
+				auto foundevt = std::find(vec.begin(), vec.end(), event); 
+				if (foundevt != vec.end()) isFound = true; 
+			}
+		} 
+		if (isFound) std::cout << "Event in numerator!" << std::endl; 
+		return isFound; 
 	};
 
 	int count = 0; 
@@ -592,6 +661,8 @@ void ProcessingDenominatorOffline(const TString& identifier, const TString& cycl
 	*/
 
 	auto filtered = withB.Filter("(b_B_m > 0.)"); //&&(b_tau_min_dr_mu>0.5)&&(b_tau_min_dr_e>0.5)
+
+	filtered = filtered.Define("isInNumerator", numeratorVeto, {"EVENT_run", "EVENT_lumiBlock", "EVENT_event"}).Filter("!isInNumerator"); 
 
 	auto pimped = filtered.Define("b_tau_minpipt", findMin, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"}).Define("b_tau_maxpipt", findMax, {"b_tau_pi1pt", "b_tau_pi2pt", "b_tau_pi3pt"})
 						.Define("b_tau_minpieta", findMin, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"}).Define("b_tau_maxpieta", findMax, {"b_tau_pi1eta", "b_tau_pi2eta", "b_tau_pi3eta"})

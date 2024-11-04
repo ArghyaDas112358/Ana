@@ -26,7 +26,7 @@ if __name__ == "__main__":
 	parser.add_argument('-d', "--denom", dest="denom", action="store_true", default=False, help="Denominator analysis")
 	parser.add_argument('-f', "--full", dest="allvars", action="store_true", default=False, help="Plot all variables")
 	parser.add_argument("-g", "--cut", dest="cut", action="store", type=str, default="1.", help="Custom cut to be included added")
-	parser.add_argument("--veto", dest="vetofile", action="store", type=str, default="numveto.json", help="Name of JSON file containing ID of selected events")
+	parser.add_argument("--veto", dest="vetofile", action="store", type=str, default="", help="Name of JSON file containing ID of selected events")
 	parser.add_argument("--comp", dest="comp", action="store_true", default=False, help="Plot comparisons")
 	parser.add_argument("--stack", dest="stack", action="store_true", default=True, help="Plot stacked distributions")
 
@@ -81,7 +81,8 @@ if __name__ == "__main__":
 	if ((options.vetofile != "") and (not options.denom)): 
 		events = GetEventList(frames[anaConfig.data]["baseline"])
 
-		with open(Ana.folder+"/"+options.vetofile, "w") as vetofile: 
+		vetofloder = Ana.folderbase + options.vetofile + "/numveto.json"
+		with open(vetofloder, "w") as vetofile: 
 			json.dump(events, vetofile, ensure_ascii=False, sort_keys=False) #encoding="utf8", 
 	#import pickle
 	#with open(options.vetofile, "w") as vetofile: 

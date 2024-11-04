@@ -520,7 +520,7 @@ void ProcessingDenominatorOffline(const TString& identifier, const TString& cycl
 		return response; 
 	};
 
-	auto veto = LoadEventList("numveto.json"); 
+	auto veto = LoadEventList(Ana::folder+"/numveto.json"); 
 
 	auto numeratorVeto = [&veto](unsigned int run, unsigned int block, unsigned int event) 
 	{

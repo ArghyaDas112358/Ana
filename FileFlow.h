@@ -24,6 +24,8 @@ namespace Ana
 
 	TString folder = "";
 
+	TString folderbase = "";
+
 	std::map<std::string, TCut> cut; //std::map<std::string, std::map<std::sting, TCut> > cuts; 
 
 	//std::vector<TColor*> colors; 
@@ -145,6 +147,7 @@ namespace Ana
 		{
 
 			folder = "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/"+cycle+"/"; 
+			folderbase = "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/";
 
 			filemanager.AddItem("Sig_ntuple", folder+"Sig.root", "ntuplizer/tree"); 
 			filemanager.AddItem("Sig_tf", folder+"Sig_withTFweight.root", "ntuplizer/tree"); 

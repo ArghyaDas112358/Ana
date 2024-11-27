@@ -522,7 +522,7 @@ void ProcessingDenominatorOffline(const TString& identifier, const TString& cycl
 
 	auto veto = LoadEventList(Ana::folder+"/numveto.json"); 
 
-	auto numeratorVeto = [&veto](unsigned int run, unsigned int block, unsigned int event) 
+	auto numeratorVeto = [&veto](unsigned int run, unsigned int block, unsigned long long event) 
 	{
 		bool isFound = false; 
 		const auto& evt = veto.find(run);

@@ -167,7 +167,7 @@ def GetEventList(frame, output="numveto.json"):
 	import numpy as np
 	eventsDF = frame.AsNumpy(columns=["EVENT_run", "EVENT_lumiBlock", "EVENT_event"])
 	events = np.concatenate((eventsDF["EVENT_run"], eventsDF["EVENT_lumiBlock"], eventsDF["EVENT_event"])).reshape((-1, 3), order='F')
-	#events = np.array(events, dtype = np.uint32)
+	events = np.array(events, dtype = np.uint32)
 	runs = events[:,0]
 	lumisections = events[:,1]
 	#print(events)

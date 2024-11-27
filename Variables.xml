@@ -265,6 +265,8 @@
     <Variable name="vz" type="f" />
     <Variable name="q2" type="f" /> 
     <Variable name="mm2" type="f" /> 
+    <Variable name="q2_uncorrected" type="f" /> 
+    <Variable name="alpha_etaphi_Dstar_tau" type="f" /> 
     <Variable name="mcorr_pt" type="f" /> 
     <Variable name="mcorr_eta" type="f" /> 
     <Variable name="mcorr_phi" type="f" /> 
@@ -279,11 +281,6 @@
     <Variable name="r_first" type="f" />
     <Variable name="r_second" type="f" />
     <Variable name="maxdz" type="f" />
-    <Variable name="vtx4trkProb" type="f" />
-    <Variable name="vtx4trkChi2" type="f" default="999." />
-    <Variable name="vtx4trkChi2ndof" type="f" default="999." />
-    <Variable name="vtx4trkDeltaChi2" type="f" default="999." />
-    <Variable name="vtx4trkDeltaChi2Ndof" type="f" default="999." />
     <Variable name="proper_xi_rho1" type="f" /> 
     <Variable name="proper_xi_rho2" type="f" /> 
     <Variable name="proper_xi_rho_max" type="f" /> 
@@ -299,6 +296,18 @@
     <Variable name="ne" type="i" default="0" />
     <Variable name="nh" type="i" default="0" />
     <Variable name="nhpresel" type="i" default="0" />
+    <Variable name="npi0_baseline" type="i" default="0" />
+    <Variable name="ngamma_baseline" type="i" default="0" />
+    <Variable name="nmu_baseline" type="i"  default="0" />
+    <Variable name="ne_baseline" type="i" default="0" />
+    <Variable name="nh_baseline" type="i" default="0" />
+    <Variable name="nhpresel_baseline" type="i" default="0" />
+    <Variable name="npi0_second" type="i" default="0" />
+    <Variable name="ngamma_second" type="i" default="0" />
+    <Variable name="nmu_second" type="i"  default="0" />
+    <Variable name="ne_second" type="i" default="0" />
+    <Variable name="nh_second" type="i" default="0" />
+    <Variable name="nhpresel_second" type="i" default="0" />
     <Variable name="min_dr_mu" type="f" default="5." />
     <Variable name="min_dr_e" type="f" default="5."/>
     <Variable name="min_dr_h" type="f" default="5." />

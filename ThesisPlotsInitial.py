@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
 	from anaPlotting import PlotComparison, PlotStack, PlotOverlay, PlotSingle
 
-	signalfile = ROOT.TFile.Open("/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/data/"+options.version+"/Sig.root")
+	signalfile = ROOT.TFile.Open("/Users/mhuwiler/cernbox/DoctoralThesis/Analysis/data/"+options.version+"/Sig_tauDNN.root") 
 	signal = signalfile.Get("ntuplizer/tree")
 	signal.Print()
 	frame = RDataFrame(signal)
@@ -92,7 +92,7 @@ if __name__ == "__main__":
 	#canvas.Draw()
 	#canvas.Print(outputfolder+"/plot.png")
 
-	variables = ["Dstar_pt"]
+	variables = ["v_tau_dnn1", "v_tau_dnn2", "v_tau_dnn3"]
 
 
 	PlotSingle(frame, variables, outputfolder)

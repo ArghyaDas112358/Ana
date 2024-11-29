@@ -451,3 +451,50 @@ def PlotFitResult(session, dataname, initialcomponents, variables, outfolder, dr
 		canv.Print(outfolder+"legend.pdf")
 		notYetDrawn = False
 
+
+def PlotSingle(frame, variables, outfolder, color = 2, legendtext="", normalise=1., drawoptions="HIST"): 
+	# Plotting distributions over each other 
+	os.system("mkdir -p "+outfolder)
+	factor = 1.1 # how much overhead to add to the histos 
+	for variable in variables: 
+		name = "{}".format(variable) #, region)
+		canvas = TCanvas(name, variable, 800, 600)
+
+		legend = TLegend(canvas.GetLeftMargin()+0.35, 
+                         	1.-canvas.GetTopMargin()-.2, 
+                            canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
+                           	1.-canvas.GetTopMargin() )
+
+		examplehist = Ana.binning[variable]
+		histo = frame.Histo1D(examplehist, variable)
+		#ROOT.SetOwnership(histo, 0)
+		#print(variable)
+		#print(frame.GetColumnNames())
+		#print(examplehist)
+		ROOT.SetOwnership(histo, 0)
+		histo.SetLineStyle(1) # plain
+		histo.SetLineWidth(2)
+		#color = Ana.samples.at(GetBaseName(component.replace("Part", ""))).color
+		histo.SetLineColor(color)
+		histo.SetMarkerColor(color)
+		#histo.SetFillColor(color)
+		histo.Scale(normalise/histo.Integral())
+		histo.SetTitle("{}".format(variable)) # TODO: Delete once the binning is centralised
+		histo.Draw(drawoptions)
+
+		maxes = [histo.GetMaximum()]
+
+		
+		legend.AddEntry(histo.GetPtr(), legendtext) # , "PE"
+
+		if (legendtext): legend.Draw()
+		legend.SetBorderSize(1)
+		legend.SetMargin(0.3)
+		legend.SetTextSize(0.04)
+
+		histo.SetMaximum(factor*max(maxes))
+		canvas.Draw()
+
+		canvas.Print(outfolder+name+".png")
+		canvas.Print(outfolder+name+".pdf")
+

@@ -465,8 +465,12 @@ def PlotSingle(frame, variables, outfolder, color = 2, legendtext="", normalise=
                             canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
                            	1.-canvas.GetTopMargin() )
 
-		examplehist = Ana.binning[variable]
-		histo = frame.Histo1D(examplehist, variable)
+		variablename = VariableName(variable)
+		if (Ana.binning.find(variablename) == Ana.binning.end()): 
+			histo = frame.Histo1D(variable)
+		else:
+			examplehist = Ana.binning[variablename]
+			histo = frame.Histo1D(examplehist, variable)
 		#ROOT.SetOwnership(histo, 0)
 		#print(variable)
 		#print(frame.GetColumnNames())
@@ -497,4 +501,12 @@ def PlotSingle(frame, variables, outfolder, color = 2, legendtext="", normalise=
 
 		canvas.Print(outfolder+name+".png")
 		canvas.Print(outfolder+name+".pdf")
+
+
+def VariableName(name): 
+	name = name.replace("v_", "b_")
+	name = name.replace("pttau_", "b_")
+	return name
+
+
 

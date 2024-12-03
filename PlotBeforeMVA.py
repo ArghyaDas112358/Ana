@@ -28,7 +28,7 @@ if __name__ == "__main__":
 	parser.add_argument("-g", "--cut", dest="cut", action="store", type=str, default="1.", help="Custom cut to be included added")
 	parser.add_argument("--veto", dest="vetofile", action="store", type=str, default="", help="Name of JSON file containing ID of selected events")
 	parser.add_argument("--comp", dest="comp", action="store_true", default=False, help="Plot comparisons")
-	parser.add_argument("--stack", dest="stack", action="store_true", default=True, help="Plot stacked distributions")
+	parser.add_argument("--stack", dest="stack", action="store_true", default=False, help="Plot stacked distributions")
 
 	
 

@@ -196,6 +196,7 @@ void Style()
 	auto plot = gPad; 
 	gStyle->SetOptStat(0);
 	plot->SetTitle(""); 
+	static_cast<TH1*>(plot->GetPrimitive("htemp"))->SetTitle("");
 	plot->Draw(); 
 	SetHeader(plot); 
 

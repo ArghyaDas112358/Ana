@@ -223,8 +223,9 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 			data.GetYaxis().SetTitleSize(0.06)
 			data.GetXaxis().SetTitleOffset(1.2)
 			canvas.SetBottomMargin(0.15)
-			canvas.SetTopMargin(0.01)
+			canvas.SetTopMargin(0.1)
 			canvas.SetLeftMargin(0.15)
+			OverheadText()
 
 			maxes = [data.GetMaximum(), stack.GetMaximum()]
 
@@ -509,4 +510,9 @@ def VariableName(name):
 	return name
 
 
+def OverheadText(additionaltext = "Preliminary", plot = None, position = 1): 
+	if (plot == None): 
+		plot = ROOT.gPad
+	ROOT.gROOT.LoadMacro("cliPlotting.C")
+	ROOT.SetHeader(plot, position)
 

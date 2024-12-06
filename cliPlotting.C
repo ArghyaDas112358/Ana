@@ -123,23 +123,7 @@ void SetHeader( TVirtualPad* pad, int pos, bool outOfFrame=true)
 	float r = pad->GetRightMargin();
 	float b = pad->GetBottomMargin();
   //  float e = 0.025;
-
-
-  float posX_=0;
-  if( iPosX%10<=1 )
-  {
-      posX_ =   l + relPosX*(1-l-r);
-  }
-  else if( iPosX%10==2 )
-  {
-      posX_ =  l + 0.5*(1-l-r);
-  }
-  else if( iPosX%10==3 )
-  {
-      posX_ =  1-r - relPosX*(1-l-r);
-  }
-
-  float posY_ = 1-t - relPosY*(1-t-b);
+  
 
   pad->cd();
 
@@ -159,6 +143,8 @@ void SetHeader( TVirtualPad* pad, int pos, bool outOfFrame=true)
 
   if( pos == 0 )
   {
+  	float posX_ =   l+0.05; //l +  relPosX*(1-l-r);
+	  float posY_ =   1-2.*t+lumiTextOffset*t;
     latex.SetTextFont(cmsTextFont);
     latex.SetTextAlign(11); 
     latex.SetTextSize(cmsTextSize*t);    
@@ -169,14 +155,13 @@ void SetHeader( TVirtualPad* pad, int pos, bool outOfFrame=true)
     	latex.SetTextFont(extraTextFont);
       latex.SetTextSize(extraTextSize*t);
       latex.SetTextAlign(align_);
-      latex.DrawLatex(l+0.15, posY_, extraText);     
+      latex.DrawLatex(posX_, posY_, extraText);     
     }
   }
 
   if( pos == 1 )
   {
   	relPosX = cmsTextSize*t*2.05; // Factor defining how much of the CMS text size the extratext should be dispèlaced
-  	std::cout << cmsTextSize*t << " " << relPosX << " " << W << std::endl; 
   	float xpos = l + relPosX*(1-l-r);
   	float ypos = 1-t+lumiTextOffset*t; 
     latex.SetTextFont(cmsTextFont);
@@ -195,49 +180,45 @@ void SetHeader( TVirtualPad* pad, int pos, bool outOfFrame=true)
 
   if( pos == 2 )
   {
+  	float xpos = l+0.05;
+  	float ypos = 1-2*t+lumiTextOffset*t; 
     latex.SetTextFont(cmsTextFont);
     latex.SetTextAlign(11); 
     latex.SetTextSize(cmsTextSize*t);    
-    latex.DrawLatex(l,1-t+lumiTextOffset*t,cmsText);
+    latex.DrawLatex(xpos, ypos, cmsText);
 
     if (writeExtraText) 
     {
     	latex.SetTextFont(extraTextFont);
       latex.SetTextSize(extraTextSize*t);
-      latex.SetTextAlign(align_);
-      latex.DrawLatex(posX_, posY_, extraText);     
+      latex.SetTextAlign(11);
+      latex.DrawLatex(xpos, ypos - extraTextSize*t*1.1, extraText);     
+    }
+  }
+
+  if( pos == 3 )
+  {
+  	relPosX = 0.4; // Factor defining how much of the CMS text size the extratext should be dispèlaced
+  	std::cout << cmsTextSize*t << " " << relPosX << " " << W << std::endl; 
+  	float xpos = l+relPosX;
+  	float ypos = 1-2*t+lumiTextOffset*t; 
+    latex.SetTextFont(cmsTextFont);
+    latex.SetTextAlign(11); 
+    latex.SetTextSize(cmsTextSize*t);    
+    latex.DrawLatex(xpos, ypos, cmsText);
+
+    if (writeExtraText) 
+    {
+    	latex.SetTextFont(extraTextFont);
+      latex.SetTextSize(extraTextSize*t);
+      latex.SetTextAlign(11);
+      latex.DrawLatex(xpos, ypos - extraTextSize*t*1.1, extraText);     
     }
   }
   
   pad->cd();
 
-  
-  if( !outOfFrame )
-    {
-	  latex.SetTextFont(cmsTextFont);
-	  latex.SetTextSize(cmsTextSize*t);
-	  latex.SetTextAlign(align_);
-	  latex.DrawLatex(posX_, posY_, cmsText);
-	  if( writeExtraText ) 
-	    {
-	      latex.SetTextFont(extraTextFont);
-	      latex.SetTextAlign(align_);
-	      latex.SetTextSize(extraTextSize*t);
-	      latex.DrawLatex(posX_, posY_- relExtraDY*cmsTextSize*t, extraText);
-	    }
-    }
-  else if( writeExtraText )
-    {
-      if( iPosX==0) 
-	{
-	  posX_ =   l +  relPosX*(1-l-r);
-	  posY_ =   1-t+lumiTextOffset*t;
-	}
-      latex.SetTextFont(extraTextFont);
-      latex.SetTextSize(extraTextSize*t);
-      latex.SetTextAlign(align_);
-      //latex.DrawLatex(posX_, posY_, extraText);      
-    }
+
   return;
 }
 

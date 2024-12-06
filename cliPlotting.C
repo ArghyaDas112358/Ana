@@ -161,7 +161,7 @@ void SetHeader( TVirtualPad* pad, int pos)
 
   if( pos == 1 )
   {
-  	relPosX = cmsTextSize*t*2.05; // Factor defining how much of the CMS text size the extratext should be dispèlaced
+  	relPosX = cmsTextSize*t*0.75*cmsText.Length(); // Factor defining how much of the CMS text size the extratext should be dispèlaced
   	float xpos = l + relPosX*(1-l-r);
   	float ypos = 1-t+lumiTextOffset*t; 
     latex.SetTextFont(cmsTextFont);

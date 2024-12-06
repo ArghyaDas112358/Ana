@@ -80,7 +80,7 @@ void SetHeader( TVirtualPad* pad, int pos)
 
 	TString cmsText = "CMS"; 
 	float cmsTextFont   = 61;  // default is helvetic-bold
-	TString extraText   = "Preliminary";
+	TString extraText   = "Private Work";
 	float extraTextFont = 52;  // default is helvetica-italics	
 	TString lumiText = "33.6 fb^{-1} (13 TeV)";
 

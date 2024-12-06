@@ -71,7 +71,7 @@ TObject* PrettyPlot(const TString& name = "plot", const TString& options = "", T
 }
 
 
-void SetHeader( TVirtualPad* pad, int pos, bool outOfFrame=true)
+void SetHeader( TVirtualPad* pad, int pos)
 {            
 	int iPosX = pos; //2; 
 

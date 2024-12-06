@@ -71,9 +71,9 @@ TObject* PrettyPlot(const TString& name = "plot", const TString& options = "", T
 }
 
 
-void SetHeader( TVirtualPad* pad, bool outOfFrame=true)
+void SetHeader( TVirtualPad* pad, int pos, bool outOfFrame=true)
 {            
-	int iPosX = 1; 
+	int iPosX = pos; //2; 
 
 	bool writeExtraText = true;
 	float extraOverCmsTextSize  = 0.76;	
@@ -82,6 +82,7 @@ void SetHeader( TVirtualPad* pad, bool outOfFrame=true)
 	float cmsTextFont   = 61;  // default is helvetic-bold
 	TString extraText   = "Preliminary";
 	float extraTextFont = 52;  // default is helvetica-italics	
+	TString lumiText = "33.6 fb^{-1} (13 TeV)";
 
 	// text sizes and text offsets with respect to the top frame
 	// in unit of the top margin size
@@ -94,24 +95,26 @@ void SetHeader( TVirtualPad* pad, bool outOfFrame=true)
 	float relPosY    = 0.035;
 	float relExtraDY = 1.2;	
 
+	float extraTextSize = extraOverCmsTextSize*cmsTextSize;
 
-  	int alignX_=2;
-  	int alignY_=3;
+
+  int alignX_=2;
+  int alignY_=3;
   	
-  	if(iPosX==0) 
-  	{
-  		alignX_=1;
-  		alignY_=1;
-  	}
+  if(iPosX==0) 
+  {
+  	alignX_=1;
+  	alignY_=1;
+  }
 
-  	if( iPosX/10==0 ) alignX_=1;
+  if( iPosX/10==0 ) alignX_=1;
   
-  	if( iPosX/10==1 ) alignX_=1;
-  	if( iPosX/10==2 ) alignX_=2;
-  	if( iPosX/10==3 ) alignX_=3;
-  	//if( iPosX == 0  ) relPosX = 0.12;
+  if( iPosX/10==1 ) alignX_=1;
+  if( iPosX/10==2 ) alignX_=2;
+  if( iPosX/10==3 ) alignX_=3;
+  //if( iPosX == 0  ) relPosX = 0.12;
 
-  	int align_ = 10*alignX_ + alignY_;
+  int align_ = 10*alignX_ + alignY_;
 
  	float H = pad->GetWh();
 	float W = pad->GetWw();
@@ -121,46 +124,94 @@ void SetHeader( TVirtualPad* pad, bool outOfFrame=true)
 	float b = pad->GetBottomMargin();
   //  float e = 0.025;
 
-  	pad->cd();
-
-  	TString lumiText = "33.6 fb^{-1} (13 TeV)";
-
-  	TLatex latex;
-  	latex.SetNDC();
-  	latex.SetTextAngle(0);
-  	latex.SetTextColor(kBlack);    
-
-  	float extraTextSize = extraOverCmsTextSize*cmsTextSize;
-
-  	latex.SetTextFont(42);
-  	latex.SetTextAlign(31); 
-  	latex.SetTextSize(lumiTextSize*t);    
-  	latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);
-
-  	if( outOfFrame )
-    {
-      latex.SetTextFont(cmsTextFont);
-      latex.SetTextAlign(11); 
-      latex.SetTextSize(cmsTextSize*t);    
-      latex.DrawLatex(l,1-t+lumiTextOffset*t,cmsText);
-    }
-  
-  	pad->cd();
 
   float posX_=0;
   if( iPosX%10<=1 )
-    {
+  {
       posX_ =   l + relPosX*(1-l-r);
-    }
+  }
   else if( iPosX%10==2 )
-    {
+  {
       posX_ =  l + 0.5*(1-l-r);
-    }
+  }
   else if( iPosX%10==3 )
-    {
+  {
       posX_ =  1-r - relPosX*(1-l-r);
-    }
+  }
+
   float posY_ = 1-t - relPosY*(1-t-b);
+
+  pad->cd();
+
+  	
+
+  TLatex latex;
+  latex.SetNDC();
+  latex.SetTextAngle(0);
+  latex.SetTextColor(kBlack);    
+
+
+  latex.SetTextFont(42);
+  latex.SetTextAlign(31); 
+  latex.SetTextSize(lumiTextSize*t);    
+  latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);
+
+
+  if( pos == 0 )
+  {
+    latex.SetTextFont(cmsTextFont);
+    latex.SetTextAlign(11); 
+    latex.SetTextSize(cmsTextSize*t);    
+    latex.DrawLatex(l,1-t+lumiTextOffset*t,cmsText);
+
+    if (writeExtraText) 
+    {
+    	latex.SetTextFont(extraTextFont);
+      latex.SetTextSize(extraTextSize*t);
+      latex.SetTextAlign(align_);
+      latex.DrawLatex(l+0.15, posY_, extraText);     
+    }
+  }
+
+  if( pos == 1 )
+  {
+  	relPosX = cmsTextSize*t*2.05; // Factor defining how much of the CMS text size the extratext should be dispèlaced
+  	std::cout << cmsTextSize*t << " " << relPosX << " " << W << std::endl; 
+  	float xpos = l + relPosX*(1-l-r);
+  	float ypos = 1-t+lumiTextOffset*t; 
+    latex.SetTextFont(cmsTextFont);
+    latex.SetTextAlign(11); 
+    latex.SetTextSize(cmsTextSize*t);    
+    latex.DrawLatex(l, ypos, cmsText);
+
+    if (writeExtraText) 
+    {
+    	latex.SetTextFont(extraTextFont);
+      latex.SetTextSize(extraTextSize*t);
+      latex.SetTextAlign(11);
+      latex.DrawLatex(xpos, ypos, extraText);     
+    }
+  }
+
+  if( pos == 2 )
+  {
+    latex.SetTextFont(cmsTextFont);
+    latex.SetTextAlign(11); 
+    latex.SetTextSize(cmsTextSize*t);    
+    latex.DrawLatex(l,1-t+lumiTextOffset*t,cmsText);
+
+    if (writeExtraText) 
+    {
+    	latex.SetTextFont(extraTextFont);
+      latex.SetTextSize(extraTextSize*t);
+      latex.SetTextAlign(align_);
+      latex.DrawLatex(posX_, posY_, extraText);     
+    }
+  }
+  
+  pad->cd();
+
+  
   if( !outOfFrame )
     {
 	  latex.SetTextFont(cmsTextFont);
@@ -185,19 +236,19 @@ void SetHeader( TVirtualPad* pad, bool outOfFrame=true)
       latex.SetTextFont(extraTextFont);
       latex.SetTextSize(extraTextSize*t);
       latex.SetTextAlign(align_);
-      latex.DrawLatex(posX_, posY_, extraText);      
+      //latex.DrawLatex(posX_, posY_, extraText);      
     }
   return;
 }
 
 
-void Style() 
+void Style(int position = 1) 
 {
 	auto plot = gPad; 
 	gStyle->SetOptStat(0);
 	plot->SetTitle(""); 
 	static_cast<TH1*>(plot->GetPrimitive("htemp"))->SetTitle("");
 	plot->Draw(); 
-	SetHeader(plot); 
+	SetHeader(plot, position); 
 
 }

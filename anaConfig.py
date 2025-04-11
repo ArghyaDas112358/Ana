@@ -15,13 +15,13 @@ else:
 from ROOT import Ana
 
 
-data = "dataD" #"dataB2"
+data = "data" #"dataB2"
 
 dataWS = "dataDWS"
 
 Sig = "Sig"
 
-samples = [Sig, data, "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "B0toDstar3pi", "B0toDstar3pipi0", "B0toDstar5pi", dataWS] #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
+samples = [Sig, data, "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "B0toDstar3pi", "B0toDstar3pipi0", "B0toDstar5pi", "B0toDstarDs1", "B0toDstarDs0star", "B0toDstarD0Kstar", "ButoDstarDK", "BstoDD", "B0toDstara1"] #, dataWS #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
 
 regions = ["SR", "CR", "SB"]
 
@@ -67,6 +67,12 @@ def Denominator():
 	Sig = "B0toDstarrho0pi"
 	global samples
 	global data
+	data = "dataD"
 	samples = [data, Sig, "B0toDstar3pi", "B0toDstara1", "B0toDstar5pi", "B0toDstar3pipi0", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarKpipi", "B0toDstarKpipi", "B0toDstarKKstar", "ButoDstarpipipipi0", "ButoDstarpipipi"]
 	import anaPlotting 
 	anaPlotting.normalisebinwidth = True
+
+def UpdateColorsDenom(): 
+	colors = Ana.mycolors
+	Ana.samplelist["B0toDstara1"].color = mycolors[2]
+	Ana.samplelist["B0toDstarrho0pi"].color = mycolors[3]

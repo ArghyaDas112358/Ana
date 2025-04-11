@@ -444,7 +444,8 @@ namespace Ana {
 			{"data5WS", "WS"}, 
 			{"dataAB", "data"}, 
 			{"dataABC", "data"}, 
-			{"dataBC", "data"}
+			{"dataBC", "data"},
+			{"ABCD", "WS"}
 		}); 
 
 		return samples; 

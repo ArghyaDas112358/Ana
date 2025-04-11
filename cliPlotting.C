@@ -224,6 +224,30 @@ void SetHeader( TVirtualPad* pad, int pos, TString extraText = "Private Work")
 }
 
 
+void xLegend(const std::string& text) 
+{
+	auto plot = gPad; 
+	auto hist = static_cast<TH1*>(plot->GetPrimitive("htemp"));
+	hist->GetXaxis()->SetTitle(text.data()); 
+	hist->GetXaxis()->SetTitleSize(0.06);
+	hist->GetXaxis()->SetLabelSize(0.06);
+	hist->GetXaxis()->SetTitleOffset(1.2); 
+	plot->SetBottomMargin(0.15);
+}
+
+
+void yLegend(const std::string& text) 
+{
+	auto plot = gPad; 
+	auto hist = static_cast<TH1*>(plot->GetPrimitive("htemp"));
+	hist->GetYaxis()->SetTitle(text.data());
+	hist->GetYaxis()->SetLabelSize(0.06);
+	hist->GetYaxis()->SetTitleSize(0.06);
+	hist->GetXaxis()->SetTitleOffset(1.2); 
+	plot->SetLeftMargin(0.15); 
+}
+
+
 void Style(int position = 1) 
 {
 	auto plot = gPad; 

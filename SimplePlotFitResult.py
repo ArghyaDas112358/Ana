@@ -7,7 +7,8 @@ import math
 import collections
 import copy
 from argparse import ArgumentParser
-ROOT.gROOT.LoadMacro("FileFlow.h+")
+#ROOT.gROOT.LoadMacro("FileFlow.h+")
+import anaConfig
 from ROOT import Ana, TCanvas, TH1D, TPad, TLegend, THStack, RDataFrame
 from libUtils import HoldUntilKeyPress
 
@@ -49,6 +50,7 @@ def PlotStack(session, dataname, initialcomponents, variables, outfolder, drawle
 		print(component)
 		#component = component.replace("Dist", "")
 		histo = session.Get(component)
+		print("Norm {}: {}".format(component, histo.Integral()))
 		#histo.Draw()
 		#HoldUntilKeyPress()
 
@@ -193,7 +195,7 @@ if __name__ == "__main__":
 
 	parser = ArgumentParser(description="SignalBackground")
 	#parser.add_argument("tool", action="store", type=str, help="Which time list you want to analyse")
-	parser.add_argument("--out", dest="out", action="store", type=str, default="TestSimpleFit/", help="Directory where the plots shuld go")
+	parser.add_argument("--out", dest="out", action="store", type=str, default="TestSimpleFitFullStatsnorms/", help="Directory where the plots shuld go")
 	parser.add_argument("--name", dest="name", action="store", type=str, default="test", help="Turn on debug output")
 	parser.add_argument("--file", dest="file", action="store", type=str, default="postFitPlots.root", help="Directory where the plots shuld go")
 	parser.add_argument("--directory", dest="directory", action="store", type=str, default="SR_postfit", help="Directory where the plots shuld go")

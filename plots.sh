@@ -1,0 +1,1 @@
+root -l cliPlotting.C ../../data/v7.2/B0toDstarDs_tauDNN.root -q -e '_file0->cd(); ntuplizer->cd(); tree->Draw("b_tau_m", "b_B_match"); xLegend("m(D_{s})"); yLegend(""); Style(); gPad->Print("Dsmasspipipi.pdf");'

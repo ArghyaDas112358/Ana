@@ -510,9 +510,9 @@ def VariableName(name):
 	return name
 
 
-def OverheadText(additionaltext = "Preliminary", plot = None, position = 1): 
+def OverheadText(additionaltext = "Private Work", plot = None, position = 1): 
 	if (plot == None): 
 		plot = ROOT.gPad
 	ROOT.gROOT.LoadMacro("cliPlotting.C")
-	ROOT.SetHeader(plot, position)
+	ROOT.SetHeader(plot, position, additionaltext)
 

@@ -7,6 +7,7 @@
 #include "TGraph2D.h"
 #include "TH2D.h"
 #include "TLegend.h"
+#include "TLatex.h"
 #include <iostream>
 #include "DrawTMVAHistogram.C"
 #include "GetSeparation.C"
@@ -71,7 +72,7 @@ TObject* PrettyPlot(const TString& name = "plot", const TString& options = "", T
 }
 
 
-void SetHeader( TVirtualPad* pad, int pos)
+void SetHeader( TVirtualPad* pad, int pos, TString extraText = "Private Work")
 {            
 	int iPosX = pos; //2; 
 
@@ -80,7 +81,7 @@ void SetHeader( TVirtualPad* pad, int pos)
 
 	TString cmsText = "CMS"; 
 	float cmsTextFont   = 61;  // default is helvetic-bold
-	TString extraText   = "Private Work";
+	//TString extraText   = "Private Work";
 	float extraTextFont = 52;  // default is helvetica-italics	
 	TString lumiText = "33.6 fb^{-1} (13 TeV)";
 

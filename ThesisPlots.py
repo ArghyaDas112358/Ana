@@ -20,7 +20,7 @@ if __name__ == "__main__":
 	parser = ArgumentParser(description="PlotBeforeMVA") 
 	#parser.add_argument("tool", action="store", type=str, help="Which time list you want to analyse")
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v7", help="Which version (cycle) of files to run on")
-	parser.add_argument("-o", "--out", dest="out", action="store", type=str, default="TauSelectionv7", help="Which version (cycle) of files to run on")
+	parser.add_argument("-o", "--out", dest="out", action="store", type=str, default="Thesisplots", help="Which version (cycle) of files to run on")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
 	parser.add_argument('-d', "--denom", dest="denom", action="store_true", default=False, help="Denominator analysis")
@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
 
 	frames, effs = PrepareSamples(list(sample.values()), options.cut)
-	if (not options.denom): print("WS yield {}".format(frames[anaConfig.dataWS]["baseline"].Count().GetValue()))
+	#if (not options.denom): print("WS yield {}".format(frames[anaConfig.dataWS]["baseline"].Count().GetValue()))
 
 	if options.debug: print(frames)
 
@@ -100,30 +100,29 @@ if __name__ == "__main__":
 
 	from anaPlotting import PlotComparison, PlotStack
 
-	if (options.comp): 
-		PlotComparison(frames, sample[anaConfig.data], sample[anaConfig.Sig], ["baseline"], variables, outputfolder+"/comp/", False)
+	
+	#PlotComparison(frames, sample[anaConfig.data], sample[anaConfig.Sig], ["baseline"], variables, outputfolder+"/comp/", False)
 
-	if (options.stack):
-		from libEfficiencies import MultiplyFinalEffs, ReadEffs, PrintEfficiencies2D
-		from uncertainties import ufloat
+	# DNN input variables
+	variables = ["Dstar_pt", "Dstar_eta", "Dstar_phi", "Dstar_q", "track_pt", "track_eta", "track_phi", "track_charge", "track_doca2D", "track_doca2Derror", "track_doca", "track_docaerror", "track_dzToPV", "track_dzToClosestVertex", "track_isAssociatedToPV", "track_pvAssociationQuality", "track_PV_doca2D", "track_isgenmatched"]
+	PlotComparison(frames, sample[anaConfig.data], sample[anaConfig.Sig], ["baseline"], variables, outputfolder+"/MVA/", False)
 
-		selectioneffs = ReadEffs(Ana.folder+"/Expectedyields.json")
-		selectioneffs["dataB2WS"] = ufloat(1.39e-5*-12.0*7*8, 0.)
-		selectioneffs["dataDWS"] = ufloat(1.39e-5*-12.0*11*3.3*1.2, 0.)
-		selectioneffs["dataD1WS"] = ufloat(1.39e-5*-12.0*11*3.3*1.2*20, 0.)
-		selectioneffs["WS"] = ufloat(310000/3.*1.1,0.)
-		if (options.denom): 
-			selectioneffs["WS"] = ufloat(35000.,0.)
+	from libEfficiencies import MultiplyFinalEffs, ReadEffs, PrintEfficiencies2D
+	from uncertainties import ufloat
 
-		PrintEfficiencies2D(effs)
+	
+	selectioneffs = ReadEffs(Ana.folder+"/Expectedyields.json")
 
-		regioneffs = MultiplyFinalEffs(selectioneffs, effs)
 
-		PrintEfficiencies2D(regioneffs)
+	PrintEfficiencies2D(effs)
 
-		PlotStack(frames, sample[anaConfig.data], list(sample.values()), ["baseline"], variables, regioneffs, outputfolder+"/stack/", False)
-		from anaPlotting import PlotOverlay
-		#PlotOverlay(frames, sample[anaConfig.data], list(sample.values()), ["baseline"], variables, regioneffs, outputfolder+"/comp/", False)
+	regioneffs = MultiplyFinalEffs(selectioneffs, effs)
+
+	PrintEfficiencies2D(regioneffs)
+
+	#PlotStack(frames, sample[anaConfig.data], list(sample.values()), ["baseline"], variables, regioneffs, outputfolder+"/stack/", False)
+	from anaPlotting import PlotOverlay
+	#PlotOverlay(frames, sample[anaConfig.data], list(sample.values()), ["baseline"], variables, regioneffs, outputfolder+"/comp/", False)
 
 
 	Ana.filemanager.CloseAll()
@@ -133,7 +132,7 @@ if __name__ == "__main__":
 	datestring = GetDate()
 
 	from webInterface import PublishToWeb
-	PublishToWeb(outputfolder, "Variables_{}_{}".format(options.out, datestring)) #Variables_23_8_14_beforeBDT_Sigvsdata
+	#PublishToWeb(outputfolder, "Variables_{}_{}".format(options.out, datestring)) #Variables_23_8_14_beforeBDT_Sigvsdata
 
 
 

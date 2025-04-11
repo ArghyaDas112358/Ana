@@ -288,14 +288,14 @@ def PlotComparison(frames, referencename, comparisonname, regions, variables, ou
 
 			examplehist = Ana.binning[variable]
 			reference = frames[referencename][region].Histo1D(examplehist, variable)
-			reference.SetTitle("{}_{}".format(variable, region))
+			reference.SetTitle("") #"{}_{}".format(variable, region)
 			#reference.SetMarkerStyle(8) # Large scalable dot
 			#reference.SetMarkerSize(0.5)
 			reference.SetLineWidth(2)
 			reference.SetLineColor(ROOT.kBlue)
 			reference.SetFillStyle(3003)
 			reference.SetFillColor(ROOT.kBlack)
-			reference.SetTitle("{}_{}".format(variable, region))
+			#reference.SetTitle("{}_{}".format(variable, region))
 			legend.AddEntry(reference.GetPtr(), referencename, "F")
 			reference.Draw("HIST E")
 
@@ -322,6 +322,15 @@ def PlotComparison(frames, referencename, comparisonname, regions, variables, ou
 
 			maxes = [reference.GetMaximum(), comparison.GetMaximum()]
 
+			reference.GetXaxis().SetTitleSize(0.06)
+			reference.GetXaxis().SetLabelSize(0.06)
+			reference.GetYaxis().SetLabelSize(0.06)
+			reference.GetYaxis().SetTitleSize(0.06)
+			reference.GetXaxis().SetTitleOffset(1.2)
+			canvas.SetBottomMargin(0.15)
+			canvas.SetTopMargin(0.1)
+			canvas.SetLeftMargin(0.15)
+			#OverheadText()
 			reference.SetMaximum(factor*max(maxes))
 			canvas.Draw()
 
@@ -513,6 +522,6 @@ def VariableName(name):
 def OverheadText(additionaltext = "Private Work", plot = None, position = 1): 
 	if (plot == None): 
 		plot = ROOT.gPad
-	ROOT.gROOT.LoadMacro("cliPlotting.C")
+	ROOT.gROOT.LoadMacro("cliPlotting.C+")
 	ROOT.SetHeader(plot, position, additionaltext)
 

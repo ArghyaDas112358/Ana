@@ -112,8 +112,8 @@ def WriteWorkspace(frames, yields, variables, regions, dataname, filename="works
 		file = ROOT.TFile.Open(filename, "RECREATE")
 		# Creating the variable on which we fit
 		for region in regions: 
-			directory = file.mkdir(region)
-			directory.cd()
+			#directory = file.mkdir(region)
+			#directory.cd()
 			examplehist = Ana.binning[variable]
 
 			# Writing the data shapes for each region
@@ -134,6 +134,23 @@ def WriteWorkspace(frames, yields, variables, regions, dataname, filename="works
 					pass
 				hist.SetName(histname)
 				hist.Write()
+
+			# Combinatorial background
+			from anaPrepareRegions import GetABCDcomponent
+			import anaConfig
+			ABCDnorm = -1.
+			with open("ABCDnorm.txt", "r") as normfile: 
+				yieldtxt = normfile.readlines()
+				assert(len(yieldtxt) == 1)
+				ABCDnorm = float(yieldtxt[0].rstrip())
+				print(ABCDnorm)
+			comb = GetABCDcomponent(anaConfig.data, "(b_tau_sumdnn>2.)", "b_B_nmu<1&&b_B_ne<1&&b_B_nh<1", examplehist, variable)
+			ABCDnorm = 0.9*ABCDnorm
+			print("Norm: {}".format(ABCDnorm))
+			comb.Scale(ABCDnorm/comb.Integral())
+			comb.SetName("ABCD")
+			comb.Write()
+
 		file.cd()
 
 		file.Write()
@@ -197,7 +214,8 @@ def WriteWorkspaceRooType(frames, yields, variables, regions, dataname, filename
 	MC = frames.keys()
 	print(MC)
 	print(dataname)
-	MC.remove(dataname)
+	#MC.remove(dataname)
+	#MC.pop(dataname)
 
 	for variable in variables: 
 		file = ROOT.TFile.Open(filename, "RECREATE")
@@ -230,6 +248,15 @@ def WriteWorkspaceRooType(frames, yields, variables, regions, dataname, filename
 				roohist = ROOT.RooDataHist(histname, histname, fitspace, hist)
 				hist.Write()
 				getattr(workspace, "import")(roohist)
+
+			# Combinatorial background
+			from anaPrepareRegions import GetABCDcomponent
+			import anaConfig
+			comb = GetABCDcomponent(anaConfig.data, "(b_tau_sumdnn>2.)", "b_B_nmu<1&&b_B_ne<1&&b_B_nh<1", examplehist, variable)
+			comb.SetName("ABCD")
+			comb.Write()
+			roohist = ROOT.RooDataHist(histname, "ABCD", fitspace, comb)
+			getattr(workspace, "import")(roohist)
 
 		workspace.Write()
 		file.Write()

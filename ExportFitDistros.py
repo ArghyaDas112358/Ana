@@ -72,14 +72,14 @@ if __name__ == "__main__":
 		'''
 	)
 
-	from libFitting import WriteWorkspace, WriteWorkspaceDataset
+	from libFitting import WriteWorkspace, WriteWorkspaceDataset, WriteWorkspaceRooType
 	from libEfficiencies import ReadEffs2D, MultiplyFinalEffs, ReadEffs
 
 	# yields = ReadEffs2D("./data/etc/RegionEffs.json")
 	selectioneffs = ReadEffs(Ana.folder+"/Expectedyields.json")
 	yields = MultiplyFinalEffs(selectioneffs, effs)
 
-	WriteWorkspace(frames, effs, anaConfig.variables, ["baseline", "all"], anaConfig.data, "workspaceFromExportHistsUpdate.root")
+	WriteWorkspace(frames, effs, ["b_B_m"], ["baseline"], anaConfig.data, "workspaceCombinedWODir.root")
 	#WriteWorkspaceDataset(frames, effs, anaConfig.variables, ["baseline"], anaConfig.data, "workspaceFromExportHistsUpdate.root")
 
 	Ana.filemanager.CloseAll()

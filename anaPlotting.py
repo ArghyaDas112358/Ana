@@ -206,7 +206,10 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 			hists["WS"] = WS
 			if (normalisebinwidth): Ana.normaliseBinContent(WS)
 			stack.Add(WS)
+			#ABCDnorm = (data.Integral()-MCstats)/WS.Integral()
 			WS.Scale((data.Integral()-MCstats)/WS.Integral())
+			with open("ABCDnorm.txt", "w") as file: 
+				file.write("{}\n".format(data.Integral()-MCstats))
 
 			stack.Draw("HIST SAME") #"SAME"
 			data.Draw("E SAME") # Plot on top

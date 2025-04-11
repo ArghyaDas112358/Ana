@@ -230,11 +230,14 @@ if __name__ == "__main__":
 	Ana.Init(options.version)
 
 
-	samples = ["Sig", "data_obs", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "dataD2WS"] # "B0toDstar3pi", #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
+	samples = ["Sig", "data_obs", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "ABCD"] #anaConfig.samples #["Sig", "data_obs", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "dataD2WS"] # "B0toDstar3pi", #"SigPart", "dataD2WS", "dataD2TauWS", , "B0toDstar5pi" ["Sig", "dataD1", "B0toDstarDs", "B0toDstarDsstar", "B0toDstarD", "ButoDstarDK", "B0toDstarD0K", "BkgDstara1", "B0toDstar3pi", "dataD2WS"]
+	for i in range(0, len(samples)): 
+		if (("data" in samples[i]) and (not "WS" in samples[i])): 
+			samples[i] = "data_obs" 
 
 	regions = ["SR", "CR", "SB"]
 
-	variables = ["b_tau_rhomass1", "b_tau_rhomass2", "b_B_q2", "b_B_m", "b_tau_m"]
+	#variables = ["b_tau_rhomass1", "b_tau_rhomass2", "b_B_q2", "b_B_m", "b_tau_m"]
 
 	ROOT.gInterpreter.Declare("std::vector<std::string> getKeys(const std::unordered_map<std::string, ROOT::RDF::TH1DModel>& map) { std::vector<std::string> result; result.reserve(map.size()); for (auto item = map.begin(); item != map.end(); item++) { result.push_back(item->first); } return result; };") #"TH1F * convertHisto(TH1D *histo) { return static_cast<TH1F*>(histo); } "
 

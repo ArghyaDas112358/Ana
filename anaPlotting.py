@@ -142,7 +142,7 @@ def PlotStack(frames, dataname, initialcomponents, regions, variables, yields, o
 			legend.AddEntry(data.GetPtr(), "data", "PE")
 			data.Draw("E")
 
-			comb = GetABCDcomponent(anaConfig.data, "(b_tau_sumdnn>2.)", "b_B_nmu<1&&b_B_ne<1&&b_B_nh<1", examplehist, variable)
+			comb = GetABCDcomponent(anaConfig.data, "(b_tau_sumdnn>2.)", "b_B_nmu<1&&b_B_ne<1&&b_B_nh<1", examplehist, variable, [element for element in components if element != anaConfig.Sig])
 
 			stack = THStack("stack", "Background modelling")
 			hists = {}

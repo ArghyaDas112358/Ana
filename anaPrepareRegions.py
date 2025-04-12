@@ -112,7 +112,7 @@ def PrepareSamples(samplelist = anaConfig.samples, externalcut = "1"):
 	return frames, effs
 
 
-def GetABCDcomponent(source, cutA, cutB, examplehist, variable): 
+def GetABCDcomponent(source, cutA, cutB, examplehist, variable, subtract = []): 
 	sample = Ana.GetSample(source)
 	full = RDataFrame(sample)
 	frame = full.Filter(Ana.cut["bare"].GetTitle())
@@ -124,6 +124,58 @@ def GetABCDcomponent(source, cutA, cutB, examplehist, variable):
 	B.Sumw2()
 	C.Sumw2()
 	D.Sumw2()
+
+	stackB = THStack("B", "MC to remove")
+	stackC = THStack("C", "MC to remove")
+	stackD = THStack("D", "MC to remove")
+
+	# Computing the MC to substract in each region
+	frames = collections.defaultdict(dict)
+	for item in subtract: 
+		sampleMC = RDataFrame(Ana.GetSample(item))
+		frames[item]["all"] = sampleMC.Filter("1.")
+		frames[item]["bare"] = sampleMC.Filter((Ana.cut["bare"]+Ana.samples.at(GetBaseName(item)).cut).GetTitle())
+		frames[item]["B"] = frames[item]["bare"].Filter("({}) && (!({}))".format(cutA, cutB))
+		frames[item]["C"] = frames[item]["bare"].Filter("(!({})) && ({})".format(cutA, cutB))
+		frames[item]["D"] = frames[item]["bare"].Filter("(!({})) && (!({}))".format(cutA, cutB))
+
+	from libEfficiencies import ReadEffs, ComputeEfficiencies, MultiplyFinalEffs
+	seleffs = ComputeEfficiencies(frames)
+	initeffs = ReadEffs(Ana.folder+"/Expectedyields.json")
+	effs = MultiplyFinalEffs(initeffs, seleffs)
+
+
+	for item in subtract: 
+		examplehist = Ana.binning[variable]
+		histoB = copy.deepcopy(frames[item]["B"].Histo1D(examplehist, variable).GetPtr())
+		histoC = copy.deepcopy(frames[item]["C"].Histo1D(examplehist, variable).GetPtr())
+		histoD = copy.deepcopy(frames[item]["D"].Histo1D(examplehist, variable).GetPtr())
+		
+		#N = frameMC.Count().GetValue()
+		sc = effs[item]["bare"].n
+		#print("N {} {} {}".format(item, effs[item].n*float(histoB.Integral()/float(N)), effs[item].n*float(frameMC.Filter("({}) && (!({}))".format(cutA, cutB)).Count().GetValue()/float(N))))
+		print("N {} {}".format(item, effs[item]))
+		histoB.Scale(effs[item]["B"].n/histoB.Integral() if histoB.Integral() else 1.)
+		histoC.Scale(effs[item]["C"].n/histoC.Integral() if histoC.Integral() else 1.)
+		histoD.Scale(effs[item]["D"].n/histoD.Integral() if histoD.Integral() else 1.)
+		print("Num: {}".format(histoB.Integral()))
+
+		#histoB = copy.deepcopy(frameB.Histo1D(examplehist, variable).GetPtr())
+		stackB.Add(histoB)
+		stackC.Add(histoC)
+		stackD.Add(histoD)
+
+	print("N hists {}".format(stackB.GetHists().GetSize()))
+	# Substract MC components
+	for i in range(0, stackB.GetHists().GetSize()): 
+		hist = stackB.GetHists().At(i)
+		print("B : {}, sub: {}".format(B.Integral(), hist.Integral()))
+		B.Add(hist, -1.)
+	for hist in stackC.GetHists(): 
+		print("C : {}, sub: {}".format(C.Integral(), hist.Integral()))
+		C.Add(hist, -1.)
+	for hist in stackD.GetHists(): 
+		D.Add(hist, -1.)
 
 	A = copy.deepcopy(B.GetPtr()) #frame.Histo1D(examplehist, variable)
 

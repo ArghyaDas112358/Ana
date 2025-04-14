@@ -112,7 +112,7 @@ def PrepareSamples(samplelist = anaConfig.samples, externalcut = "1"):
 	return frames, effs
 
 
-def GetABCDcomponent(source, cutA, cutB, examplehist, variable, subtract = []): 
+def GetABCDcomponent(source, cutA, cutB, examplehist, variable, subtract = [], debug = True): 
 	sample = Ana.GetSample(source)
 	full = RDataFrame(sample)
 	frame = full.Filter(Ana.cut["bare"].GetTitle())
@@ -167,15 +167,33 @@ def GetABCDcomponent(source, cutA, cutB, examplehist, variable, subtract = []):
 
 	print("N hists {}".format(stackB.GetHists().GetSize()))
 	# Substract MC components
+	debug = True 
+	if (debug): 
+		file = ROOT.TFile.Open("./ABCDbackgroundMCshapes.root", "RECREATE")
+		dirB = file.mkdir("B")
+		dirC = file.mkdir("C")
+		dirD = file.mkdir("D")
+		dirB.cd()
 	for i in range(0, stackB.GetHists().GetSize()): 
 		hist = stackB.GetHists().At(i)
 		print("B : {}, sub: {}".format(B.Integral(), hist.Integral()))
 		B.Add(hist, -1.)
+		if (debug) :
+			hist.Write()
 	for hist in stackC.GetHists(): 
 		print("C : {}, sub: {}".format(C.Integral(), hist.Integral()))
 		C.Add(hist, -1.)
+		if (debug):
+			dirC.cd()
+			hist.Write()
 	for hist in stackD.GetHists(): 
 		D.Add(hist, -1.)
+		if (debug):
+			dirD.cd()
+			hist.Write()
+	if (debug): 
+		file.Write()
+		file.Close()
 
 	A = copy.deepcopy(B.GetPtr()) #frame.Histo1D(examplehist, variable)
 

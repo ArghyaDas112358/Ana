@@ -144,7 +144,7 @@ def WriteWorkspace(frames, yields, variables, regions, dataname, filename="works
 				assert(len(yieldtxt) == 1)
 				ABCDnorm = float(yieldtxt[0].rstrip())
 				print(ABCDnorm)
-			comb = GetABCDcomponent(anaConfig.data, "(b_tau_sumdnn>2.)", "b_B_nmu<1&&b_B_ne<1&&b_B_nh<1", examplehist, variable, [item for item in anaConfig.fitsamples if ((item != anaConfig.Sig) and (item != "data_obs") and (item != "ABCD"))])
+			comb = GetABCDcomponent(anaConfig.data, "(b_tau_sumdnn>2.)", "b_B_nmu<1&&b_B_ne<1&&b_B_nh<1", examplehist, variable, [item for item in anaConfig.fitsamples if ((item != anaConfig.Sig) and (item != "data_obs") and (item != "ABCD"))], "ShapefileABCD_fit.root")
 			ABCDnorm = 0.9*ABCDnorm
 			print("Norm: {}".format(ABCDnorm))
 			comb.Scale(ABCDnorm/comb.Integral())

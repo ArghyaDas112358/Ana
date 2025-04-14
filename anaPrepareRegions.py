@@ -114,7 +114,7 @@ def PrepareSamples(samplelist = anaConfig.samples, externalcut = "1"):
 	return frames, effs
 
 
-def GetABCDcomponent(source, cutA, cutB, examplehist, variable, subtract = [], debug = True): 
+def GetABCDcomponent(source, cutA, cutB, examplehist, variable, subtract = [], debugfile = "ABCDbackgroundMCshapes"): 
 	sample = Ana.GetSample(source)
 	full = RDataFrame(sample)
 	frame = full.Filter(Ana.cut["bare"].GetTitle())
@@ -146,10 +146,10 @@ def GetABCDcomponent(source, cutA, cutB, examplehist, variable, subtract = [], d
 	initeffs = ReadEffs(Ana.folder+"/Expectedyields.json")
 	effs = MultiplyFinalEffs(initeffs, seleffs)
 
-	if (debug): 
+	if (debugfile): 
 		#from anaConfig import ABCDfileCounter
 		global ABCDfileCounter
-		filename = "./ABCDbackgroundMCshapes.root"
+		filename = debugfile #"./ABCDbackgroundMCshapes.root"
 		if (ABCDfileCounter): 
 			file = ROOT.TFile.Open(filename, "UPDATE")
 		else: 
@@ -176,7 +176,7 @@ def GetABCDcomponent(source, cutA, cutB, examplehist, variable, subtract = [], d
 		stackC.Add(histoC)
 		stackD.Add(histoD)
 
-		if (debug): 
+		if (debugfile): 
 			try: 
 				directory = file.Get(variable)
 				directory.cd()
@@ -196,7 +196,7 @@ def GetABCDcomponent(source, cutA, cutB, examplehist, variable, subtract = [], d
 			histoD.SetName(item)
 			histoD.Write()
 
-	if (debug): 
+	if (debugfile): 
 		file.Write()
 		file.Close()
 

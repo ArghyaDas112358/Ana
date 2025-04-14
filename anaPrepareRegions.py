@@ -19,6 +19,8 @@ import anaConfig
 #ROOT.gROOT.LoadMacro("FileFlow_h.so")
 #from ROOT import Ana
 
+ABCDfileCounter = 0
+
 
 def UnrollHist(histo2D, inverted=True): 
 	nx = histo2D.GetNbinsX()
@@ -144,6 +146,15 @@ def GetABCDcomponent(source, cutA, cutB, examplehist, variable, subtract = [], d
 	initeffs = ReadEffs(Ana.folder+"/Expectedyields.json")
 	effs = MultiplyFinalEffs(initeffs, seleffs)
 
+	if (debug): 
+		#from anaConfig import ABCDfileCounter
+		global ABCDfileCounter
+		filename = "./ABCDbackgroundMCshapes.root"
+		if (ABCDfileCounter): 
+			file = ROOT.TFile.Open(filename, "UPDATE")
+		else: 
+			file = ROOT.TFile.Open(filename, "RECREATE")
+		ABCDfileCounter = ABCDfileCounter+1
 
 	for item in subtract: 
 		examplehist = Ana.binning[variable]
@@ -165,35 +176,42 @@ def GetABCDcomponent(source, cutA, cutB, examplehist, variable, subtract = [], d
 		stackC.Add(histoC)
 		stackD.Add(histoD)
 
+		if (debug): 
+			try: 
+				directory = file.Get(variable)
+				directory.cd()
+			except:
+				directory = file.mkdir(variable, variable, True)
+				directory.cd()
+			dirB = directory.mkdir("B", "B", True)
+			dirC = directory.mkdir("C", "C", True)
+			dirD = directory.mkdir("D", "D", True)
+			dirB.cd()
+			histoB.SetName(item)
+			histoB.Write()
+			dirC.cd()
+			histoC.SetName(item)
+			histoC.Write()
+			dirD.cd()
+			histoD.SetName(item)
+			histoD.Write()
+
+	if (debug): 
+		file.Write()
+		file.Close()
+
+
 	print("N hists {}".format(stackB.GetHists().GetSize()))
 	# Substract MC components
-	debug = True 
-	if (debug): 
-		file = ROOT.TFile.Open("./ABCDbackgroundMCshapes.root", "RECREATE")
-		dirB = file.mkdir("B")
-		dirC = file.mkdir("C")
-		dirD = file.mkdir("D")
-		dirB.cd()
 	for i in range(0, stackB.GetHists().GetSize()): 
 		hist = stackB.GetHists().At(i)
 		print("B : {}, sub: {}".format(B.Integral(), hist.Integral()))
 		B.Add(hist, -1.)
-		if (debug) :
-			hist.Write()
 	for hist in stackC.GetHists(): 
 		print("C : {}, sub: {}".format(C.Integral(), hist.Integral()))
 		C.Add(hist, -1.)
-		if (debug):
-			dirC.cd()
-			hist.Write()
 	for hist in stackD.GetHists(): 
 		D.Add(hist, -1.)
-		if (debug):
-			dirD.cd()
-			hist.Write()
-	if (debug): 
-		file.Write()
-		file.Close()
 
 	A = copy.deepcopy(B.GetPtr()) #frame.Histo1D(examplehist, variable)
 

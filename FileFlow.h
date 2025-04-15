@@ -679,7 +679,7 @@ namespace Ana
 			filemanager.AddItem("BkgBtoDstarDsstar", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/BkgDstarDsstarInclPrivateProdFirst.root", "ntuplizer/tree"); 
 		}
 
-		ABCDconfig = {"(b_tau_sumdnn>2.)", "(b_tau_sumdnn<1.5)", "b_B_nmu<1&&b_B_ne<1&&b_B_nh<1", "b_B_nmu>1||b_B_ne>1||b_B_nh>1"}; 
+		ABCDconfig = {"(b_tau_sumdnn>1.9)", "(b_tau_sumdnn<1.5)", "b_B_nmu<1&&b_B_ne<1&&b_B_nh<1", "(b_B_nmu<1&&b_B_ne<1)&&b_B_nh>1"}; 
 
 		if (!denominator) 
 		{

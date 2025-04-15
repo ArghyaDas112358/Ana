@@ -120,7 +120,8 @@ def GetABCDcomponent(source, cutA, cutB, examplehist, variable, subtract = [], d
 	frame = full.Filter(Ana.cut["bare"].GetTitle())
 	#vertical = ROOT.TCut(cutA)
 	#horizontal = ROOT.TCut(cutB)
-	from anaConfig import ABCDconfig
+	#from anaConfig import ABCDconfig
+	ABCDconfig = Ana.ABCDconfig
 	cutB = "({}) && (({}))".format(ABCDconfig.cutYh, ABCDconfig.cutXl)
 	cutC = "(({})) && ({})".format(ABCDconfig.cutYl, ABCDconfig.cutXh)
 	cutD = "(({})) && (({}))".format(ABCDconfig.cutYl, ABCDconfig.cutXl)
@@ -253,7 +254,7 @@ class ABCDcuts:
 		self.cutXh = cut2h
 		self.cutXl = cut2l
 
-		
+
 def GetBaseName(samplename): 
 	items = samplename.split("_")
 	sample = items[0]

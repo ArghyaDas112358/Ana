@@ -53,6 +53,8 @@ namespace Ana
 
 	std::map<std::string, TCut> cutstandalone;
 
+	ABCDcuts ABCDconfig;  
+
 
 	// Constants being defined centrally 
 	Double_t mvaCutSR = 0.7; // TODO: make cuts per version 
@@ -676,6 +678,8 @@ namespace Ana
 			filemanager.AddItem("BkgBtoDstar3piNonres", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/B0toDstar3piFirst.root", "ntuplizer/tree"); 
 			filemanager.AddItem("BkgBtoDstarDsstar", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/BkgDstarDsstarInclPrivateProdFirst.root", "ntuplizer/tree"); 
 		}
+
+		ABCDconfig = {"(b_tau_sumdnn>2.)", "(b_tau_sumdnn<1.5)", "b_B_nmu<1&&b_B_ne<1&&b_B_nh<1", "b_B_nmu>1||b_B_ne>1||b_B_nh>1"}; 
 
 		if (!denominator) 
 		{

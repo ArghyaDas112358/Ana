@@ -120,9 +120,13 @@ def GetABCDcomponent(source, cutA, cutB, examplehist, variable, subtract = [], d
 	frame = full.Filter(Ana.cut["bare"].GetTitle())
 	#vertical = ROOT.TCut(cutA)
 	#horizontal = ROOT.TCut(cutB)
-	B = frame.Filter("({}) && (!({}))".format(cutA, cutB)).Histo1D(examplehist, variable)
-	C = frame.Filter("(!({})) && ({})".format(cutA, cutB)).Histo1D(examplehist, variable).GetPtr()
-	D = frame.Filter("(!({})) && (!({}))".format(cutA, cutB)).Histo1D(examplehist, variable).GetPtr()
+	from anaConfig import ABCDconfig
+	cutB = "({}) && (({}))".format(ABCDconfig.cutYh, ABCDconfig.cutXl)
+	cutC = "(({})) && ({})".format(ABCDconfig.cutYl, ABCDconfig.cutXh)
+	cutD = "(({})) && (({}))".format(ABCDconfig.cutYl, ABCDconfig.cutXl)
+	B = frame.Filter(cutB).Histo1D(examplehist, variable) #"({}) && (!({}))"
+	C = frame.Filter(cutC).Histo1D(examplehist, variable).GetPtr() #"(!({})) && ({})".format(cutA, cutB)
+	D = frame.Filter(cutD).Histo1D(examplehist, variable).GetPtr() #"(!({})) && (!({}))".format(cutA, cutB)
 	B.Sumw2()
 	C.Sumw2()
 	D.Sumw2()
@@ -137,9 +141,9 @@ def GetABCDcomponent(source, cutA, cutB, examplehist, variable, subtract = [], d
 		sampleMC = RDataFrame(Ana.GetSample(item))
 		frames[item]["all"] = sampleMC.Filter("1.")
 		frames[item]["bare"] = sampleMC.Filter((Ana.cut["bare"]+Ana.samples.at(GetBaseName(item)).cut).GetTitle())
-		frames[item]["B"] = frames[item]["bare"].Filter("({}) && (!({}))".format(cutA, cutB))
-		frames[item]["C"] = frames[item]["bare"].Filter("(!({})) && ({})".format(cutA, cutB))
-		frames[item]["D"] = frames[item]["bare"].Filter("(!({})) && (!({}))".format(cutA, cutB))
+		frames[item]["B"] = frames[item]["bare"].Filter(cutB)
+		frames[item]["C"] = frames[item]["bare"].Filter(cutC)
+		frames[item]["D"] = frames[item]["bare"].Filter(cutD)
 
 	from libEfficiencies import ReadEffs, ComputeEfficiencies, MultiplyFinalEffs
 	seleffs = ComputeEfficiencies(frames)
@@ -237,6 +241,19 @@ def GetABCDcomponent(source, cutA, cutB, examplehist, variable, subtract = [], d
 
 
 
+class ABCDcuts: 
+	cutYh = 0.
+	cutYl = 0.
+	cutXh = 0.
+	cutXl = 0.
+
+	def __init__(self, cut1h, cut1l, cut2h, cut2l): 
+		self.cutYh = cut1h
+		self.cutYl = cut1l
+		self.cutXh = cut2h
+		self.cutXl = cut2l
+
+		
 def GetBaseName(samplename): 
 	items = samplename.split("_")
 	sample = items[0]

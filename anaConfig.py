@@ -35,6 +35,10 @@ MVAsamples = ["Sig", "dataD1"] #, "dataA1"
 
 blacklist = ROOT.vector("std::string")(["v_taucandidates", "b_tau"])
 
+from anaPrepareRegions import ABCDcuts
+
+ABCDconfig = ABCDcuts("(b_tau_sumdnn>2.)", "(b_tau_sumdnn<1.5)", "b_B_nmu<1&&b_B_ne<1&&b_B_nh<1", "b_B_nmu>1||b_B_ne>1||b_B_nh>1")
+
 categories = {
 	'SR': [(1, 'SR')],
 	'CR': [(2, 'CR')],

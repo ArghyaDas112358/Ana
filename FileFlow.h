@@ -12,7 +12,7 @@
 //#include <json/json.h>
 //R__ADD_LIBRARY_PATH($FOODIR) // if needed
 //R__LOAD_LIBRARY(/opt/local/lib/libjsoncpp.dylib) // Load the library
-#include "external/jsoncpp/dist/jsoncpp.cpp"
+//#include "external/jsoncpp/dist/jsoncpp.cpp"
 #include <fstream>
 #include "AnaBuildingBlocks.C"
 
@@ -53,7 +53,7 @@ namespace Ana
 
 	std::map<std::string, TCut> cutstandalone;
 
-	ABCDcuts ABCDconfig;  
+	//ABCDcuts ABCDconfig;  
 
 
 	// Constants being defined centrally 
@@ -679,13 +679,13 @@ namespace Ana
 			filemanager.AddItem("BkgBtoDstarDsstar", "/eos/home-m/mhuwiler/DoctoralThesis/Analysis/data/BkgDstarDsstarInclPrivateProdFirst.root", "ntuplizer/tree"); 
 		}
 
-		ABCDconfig = {"(b_tau_sumdnn>1.9)", "(b_tau_sumdnn<1.5)", "b_B_nmu<1&&b_B_ne<1&&b_B_nh<1", "(b_B_nmu<1&&b_B_ne<1)&&b_B_nh>1"}; 
+		//ABCDconfig = {"(b_tau_sumdnn>1.9)", "(b_tau_sumdnn<1.5)", "b_B_nmu<1&&b_B_ne<1&&b_B_nh<1", "(b_B_nmu<1&&b_B_ne<1)&&b_B_nh>1"}; 
 
 		if (!denominator) 
 		{
 			cut.emplace(std::make_pair("training", "(b_B_fsig>2.)"));
 			cut.emplace(std::make_pair("bare", "(b_B_fsig>2.)&&(b_tau_fsig>3.)&&b_tau_vprob>0.1&&(b_tau_alpha>0.)&&(b_B_r<1.)&&(b_B_mu_alpha>1.)&&(b_tau_rhomass_max>0.5)&&(b_tau_m<1.7)&&(b_B_m>3.)&&(b_B_m<5.28)")); // (b_tau_m<1.7)&&(b_B_m>3.)&&(b_B_m<5.5)&&&&(b_tau_min_dr_mu>0.5)&&mvaScore>0.7
-			cut.emplace(std::make_pair("base", cut["bare"]+TCut(TString::Format("(%s)&&%s", ABCDconfig.cutYh.c_str(), ABCDconfig.cutXh.c_str())))); // (b_tau_sumdnn>2.)b_B_nmu<1&&b_B_ne<1&&b_B_nh<1&&b_tau_vprob>0.1(b_tau_m<1.7)&&(b_B_m>3.)&&(b_B_m<5.5)&&&&(b_tau_min_dr_mu>0.5)&&mvaScore>0.7
+			//cut.emplace(std::make_pair("base", cut["bare"]+TCut(TString::Format("(%s)&&%s", ABCDconfig.cutYh.c_str(), ABCDconfig.cutXh.c_str())))); // (b_tau_sumdnn>2.)b_B_nmu<1&&b_B_ne<1&&b_B_nh<1&&b_tau_vprob>0.1(b_tau_m<1.7)&&(b_B_m>3.)&&(b_B_m<5.5)&&&&(b_tau_min_dr_mu>0.5)&&mvaScore>0.7
 			// &&b_B_nmu<1&&b_B_ne<1&&b_B_nh<3 &&(b_tau_min_dr_mu>0.5)&&(b_tau_alpha>0)Dstar_vprob>0.1 (b_tau_m<1.7)&&(mvaScore>0.3)&&(b_tau_min_dr_mu>0.5)&&(b_tau_alpha>0)&&(b_B_fsig>2.)&&b_B_m>3.&&b_B_nmu<1&&b_B_nh<1&&b_B_ne<1&&(b_B_npi0+b_B_ngamma)<2&&Dstar_vprob>0.1       (b_tau_m<1.7)&&(mvaScore>0.7)&&(b_tau_min_dr_mu>0.5)&&(b_tau_alpha>0)&&(D0_fsig>3.)&&(b_B_m>3.)     (b_tau_m<1.7)&&(b_tau_min_dr_mu>0.5)&&(b_tau_alpha>0)&&(D0_fsig>3.)&&(b_B_m>3.) //&&(b_tau_min_dr_mu>0.5)&&(b_tau_min_dr_e>0.5)//&& (b_B_q2 > 6.) // (b_Ds_vprob>0.1) && (b_D0_vprob>0.1) && (mvaScore>-2.) && (b_B_mu_alpha > 1.) &&((b_tau_m_KKpi1>2.)||(b_tau_m_KKpi1<1.9))&&((b_tau_m_KKpi2>2.)||(b_tau_m_KKpi2<1.9)) &&(b_tau_min_dr_mu>0.5)&&(b_tau_min_dr_e>0.5)&&(b_tau_alpha>0) (b_tau_m<1.7)&&(b_tau_alpha>0)&&(D0_fsig>3.)&&(b_B_m>3.)&&(b_tau_vtx4trkProb<0.2)
 			cut.emplace(std::make_pair("SR", cut["base"]+TCut(TString::Format("mvaScore>=%f", mvaCutSR)))); 
 			cut.emplace(std::make_pair("SB", cut["base"]+TCut(TString::Format("(mvaScore >= %f) && (mvaScore < %f)", mvaCutSB, mvaCutSR)))); 
@@ -756,7 +756,7 @@ namespace Ana
 	}
 
 
-	std::vector<TString> LoadRegions(const TString& path) 
+	/*std::vector<TString> LoadRegions(const TString& path) 
 	{
 		std::ifstream file(path+"/Info.json", std::ifstream::binary);
 		Json::Value regions;
@@ -776,7 +776,7 @@ namespace Ana
 				/*for (auto element : regiondata) 
 				{
 					std::cout << element << std::endl; 
-				}*/
+				}
 
 				TString name = TString::Format("%s_%s", item.c_str(), region.c_str());
 				filemanager.AddItem(name, regiondata[0].asString(), regiondata[1].asString()); 
@@ -787,15 +787,15 @@ namespace Ana
 		/*for (auto item : regions)
 		{
 			std::cout << item << " " << std::endl; 
-		}*/
+		}
 
 
 		return std::move(loaded); 
-	}
+	}*/
 
 
 
-	std::vector<TString> Load(const TString& regions, const bool denominator = false) 
+	/*std::vector<TString> Load(const TString& regions, const bool denominator = false) 
 	{
 		CommonInitialisation(denominator); 
 
@@ -809,7 +809,7 @@ namespace Ana
 		}
 
 		return loaded; 
-	}
+	}*/
 
 
 	TChain* GetSample(const TString& name) 

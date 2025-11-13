@@ -13,13 +13,11 @@ from argparse import ArgumentParser
 
 
 filedict = {"sigggF": "/eos/home-m/mhuwiler/data/HHtobbtautau/NanoAODv15/signalggF.root", }
+Ana.filemanager.AddItem("sigggF", "/eos/home-m/mhuwiler/data/HHtobbtautau/NanoAODv15/signalggF.root", "Events")
 
 
 def loadFile(desc): 
-	tree = Ana.filemanager.GetItem(desc, True)
-	tree.Print()
 	frame = ROOT.RDataFrame(Ana.filemanager.GetItem(desc, True))
-	print(frame)
 	ROOT.SetOwnership(frame, 0)
 	return frame
 
@@ -58,7 +56,6 @@ if __name__ == "__main__":
 
 
 	Ana.Init()
-	Ana.filemanager.AddItem("sigggF", "/eos/home-m/mhuwiler/data/HHtobbtautau/NanoAODv15/signalggF.root", "Events")
 
 	
 

@@ -34,6 +34,15 @@ def loadFileFull(desc, writemode = False, treename = "Events"):
 	return frame
 
 
+def dropBranchNames(frame, filename, exclusionlist = []):
+	with open(filename, "w") as file: 
+		for name in frame.GetColumnNames(): 
+			name = str(name)
+			#print("{} {}".format(name, [(excluded in name) for excluded in exclusionlist]))
+			if not (any([excluded in name for excluded in exclusionlist])): 
+				file.write("{}\n".format(name))
+
+
 
 if __name__ == "__main__":
 
@@ -62,6 +71,10 @@ if __name__ == "__main__":
 	sig = loadFile("sigggF")
 
 	print(sig)
+
+	dropBranchNames(sig, "branchnames.txt", ["L1", "HLT", "DST"])
+
+	print("Hello")
 
 
 	

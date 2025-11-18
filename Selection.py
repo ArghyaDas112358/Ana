@@ -72,16 +72,16 @@ if __name__ == "__main__":
 
 	sig = ROOT.ROOT.RDF.AsRNode(loadFile("sigggF"))
 
+	if (options.test): 
+		sig = ROOT.ROOT.RDF.AsRNode(sig.Range(0, 100))
+
 	print(sig)
 
 	dropBranchNames(sig, "branchnames.txt", ["L1", "HLT", "DST"])
 
 	sig = Ana.GetP4(sig, "Muon")
 
-	if (options.test): 
-		sig.Range(0, 100).Snapshot("Events", "./Test.root")
-	else: 
-		sig.Snapshot("Events", "./Test.root")
+	sig.Snapshot("Events", "./Test.root")
 
 	print("Hello")
 

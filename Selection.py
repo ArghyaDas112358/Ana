@@ -66,6 +66,8 @@ if __name__ == "__main__":
 
 	Ana.Init()
 
+
+	ROOT.gROOT.LoadMacro("HHbbtautauAnaElements.C+")
 	
 
 	sig = loadFile("sigggF")
@@ -73,6 +75,10 @@ if __name__ == "__main__":
 	print(sig)
 
 	dropBranchNames(sig, "branchnames.txt", ["L1", "HLT", "DST"])
+
+	Ana.GetP4(sig, "Muon")
+
+	sig.Snapshot("Events", "./Test.root")
 
 	print("Hello")
 

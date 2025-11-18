@@ -70,7 +70,7 @@ if __name__ == "__main__":
 	ROOT.gROOT.LoadMacro("HHbbtautauAnaElements.C+")
 	
 
-	sig = loadFile("sigggF")
+	sig = ROOT.ROOT.RDF.AsRNode(loadFile("sigggF"))
 
 	print(sig)
 

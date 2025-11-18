@@ -27,8 +27,13 @@ namespace Ana
 	{
 		//TLorentzVector P4; 
 		std::string pfx = prefix.Data(); 
+		//ROOT::RDF::RNode *extended 
 		*frame = frame->Define(pfx+"_P4", computeP4, {pfx+"_pt", pfx+"_eta", pfx+"_phi", pfx+"_mass"});
 		return frame; 
+	}
+
+	void AddColumn(ROOT::RDF::RNode* df, const std::string &newColName) {
+    	*df = df->Define(newColName, [](){ return 42; });
 	}
 
 }

@@ -76,9 +76,12 @@ if __name__ == "__main__":
 
 	dropBranchNames(sig, "branchnames.txt", ["L1", "HLT", "DST"])
 
-	Ana.GetP4(sig, "Muon")
+	sig = Ana.GetP4(sig, "Muon")
 
-	sig.Snapshot("Events", "./Test.root")
+	if (options.test): 
+		sig.Range(0, 100).Snapshot("Events", "./Test.root")
+	else: 
+		sig.Snapshot("Events", "./Test.root")
 
 	print("Hello")
 

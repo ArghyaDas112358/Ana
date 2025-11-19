@@ -19,7 +19,7 @@ Ana.filemanager.AddItem("sigggF", "/eos/home-m/mhuwiler/data/HHtobbtautau/NanoAO
 def loadFile(desc): 
 	frame = ROOT.RDataFrame(Ana.filemanager.GetItem(desc, True))
 	ROOT.SetOwnership(frame, 0)
-	return frame
+	return generalise(frame)
 
 
 def loadFileFull(desc, writemode = False, treename = "Events"): 
@@ -41,6 +41,10 @@ def dropBranchNames(frame, filename, exclusionlist = []):
 			#print("{} {}".format(name, [(excluded in name) for excluded in exclusionlist]))
 			if not (any([excluded in name for excluded in exclusionlist])): 
 				file.write("{}\n".format(name))
+
+
+def generalise(df): 
+	return ROOT.ROOT.RDF.AsRNode(df)
 
 
 
@@ -70,10 +74,10 @@ if __name__ == "__main__":
 	ROOT.gROOT.LoadMacro("HHbbtautauAnaElements.C+")
 	
 
-	sig = ROOT.ROOT.RDF.AsRNode(loadFile("sigggF"))
+	sig = loadFile("sigggF")
 
 	if (options.test): 
-		sig = ROOT.ROOT.RDF.AsRNode(sig.Range(0, 100))
+		sig = generalise(sig.Range(0, 100))
 
 	print(sig)
 

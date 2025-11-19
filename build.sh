@@ -1,0 +1,1 @@
+rootcling -f MyDict.cxx -c MyDict.h MyDict_LinkDef.h

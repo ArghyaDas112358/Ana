@@ -72,12 +72,13 @@ if __name__ == "__main__":
 
 
 	ROOT.gROOT.LoadMacro("HHbbtautauAnaElements.C+")
+	ROOT.gSystem.Load("MyDict.so")
 	
 
 	sig = loadFile("sigggF")
 
 	if (options.test): 
-		sig = generalise(sig.Range(0, 100))
+		sig = generalise(sig.Range(0, 10))
 
 	print(sig)
 

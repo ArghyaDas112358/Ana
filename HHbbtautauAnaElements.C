@@ -15,7 +15,8 @@ constexpr double Muon_Mass = -1.; // TODO: set value from PDG, perhaps also for 
 namespace Ana 
 {
 
-	TLorentzVector computeP4(double pt, double eta, double phi, double m = Pion_Mass)   
+	template <typename T>
+	TLorentzVector computeP4(T pt, T eta, T phi, T m = Pion_Mass)   
 	{
 		TLorentzVector P; 
 		P.SetPtEtaPhiM(pt, eta, phi, m); 
@@ -23,7 +24,8 @@ namespace Ana
 	}
 
 
-	ROOT::VecOps::RVec<TLorentzVector> computeP4Vec(ROOT::VecOps::RVec<double> pt, ROOT::VecOps::RVec<double> eta, ROOT::VecOps::RVec<double> phi, ROOT::VecOps::RVec<double> m)   
+	template <typename T>
+	ROOT::VecOps::RVec<TLorentzVector> computeP4Vec(ROOT::VecOps::RVec<T> pt, ROOT::VecOps::RVec<T> eta, ROOT::VecOps::RVec<T> phi, ROOT::VecOps::RVec<T> m)   
 	{
 		// Return a vector of P4 for collections with vector branches
 		ROOT::VecOps::RVec<TLorentzVector> P; 
@@ -44,12 +46,13 @@ namespace Ana
 	}
 
 
+	template<typename T>
 	ROOT::RDF::RNode* GetP4(ROOT::RDF::RNode *frame, TString prefix, TString name = "") 
 	{
 		//TLorentzVector P4; 
 		std::string pfx = prefix.Data(); 
 		//ROOT::RDF::RNode *extended 
-		*frame = frame->Define(pfx+"_P4", computeP4Vec, {pfx+"_pt", pfx+"_eta", pfx+"_phi", pfx+"_mass"});
+		*frame = frame->Define(pfx+"_P4", computeP4Vec<T>, {pfx+"_pt", pfx+"_eta", pfx+"_phi", pfx+"_mass"});
 		return frame; 
 	}
 

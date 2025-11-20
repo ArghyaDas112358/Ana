@@ -72,6 +72,7 @@ if __name__ == "__main__":
 
 
 	ROOT.gROOT.LoadMacro("HHbbtautauAnaElements.C+")
+	ROOT.gSystem.Load("HHbbtautauAnaELements.so")
 	ROOT.gSystem.Load("MyDict.so")
 	
 

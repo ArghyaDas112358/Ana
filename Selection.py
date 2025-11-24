@@ -86,9 +86,11 @@ if __name__ == "__main__":
 
 	dropBranchNames(sig, "branchnames.txt", ["L1", "HLT", "DST"])
 
-	sig = Ana.GetP4["float"](sig, "Muon")
+	sig = Ana.GetP4(sig, "Muon") #sig = Ana.GetP4["float"](sig, "Muon")
 
-	sig.Snapshot("Events", "./Test.root")
+	blacklist = ["Muon_P4"]
+
+	sig.Snapshot("Events", "./Test.root", Ana.purgeColumns(sig.GetColumnNames(), blacklist))
 
 	print("Hello")
 

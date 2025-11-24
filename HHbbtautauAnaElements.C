@@ -7,6 +7,7 @@
 #include "TLorentzVector.h"
 #include "Math/Vector4D.h"
 #include <thread>
+#include "Particle.h"
 
 
 constexpr double Pion_Mass = 0.13957; // The pion mass from the PDG (used as default mass hypothesis)
@@ -21,19 +22,17 @@ using R4Vec = ROOT::Math::PtEtaPhiM4D<T>;
 namespace Ana 
 {
 
-	template <typename T>
-	inline R4Vec<T> computeP4(const T pt, const T eta, const T phi, const T m = Pion_Mass)   
+	Particle computeP4(const double pt, const double eta, const double phi, const double m = Pion_Mass)   
 	{
-		R4Vec<T> P(pt, eta, phi, m); 
+		Particle P(pt, eta, phi, m, 15); 
 		return P; 
 	}
 
 
-	template <typename T>
-	inline ROOT::VecOps::RVec<R4Vec<T> > computeP4Vec(const ROOT::VecOps::RVec<T>& pt, const ROOT::VecOps::RVec<T>& eta, const ROOT::VecOps::RVec<T>& phi, const ROOT::VecOps::RVec<T>& m)   
+	ROOT::VecOps::RVec<Particle> computeP4Vec(const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m)   
 	{
 		// Return a vector of P4 for collections with vector branches
-		ROOT::VecOps::RVec<R4Vec<T> > P; 
+		ROOT::VecOps::RVec<Particle> P; 
 		int n = pt.size(); 
 		P.reserve(n); 
 
@@ -44,22 +43,36 @@ namespace Ana
 		// Loop over the elements
 		for (unsigned int i=0; i<n; i++) 
 		{
-			P.emplace_back(pt[i], eta[i], phi[i], m[i]); 
+			P.emplace_back(pt[i], eta[i], phi[i], m[i], 15); 
 		}
 
 		return P; 
 	}
 
 
-	template<typename T>
-	inline ROOT::RDF::RNode* GetP4(ROOT::RDF::RNode *frame, TString prefix, TString name = "") 
+	//template<typename T>
+	ROOT::RDF::RNode* GetP4(ROOT::RDF::RNode *frame, TString prefix, TString name = "") 
 	{
 		//TLorentzVector P4; 
 		std::string pfx = prefix.Data(); 
 		//ROOT::RDF::RNode *extended 
-		*frame = frame->Define(pfx+"_P4", computeP4Vec<T>, {pfx+"_pt", pfx+"_eta", pfx+"_phi", pfx+"_mass"});
+		*frame = frame->Define(pfx+"_P4", computeP4Vec, {pfx+"_pt", pfx+"_eta", pfx+"_phi", pfx+"_mass"});
+		//*frame = frame->Define(pfx+"_P4", computeP4Vec<T>, {pfx+"_pt", pfx+"_eta", pfx+"_phi", pfx+"_mass"});
 		return frame; 
 	}
+
+
+	/*std::vector<std::string>& purgeColumns(std::vector<std::string> &&columns, const std::vector<std::string>& blacklist)
+	{
+   			// a lambda that checks if `s` is in the blacklist
+   			auto is_blacklisted = [&blacklist](const std::string &s)  { return std::find(blacklist.begin(), blacklist.end(), s) != blacklist.end(); };
+
+   			// removing elements from std::vectors is not pretty, see https://en.wikipedia.org/wiki/Erase%E2%80%93remove_idiom
+   			columns.erase(std::remove_if(columns.begin(), columns.end(), is_blacklisted), columns.end());
+
+   			return columns; 
+	}*/
+
 
 
 	void AddColumn(ROOT::RDF::RNode* df, const std::string &newColName) {

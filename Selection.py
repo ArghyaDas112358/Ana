@@ -2,6 +2,8 @@
 from __future__ import division, print_function
 
 import ROOT
+ROOT.gROOT.LoadMacro("Particle.h+")
+ROOT.gROOT.LoadMacro("HHbbtautauAnaElements.C+")
 import os
 import math
 import collections

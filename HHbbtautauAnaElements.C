@@ -92,6 +92,7 @@ namespace Ana
 		}; 
 
 		*frame = frame->Define("Gen"+prefix, FilterParticles, {genprefix+"_Particle"}); 
+		*frame = frame->Define("Gen"+prefix+"_pdgId", [](ROOT::VecOps::RVec<Particle> particles){ROOT::VecOps::RVec<int> result; for (auto particle: particles) {result.push_back(particle.pdgid); } return result; }, {"Gen"+prefix}); 
 		return frame; 
 	}
 

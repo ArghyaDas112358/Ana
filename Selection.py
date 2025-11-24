@@ -71,9 +71,8 @@ if __name__ == "__main__":
 	Ana.Init()
 
 
-	ROOT.gROOT.LoadMacro("HHbbtautauAnaElements.C+")
-	ROOT.gSystem.Load("HHbbtautauAnaELements.so")
-	ROOT.gSystem.Load("MyDict.so")
+	#ROOT.gSystem.Load("HHbbtautauAnaELements.so")
+	#ROOT.gSystem.Load("MyDict.so")
 	
 
 	sig = loadFile("sigggF")

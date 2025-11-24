@@ -79,8 +79,8 @@ namespace Ana
    			return columns; 
 	}*/
 
-	ROOT::RDF::RNode* GetGenParticles(ROOT::RDF::RNode *frame, std::string prefix, std::string genprefix = "GenPart") {
-		int id = PDGid[prefix]; 
+	ROOT::RDF::RNode* GetGenParticles(ROOT::RDF::RNode *frame, const int id, const std::string name, const std::string genprefix = "GenPart") 
+	{
 		*frame = frame->Define(genprefix+"_Particle", computeP4Vec, {genprefix+"_pt", genprefix+"_eta", genprefix+"_phi", genprefix+"_mass", genprefix+"_pdgId"}); 
 
 		auto FilterParticles = [id](ROOT::VecOps::RVec<Particle> particles) 
@@ -91,9 +91,18 @@ namespace Ana
 			return result; 
 		}; 
 
-		*frame = frame->Define("Gen"+prefix, FilterParticles, {genprefix+"_Particle"}); 
-		*frame = frame->Define("Gen"+prefix+"_pdgId", [](ROOT::VecOps::RVec<Particle> particles){ROOT::VecOps::RVec<int> result; for (auto particle: particles) {result.push_back(particle.pdgid); } return result; }, {"Gen"+prefix}); 
+		*frame = frame->Define(name, FilterParticles, {genprefix+"_Particle"}); 
+		*frame = frame->Define(name+"_pdgId", [](ROOT::VecOps::RVec<Particle> particles){ROOT::VecOps::RVec<int> result; for (auto particle: particles) {result.push_back(particle.pdgid); } return result; }, {name}); 
+		*frame = frame->Define(name+"_size", [](ROOT::VecOps::RVec<Particle> particles){return particles.size(); }, {name}); 
 		return frame; 
+	}
+
+
+	ROOT::RDF::RNode* GetGenParticles(ROOT::RDF::RNode *frame, const std::string prefix, const std::string genprefix = "GenPart") 
+	{
+		const int id = PDGid[prefix]; 
+		const std::string name = "Gen"+prefix; 
+		return GetGenParticles(frame, id, name, genprefix); 
 	}
 
 

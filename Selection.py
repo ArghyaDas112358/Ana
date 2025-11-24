@@ -16,6 +16,7 @@ from argparse import ArgumentParser
 
 filedict = {"sigggF": "/eos/home-m/mhuwiler/data/HHtobbtautau/NanoAODv15/signalggF.root", }
 Ana.filemanager.AddItem("sigggF", "/eos/home-m/mhuwiler/data/HHtobbtautau/NanoAODv15/signalggF.root", "Events")
+Ana.filemanager.AddItem("official", "/eos/home-m/mhuwiler/data/HHtobbtautau/NanoAODv12/Run3Summer22NanoAODv12_1-1.root", "Events")
 
 
 def loadFile(desc): 
@@ -52,7 +53,7 @@ def generalise(df):
 
 if __name__ == "__main__":
 
-	parser = ArgumentParser(description="PlotBeforeMVA") 
+	parser = ArgumentParser(description="Selection") 
 	#parser.add_argument("tool", action="store", type=str, help="Which time list you want to analyse")
 	parser.add_argument("-c", "--version", dest="version", action="store", type=str, default="v7", help="Which version (cycle) of files to run on")
 	parser.add_argument("--prefix", dest="xrdpfx", action="store", type=str, default="root://cms-xrd-global.cern.ch//", help="XRootD prefix to be used to access files")
@@ -87,8 +88,9 @@ if __name__ == "__main__":
 	dropBranchNames(sig, "branchnames.txt", ["L1", "HLT", "DST"])
 
 	sig = Ana.GetP4(sig, "Muon") #sig = Ana.GetP4["float"](sig, "Muon")
+	sig = Ana.GetGenParticles(sig, "Muon")
 
-	blacklist = ["Muon_P4"]
+	blacklist = ["Muon_P4", "GenPart_Particle", "GenMuon"] # TODO: add autoblacklist
 
 	sig.Snapshot("Events", "./Test.root", Ana.purgeColumns(sig.GetColumnNames(), blacklist))
 

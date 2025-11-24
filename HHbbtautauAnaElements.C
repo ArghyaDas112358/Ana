@@ -21,6 +21,12 @@ using R4Vec = ROOT::Math::PtEtaPhiM4D<T>;
 
 namespace Ana 
 {
+	std::unordered_map<std::string, int> PDGid = { 
+		{ "Muon", 13 }, 
+		{ "Electron", 11 }, 
+		{ "Tau", 15 }, 
+		{"Pi", 211}, 
+	}; 
 
 	Particle computeP4(const double pt, const double eta, const double phi, const double m = Pion_Mass)   
 	{
@@ -29,7 +35,7 @@ namespace Ana
 	}
 
 
-	ROOT::VecOps::RVec<Particle> computeP4Vec(const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m)   
+	ROOT::VecOps::RVec<Particle> computeP4Vec(const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m, const ROOT::VecOps::RVec<int>& pdgid = {-999})   
 	{
 		// Return a vector of P4 for collections with vector branches
 		ROOT::VecOps::RVec<Particle> P; 
@@ -43,7 +49,7 @@ namespace Ana
 		// Loop over the elements
 		for (unsigned int i=0; i<n; i++) 
 		{
-			P.emplace_back(pt[i], eta[i], phi[i], m[i], 15); 
+			P.emplace_back(pt[i], eta[i], phi[i], m[i], pdgid[i]); 
 		}
 
 		return P; 
@@ -56,7 +62,7 @@ namespace Ana
 		//TLorentzVector P4; 
 		std::string pfx = prefix.Data(); 
 		//ROOT::RDF::RNode *extended 
-		*frame = frame->Define(pfx+"_P4", computeP4Vec, {pfx+"_pt", pfx+"_eta", pfx+"_phi", pfx+"_mass"});
+		*frame = frame->Define(pfx+"_P4", computeP4Vec, {pfx+"_pt", pfx+"_eta", pfx+"_phi", pfx+"_mass", pfx+"_pdgId"});
 		//*frame = frame->Define(pfx+"_P4", computeP4Vec<T>, {pfx+"_pt", pfx+"_eta", pfx+"_phi", pfx+"_mass"});
 		return frame; 
 	}
@@ -72,6 +78,22 @@ namespace Ana
 
    			return columns; 
 	}*/
+
+	ROOT::RDF::RNode* GetGenParticles(ROOT::RDF::RNode *frame, std::string prefix, std::string genprefix = "GenPart") {
+		int id = PDGid[prefix]; 
+		*frame = frame->Define(genprefix+"_Particle", computeP4Vec, {genprefix+"_pt", genprefix+"_eta", genprefix+"_phi", genprefix+"_mass", genprefix+"_pdgId"}); 
+
+		auto FilterParticles = [id](ROOT::VecOps::RVec<Particle> particles) 
+		{
+			ROOT::VecOps::RVec<Particle> result; 
+			result.reserve(particles.size()); 
+			std::copy_if(particles.begin(), particles.end(), std::back_inserter(result), [&](const Particle& particle){ return particle.pdgid == id; }); // Copy particles where the pdgid matches the requirement
+			return result; 
+		}; 
+
+		*frame = frame->Define("Gen"+prefix, FilterParticles, {genprefix+"_Particle"}); 
+		return frame; 
+	}
 
 
 

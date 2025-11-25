@@ -28,6 +28,13 @@ namespace Ana
 		{"Pi", 211}, 
 	}; 
 
+	template<typename T>
+	int VecSize(ROOT::VecOps::RVec<T> vec)
+	{
+		return vec.size(); 
+	}
+
+
 	Particle computeP4(const double pt, const double eta, const double phi, const double m = Pion_Mass)   
 	{
 		Particle P(pt, eta, phi, m, 15); 
@@ -93,7 +100,7 @@ namespace Ana
 
 		*frame = frame->Define(name, FilterParticles, {genprefix+"_Particle"}); 
 		*frame = frame->Define(name+"_pdgId", [](ROOT::VecOps::RVec<Particle> particles){ROOT::VecOps::RVec<int> result; for (auto particle: particles) {result.push_back(particle.pdgid); } return result; }, {name}); 
-		*frame = frame->Define(name+"_size", [](ROOT::VecOps::RVec<Particle> particles){return particles.size(); }, {name}); 
+		*frame = frame->Define(name+"_size", VecSize<Particle>, {name}); 
 		return frame; 
 	}
 

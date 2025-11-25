@@ -87,7 +87,7 @@ namespace Ana
 		{
 			ROOT::VecOps::RVec<Particle> result; 
 			result.reserve(particles.size()); 
-			std::copy_if(particles.begin(), particles.end(), std::back_inserter(result), [&](const Particle& particle){ return particle.pdgid == id; }); // Copy particles where the pdgid matches the requirement
+			std::copy_if(particles.begin(), particles.end(), std::back_inserter(result), [&](const Particle& particle){ return abs(particle.pdgid) == id; }); // Copy particles where the pdgid matches the requirement
 			return result; 
 		}; 
 

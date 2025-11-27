@@ -8,10 +8,17 @@
 #include "Math/Vector4D.h"
 #include <thread>
 #include "Particle.h"
+#include "FileFlow.h"
 
 
 constexpr double Pion_Mass = 0.13957; // The pion mass from the PDG (used as default mass hypothesis)
 constexpr double Muon_Mass = -1.; // TODO: set value from PDG, perhaps also for electron and Kaon
+
+// TODO: 
+// - implement autoblacklist
+// - do not hardcode names, write all initial names and final names for collections
+// - test templated P4 TLorentzVector functions
+// - separate into NanoBuildingBlocks.C and HHbbtautauAnaElements.C
 
 
 //typedef ROOT::Math::PtEtaPhiM4D<double> R4Vec; 
@@ -21,6 +28,8 @@ using R4Vec = ROOT::Math::PtEtaPhiM4D<T>;
 
 namespace Ana 
 {
+	extern std::unordered_map<std::string, int> autoblacklist; 
+
 	std::unordered_map<std::string, int> PDGid = { 
 		{ "Muon", 13 }, 
 		{ "Electron", 11 }, 
@@ -91,6 +100,7 @@ namespace Ana
 		auto columnNames = frame->GetColumnNames(); 
 		if (std::find(columnNames.begin(), columnNames.end(), genprefix+"_Particle") == columnNames.end())
 		*frame = frame->Define(genprefix+"_Particle", computeP4Vec, {genprefix+"_pt", genprefix+"_eta", genprefix+"_phi", genprefix+"_mass", genprefix+"_pdgId"}); 
+		autoblacklist[genprefix+"_Particle"]++; 
 
 		auto FilterParticles = [id](ROOT::VecOps::RVec<Particle> particles) 
 		{
@@ -111,6 +121,7 @@ namespace Ana
 	{
 		const int id = PDGid[prefix]; 
 		const std::string name = "Gen"+prefix; 
+		autoblacklist[name]++; 
 		return GetGenParticles(frame, id, name, genprefix); 
 	}
 

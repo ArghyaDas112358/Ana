@@ -88,6 +88,8 @@ namespace Ana
 
 	ROOT::RDF::RNode* GetGenParticles(ROOT::RDF::RNode *frame, const int id, const std::string name, const std::string genprefix = "GenPart") 
 	{
+		auto columnNames = frame->GetColumnNames(); 
+		if (std::find(columnNames.begin(), columnNames.end(), genprefix+"_Particle") == columnNames.end())
 		*frame = frame->Define(genprefix+"_Particle", computeP4Vec, {genprefix+"_pt", genprefix+"_eta", genprefix+"_phi", genprefix+"_mass", genprefix+"_pdgId"}); 
 
 		auto FilterParticles = [id](ROOT::VecOps::RVec<Particle> particles) 

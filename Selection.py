@@ -87,9 +87,13 @@ if __name__ == "__main__":
 
 	dropBranchNames(sig, "branchnames.txt", ["L1", "HLT", "DST"])
 
-	sig = Ana.GetP4(sig, "Muon") #sig = Ana.GetP4["float"](sig, "Muon")
-	sig = Ana.GetGenParticles(sig, "Muon")
-	sig = Ana.GetGenParticles(sig, "Electron")
+	#sig = Ana.GetP4(sig, "Muon") #sig = Ana.GetP4["float"](sig, "Muon")
+	#sig = Ana.GetGenParticles(sig, "Muon")
+	#sig = Ana.GetGenParticles(sig, "Electron")
+
+	genprefix = "GenPart"
+
+	sig = sig.Define("GenPart_Particle", "Ana::computeP4Vec({0}_pt, {0}_eta, {0}_phi, {0}_mass, {0}_pdgId)".format("GenPart"))
 
 	blacklist = ["Muon_P4", "GenPart_Particle", "GenMuon"] # TODO: add autoblacklist
 

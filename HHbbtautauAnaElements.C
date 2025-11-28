@@ -95,12 +95,20 @@ namespace Ana
    			return columns; 
 	}*/
 
-	ROOT::RDF::RNode* GetGenParticles(ROOT::RDF::RNode *frame, const int id, const std::string name, const std::string genprefix = "GenPart") 
+	
+	ROOT::RDF::RNode* GetGenParticleCollection(ROOT::RDF::RNode *frame, const std::string genprefix = "GenPart") 
 	{
 		auto columnNames = frame->GetColumnNames(); 
-		if (std::find(columnNames.begin(), columnNames.end(), genprefix+"_Particle") == columnNames.end())
+		if (std::find(columnNames.begin(), columnNames.end(), genprefix+"_Particle") == columnNames.end()) 
 		*frame = frame->Define(genprefix+"_Particle", computeP4Vec, {genprefix+"_pt", genprefix+"_eta", genprefix+"_phi", genprefix+"_mass", genprefix+"_pdgId"}); 
 		autoblacklist[genprefix+"_Particle"]++; 
+		return frame; 
+	}
+
+
+	ROOT::RDF::RNode* GetGenParticles(ROOT::RDF::RNode *frame, const int id, const std::string name, const std::string genprefix = "GenPart") 
+	{
+		frame = GetGenParticleCollection(frame, genprefix); 
 
 		auto FilterParticles = [id](ROOT::VecOps::RVec<Particle> particles) 
 		{

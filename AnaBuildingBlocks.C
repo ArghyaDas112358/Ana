@@ -34,16 +34,16 @@ namespace Ana
 {
 	static std::unordered_map<std::string, int> autoblacklist; 
 
-	std::vector<std::string>& purgeColumns(std::vector<std::string> &&columns, std::vector<std::string> blacklist = {})
+	std::vector<std::string>& purgeColumns(std::vector<std::string> &&columns, const std::vector<std::string>& blacklist = {})
 	{
-			// add 
-			blacklist.reserve(blacklist.size()+autoblacklist.size()); 
-			for (auto item : autoblacklist) 
+			auto list(autoblacklist); 
+			list.reserve(list.size()+blacklist.size()); 
+			for (auto item : blacklist) 
 			{
-				blacklist.push_back(item.first);
+				list[item]++;
 			}
    			// a lambda that checks if `s` is in the blacklist
-   			auto is_blacklisted = [&blacklist](const std::string &s)  { return std::find(blacklist.begin(), blacklist.end(), s) != blacklist.end(); };
+   			auto is_blacklisted = [&list](const std::string &s)  { return (list.find(s) != list.end()); };
 
    			// removing elements from std::vectors is not pretty, see https://en.wikipedia.org/wiki/Erase%E2%80%93remove_idiom
    			columns.erase(std::remove_if(columns.begin(), columns.end(), is_blacklisted), columns.end());

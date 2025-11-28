@@ -73,12 +73,12 @@ namespace Ana
 
 
 	//template<typename T>
-	ROOT::RDF::RNode* GetP4(ROOT::RDF::RNode *frame, TString prefix, TString name = "") 
+	ROOT::RDF::RNode GetP4(ROOT::RDF::RNode frame, TString prefix, TString name = "") 
 	{
 		//TLorentzVector P4; 
 		std::string pfx = prefix.Data(); 
 		//ROOT::RDF::RNode *extended 
-		*frame = frame->Define(pfx+"_P4", computeP4Vec, {pfx+"_pt", pfx+"_eta", pfx+"_phi", pfx+"_mass", pfx+"_pdgId"});
+		frame = frame.Define(pfx+"_P4", computeP4Vec, {pfx+"_pt", pfx+"_eta", pfx+"_phi", pfx+"_mass", pfx+"_pdgId"});
 		//*frame = frame->Define(pfx+"_P4", computeP4Vec<T>, {pfx+"_pt", pfx+"_eta", pfx+"_phi", pfx+"_mass"});
 		return frame; 
 	}
@@ -96,17 +96,17 @@ namespace Ana
 	}*/
 
 	
-	ROOT::RDF::RNode* GetGenParticleCollection(ROOT::RDF::RNode *frame, const std::string genprefix = "GenPart") 
+	ROOT::RDF::RNode GetGenParticleCollection(ROOT::RDF::RNode frame, const std::string genprefix = "GenPart") 
 	{
-		auto columnNames = frame->GetColumnNames(); 
+		auto columnNames = frame.GetColumnNames(); 
 		if (std::find(columnNames.begin(), columnNames.end(), genprefix+"_Particle") == columnNames.end()) 
-		*frame = frame->Define(genprefix+"_Particle", computeP4Vec, {genprefix+"_pt", genprefix+"_eta", genprefix+"_phi", genprefix+"_mass", genprefix+"_pdgId"}); 
+		frame = frame.Define(genprefix+"_Particle", computeP4Vec, {genprefix+"_pt", genprefix+"_eta", genprefix+"_phi", genprefix+"_mass", genprefix+"_pdgId"}); 
 		autoblacklist[genprefix+"_Particle"]++; 
 		return frame; 
 	}
 
 
-	ROOT::RDF::RNode* GetGenParticles(ROOT::RDF::RNode *frame, const int id, const std::string name, const std::string genprefix = "GenPart") 
+	ROOT::RDF::RNode GetGenParticles(ROOT::RDF::RNode frame, const int id, const std::string name, const std::string genprefix = "GenPart") 
 	{
 		frame = GetGenParticleCollection(frame, genprefix); 
 
@@ -118,12 +118,12 @@ namespace Ana
 			return result; 
 		}; 
 
-		*frame = frame->Define(name, FilterParticles, {genprefix+"_Particle"}); 
+		frame = frame.Define(name, FilterParticles, {genprefix+"_Particle"}); 
 		return frame; 
 	}
 
 
-	ROOT::RDF::RNode* GetGenParticles(ROOT::RDF::RNode *frame, const std::string prefix, const std::string genprefix = "GenPart") 
+	ROOT::RDF::RNode GetGenParticles(ROOT::RDF::RNode frame, const std::string prefix, const std::string genprefix = "GenPart") 
 	{
 		const int id = PDGid[prefix]; 
 		const std::string name = "Gen"+prefix; 

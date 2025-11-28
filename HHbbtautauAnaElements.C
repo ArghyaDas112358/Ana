@@ -111,8 +111,6 @@ namespace Ana
 		}; 
 
 		*frame = frame->Define(name, FilterParticles, {genprefix+"_Particle"}); 
-		*frame = frame->Define(name+"_pdgId", [](ROOT::VecOps::RVec<Particle> particles){ROOT::VecOps::RVec<int> result; for (auto particle: particles) {result.push_back(particle.pdgid); } return result; }, {name}); 
-		*frame = frame->Define(name+"_size", VecSize<Particle>, {name}); 
 		return frame; 
 	}
 

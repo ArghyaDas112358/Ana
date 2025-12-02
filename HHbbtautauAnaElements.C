@@ -131,6 +131,76 @@ namespace Ana
 		return GetGenParticles(frame, id, name, genprefix); 
 	}
 
+	Particle IdentifyGenMuon(ROOT::RDF::RNode *frame, const std::string value = "") 
+	{
+		/*for (auto particle : genParticles) 
+		{
+			if (particle.pdgid == PDGid["Muon"]) 
+			{
+				// Could be the gen muon from Taumu
+
+			}
+		}*/
+	}
+
+
+	int findMother(const ROOT::VecOps::RVec<float>& mother, int particle) 
+	{
+		return mother[particle]; 
+	}
+
+
+	bool isDescendantOf(int descendant, int ancestor, const ROOT::VecOps::RVec<float>& mothers) 
+	{
+
+		bool particleFound = false; 
+
+		int particle = descendant; 
+
+		while (particle != ancestor)
+		{
+			particle = mothers[particle]; 
+
+			if (particle < 0) return false; 
+		}
+
+		return true; 
+	}
+
+
+	bool isAncestor(const int ancestor, const int descendant, const ROOT::VecOps::RVec<float>& mothers)
+	{
+	  	return isDescendantOf(descendant, ancestor, mothers); 
+	}
+
+
+
+	int DecayGenMatching(const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mother, const ROOT::VecOps::RVec<int>& statusFlag) 
+	{
+
+		// statusFlags bit helpers (bit numbers, zero-indexed)
+    	const unsigned int BIT_isLastCopy = (1u << 13);         // 13 => isLastCopy
+    	const unsigned int BIT_isDirectTauDecayProduct = (1u << 5); // 5 => isDirectTauDecayProduct (useful)
+
+
+		for (unsigned int i=0; i<id.size(); i++) 
+		{
+			if ((abs(id[i]) == PDGid["Muon"]) && (statusFlag[i] & BIT_isLastCopy)) 
+			{
+				// Might be the muon
+				int motherIndex = mother[i]; 
+
+				if (id[motherIndex] != PDGid["Tau"]) continue; 
+
+				int grandmotherIndex = mother[motherIndex]; 
+
+				if (id[grandmotherIndex] != PDGid["Higgs"]) continue; 
+
+
+			}
+		}
+	}
+
 
 
 	void AddColumn(ROOT::RDF::RNode* df, const std::string &newColName) {

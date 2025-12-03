@@ -176,7 +176,13 @@ namespace Ana
 	}
 
 
-	std::vector<int> findMothers(int particle, std::string motherType, const ROOT::VecOps::RVec<float>& mothers) 
+	bool isLastCopy(int flags) 
+	{
+    	return flags & (1u << 13);
+	}
+
+
+	std::vector<int> findMothers(int particle, std::string motherType, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, int flag = -999.) 
 	{
 		int motherId = PDGid[motherType]; 
 		int currentId = 0; 
@@ -187,7 +193,11 @@ namespace Ana
 		{
 			particle = mothers[particle]; 
 
-			if ((id[particle] == motherId)) results.push_back(particle); 
+			const unsigned int isLastCopy = (1u << 13); 
+
+			bool flagOK = (statusFlags[particle] & isLastCopy); 
+			if (flag > 0 ) flagOK = (statusFlags[particle] & flag); 
+			if ((id[particle] == motherId) && flagOK) results.push_back(particle); 
 		}
 
 		return results; 
@@ -208,6 +218,7 @@ namespace Ana
 			if ((abs(id[i]) == PDGid["Muon"]) && (statusFlag[i] & BIT_isLastCopy)) 
 			{
 				// Might be the muon
+				auto tau = findMothers(i, "Tau", id, mother, statusFlag); 
 				int motherIndex = mother[i]; 
 
 				if (id[motherIndex] != PDGid["Tau"]) continue; 

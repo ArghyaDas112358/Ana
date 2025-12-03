@@ -34,6 +34,8 @@ namespace Ana
 		{ "Muon", 13 }, 
 		{ "Electron", 11 }, 
 		{ "Tau", 15 }, 
+		{ "Higgs", 25 }, 
+		{ "b", 5 }, 
 		{"Pi", 211}, 
 	}; 
 

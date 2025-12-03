@@ -193,9 +193,7 @@ namespace Ana
 		{
 			particle = mothers[particle]; 
 
-			const unsigned int isLastCopy = (1u << 13); 
-
-			bool flagOK = (statusFlags[particle] & isLastCopy); 
+			bool flagOK = isLastCopy(statusFlags[particle]); 
 			if (flag > 0 ) flagOK = (statusFlags[particle] & flag); 
 			if ((id[particle] == motherId) && flagOK) results.push_back(particle); 
 		}
@@ -209,13 +207,13 @@ namespace Ana
 	{
 
 		// statusFlags bit helpers (bit numbers, zero-indexed)
-    	const unsigned int BIT_isLastCopy = (1u << 13);         // 13 => isLastCopy
+    	//const unsigned int BIT_isLastCopy = (1u << 13);         // 13 => isLastCopy
     	const unsigned int BIT_isDirectTauDecayProduct = (1u << 5); // 5 => isDirectTauDecayProduct (useful)
 
 
 		for (unsigned int i=0; i<id.size(); i++) 
 		{
-			if ((abs(id[i]) == PDGid["Muon"]) && (statusFlag[i] & BIT_isLastCopy)) 
+			if ((abs(id[i]) == PDGid["Muon"]) && (isLastCopy(statusFlag[i]))) 
 			{
 				// Might be the muon
 				auto tau = findMothers(i, "Tau", id, mother, statusFlag); 

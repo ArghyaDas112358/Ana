@@ -181,6 +181,16 @@ namespace Ana
     	return flags & (1u << 13);
 	}
 
+	bool isHardProcess(int flag) 
+	{
+		return flag & (1u << 7); 
+	}
+
+	bool fromHardProcess(int flag) 
+	{
+		return flag & (1u << 8); 
+	}
+
 
 	std::vector<int> findMothers(int particle, std::string motherType, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, int flag = -999.) 
 	{
@@ -216,7 +226,11 @@ namespace Ana
 			if ((abs(id[i]) == PDGid["Muon"]) && (isLastCopy(statusFlag[i]))) 
 			{
 				// Might be the muon
-				auto tau = findMothers(i, "Tau", id, mother, statusFlag); 
+				auto taus = findMothers(i, "Tau", id, mother, statusFlag); 
+
+				const unsigned int hardProcess = (1u << 7); 
+				auto Higgses = findMothers(i, "Higgs", id, mother, statusFlags, hardProcess); 
+				
 				int motherIndex = mother[i]; 
 
 				if (id[motherIndex] != PDGid["Tau"]) continue; 

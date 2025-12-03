@@ -174,6 +174,24 @@ namespace Ana
 	}
 
 
+	std::vector<int> findMothers(int particle, std::string motherType, const ROOT::VecOps::RVec<float>& mothers) 
+	{
+		int motherId = PDGid[motherType]; 
+		int currentId = 0; 
+
+		std::vector<int> results; 
+
+		while (particle > 0 ) 
+		{
+			particle = mothers[particle]; 
+
+			if ((id[particle] == motherId)) results.push_back(particle); 
+		}
+
+		return results; 
+	}
+
+
 
 	int DecayGenMatching(const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mother, const ROOT::VecOps::RVec<int>& statusFlag) 
 	{

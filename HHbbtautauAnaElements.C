@@ -229,8 +229,9 @@ namespace Ana
 				auto taus = findMothers(i, "Tau", id, mother, statusFlag); 
 
 				const unsigned int hardProcess = (1u << 7); 
-				auto Higgses = findMothers(i, "Higgs", id, mother, statusFlags, hardProcess); 
-				
+				auto Higgses = findMothers(i, "Higgs", id, mother, statusFlag, hardProcess); 
+
+				std::cout << "N taus: " << taus.size() << ", N Higgses: " << Higgses.size() << std::endl; 
 				int motherIndex = mother[i]; 
 
 				if (id[motherIndex] != PDGid["Tau"]) continue; 
@@ -242,6 +243,8 @@ namespace Ana
 
 			}
 		}
+
+		return 1; 
 	}
 
 

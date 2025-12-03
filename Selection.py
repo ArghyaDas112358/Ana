@@ -95,6 +95,8 @@ if __name__ == "__main__":
 
 	sig = sig.Define("GenPart_Particle", "Ana::computeP4Vec({0}_pt, {0}_eta, {0}_phi, {0}_mass, {0}_pdgId)".format("GenPart"))
 
+	sig = sig.Define("genType", "Ana::DecayGenMatching({0}_pdgId, {0}_genPartIdxMother, {0}_statusFlags)".format("GenPart"))
+
 	sig = Ana.GetGenParticles(sig, "Electron")
 
 	blacklist = ["Muon_P4", "GenPart_Particle", "GenMuon"] # TODO: add autoblacklist

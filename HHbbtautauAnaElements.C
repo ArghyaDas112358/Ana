@@ -146,7 +146,7 @@ namespace Ana
 	}
 
 
-	int findMother(const ROOT::VecOps::RVec<float>& mother, int particle) 
+	int getMother(const ROOT::VecOps::RVec<float>& mother, int particle) 
 	{
 		return mother[particle]; 
 	}
@@ -220,6 +220,17 @@ namespace Ana
     	//const unsigned int BIT_isLastCopy = (1u << 13);         // 13 => isLastCopy
     	const unsigned int BIT_isDirectTauDecayProduct = (1u << 5); // 5 => isDirectTauDecayProduct (useful)
 
+
+    	std::vector<int> muons; 
+    	muons.reserve(2); 
+    	std::vector<int> taus; 
+    	taus.reserve(2); 
+    	std::vector<int> Higgses; 
+    	Higgses.reserve(2); 
+    	std::vector<int> bs; 
+    	bs.reserve(2); 
+    	std::vector<int> electrons; 
+    	electrons.reserve(2); 
 
 		for (unsigned int i=0; i<id.size(); i++) 
 		{

@@ -205,7 +205,7 @@ namespace Ana
 
 			bool flagOK = isLastCopy(statusFlags[particle]); 
 			if (flag > 0 ) flagOK = (statusFlags[particle] & flag); 
-			if ((id[particle] == motherId) && flagOK) results.push_back(particle); 
+			if ((abs(id[particle]) == motherId) && flagOK) results.push_back(particle); 
 		}
 
 		return results; 

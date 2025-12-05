@@ -192,9 +192,8 @@ namespace Ana
 	}
 
 
-	std::vector<int> findMothers(int particle, std::string motherType, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, int flag = -999.) 
+	std::vector<int> findMothers(int particle, int motherId, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, int flag = -999.) 
 	{
-		int motherId = PDGid[motherType]; 
 		int currentId = 0; 
 
 		std::vector<int> results; 
@@ -211,6 +210,53 @@ namespace Ana
 		return results; 
 	}
 
+	std::vector<int> findMothers(int particle, std::string motherType, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, int flag = -999.) 
+	{
+		int motherId = PDGid[motherType]; 
+
+		return findMothers(particle, motherId, id, mothers, statusFlags); 
+	}
+
+
+	std::vector<int> findDescendants(int particle, std::string descendantType, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, int flag = -999.) 
+	{
+		int descendantId = PDGid[descendantType]; 
+		std::vector<int> descendants; 
+
+		assert(id.size() == mother.size()); 
+		assert(id.size() == statusFlags.size()); 
+		for (unsigned int i=0; i<id.size(); i++) 
+		{
+			if (abs(id[i]) != PDGid[descendantType]) continue; 
+			// check flag
+			auto possibleMothers = findMothers(i, id[i], id, mothers, statusFlags); 
+			if (std::find(possibleMothers.begin(), possibleMothers.end(), particle) != possibleMothers.end()) 
+			{
+				descendants.push_back(i); 
+			}
+		}
+
+		return descendants; 
+	}
+
+
+	/* ChatGPT on status flags
+	0  : isPrompt
+	1  : isDecayedLeptonHadron
+	2  : isTauDecayProduct
+	3  : isPromptTauDecayProduct
+	4  : isDirectTauDecayProduct
+	5  : isDirectPromptTauDecayProduct
+	6  : isDirectHadronDecayProduct
+	7  : isHardProcess
+	8  : fromHardProcess
+	9  : isHardProcessTauDecayProduct
+	10 : isDirectHardProcessTauDecayProduct
+	11 : fromHardProcessBeforeFSR
+	12 : isFirstCopy
+	13 : isLastCopy     ← THIS ONE
+	14 : isFirstCopyBeforeFSR
+	*/
 
 
 	int DecayGenMatching(const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mother, const ROOT::VecOps::RVec<int>& statusFlag) 
@@ -232,6 +278,8 @@ namespace Ana
     	std::vector<int> electrons; 
     	electrons.reserve(2); 
 
+    	// find the H->bb candidate
+
 		for (unsigned int i=0; i<id.size(); i++) 
 		{
 			if ((abs(id[i]) == PDGid["Muon"]) && (isLastCopy(statusFlag[i]))) 
@@ -243,13 +291,21 @@ namespace Ana
 				auto Higgses = findMothers(i, "Higgs", id, mother, statusFlag, hardProcess); 
 
 				std::cout << "N taus: " << taus.size() << ", N Higgses: " << Higgses.size() << std::endl; 
-				int motherIndex = mother[i]; 
 
-				if (id[motherIndex] != PDGid["Tau"]) continue; 
 
-				int grandmotherIndex = mother[motherIndex]; 
+				auto otherTaus = findDescendants(Higgses.at(1), "Tau", id, mother, statusFlag); 
+				otherTaus.erase(std::remove(otherTaus.begin(), otherTaus.end(), taus.at(0)), otherTaus.end()); // Remove the muonic tau
+				bool notTauh = false; 
+				for (unsigned int j=0; j<otherTaus.size(); j++) // Make sure the other tau decay is not electronic
+				{
+					if (findDescendants(otherTaus[j], "Electron", id, mother, statusFlag).size() > 0) // If we find an electron in the other tau decay
+					{
+						notTauh = true; 
+					}
+				}
 
-				if (id[grandmotherIndex] != PDGid["Higgs"]) continue; 
+				if (notTauh) continue; 
+
 
 
 			}

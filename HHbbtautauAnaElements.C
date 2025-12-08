@@ -313,7 +313,25 @@ namespace Ana
 
     	const unsigned int hardProcess = (1u << 8); 
 
-    	
+    	for (unsigned int i=0; i<id.size(); i++) 
+    	{
+    		if ((abs(id[i]) == PDGid["Higgs"]) &&  (isLastCopy(statusFlag[i]))) 
+    		{
+    			auto taudaughters = findDescendants(i, "Tau", id, mother, statusFlag, hardProcess); 
+    			auto bdaughters = findDescendants(i, "b", id, mother, statusFlag, hardProcess); 
+
+    			if (taudaughters.size() && bdaughters.size()) continue; 
+
+    			if (bdaughters.size() < 2) continue; 
+
+    			bs.insert(bs.end(), bdaughters.begin(), bdaughters.end()); 
+
+    		}
+    	}
+
+    	std::cout << "N bs: " << bs.size() << std::endl; 
+    	if (bs.size() > 2) return None; 
+
     	//std::cout << "Sizes: " << id.size() << " " << mother.size() << " " << statusFlag.size() << std::endl; 
 
 		for (unsigned int i=0; i<id.size(); i++) 

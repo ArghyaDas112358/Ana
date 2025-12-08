@@ -302,7 +302,7 @@ namespace Ana
 
 
     	std::vector<int> muons; 
-    	muons.reserve(2); 
+    	muons.reserve(1); 
     	std::vector<int> taus; 
     	taus.reserve(2); 
     	std::vector<int> Higgses; 
@@ -310,7 +310,9 @@ namespace Ana
     	std::vector<int> bs; 
     	bs.reserve(2); 
     	std::vector<int> electrons; 
-    	electrons.reserve(2); 
+    	electrons.reserve(1); 
+    	std::vector<int> Higgstob; 
+    	Higgstob.reserve(1); 
 
 
     	const unsigned int hardProcess = (1u << 8); 
@@ -322,17 +324,18 @@ namespace Ana
     			auto taudaughters = findDescendants(i, "Tau", id, mother, statusFlag, hardProcess); 
     			auto bdaughters = findDescendants(i, "b", id, mother, statusFlag, hardProcess); 
 
-    			if (taudaughters.size() && bdaughters.size()) continue; 
+    			//if (taudaughters.size() && bdaughters.size()) continue;
 
-    			if (bdaughters.size() < 2) continue; 
+    			if (bdaughters.size() < 2) continue; // making sure we have 2 b
 
     			bs.insert(bs.end(), bdaughters.begin(), bdaughters.end()); 
+    			Higgstob.push_back(i); 
 
     		}
     	}
 
     	std::cout << "N bs: " << bs.size() << std::endl; 
-    	if (bs.size() > 2) return None; 
+    	if (bs.size() > 2) return None; // if more than 2 b, probably 4b or other weird stuff
 
     	//std::cout << "Sizes: " << id.size() << " " << mother.size() << " " << statusFlag.size() << std::endl; 
 
@@ -378,6 +381,10 @@ namespace Ana
 
 
 
+
+				muons.push_back(i); 
+				Higgses.insert(Higgses.end(), localHiggses.begin(), localHiggses.end()); 
+				taus.insert(taus.end(), localtaus.begin(), localtaus.end()); 
 
 
 

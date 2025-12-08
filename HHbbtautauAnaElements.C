@@ -44,7 +44,11 @@ namespace Ana
 		std::string response = ""; 
 		for (auto it = PDGid.begin(); it != PDGid.end(); it++) 
 		{
-			if (it->second == id) response = it->first; 
+			if (it->second == abs(id)) 
+			{
+				response = it->first; 
+				break; 
+			}
 		}
 		return response; 
 	}
@@ -293,7 +297,7 @@ namespace Ana
 
     	// find the H->bb candidate
 
-    	std::cout << "Sizes: " << id.size() << " " << mother.size() << " " << statusFlag.size() << std::endl; 
+    	//std::cout << "Sizes: " << id.size() << " " << mother.size() << " " << statusFlag.size() << std::endl; 
 
 		for (unsigned int i=0; i<id.size(); i++) 
 		{
@@ -313,16 +317,16 @@ namespace Ana
 				if (localHiggses.size() < 1) continue; 
 
 
-				std::vector<int> otherTaus = findDescendants(localHiggses[0], "Tau", id, mother, statusFlag); 
+				std::vector<int> otherTaus = findDescendants(localHiggses[0], "Tau", id, mother, statusFlag, hardProcess); 
 				std::cout << "N taus: " << otherTaus.size() << std::endl; 
 				for (auto element : otherTaus) 
 				{
-					std::string text = RevertPDGid(element); 
+					std::string text = RevertPDGid(id[element]); 
 					/*for (auto it = PDGid.begin(); it != PDGid.end(); it++) 
 					{
 						if (it->second == element) text = it->first; 
 					}*/
-					std::cout << text << ": " << id[element] << " (id = " << id[element] << "), " << RevertPDGid(mother[element]) << " (mother = " << mother[element] << "), " << statusFlag[element] << " (status)" << std::endl; 
+					std::cout << text << ": " << id[element] << " (id), " << RevertPDGid(id[mother[element]]) << " (mother = " << id[mother[element]] << "), " << statusFlag[element] << " (status)" << std::endl; 
 				}
 				//otherTaus.erase(std::remove(otherTaus.begin(), otherTaus.end(), taus.at(0)), otherTaus.end()); // Remove the muonic tau
 				/*bool notTauh = false; 

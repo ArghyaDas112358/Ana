@@ -39,6 +39,16 @@ namespace Ana
 		{"Pi", 211}, 
 	}; 
 
+	std::string RevertPDGid(int id) 
+	{
+		std::string response = ""; 
+		for (auto it = PDGid.begin(); it != PDGid.end(); it++) 
+		{
+			if (it->second == id) response = it->first; 
+		}
+		return response; 
+	}
+
 	template<typename T>
 	int VecSize(ROOT::VecOps::RVec<T> vec)
 	{
@@ -192,25 +202,26 @@ namespace Ana
 	}
 
 
-	std::vector<int> findMothers(int particle, int motherId, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, const int flag = -999.) 
+	std::vector<int> findMothers(int particle, int motherId, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, const long int flag = -999.) 
 	{
 		int currentId = 0; 
 
 		std::vector<int> results; 
 
-		while (particle > 0 ) // put here >= 0 ?
+		while (particle >= 0 ) // put here >= 0 ?
 		{
 			particle = mothers[particle]; 
 
 			bool flagOK = isLastCopy(statusFlags[particle]); 
-			if (flag > 0 ) flagOK = (statusFlags[particle] & flag); 
+			if (flag > 0 ) flagOK = flagOK && (statusFlags[particle] & flag); 
+			//std::cout << (statusFlags[particle] & (1u << 8)) << " " << (statusFlags[particle] & flag) << " " << isLastCopy(statusFlags[particle]) << " " << flag << " " << flagOK << std::endl; 
 			if ((abs(id[particle]) == motherId) && flagOK) results.push_back(particle); 
 		}
 
 		return results; 
 	}
 
-	std::vector<int> findMothers(int particle, std::string motherType, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, const int flag = -999.) 
+	std::vector<int> findMothers(int particle, std::string motherType, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, const long int flag = -999.) 
 	{
 		int motherId = PDGid[motherType]; 
 
@@ -293,23 +304,25 @@ namespace Ana
 
 				if (localtaus.size() < 1 ) continue; 
 
-				const unsigned int hardProcess = (1u << 7); 
+				const unsigned int hardProcess = (1u << 8); 
+				//std::cout << "Flag: " << (1u << 7) << " " << hardProcess << std::endl; 
 				auto localHiggses = findMothers(i, "Higgs", id, mother, statusFlag, hardProcess); 
 
-				std::cout << "N taus: " << taus.size() << ", N Higgses: " << Higgses.size() << std::endl; 
+				std::cout << "N taus: " << localtaus.size() << ", N Higgses: " << localHiggses.size() << std::endl; 
 
 				if (localHiggses.size() < 1) continue; 
 
 
 				std::vector<int> otherTaus = findDescendants(localHiggses[0], "Tau", id, mother, statusFlag); 
+				std::cout << "N taus: " << otherTaus.size() << std::endl; 
 				for (auto element : otherTaus) 
 				{
-					std::string text = ""; 
-					for (auto it = PDGid.begin(); it != PDGid.end(); it++) 
+					std::string text = RevertPDGid(element); 
+					/*for (auto it = PDGid.begin(); it != PDGid.end(); it++) 
 					{
 						if (it->second == element) text = it->first; 
-					}
-					std::cout << text << ": " << id[element] << " (id), " << mother[element] << " (mother), " << statusFlag[element] << " (status)" << std::endl; 
+					}*/
+					std::cout << text << ": " << id[element] << " (id = " << id[element] << "), " << RevertPDGid(mother[element]) << " (mother = " << mother[element] << "), " << statusFlag[element] << " (status)" << std::endl; 
 				}
 				//otherTaus.erase(std::remove(otherTaus.begin(), otherTaus.end(), taus.at(0)), otherTaus.end()); // Remove the muonic tau
 				/*bool notTauh = false; 

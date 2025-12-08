@@ -192,7 +192,7 @@ namespace Ana
 	}
 
 
-	std::vector<int> findMothers(int particle, int motherId, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, int flag = -999.) 
+	std::vector<int> findMothers(int particle, int motherId, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, const int flag = -999.) 
 	{
 		int currentId = 0; 
 
@@ -210,31 +210,33 @@ namespace Ana
 		return results; 
 	}
 
-	std::vector<int> findMothers(int particle, std::string motherType, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, int flag = -999.) 
+	std::vector<int> findMothers(int particle, std::string motherType, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, const int flag = -999.) 
 	{
 		int motherId = PDGid[motherType]; 
 
-		return findMothers(particle, motherId, id, mothers, statusFlags); 
+		return findMothers(particle, motherId, id, mothers, statusFlags, flag); 
 	}
 
 
-	std::vector<int> findDescendants(int particle, std::string descendantType, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, int flag = -999.) 
+	std::vector<int> findDescendants(int particle, std::string descendantType, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, const int flag = -999.) 
 	{
-		int descendantId = PDGid[descendantType]; 
+		//int descendantId = PDGid[descendantType]; 
 		std::vector<int> descendants; 
 
-		assert(id.size() == mother.size()); 
-		assert(id.size() == statusFlags.size()); 
+		/*std::cout << "Sizes: " << id.size() << " " << mothers.size() << " " << statusFlags.size() << std::endl; 
+		//assert(id.size() == mothers.size()); 
+		//assert(id.size() == statusFlags.size()); 
 		for (unsigned int i=0; i<id.size(); i++) 
 		{
-			if (abs(id[i]) != PDGid[descendantType]) continue; 
+			std::cout << "mother: " << mothers.at(i) << std::endl; 
+			/*if (abs(id[i]) != PDGid[descendantType]) continue; 
 			// check flag
-			auto possibleMothers = findMothers(i, id[i], id, mothers, statusFlags); 
+			auto possibleMothers = findMothers(i, id[particle], id, mothers, statusFlags); 
 			if (std::find(possibleMothers.begin(), possibleMothers.end(), particle) != possibleMothers.end()) 
 			{
 				descendants.push_back(i); 
 			}
-		}
+		}*/
 
 		return descendants; 
 	}
@@ -280,22 +282,28 @@ namespace Ana
 
     	// find the H->bb candidate
 
+    	std::cout << "Sizes: " << id.size() << " " << mother.size() << " " << statusFlag.size() << std::endl; 
+
 		for (unsigned int i=0; i<id.size(); i++) 
 		{
 			if ((abs(id[i]) == PDGid["Muon"]) && (isLastCopy(statusFlag[i]))) 
 			{
 				// Might be the muon
-				auto taus = findMothers(i, "Tau", id, mother, statusFlag); 
+				auto localtaus = findMothers(i, "Tau", id, mother, statusFlag); 
+
+				if (localtaus.size() < 1 ) continue; 
 
 				const unsigned int hardProcess = (1u << 7); 
-				auto Higgses = findMothers(i, "Higgs", id, mother, statusFlag, hardProcess); 
+				auto localHiggses = findMothers(i, "Higgs", id, mother, statusFlag, hardProcess); 
 
 				std::cout << "N taus: " << taus.size() << ", N Higgses: " << Higgses.size() << std::endl; 
 
+				if (localHiggses.size() < 1) continue; 
 
-				auto otherTaus = findDescendants(Higgses.at(1), "Tau", id, mother, statusFlag); 
-				otherTaus.erase(std::remove(otherTaus.begin(), otherTaus.end(), taus.at(0)), otherTaus.end()); // Remove the muonic tau
-				bool notTauh = false; 
+
+				std::vector<int> otherTaus = findDescendants(localHiggses[0], "Tau", id, mother, statusFlag); 
+				//otherTaus.erase(std::remove(otherTaus.begin(), otherTaus.end(), taus.at(0)), otherTaus.end()); // Remove the muonic tau
+				/*bool notTauh = false; 
 				for (unsigned int j=0; j<otherTaus.size(); j++) // Make sure the other tau decay is not electronic
 				{
 					if (findDescendants(otherTaus[j], "Electron", id, mother, statusFlag).size() > 0) // If we find an electron in the other tau decay
@@ -304,7 +312,7 @@ namespace Ana
 					}
 				}
 
-				if (notTauh) continue; 
+				if (notTauh) continue; */
 
 
 

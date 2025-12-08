@@ -198,7 +198,7 @@ namespace Ana
 
 		std::vector<int> results; 
 
-		while (particle > 0 ) 
+		while (particle > 0 ) // put here >= 0 ?
 		{
 			particle = mothers[particle]; 
 
@@ -220,23 +220,23 @@ namespace Ana
 
 	std::vector<int> findDescendants(int particle, std::string descendantType, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mothers, const ROOT::VecOps::RVec<int>& statusFlags, const int flag = -999.) 
 	{
-		//int descendantId = PDGid[descendantType]; 
+		int descendantId = PDGid[descendantType]; 
 		std::vector<int> descendants; 
 
-		/*std::cout << "Sizes: " << id.size() << " " << mothers.size() << " " << statusFlags.size() << std::endl; 
-		//assert(id.size() == mothers.size()); 
-		//assert(id.size() == statusFlags.size()); 
+		//std::cout << "Sizes: " << id.size() << " " << mothers.size() << " " << statusFlags.size() << std::endl; 
+		assert(id.size() == mothers.size()); 
+		assert(id.size() == statusFlags.size()); 
 		for (unsigned int i=0; i<id.size(); i++) 
 		{
-			std::cout << "mother: " << mothers.at(i) << std::endl; 
-			/*if (abs(id[i]) != PDGid[descendantType]) continue; 
+			//std::cout << "mother: " << mothers.at(i) << std::endl; 
+			if (abs(id[i]) != PDGid[descendantType]) continue; 
 			// check flag
 			auto possibleMothers = findMothers(i, id[particle], id, mothers, statusFlags); 
 			if (std::find(possibleMothers.begin(), possibleMothers.end(), particle) != possibleMothers.end()) 
 			{
 				descendants.push_back(i); 
 			}
-		}*/
+		}
 
 		return descendants; 
 	}
@@ -302,6 +302,15 @@ namespace Ana
 
 
 				std::vector<int> otherTaus = findDescendants(localHiggses[0], "Tau", id, mother, statusFlag); 
+				for (auto element : otherTaus) 
+				{
+					std::string text = ""; 
+					for (auto it = PDGid.begin(); it != PDGid.end(); it++) 
+					{
+						if (it->second == element) text = it->first; 
+					}
+					std::cout << text << ": " << id[element] << " (id), " << mother[element] << " (mother), " << statusFlag[element] << " (status)" << std::endl; 
+				}
 				//otherTaus.erase(std::remove(otherTaus.begin(), otherTaus.end(), taus.at(0)), otherTaus.end()); // Remove the muonic tau
 				/*bool notTauh = false; 
 				for (unsigned int j=0; j<otherTaus.size(); j++) // Make sure the other tau decay is not electronic

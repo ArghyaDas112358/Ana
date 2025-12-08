@@ -61,6 +61,19 @@ namespace Ana
 		None = -1
 	}; 
 
+	class GenMatchingResult 
+	{
+		int Htotau = -999; 
+		int Htob = -999; 
+		int b1 = -999; 
+		int b2 = -999; 
+		int tau1 = -999; 
+		int tau2 = -999; 
+		int mu = -999; 
+		int e = -999; 
+		int decayType = None; 
+	};
+
 	template<typename T>
 	int VecSize(ROOT::VecOps::RVec<T> vec)
 	{
@@ -387,6 +400,7 @@ namespace Ana
 				muons.push_back(i); 
 				Higgses.insert(Higgses.end(), localHiggses.begin(), localHiggses.end()); 
 				taus.insert(taus.end(), localtaus.begin(), localtaus.end()); 
+				taus.insert(taus.end(), otherTaus.begin(), otherTaus.end()); 
 
 				result = TauhTaumu; 
 
@@ -437,12 +451,22 @@ namespace Ana
 				electrons.push_back(i); 
 				Higgses.insert(Higgses.end(), localHiggses.begin(), localHiggses.end()); 
 				taus.insert(taus.end(), localtaus.begin(), localtaus.end()); 
+				taus.insert(taus.end(), otherTaus.begin(), otherTaus.end()); 
 
 				result = TauhTaue; 
 
 
 			}
 		}
+
+
+		if (result == TauhTauh) assert((taus.size() == 2) && (muons.size() == 0) && (electrons.size() == 0)); 
+		if (result == TauhTaumu) assert((taus.size() == 2) && (muons.size() == 1) && (electrons.size() == 0)); 
+		if (result == TauhTaue) assert((taus.size() == 2) && (muons.size() == 0) && (electrons.size() == 1)); 
+		assert(Higgses.size() == 1); 
+		assert(Higgsestob.size() == 1); 
+		assert(bs.size() == 2); 
+		
 
 		return result; 
 	}

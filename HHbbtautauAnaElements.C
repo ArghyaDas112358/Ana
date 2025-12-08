@@ -252,7 +252,9 @@ namespace Ana
 		{
 			//std::cout << "mother: " << mothers.at(i) << std::endl; 
 			if (abs(id[i]) != descendantType) continue; 
-			// check flag
+			bool flagOK = isLastCopy(statusFlags[i]); 
+			if (flag > 0 ) flagOK = flagOK && (statusFlags[i] & flag); 
+			if (!flagOK) continue; 
 			auto possibleMothers = findMothers(i, id[particle], id, mothers, statusFlags); 
 			if (std::find(possibleMothers.begin(), possibleMothers.end(), particle) != possibleMothers.end()) 
 			{

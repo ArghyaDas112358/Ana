@@ -339,6 +339,8 @@ namespace Ana
 
     	//std::cout << "Sizes: " << id.size() << " " << mother.size() << " " << statusFlag.size() << std::endl; 
 
+    	int result = None; 
+
 		for (unsigned int i=0; i<id.size(); i++) 
 		{
 			if ((abs(id[i]) == PDGid["Muon"]) && (isLastCopy(statusFlag[i]))) 
@@ -386,12 +388,63 @@ namespace Ana
 				Higgses.insert(Higgses.end(), localHiggses.begin(), localHiggses.end()); 
 				taus.insert(taus.end(), localtaus.begin(), localtaus.end()); 
 
+				result = TauhTaumu; 
+
+
+			}
+
+			if ((abs(id[i]) == PDGid["Electron"]) && (isLastCopy(statusFlag[i]))) 
+			{
+				// Might be the muon
+				auto localtaus = findMothers(i, "Tau", id, mother, statusFlag); 
+
+				if (localtaus.size() < 1 ) continue; 
+
+				//std::cout << "Flag: " << (1u << 7) << " " << hardProcess << std::endl; 
+				auto localHiggses = findMothers(i, "Higgs", id, mother, statusFlag, hardProcess); 
+
+				std::cout << "N taus: " << localtaus.size() << ", N Higgses: " << localHiggses.size() << std::endl; 
+
+				if (localHiggses.size() < 1) continue; 
+
+
+				std::vector<int> otherTaus = findDescendants(localHiggses[0], "Tau", id, mother, statusFlag, hardProcess); 
+				std::cout << "N taus: " << otherTaus.size() << std::endl; 
+				for (auto element : otherTaus) 
+				{
+					std::string text = RevertPDGid(id[element]); 
+					/*for (auto it = PDGid.begin(); it != PDGid.end(); it++) 
+					{
+						if (it->second == element) text = it->first; 
+					}*/
+					std::cout << text << ": " << id[element] << " (id), " << RevertPDGid(id[mother[element]]) << " (mother = " << id[mother[element]] << "), " << statusFlag[element] << " (status)" << std::endl; 
+				}
+				otherTaus.erase(std::remove(otherTaus.begin(), otherTaus.end(), localtaus.at(0)), otherTaus.end()); // Remove the muonic tau
+				bool notTauh = false; 
+				for (unsigned int j=0; j<otherTaus.size(); j++) // Make sure the other tau decay is not electronic
+				{
+					if (findDescendants(otherTaus[j], "Muon", id, mother, statusFlag).size() > 0) // If we find an electron in the other tau decay
+					{
+						notTauh = true; 
+					}
+				}
+
+				if (notTauh) continue; 
+
+
+
+
+				electrons.push_back(i); 
+				Higgses.insert(Higgses.end(), localHiggses.begin(), localHiggses.end()); 
+				taus.insert(taus.end(), localtaus.begin(), localtaus.end()); 
+
+				result = TauhTaue; 
 
 
 			}
 		}
 
-		return 1; 
+		return result; 
 	}
 
 

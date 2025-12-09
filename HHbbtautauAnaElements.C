@@ -473,12 +473,14 @@ namespace Ana
 		{
 			assert((taus.size() == 2) && (muons.size() == 1) && (electrons.size() == 0)); 
 			result.tau1 = taus[0]; 
+			result.tau2 = taus[1]; 
 			result.mu = muons[0]; 
 		}
 		if (result.decayType == TauhTaue) 
 		{
 			assert((taus.size() == 2) && (muons.size() == 0) && (electrons.size() == 1)); 
 			result.tau1 = taus[0]; 
+			result.tau2 = taus[1]; 
 			result.e = electrons[0]; 
 		}
 		assert(Higgses.size() == 1); 

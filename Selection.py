@@ -97,7 +97,7 @@ if __name__ == "__main__":
 
 	sig = sig.Define("GenDecay", "Ana::DecayGenMatching({0}_pdgId, {0}_genPartIdxMother, {0}_statusFlags)".format("GenPart"))
 
-	sig = sig.Define("TheGenMuon_pt", "GenPart_pt[GenDecay.decayType]").Define("TheGenMuon_eta", "GenPart_eta[GenDecay.decayType]").Define("TheGenMuon_phi", "GenPart_phi[GenDecay.decayType]")
+	sig = sig.Define("TheGenMuon_pt", "GenPart_pt[GenDecay.mu]").Define("TheGenMuon_eta", "GenPart_eta[GenDecay.mu]").Define("TheGenMuon_phi", "GenPart_phi[GenDecay.mu]")
 
 	sig = Ana.GetGenParticles(sig, "Electron")
 

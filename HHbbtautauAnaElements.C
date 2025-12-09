@@ -553,6 +553,14 @@ namespace Ana
 	}
 
 
+	template<typename T>
+	T overflowProtected(const ROOT::VecOps::RVec<T>& collection, const int index) 
+	{
+		if (index > collection.size() -1) return -999.; 
+		return collection[index]; 
+	}
+
+
 
 	void AddColumn(ROOT::RDF::RNode* df, const std::string &newColName) {
     	*df = df->Define(newColName, [](){ return 42; });

@@ -99,7 +99,7 @@ if __name__ == "__main__":
 
 	sig = sig.Define("TheGenMuon_pt", "GenPart_pt[GenDecay.mu]").Define("TheGenMuon_eta", "GenPart_eta[GenDecay.mu]").Define("TheGenMuon_phi", "GenPart_phi[GenDecay.mu]")
 
-	sig = sig.Define("dR_mu_gen", "Ana::deltaR(GenDecay.mu, \"Muon\", {0}_pt, {0}_eta, {0}_phi, {0}_mass, {1}_pt, {1}_eta, {1}_phi, {1}_mass, {1}_pdgId)".format("GenPart", "Muon"))
+	sig = sig.Define("dR_mu_gen", "Ana::deltaR(GenDecay.mu, \"{1}\", {0}_pt, {0}_eta, {0}_phi, {0}_mass, {1}_pt, {1}_eta, {1}_phi, {1}_mass, {1}_pdgId)".format("GenPart", "Muon"))
 
 	sig = Ana.GetGenParticles(sig, "Electron")
 

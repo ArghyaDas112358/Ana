@@ -463,12 +463,35 @@ namespace Ana
 		}
 
 
-		if (result.decayType == TauhTauh) assert((taus.size() == 2) && (muons.size() == 0) && (electrons.size() == 0)); 
-		if (result.decayType == TauhTaumu) assert((taus.size() == 2) && (muons.size() == 1) && (electrons.size() == 0)); 
-		if (result.decayType == TauhTaue) assert((taus.size() == 2) && (muons.size() == 0) && (electrons.size() == 1)); 
+		if (result.decayType == TauhTauh) 
+		{
+			assert((taus.size() == 2) && (muons.size() == 0) && (electrons.size() == 0)); 
+			result.tau1 = taus.at(0); 
+			result.tau2 = taus.at(1); 
+		}
+		if (result.decayType == TauhTaumu) 
+		{
+			assert((taus.size() == 2) && (muons.size() == 1) && (electrons.size() == 0)); 
+			result.tau1 = taus[0]; 
+			result.mu = muons[0]; 
+		}
+		if (result.decayType == TauhTaue) 
+		{
+			assert((taus.size() == 2) && (muons.size() == 0) && (electrons.size() == 1)); 
+			result.tau1 = taus[0]; 
+			result.e = electrons[0]; 
+		}
 		assert(Higgses.size() == 1); 
 		assert(Higgsestob.size() == 1); 
 		assert(bs.size() == 2); 
+
+
+		// Filling the gen particle indices
+		result.Htotau = Higgses[0]; 
+		result.Htob = Higgstob[0]; 
+		result.b1 = bs[0]; 
+		result.b2 = bs[1]; 
+
 		
 
 		return result; 

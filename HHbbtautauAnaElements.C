@@ -500,9 +500,18 @@ namespace Ana
 	}
 
 
+	// TODO: add default value based on template parameter
+	template<typename T>
+	T overflowProtected(const ROOT::VecOps::RVec<T>& collection, const int index) 
+	{
+		if (index > collection.size() -1) return -999.; 
+		return collection[index]; 
+	}
+
+
 	int deltaR(int genParticle, const std::string particleType, const ROOT::VecOps::RVec<float>& genPt, const ROOT::VecOps::RVec<float>& genEta, const ROOT::VecOps::RVec<float>& genPhi, const ROOT::VecOps::RVec<float>& genMass, const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m, const ROOT::VecOps::RVec<float>& pdgId) {
 		TLorentzVector gen; 
-		gen.SetPtEtaPhiM(genPt[genParticle], genEta[genParticle], genPhi[genParticle], genMass[genParticle]); 
+		gen.SetPtEtaPhiM(overflowProtected(genPt, genParticle), overflowProtected(genEta, genParticle), overflowProtected(genPhi, genParticle), overflowProtected(genMass, genParticle)); 
 
 		int type = PDGid[particleType]; 
 
@@ -526,7 +535,7 @@ namespace Ana
 
 	int closestMatch(int genParticle, const std::string particleType, const ROOT::VecOps::RVec<float>& genPt, const ROOT::VecOps::RVec<float>& genEta, const ROOT::VecOps::RVec<float>& genPhi, const ROOT::VecOps::RVec<float>& genMass, const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m, const ROOT::VecOps::RVec<float>& pdgId) {
 		TLorentzVector gen; 
-		gen.SetPtEtaPhiM(genPt[genParticle], genEta[genParticle], genPhi[genParticle], genMass[genParticle]); 
+		gen.SetPtEtaPhiM(overflowProtected(genPt, genParticle), overflowProtected(genEta, genParticle), overflowProtected(genPhi, genParticle), overflowProtected(genMass, genParticle)); 
 
 		int type = PDGid[particleType]; 
 
@@ -550,14 +559,6 @@ namespace Ana
 		}
 
 		return closest; 
-	}
-
-
-	template<typename T>
-	T overflowProtected(const ROOT::VecOps::RVec<T>& collection, const int index) 
-	{
-		if (index > collection.size() -1) return -999.; 
-		return collection[index]; 
 	}
 
 

@@ -63,15 +63,16 @@ namespace Ana
 
 	class GenMatchingResult 
 	{
-		int Htotau = -999; 
-		int Htob = -999; 
-		int b1 = -999; 
-		int b2 = -999; 
-		int tau1 = -999; 
-		int tau2 = -999; 
-		int mu = -999; 
-		int e = -999; 
-		int decayType = None; 
+		public: 
+			int Htotau = -999; 
+			int Htob = -999; 
+			int b1 = -999; 
+			int b2 = -999; 
+			int tau1 = -999; 
+			int tau2 = -999; 
+			int mu = -999; 
+			int e = -999; 
+			int decayType = None; 
 	};
 
 	template<typename T>
@@ -306,7 +307,7 @@ namespace Ana
 	*/
 
 
-	int DecayGenMatching(const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mother, const ROOT::VecOps::RVec<int>& statusFlag) 
+	GenMatchingResult DecayGenMatching(const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mother, const ROOT::VecOps::RVec<int>& statusFlag) 
 	{
 
 		// statusFlags bit helpers (bit numbers, zero-indexed)
@@ -326,6 +327,9 @@ namespace Ana
     	electrons.reserve(1); 
     	std::vector<int> Higgstob; 
     	Higgstob.reserve(1); 
+
+
+    	GenMatchingResult result; 
 
 
     	const unsigned int hardProcess = (1u << 8); 
@@ -348,11 +352,10 @@ namespace Ana
     	}
 
     	std::cout << "N bs: " << bs.size() << std::endl; 
-    	if (bs.size() > 2) return None; // if more than 2 b, probably 4b or other weird stuff
+    	if (bs.size() > 2) return result; // if more than 2 b, probably 4b or other weird stuff
 
     	//std::cout << "Sizes: " << id.size() << " " << mother.size() << " " << statusFlag.size() << std::endl; 
 
-    	int result = None; 
 
 		for (unsigned int i=0; i<id.size(); i++) 
 		{
@@ -402,7 +405,7 @@ namespace Ana
 				taus.insert(taus.end(), localtaus.begin(), localtaus.end()); 
 				taus.insert(taus.end(), otherTaus.begin(), otherTaus.end()); 
 
-				result = TauhTaumu; 
+				result.decayType = TauhTaumu; 
 
 
 			}
@@ -453,16 +456,16 @@ namespace Ana
 				taus.insert(taus.end(), localtaus.begin(), localtaus.end()); 
 				taus.insert(taus.end(), otherTaus.begin(), otherTaus.end()); 
 
-				result = TauhTaue; 
+				result.decayType = TauhTaue; 
 
 
 			}
 		}
 
 
-		if (result == TauhTauh) assert((taus.size() == 2) && (muons.size() == 0) && (electrons.size() == 0)); 
-		if (result == TauhTaumu) assert((taus.size() == 2) && (muons.size() == 1) && (electrons.size() == 0)); 
-		if (result == TauhTaue) assert((taus.size() == 2) && (muons.size() == 0) && (electrons.size() == 1)); 
+		if (result.decayType == TauhTauh) assert((taus.size() == 2) && (muons.size() == 0) && (electrons.size() == 0)); 
+		if (result.decayType == TauhTaumu) assert((taus.size() == 2) && (muons.size() == 1) && (electrons.size() == 0)); 
+		if (result.decayType == TauhTaue) assert((taus.size() == 2) && (muons.size() == 0) && (electrons.size() == 1)); 
 		assert(Higgses.size() == 1); 
 		assert(Higgsestob.size() == 1); 
 		assert(bs.size() == 2); 

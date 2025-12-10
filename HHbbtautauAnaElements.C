@@ -85,10 +85,10 @@ namespace Ana
 
 	enum GenDecay 
 	{
-		TauhTauh = 0, 
-		TauhTaumu = 1, 
-		TauhTaue = 2, 
-		None = -1
+		TauhTauh = 1, 
+		TauhTaumu = 2, 
+		TauhTaue = 3, 
+		None = 0
 	}; 
 
 	class GenMatchingResult 

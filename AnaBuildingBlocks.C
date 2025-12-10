@@ -42,8 +42,59 @@ namespace Ana
 			{
 				list[item]++;
 			}
+
+			//char_separator<char> sep("*");
+   			char sep = '*'; 
+
+			std::vector<std::vector<std::string> > tokenizedBlacklistItems; 
+			for (auto item : list) 
+			{
+				if (item.first.find(sep) != std::string::npos) // The blacklisted item contains at least one wildcard
+				{
+					const char *str = item.first.data(); 
+			
+					std::vector<std::string> chunks;
+				    do
+				    {
+				        const char *begin = str;					
+
+				        while(*str != sep && *str)
+				            str++;					
+
+				        if (begin != str) chunks.push_back(std::string(begin, str));
+				        
+				    } while (0 != *str++);
+				    tokenizedBlacklistItems.push_back(chunks); 
+				}
+			}
+
    			// a lambda that checks if `s` is in the blacklist
-   			auto is_blacklisted = [&list](const std::string &s)  { return (list.find(s) != list.end()); };
+   			auto is_blacklisted = [&list, &tokenizedBlacklistItems](const std::string &s)  { 
+   				bool contained = (list.find(s) != list.end()); 
+
+   				
+   				bool matched = false; 
+   				for (auto pattern : tokenizedBlacklistItems) 
+   				{
+   					int pos = 0; 
+   					bool foundAll = true; 
+   					for (auto chunk : pattern) 
+   					{
+   						int i = s.find(chunk); 
+   						if ((i < pos) || (i == std::string::npos)) foundAll = false; 
+   						//std::cout << s << " " << chunk << " " << i << " " << foundAll << std::endl; 
+   					}
+
+   					if (foundAll) 
+   					{
+   						matched = true; 
+   						break; 
+   					}
+   				}
+   				//if (matched) std::cout << s << std::endl; 
+   				
+   				return (contained || matched); 
+   			};
 
    			// removing elements from std::vectors is not pretty, see https://en.wikipedia.org/wiki/Erase%E2%80%93remove_idiom
    			columns.erase(std::remove_if(columns.begin(), columns.end(), is_blacklisted), columns.end());

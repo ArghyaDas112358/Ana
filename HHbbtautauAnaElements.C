@@ -531,7 +531,7 @@ namespace Ana
 
 
 	template<typename T>
-	T overflowProtected(const ROOT::VecOps::RVec<T>& collection, const int index) 
+	T overflowProtected(const ROOT::VecOps::RVec<T>& collection, const long int index) 
 	{
 		if ((index > collection.size() -1) || (index < 0)) return defaultValue<T>(); 
 		return collection[index]; 

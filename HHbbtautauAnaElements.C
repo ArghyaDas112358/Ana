@@ -530,23 +530,25 @@ namespace Ana
 	}
 
 
-	// TODO: add default value based on template parameter
 	template<typename T>
 	T overflowProtected(const ROOT::VecOps::RVec<T>& collection, const int index) 
 	{
-		if (index > collection.size() -1) return defaultValue<T>(); 
+		if ((index > collection.size() -1) || (index < 0)) return defaultValue<T>(); 
 		return collection[index]; 
 	}
 
 
-	int deltaR(int genParticle, const std::string particleType, const ROOT::VecOps::RVec<float>& genPt, const ROOT::VecOps::RVec<float>& genEta, const ROOT::VecOps::RVec<float>& genPhi, const ROOT::VecOps::RVec<float>& genMass, const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m, const ROOT::VecOps::RVec<float>& pdgId) {
+	float deltaR(int genParticle, const std::string particleType, const ROOT::VecOps::RVec<float>& genPt, const ROOT::VecOps::RVec<float>& genEta, const ROOT::VecOps::RVec<float>& genPhi, const ROOT::VecOps::RVec<float>& genMass, const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m, const ROOT::VecOps::RVec<float>& pdgId) 
+	{
+		double genpt = overflowProtected(genPt, genParticle); 
+		if (genpt < 0) return genpt; // If gen particle is out of bounds, return default overflow value
 		TLorentzVector gen; 
-		gen.SetPtEtaPhiM(overflowProtected(genPt, genParticle), overflowProtected(genEta, genParticle), overflowProtected(genPhi, genParticle), overflowProtected(genMass, genParticle)); 
+		gen.SetPtEtaPhiM(genpt, overflowProtected(genEta, genParticle), overflowProtected(genPhi, genParticle), overflowProtected(genMass, genParticle)); 
 
 		int type = PDGid[particleType]; 
 
 
-		int dR = 999.; 
+		float dR = 999.; 
 
 		TLorentzVector P4; 
 		for (unsigned int i = 0; i<pt.size(); i++) 
@@ -554,7 +556,7 @@ namespace Ana
 			if (abs(pdgId[i]) != type) continue; 
 			P4.SetPtEtaPhiM(pt[i], eta[i], phi[i], m[i]); 
 
-			int currentdR = P4.DeltaR(gen); 
+			float currentdR = P4.DeltaR(gen); 
 
 			if (currentdR < dR) dR = currentdR; 
 		}
@@ -563,15 +565,17 @@ namespace Ana
 	}
 
 
-	int closestMatch(int genParticle, const std::string particleType, const ROOT::VecOps::RVec<float>& genPt, const ROOT::VecOps::RVec<float>& genEta, const ROOT::VecOps::RVec<float>& genPhi, const ROOT::VecOps::RVec<float>& genMass, const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m, const ROOT::VecOps::RVec<float>& pdgId) {
+	int closestMatch(int genParticle, const std::string particleType, const ROOT::VecOps::RVec<float>& genPt, const ROOT::VecOps::RVec<float>& genEta, const ROOT::VecOps::RVec<float>& genPhi, const ROOT::VecOps::RVec<float>& genMass, const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m, const ROOT::VecOps::RVec<float>& pdgId) 
+	{
+		if (overflowProtected(genPt, genParticle) < 0.) return defaultValue<int>(); 
 		TLorentzVector gen; 
 		gen.SetPtEtaPhiM(overflowProtected(genPt, genParticle), overflowProtected(genEta, genParticle), overflowProtected(genPhi, genParticle), overflowProtected(genMass, genParticle)); 
 
 		int type = PDGid[particleType]; 
 
 
-		int dR = 999.; 
-		int closest = -999.; 
+		float dR = 999.; 
+		int closest = -999; 
 
 		TLorentzVector P4; 
 		for (unsigned int i = 0; i<pt.size(); i++) 
@@ -579,7 +583,7 @@ namespace Ana
 			if (abs(pdgId[i]) != type) continue; 
 			P4.SetPtEtaPhiM(pt[i], eta[i], phi[i], m[i]); 
 
-			int currentdR = P4.DeltaR(gen); 
+			float currentdR = P4.DeltaR(gen); 
 
 			if (currentdR < dR) 
 			{

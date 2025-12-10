@@ -85,9 +85,9 @@ namespace Ana
 
 	enum GenDecay 
 	{
-		TauhTauh, 
-		TauhTaumu, 
-		TauhTaue, 
+		TauhTauh = 0, 
+		TauhTaumu = 1, 
+		TauhTaue = 2, 
 		None = -1
 	}; 
 

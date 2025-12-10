@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
 	sig = Ana.GetGenParticles(sig, "Electron")
 
-	blacklist = ["Muon_P4", "GenPart_Particle", "GenMuon"] # TODO: add autoblacklist
+	blacklist = ["Muon_P4", "GenPart_Particle", "GenMuon", "HLT*"] # TODO: add autoblacklist
 
 	sig.Snapshot("Events", "./Test.root", Ana.purgeColumns(sig.GetColumnNames(), blacklist))
 

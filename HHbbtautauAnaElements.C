@@ -30,6 +30,36 @@ namespace Ana
 {
 	extern std::unordered_map<std::string, int> autoblacklist; 
 
+	template <typename T>
+	T defaultValue();	
+
+	// ---- Specializations ----	
+
+	// int
+	template <>
+	inline int defaultValue<int>() {
+	    return -999;
+	}	
+
+	// float
+	template <>
+	inline float defaultValue<float>() {
+	    return -999.f;
+	}	
+
+	// double
+	template <>
+	inline double defaultValue<double>() {
+	    return -999.0;
+	}	
+
+	// std::string
+	template <>
+	inline std::string defaultValue<std::string>() {
+	    return "";
+	}
+
+
 	std::unordered_map<std::string, int> PDGid = { 
 		{ "Muon", 13 }, 
 		{ "Electron", 11 }, 
@@ -504,7 +534,7 @@ namespace Ana
 	template<typename T>
 	T overflowProtected(const ROOT::VecOps::RVec<T>& collection, const int index) 
 	{
-		if (index > collection.size() -1) return -999.; 
+		if (index > collection.size() -1) return defaultValue<T>(); 
 		return collection[index]; 
 	}
 

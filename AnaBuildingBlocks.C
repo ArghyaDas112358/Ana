@@ -58,12 +58,11 @@ namespace Ana
 				    {
 				        const char *begin = str;					
 
-				        while(*str != sep && *str)
-				            str++;					
+				        while(*str != sep && *str) str++;					
 
-				        if (begin != str) chunks.push_back(std::string(begin, str));
-				        
-				    } while (0 != *str++);
+				        if (begin != str) chunks.push_back(std::string(begin, str)); 
+				    } 
+				    while (0 != *str++);
 				    tokenizedBlacklistItems.push_back(chunks); 
 				}
 			}

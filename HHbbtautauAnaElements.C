@@ -199,7 +199,7 @@ namespace Ana
 		return GetGenParticles(frame, id, name, genprefix); 
 	}
 
-	Particle IdentifyGenMuon(ROOT::RDF::RNode *frame, const std::string value = "") 
+	/*Particle IdentifyGenMuon(ROOT::RDF::RNode *frame, const std::string value = "") 
 	{
 		/*for (auto particle : genParticles) 
 		{
@@ -209,7 +209,7 @@ namespace Ana
 
 			}
 		}*/
-	}
+	//}
 
 
 	int getMother(const ROOT::VecOps::RVec<float>& mother, int particle) 
@@ -514,7 +514,7 @@ namespace Ana
 			result.e = electrons[0]; 
 		}
 		assert(Higgses.size() == 1); 
-		assert(Higgsestob.size() == 1); 
+		assert(Higgstob.size() == 1); 
 		assert(bs.size() == 2); 
 
 

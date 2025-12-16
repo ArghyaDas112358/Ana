@@ -109,6 +109,8 @@ if __name__ == "__main__":
 
 	sig.Snapshot("Events", "./Test.root", Ana.purgeColumns(sig.GetColumnNames(), blacklist))
 
+	Ana.filemanager.CloseAll()
+
 	print("Hello")
 
 

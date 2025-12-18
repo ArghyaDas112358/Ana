@@ -99,13 +99,13 @@ if __name__ == "__main__":
 
 	sig = sig.Define("TheGenMuon_pt", "Ana::overflowProtected(GenPart_pt, GenDecay.mu)").Define("TheGenMuon_eta", "GenPart_eta[GenDecay.mu]").Define("TheGenMuon_phi", "GenPart_phi[GenDecay.mu]")
 
-	sig = sig.Define("dR_mu_gen", "Ana::deltaR(GenDecay.mu, \"{1}\", {0}_pt, {0}_eta, {0}_phi, {0}_mass, {1}_pt, {1}_eta, {1}_phi, {1}_mass, {1}_pdgId)".format("GenPart", "Muon"))
+	sig = sig.Define("dR_mu_gen", "Ana::deltaR(GenDecay.mu, {0}_pt, {0}_eta, {0}_phi, {0}_mass, {1}_pt, {1}_eta, {1}_phi, {1}_mass, {1}_pdgId, \"{1}\")".format("GenPart", "Muon"))
 
-	sig = sig.Define("closest_mu_gen", "Ana::closestMatch(GenDecay.mu, \"{1}\", {0}_pt, {0}_eta, {0}_phi, {0}_mass, {1}_pt, {1}_eta, {1}_phi, {1}_mass, {1}_pdgId)".format("GenPart", "Muon"))
+	sig = sig.Define("closest_mu_gen", "Ana::closestMatch(GenDecay.mu, {0}_pt, {0}_eta, {0}_phi, {0}_mass, {1}_pt, {1}_eta, {1}_phi, {1}_mass, {1}_pdgId, \"{1}\")".format("GenPart", "Muon"))
 
-	sig = sig.Define("closest_mu_FatJet", "Ana::closestMatch(GenDecay.mu, \"{1}\", {0}_pt, {0}_eta, {0}_phi, {0}_mass, {2}_pt, {2}_eta, {2}_phi, {2}_mass)".format("GenPart", "Muon", "FatJet"))
+	sig = sig.Define("closest_mu_FatJet", "Ana::closestMatch(GenDecay.mu, {0}_pt, {0}_eta, {0}_phi, {0}_mass, {1}_pt, {1}_eta, {1}_phi, {1}_mass)".format("GenPart", "FatJet"))
 
-	sig = sig.Define("dR_mu_FatJet", "Ana::deltaR(GenDecay.mu, \"{1}\", {0}_pt, {0}_eta, {0}_phi, {0}_mass, {2}_pt, {2}_eta, {2}_phi, {2}_mass)".format("GenPart", "Muon", "FatJet"))
+	sig = sig.Define("dR_mu_FatJet", "Ana::deltaR(GenDecay.mu, {0}_pt, {0}_eta, {0}_phi, {0}_mass, {1}_pt, {1}_eta, {1}_phi, {1}_mass)".format("GenPart", "FatJet"))
 
 	sig = Ana.GetGenParticles(sig, "Electron")
 

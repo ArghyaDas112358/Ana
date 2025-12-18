@@ -540,7 +540,7 @@ namespace Ana
 	}
 
 
-	float deltaR(int genParticle, const std::string particleType, const ROOT::VecOps::RVec<float>& genPt, const ROOT::VecOps::RVec<float>& genEta, const ROOT::VecOps::RVec<float>& genPhi, const ROOT::VecOps::RVec<float>& genMass, const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m, const ROOT::VecOps::RVec<float>& pdgId = std::vector<float>()) 
+	float deltaR(int genParticle, const ROOT::VecOps::RVec<float>& genPt, const ROOT::VecOps::RVec<float>& genEta, const ROOT::VecOps::RVec<float>& genPhi, const ROOT::VecOps::RVec<float>& genMass, const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m, const ROOT::VecOps::RVec<float>& pdgId = std::vector<float>(), const std::string particleType = "") 
 	{
 		double genpt = overflowProtected(genPt, genParticle); 
 		if (genpt < 0) return genpt; // If gen particle is out of bounds, return default overflow value
@@ -555,7 +555,7 @@ namespace Ana
 		TLorentzVector P4; 
 		for (unsigned int i = 0; i<pt.size(); i++) 
 		{
-			//if (abs(pdgId[i]) != type) continue; 
+			if ((pdgId.size()) && (abs(pdgId[i])) != type) continue; 
 			P4.SetPtEtaPhiM(pt[i], eta[i], phi[i], m[i]); 
 
 			float currentdR = P4.DeltaR(gen); 
@@ -567,7 +567,7 @@ namespace Ana
 	}
 
 
-	int closestMatch(int genParticle, const std::string particleType, const ROOT::VecOps::RVec<float>& genPt, const ROOT::VecOps::RVec<float>& genEta, const ROOT::VecOps::RVec<float>& genPhi, const ROOT::VecOps::RVec<float>& genMass, const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m, const ROOT::VecOps::RVec<float>& pdgId = std::vector<float>()) 
+	int closestMatch(int genParticle, const ROOT::VecOps::RVec<float>& genPt, const ROOT::VecOps::RVec<float>& genEta, const ROOT::VecOps::RVec<float>& genPhi, const ROOT::VecOps::RVec<float>& genMass, const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m, const ROOT::VecOps::RVec<float>& pdgId = std::vector<float>(), const std::string particleType = "") 
 	{
 		if (overflowProtected(genPt, genParticle) < 0.) return defaultValue<int>(); 
 		TLorentzVector gen; 
@@ -582,7 +582,7 @@ namespace Ana
 		TLorentzVector P4; 
 		for (unsigned int i = 0; i<pt.size(); i++) 
 		{
-			//if (abs(pdgId[i]) != type) continue; 
+			if ((pdgId.size() != pt.size()) || (abs(pdgId[i]) != type)) continue; 
 			P4.SetPtEtaPhiM(pt[i], eta[i], phi[i], m[i]); 
 
 			float currentdR = P4.DeltaR(gen); 

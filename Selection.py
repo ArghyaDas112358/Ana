@@ -81,7 +81,7 @@ if __name__ == "__main__":
 	sig = loadFile("sigggF")
 
 	if (options.test): 
-		sig = generalise(sig.Range(0, 500))
+		sig = generalise(sig.Range(0, 5000))
 
 	print(sig)
 
@@ -92,6 +92,12 @@ if __name__ == "__main__":
 	#sig = Ana.GetGenParticles(sig, "Electron")
 
 	genprefix = "GenPart"
+
+	n0 = sig.Count().GetValue()
+
+	sig = sig.Filter("nFatJet>=2").Filter("FatJet_pt[0]>250&&FatJet_pt[1]>200")
+
+	n1 = sig.Count().GetValue()
 
 	sig = sig.Define("GenDecay", "Ana::DecayGenMatching({0}_pdgId, {0}_genPartIdxMother, {0}_statusFlags)".format("GenPart"))
 
@@ -105,11 +111,34 @@ if __name__ == "__main__":
 
 	sig = sig.Define("dR_mu_FatJet", "Ana::deltaR(GenDecay.mu, {0}_pt, {0}_eta, {0}_phi, {0}_mass, {1}_pt, {1}_eta, {1}_phi, {1}_mass)".format("GenPart", "FatJet"))
 
-	sig = Ana.GetGenParticles(sig, "Electron")
+	sig = sig.Define("dR_HH", "Ana::deltaR(GenDecay.Htotau, {0}_pt, {0}_eta, {0}_phi, {0}_mass, {0}_pt, {0}_eta, {0}_phi, {0}_mass, GenDecay.Htob)".format("GenPart"))
+
+	sig = sig.Define("dR_tautau", "Ana::deltaR(GenDecay.tau1, {0}_pt, {0}_eta, {0}_phi, {0}_mass, {0}_pt, {0}_eta, {0}_phi, {0}_mass, GenDecay.tau2)".format("GenPart"))
+
+	hh = sig.Filter("GenDecay.decayType==1")
+
+	hm = sig.Filter("GenDecay.decayType==2")
+
+	n2 = hm.Count().GetValue()
+
+	hm = hm.Define("dR_mu_FatJet_hm", "Ana::deltaR(GenDecay.mu, {0}_pt, {0}_eta, {0}_phi, {0}_mass, {1}_pt, {1}_eta, {1}_phi, {1}_mass)".format("GenPart", "FatJet"))
+
+	hi = hm.Filter("dR_mu_FatJet_hm<0.8&&dR_mu_FatJet_hm>0")
+
+	n3 = hi.Count().GetValue()
+
+	#hh = hh.Define("dR_tautau", "Ana::deltaR(GenDecay.tau1, {0}_pt, {0}_eta, {0}_phi, {0}_mass, {0}_pt, {0}_eta, {0}_phi, {0}_mass, GenDecay.tau2)".format("GenPart"))
+
 
 	blacklist = ["Muon_P4", "GenPart_Particle", "GenMuon", "HLT*", "L1*"] # TODO: add autoblacklist
 
-	sig.Snapshot("Events", "./Test.root", Ana.purgeColumns(sig.GetColumnNames(), blacklist))
+	sig.Snapshot("Events", "./SigAll.root", Ana.purgeColumns(sig.GetColumnNames(), blacklist))
+
+	hh.Snapshot("Events", "./Sighh.root", Ana.purgeColumns(hh.GetColumnNames(), blacklist))
+
+	hm.Snapshot("Events", "./Sighm.root", Ana.purgeColumns(hm.GetColumnNames(), blacklist))
+
+	print("Initial: {}, 2 FatJets: {}, tauhtaumu: {}, mu within jet: {}".format(n0, n1, n2, n3))
 
 	Ana.filemanager.CloseAll()
 

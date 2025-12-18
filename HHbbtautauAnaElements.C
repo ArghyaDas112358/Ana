@@ -598,6 +598,22 @@ namespace Ana
 	}
 
 
+	float deltaR(int genParticle, const ROOT::VecOps::RVec<float>& genPt, const ROOT::VecOps::RVec<float>& genEta, const ROOT::VecOps::RVec<float>& genPhi, const ROOT::VecOps::RVec<float>& genMass, const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m, const int cand) 
+	{
+		double genpt = overflowProtected(genPt, genParticle); 
+		double candpt = overflowProtected(pt, cand); 
+		if (genpt < 0. || candpt < 0.) return genpt; // If gen particle is out of bounds, return default overflow value
+		TLorentzVector gen, candidate; 
+		gen.SetPtEtaPhiM(genpt, overflowProtected(genEta, genParticle), overflowProtected(genPhi, genParticle), overflowProtected(genMass, genParticle)); 
+		candidate.SetPtEtaPhiM(candpt, eta[cand], phi[cand], m[cand]); 
+
+		double dR = gen.DeltaR(candidate); 
+		
+
+		return dR; 
+	}
+
+
 
 	void AddColumn(ROOT::RDF::RNode* df, const std::string &newColName) {
     	*df = df->Define(newColName, [](){ return 42; });

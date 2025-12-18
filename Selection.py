@@ -127,6 +127,12 @@ if __name__ == "__main__":
 
 	n3 = hi.Count().GetValue()
 
+	hi = hi.Define("TheGenMuon", "closest_mu_gen")
+
+	hi = hi.Filter("Muon_tightId[TheGenMuon]")
+
+	n4 = hi.Count().GetValue()
+
 	#hh = hh.Define("dR_tautau", "Ana::deltaR(GenDecay.tau1, {0}_pt, {0}_eta, {0}_phi, {0}_mass, {0}_pt, {0}_eta, {0}_phi, {0}_mass, GenDecay.tau2)".format("GenPart"))
 
 
@@ -138,7 +144,7 @@ if __name__ == "__main__":
 
 	hm.Snapshot("Events", "./Sighm.root", Ana.purgeColumns(hm.GetColumnNames(), blacklist))
 
-	print("Initial: {}, 2 FatJets: {}, tauhtaumu: {}, mu within jet: {}".format(n0, n1, n2, n3))
+	print("Initial: {}, 2 FatJets: {}, tauhtaumu: {}, gen mu within jet: {}, reco mu within jet: {}".format(n0, n1, n2, n3, n4))
 
 	Ana.filemanager.CloseAll()
 

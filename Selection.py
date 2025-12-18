@@ -81,7 +81,7 @@ if __name__ == "__main__":
 	sig = loadFile("sigggF")
 
 	if (options.test): 
-		sig = generalise(sig.Range(0, 10))
+		sig = generalise(sig.Range(0, 500))
 
 	print(sig)
 
@@ -102,6 +102,10 @@ if __name__ == "__main__":
 	sig = sig.Define("dR_mu_gen", "Ana::deltaR(GenDecay.mu, \"{1}\", {0}_pt, {0}_eta, {0}_phi, {0}_mass, {1}_pt, {1}_eta, {1}_phi, {1}_mass, {1}_pdgId)".format("GenPart", "Muon"))
 
 	sig = sig.Define("closest_mu_gen", "Ana::closestMatch(GenDecay.mu, \"{1}\", {0}_pt, {0}_eta, {0}_phi, {0}_mass, {1}_pt, {1}_eta, {1}_phi, {1}_mass, {1}_pdgId)".format("GenPart", "Muon"))
+
+	sig = sig.Define("closest_mu_FatJet", "Ana::closestMatch(GenDecay.mu, \"{1}\", {0}_pt, {0}_eta, {0}_phi, {0}_mass, {2}_pt, {2}_eta, {2}_phi, {2}_mass)".format("GenPart", "Muon", "FatJet"))
+
+	sig = sig.Define("dR_mu_FatJet", "Ana::deltaR(GenDecay.mu, \"{1}\", {0}_pt, {0}_eta, {0}_phi, {0}_mass, {2}_pt, {2}_eta, {2}_phi, {2}_mass)".format("GenPart", "Muon", "FatJet"))
 
 	sig = Ana.GetGenParticles(sig, "Electron")
 

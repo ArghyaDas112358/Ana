@@ -143,7 +143,7 @@ namespace Ana
 
 
 	//template<typename T>
-	ROOT::RDF::RNode GetP4(ROOT::RDF::RNode frame, TString prefix, TString name = "") 
+	ROOT::RDF::RNode GetP4(ROOT::RDF::RNode& frame, TString prefix, TString name = "") 
 	{
 		//TLorentzVector P4; 
 		std::string pfx = prefix.Data(); 
@@ -166,7 +166,7 @@ namespace Ana
 	}*/
 
 	
-	ROOT::RDF::RNode GetGenParticleCollection(ROOT::RDF::RNode frame, const std::string genprefix = "GenPart") 
+	ROOT::RDF::RNode GetGenParticleCollection(ROOT::RDF::RNode& frame, const std::string genprefix = "GenPart") 
 	{
 		auto columnNames = frame.GetColumnNames(); 
 		if (std::find(columnNames.begin(), columnNames.end(), genprefix+"_Particle") == columnNames.end()) 
@@ -176,7 +176,7 @@ namespace Ana
 	}
 
 
-	ROOT::RDF::RNode GetGenParticles(ROOT::RDF::RNode frame, const int id, const std::string name, const std::string genprefix = "GenPart") 
+	ROOT::RDF::RNode GetGenParticles(ROOT::RDF::RNode& frame, const int id, const std::string name, const std::string genprefix = "GenPart") 
 	{
 		frame = GetGenParticleCollection(frame, genprefix); 
 
@@ -193,7 +193,7 @@ namespace Ana
 	}
 
 
-	ROOT::RDF::RNode GetGenParticles(ROOT::RDF::RNode frame, const std::string prefix, const std::string genprefix = "GenPart") 
+	ROOT::RDF::RNode GetGenParticles(ROOT::RDF::RNode& frame, const std::string prefix, const std::string genprefix = "GenPart") 
 	{
 		const int id = PDGid[prefix]; 
 		const std::string name = "Gen"+prefix; 

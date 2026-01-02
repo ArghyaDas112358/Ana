@@ -98,7 +98,7 @@ if __name__ == "__main__":
 
 	from anaPlotting import PlotSimple
 
-	PlotSimple(sample, "Electron_pt", hist)
+	PlotSimple(sample, "Electron_pt")
 
 	
 	Ana.filemanager.CloseAll()

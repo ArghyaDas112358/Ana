@@ -69,24 +69,16 @@ namespace Ana
 		colorold = {{"Sig", 2}, {"BkgDstarDs", 3}, {"BkgDstarDsstar", 8}, {"BkgDstara1", 4}, {"dataD2WS", 6}, {"dataD2TauWS", 7}, {"other", 9}, {"yetanother", 1}}; // Legacy color scheme 
 
 
-		Int_t nBins = 20; 
+		Int_t nBins = 50; 
 
 		if (!denominator) 
 		{
-			binning = {{"b_tau_rhomass1", {"", "#rho_{12} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
-				{"b_tau_rhomass2", {"", "rho_{23} mass;Invariant m_{#rho} [GeV];Counts", nBins, 0., 1.5}},
-				{"b_B_m", {"", "B mass;Reconstructed m_{B} [GeV];Counts", 30, 2., 6.}},
-				{"b_B_q2", {"", "q2;q^{2} [GeV];Counts", nBins, 0., 12.}},
-				//{"B_m", {"", ";B mass [GeV];Counts", nBins, 0., 6.}},
-				//{"B_q2", {"", ";B mass [GeV];Counts", nBins, 0., 12.}},
-				//{"tau_rhomass1", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},
-				//{"tau_rhomass2", {"", ";#rho_{12} mass [GeV];Counts", nBins, 0., 1.5}},
-				{"b_B_proper_xi_rho1", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
-				{"b_B_proper_xi_rho2", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
-				{"b_tau_proper_alpha_rho1_pi", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
-				{"b_tau_proper_alpha_rho2_pi", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
-				{"b_tau_proper_theta_rho1", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
-				{"b_tau_proper_theta_rho2", {"", "#tau mass;Reconstructed m_{#tau} [GeV];Counts", nBins, -1.1, 1.1}},
+			binning = {{"Electron_pt", {"", "e p_{T};e p_{T} [GeV];Counts", nBins, 0., 30.}},
+				{"Electron_eta", {"", "e #eta;e #eta;Counts", nBins, -3.15, 3.15}},
+				{"Electron_phi", {"", "e #phi; e #phi;Counts", nBins, -3.5, 3.5}},
+				{"Muon_pt", {"", "#mu p_{T};#mu p_{T} [GeV];Counts", nBins, 0., 50.}},
+				{"Muon_eta", {"", "#mu #eta;#mu #eta;Counts", nBins, -3.15, 3.15}},
+				{"Muon_phi", {"", "#mu #phi; #mu #phi;Counts", nBins, -3.5, 3.5}},
 			}; 
 		}
 		else // denominator

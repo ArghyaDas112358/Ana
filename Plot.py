@@ -55,38 +55,6 @@ def generalise(df):
 	return ROOT.ROOT.RDF.AsRNode(df)
 
 
-def PlotSimple(frame, variable, histomodel = None): 
-	name = "{}".format(variable)
-	outfolder = "."
-	drawlegend = False
-	if (histomodel == None): # Take the default binning for this variable defined in the analysis
-		histomodel = Ana.binning[variable]
-	canvas = TCanvas(name, variable, 800, 600)
-
-	legend = TLegend(canvas.GetLeftMargin()+0.35, 
-		1.-canvas.GetTopMargin()-.2, 
-		canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
-		1.-canvas.GetTopMargin() )
-
-	histo = frame.Histo1D(histomodel, variable)
-	histo.SetMarkerStyle(8) # Large scalable dot
-	histo.SetMarkerSize(0.5)
-	histo.SetLineColor(ROOT.kBlack)
-	#histo.SetTitle("{}_{}".format(variable, region)) # TODO: Delete once the binning is centralised
-	#histo.SetFillColor(ROOT.kBlack)
-	#legend.AddEntry(histo.GetPtr(), "histo", "PE")
-	histo.Draw("E")
-
-	
-	if (drawlegend): legend.Draw()
-	legend.SetBorderSize(1)
-	legend.SetMargin(0.3)
-	legend.SetTextSize(0.04)
-
-	canvas.Print(outfolder+name+".png")
-	canvas.Print(outfolder+name+".pdf")
-
-
 
 if __name__ == "__main__":
 
@@ -127,6 +95,8 @@ if __name__ == "__main__":
 
 	nBins = 50
 	hist = ("", "#mu p_{T};#mu p_{T};", nBins, 0., 30.)
+
+	from anaPlotting import PlotSimple
 
 	PlotSimple(sample, "Electron_pt", hist)
 

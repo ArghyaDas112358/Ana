@@ -341,6 +341,38 @@ def PlotComparison(frames, referencename, comparisonname, regions, variables, ou
 			canvas.Print(outfolder+name+".pdf")
 
 
+def PlotSimple(frame, variable, histomodel = None): 
+	name = "{}".format(variable)
+	outfolder = "."
+	drawlegend = False
+	if (histomodel == None): # Take the default binning for this variable defined in the analysis
+		histomodel = Ana.binning[variable]
+	canvas = TCanvas(name, variable, 800, 600)
+
+	legend = TLegend(canvas.GetLeftMargin()+0.35, 
+		1.-canvas.GetTopMargin()-.2, 
+		canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
+		1.-canvas.GetTopMargin() )
+
+	histo = frame.Histo1D(histomodel, variable)
+	histo.SetMarkerStyle(8) # Large scalable dot
+	histo.SetMarkerSize(0.5)
+	histo.SetLineColor(ROOT.kBlack)
+	#histo.SetTitle("{}_{}".format(variable, region)) # TODO: Delete once the binning is centralised
+	#histo.SetFillColor(ROOT.kBlack)
+	#legend.AddEntry(histo.GetPtr(), "histo", "PE")
+	histo.Draw("E")
+
+	
+	if (drawlegend): legend.Draw()
+	legend.SetBorderSize(1)
+	legend.SetMargin(0.3)
+	legend.SetTextSize(0.04)
+
+	canvas.Print(outfolder+name+".png")
+	canvas.Print(outfolder+name+".pdf")
+
+
 def PlotFitResult(session, dataname, initialcomponents, variables, outfolder, drawlegend=False): 
 	# Plotting distributions over each other 
 	#outfolder+="stacked/"

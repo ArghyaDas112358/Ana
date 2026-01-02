@@ -35,9 +35,9 @@ def loadFileBase(path, writemode = False, treename = "Events"):
 	globals()["file"] = ROOT.TFile.Open(path, flag) # need to make this global to preserve pointer outside function 
 	#tree = copy.deepcopy(file.Get(treename))
 	tree = file.Get(treename)
-	tree.Print()
+	#tree.Print()
 	frame = generalise(ROOT.RDataFrame(tree))
-	print(frame)
+	#print(frame)
 	ROOT.SetOwnership(frame, 0)
 	return frame
 

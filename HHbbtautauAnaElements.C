@@ -495,6 +495,46 @@ namespace Ana
 		}
 
 
+		assert(Higgstob.size() == 1); 
+		assert(bs.size() == 2); 
+
+
+		if (!((result.decayType == TauhTaumu) || (result.decayType == TauhTaue))) 
+		{
+			for (unsigned int i=0; i<id.size(); i++) 
+	    	{
+	    		if ((abs(id[i]) == PDGid["Higgs"]) &&  (isLastCopy(statusFlag[i])) && (i != Higgstob[0])) 
+	    		{
+	    			auto taudaughters = findDescendants(i, "Tau", id, mother, statusFlag, hardProcess); 
+
+	    			//if (taudaughters.size() && bdaughters.size()) continue;
+
+	    			if (taudaughters.size() < 2) continue; // making sure we have 2 taus
+
+	    			bool notTauh = false; 
+	    			for (unsigned int j=0; j<taudaughters.size(); j++) // Make sure the tau decays are not muonic or electronic
+					{
+						if (findDescendants(taudaughters[j], "Muon", id, mother, statusFlag).size() > 0) // If we find an electron in the other tau decay
+						{
+							notTauh = true; 
+						}
+						if (findDescendants(taudaughters[j], "Electron", id, mother, statusFlag).size() > 0) // If we find an electron in the other tau decay
+						{
+							notTauh = true; 
+						}
+					}
+
+					if (notTauh) continue; 
+
+	    			taus.insert(taus.end(), taudaughters.begin(), taudaughters.end()); 
+	    			Higgses.push_back(i); 
+
+	    		}
+	    	}
+	    	if (taus.size() == 2) result.decayType = TauhTauh; 
+		}
+
+
 		if (result.decayType == TauhTauh) 
 		{
 			assert((taus.size() == 2) && (muons.size() == 0) && (electrons.size() == 0)); 
@@ -516,8 +556,6 @@ namespace Ana
 			result.e = electrons[0]; 
 		}
 		assert(Higgses.size() == 1); 
-		assert(Higgstob.size() == 1); 
-		assert(bs.size() == 2); 
 
 
 		// Filling the gen particle indices

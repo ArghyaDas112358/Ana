@@ -39,8 +39,9 @@ def loadFileFull(desc, writemode = False, treename = "Events"):
 
 def loadFileBase(path, writemode = False, treename = "Events"): 
 	flag = "WRITE" if writemode else "READ" 
-	file = ROOT.TFile.Open(path, flag)
-	tree = copy.deepcopy(file.Get(treename))
+	globals()["file"] = ROOT.TFile.Open(path, flag) # need to make this global to preserve pointer outside function 
+	#tree = copy.deepcopy(file.Get(treename))
+	tree = file.Get(treename)
 	tree.Print()
 	frame = generalise(ROOT.RDataFrame(tree))
 	print(frame)
@@ -121,8 +122,8 @@ if __name__ == "__main__":
 	#ROOT.gSystem.Load("MyDict.so")
 	
 
-	sample = loadFile("sigggF")
-	#sample = loadFileBase(options.file)
+	#sample = loadFile("sigggF")
+	sample = loadFileBase(options.file)
 
 	if (options.test): 
 		sample = generalise(sample.Range(0, 5000))

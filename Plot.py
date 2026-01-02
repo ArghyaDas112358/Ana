@@ -55,10 +55,12 @@ def generalise(df):
 	return ROOT.ROOT.RDF.AsRNode(df)
 
 
-def PlotSimple(frame, variable, histomodel): 
+def PlotSimple(frame, variable, histomodel = None): 
 	name = "{}".format(variable)
 	outfolder = "."
 	drawlegend = False
+	if (histomodel == None): # Take the default binning for this variable defined in the analysis
+		histomodel = Ana.binning[variable]
 	canvas = TCanvas(name, variable, 800, 600)
 
 	legend = TLegend(canvas.GetLeftMargin()+0.35, 

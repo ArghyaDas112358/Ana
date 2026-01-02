@@ -64,6 +64,7 @@ if __name__ == "__main__":
 	parser.add_argument("--prefix", dest="xrdpfx", action="store", type=str, default="root://cms-xrd-global.cern.ch//", help="XRootD prefix to be used to access files")
 	parser.add_argument("--file", dest="file", action="store", type=str, default="", help="File name")
 	parser.add_argument("--tree", dest="tree", action="store", type=str, default="Events", help="Path of tree within file")
+	parser.add_argument("--variables", dest="variables", action="store", nargs="+", default="", help="List of variables to plot")
 	parser.add_argument("-o", "--out", dest="outputpath", action="store", type=str, default="./temp", help="Local output path")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument("--test", dest="test", action="store_true", default=False, help="Process a reduced number of files for testing purposes")
@@ -98,7 +99,8 @@ if __name__ == "__main__":
 
 	from anaPlotting import PlotSimple
 
-	PlotSimple(sample, "Electron_pt")
+	for var in options.variables: 
+		PlotSimple(sample, var)
 
 	
 	Ana.filemanager.CloseAll()

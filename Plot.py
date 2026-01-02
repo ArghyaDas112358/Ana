@@ -27,14 +27,7 @@ def loadFile(desc):
 
 def loadFileFull(desc, writemode = False, treename = "Events"): 
 	path = filedict[desc]
-	flag = "WRITE" if writemode else "READ" 
-	file = ROOT.TFile.Open(path, flag)
-	tree = copy.deepcopy(file.Get(treename))
-	tree.Print()
-	frame = ROOT.RDataFrame(tree)
-	print(frame)
-	ROOT.SetOwnership(frame, 0)
-	return frame
+	return loadFileBase(path, writemode, treename)
 
 
 def loadFileBase(path, writemode = False, treename = "Events"): 

@@ -105,6 +105,8 @@ namespace Ana
 			int decayType = None; 
 			int VBFjet1; 
 			int VBFjet2; 
+			int VBFgenJet1; 
+			int VBFgenJet2; 
 	};
 
 	template<typename T>
@@ -567,6 +569,338 @@ namespace Ana
 		
 
 		return result; 
+	}
+
+
+	GenMatchingResult DecayGenMatchingVBF(const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& mother, const ROOT::VecOps::RVec<int>& statusFlag) 
+	{
+
+		// statusFlags bit helpers (bit numbers, zero-indexed)
+    	//const unsigned int BIT_isLastCopy = (1u << 13);         // 13 => isLastCopy
+    	const unsigned int BIT_isDirectTauDecayProduct = (1u << 5); // 5 => isDirectTauDecayProduct (useful)
+
+
+    	std::vector<int> muons; 
+    	muons.reserve(1); 
+    	std::vector<int> taus; 
+    	taus.reserve(2); 
+    	std::vector<int> Higgses; 
+    	Higgses.reserve(2); 
+    	std::vector<int> bs; 
+    	bs.reserve(2); 
+    	std::vector<int> electrons; 
+    	electrons.reserve(1); 
+    	std::vector<int> Higgstob; 
+    	Higgstob.reserve(1); 
+
+
+    	GenMatchingResult result; 
+
+
+    	const unsigned int hardProcess = (1u << 8); 
+
+    	for (unsigned int i=0; i<id.size(); i++) 
+    	{
+    		if ((abs(id[i]) == PDGid["Higgs"]) &&  (isLastCopy(statusFlag[i]))) 
+    		{
+    			auto taudaughters = findDescendants(i, "Tau", id, mother, statusFlag, hardProcess); 
+    			auto bdaughters = findDescendants(i, "b", id, mother, statusFlag, hardProcess); 
+
+    			//if (taudaughters.size() && bdaughters.size()) continue;
+
+    			if (bdaughters.size() < 2) continue; // making sure we have 2 b
+
+    			bs.insert(bs.end(), bdaughters.begin(), bdaughters.end()); 
+    			Higgstob.push_back(i); 
+
+    		}
+    	}
+
+    	std::cout << "N bs: " << bs.size() << std::endl; 
+    	if (bs.size() > 2) return result; // if more than 2 b, probably 4b or other weird stuff
+
+    	//std::cout << "Sizes: " << id.size() << " " << mother.size() << " " << statusFlag.size() << std::endl; 
+
+
+		for (unsigned int i=0; i<id.size(); i++) 
+		{
+			if ((abs(id[i]) == PDGid["Muon"]) && (isLastCopy(statusFlag[i]))) 
+			{
+				// Might be the muon
+				auto localtaus = findMothers(i, "Tau", id, mother, statusFlag); 
+
+				if (localtaus.size() < 1 ) continue; 
+
+				//std::cout << "Flag: " << (1u << 7) << " " << hardProcess << std::endl; 
+				auto localHiggses = findMothers(i, "Higgs", id, mother, statusFlag, hardProcess); 
+
+				std::cout << "N taus: " << localtaus.size() << ", N Higgses: " << localHiggses.size() << std::endl; 
+
+				if (localHiggses.size() < 1) continue; 
+
+
+				std::vector<int> otherTaus = findDescendants(localHiggses[0], "Tau", id, mother, statusFlag, hardProcess); 
+				std::cout << "N taus: " << otherTaus.size() << std::endl; 
+				for (auto element : otherTaus) 
+				{
+					std::string text = RevertPDGid(id[element]); 
+					/*for (auto it = PDGid.begin(); it != PDGid.end(); it++) 
+					{
+						if (it->second == element) text = it->first; 
+					}*/
+					std::cout << text << ": " << id[element] << " (id), " << RevertPDGid(id[mother[element]]) << " (mother = " << id[mother[element]] << "), " << statusFlag[element] << " (status)" << std::endl; 
+				}
+				otherTaus.erase(std::remove(otherTaus.begin(), otherTaus.end(), localtaus.at(0)), otherTaus.end()); // Remove the muonic tau
+				bool notTauh = false; 
+				for (unsigned int j=0; j<otherTaus.size(); j++) // Make sure the other tau decay is not electronic
+				{
+					if (findDescendants(otherTaus[j], "Electron", id, mother, statusFlag).size() > 0) // If we find an electron in the other tau decay
+					{
+						notTauh = true; 
+					}
+				}
+
+				if (notTauh) continue; 
+
+
+
+
+				muons.push_back(i); 
+				Higgses.insert(Higgses.end(), localHiggses.begin(), localHiggses.end()); 
+				taus.insert(taus.end(), localtaus.begin(), localtaus.end()); 
+				taus.insert(taus.end(), otherTaus.begin(), otherTaus.end()); 
+
+				result.decayType = TauhTaumu; 
+
+
+			}
+
+			if ((abs(id[i]) == PDGid["Electron"]) && (isLastCopy(statusFlag[i]))) 
+			{
+				// Might be the muon
+				auto localtaus = findMothers(i, "Tau", id, mother, statusFlag); 
+
+				if (localtaus.size() < 1 ) continue; 
+
+				//std::cout << "Flag: " << (1u << 7) << " " << hardProcess << std::endl; 
+				auto localHiggses = findMothers(i, "Higgs", id, mother, statusFlag, hardProcess); 
+
+				std::cout << "N taus: " << localtaus.size() << ", N Higgses: " << localHiggses.size() << std::endl; 
+
+				if (localHiggses.size() < 1) continue; 
+
+
+				std::vector<int> otherTaus = findDescendants(localHiggses[0], "Tau", id, mother, statusFlag, hardProcess); 
+				std::cout << "N taus: " << otherTaus.size() << std::endl; 
+				for (auto element : otherTaus) 
+				{
+					std::string text = RevertPDGid(id[element]); 
+					/*for (auto it = PDGid.begin(); it != PDGid.end(); it++) 
+					{
+						if (it->second == element) text = it->first; 
+					}*/
+					std::cout << text << ": " << id[element] << " (id), " << RevertPDGid(id[mother[element]]) << " (mother = " << id[mother[element]] << "), " << statusFlag[element] << " (status)" << std::endl; 
+				}
+				otherTaus.erase(std::remove(otherTaus.begin(), otherTaus.end(), localtaus.at(0)), otherTaus.end()); // Remove the muonic tau
+				bool notTauh = false; 
+				for (unsigned int j=0; j<otherTaus.size(); j++) // Make sure the other tau decay is not electronic
+				{
+					if (findDescendants(otherTaus[j], "Muon", id, mother, statusFlag).size() > 0) // If we find an electron in the other tau decay
+					{
+						notTauh = true; 
+					}
+				}
+
+				if (notTauh) continue; 
+
+
+
+
+				electrons.push_back(i); 
+				Higgses.insert(Higgses.end(), localHiggses.begin(), localHiggses.end()); 
+				taus.insert(taus.end(), localtaus.begin(), localtaus.end()); 
+				taus.insert(taus.end(), otherTaus.begin(), otherTaus.end()); 
+
+				result.decayType = TauhTaue; 
+
+
+			}
+		}
+
+
+		assert(Higgstob.size() == 1); 
+		assert(bs.size() == 2); 
+
+
+		if (!((result.decayType == TauhTaumu) || (result.decayType == TauhTaue))) 
+		{
+			for (unsigned int i=0; i<id.size(); i++) 
+	    	{
+	    		if ((abs(id[i]) == PDGid["Higgs"]) &&  (isLastCopy(statusFlag[i])) && (i != Higgstob[0])) 
+	    		{
+	    			auto taudaughters = findDescendants(i, "Tau", id, mother, statusFlag, hardProcess); 
+
+	    			//if (taudaughters.size() && bdaughters.size()) continue;
+
+	    			if (taudaughters.size() < 2) continue; // making sure we have 2 taus
+
+	    			bool notTauh = false; 
+	    			for (unsigned int j=0; j<taudaughters.size(); j++) // Make sure the tau decays are not muonic or electronic
+					{
+						if (findDescendants(taudaughters[j], "Muon", id, mother, statusFlag).size() > 0) // If we find an electron in the other tau decay
+						{
+							notTauh = true; 
+						}
+						if (findDescendants(taudaughters[j], "Electron", id, mother, statusFlag).size() > 0) // If we find an electron in the other tau decay
+						{
+							notTauh = true; 
+						}
+					}
+
+					if (notTauh) continue; 
+
+	    			taus.insert(taus.end(), taudaughters.begin(), taudaughters.end()); 
+	    			Higgses.push_back(i); 
+
+	    		}
+	    	}
+	    	if (taus.size() == 2) result.decayType = TauhTauh; 
+		}
+
+
+		if (result.decayType == TauhTauh) 
+		{
+			assert((taus.size() == 2) && (muons.size() == 0) && (electrons.size() == 0)); 
+			result.tau1 = taus.at(0); 
+			result.tau2 = taus.at(1); 
+		}
+		if (result.decayType == TauhTaumu) 
+		{
+			assert((taus.size() == 2) && (muons.size() == 1) && (electrons.size() == 0)); 
+			result.tau1 = taus[0]; 
+			result.tau2 = taus[1]; 
+			result.mu = muons[0]; 
+		}
+		if (result.decayType == TauhTaue) 
+		{
+			assert((taus.size() == 2) && (muons.size() == 0) && (electrons.size() == 1)); 
+			result.tau1 = taus[0]; 
+			result.tau2 = taus[1]; 
+			result.e = electrons[0]; 
+		}
+		assert(Higgses.size() == 1); 
+
+
+		// Filling the gen particle indices
+		result.Htotau = Higgses[0]; 
+		result.Htob = Higgstob[0]; 
+		result.b1 = bs[0]; 
+		result.b2 = bs[1]; 
+
+		
+
+		return result; 
+	}
+
+
+	template<typename T>
+	TLorentzVector getP4(int idx, const ROOT::VecOps::RVec<T>& pt, const ROOT::VecOps::RVec<T>& eta, const ROOT::VecOps::RVec<T>& phi, const ROOT::VecOps::RVec<T>& m) 
+	{
+		TLorentzVector P4; 
+
+		unsigned int n = pt.size(); 
+		assert(eta.size() == n); 
+		assert(phi.size() == n); 
+		assert(m.size() == n); 
+		// TODO: turn off the above checks when running for speed
+
+		if ((idx > pt.size() -1) || (idx < 0)) return P4; 
+
+		P4.SetPtEtaPhiM(pt[idx], eta[idx], phi[idx], m[idx]); 
+		return P4;  
+	}
+
+
+	GenMatchingResult MatchVBFJets(GenMatchingResult& genDecay, const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& mass, const ROOT::VecOps::RVec<float>& genPt, const ROOT::VecOps::RVec<float>& genEta, const ROOT::VecOps::RVec<float>& genPhi, const ROOT::VecOps::RVec<float>& genMass) 
+	{
+		GenMatchingResult result(genDecay); 
+
+		int nJets = pt.size(); 
+		assert(eta.size() == nJets); 
+		assert(phi.size() == nJets); 
+		assert(mass.size() == nJets); 
+
+		// VBF selection thesholds
+		double ptThres = 20.; 
+		double etaThres = 5.; 
+
+		double isoThres = 0.4; 
+
+		TLorentzVector b1 = getP4(genDecay.b1, pt, eta, phi, mass); 
+		TLorentzVector b2 = getP4(genDecay.b2, pt, eta, phi, mass); 
+		TLorentzVector tau1 = getP4(genDecay.tau1, pt, eta, phi, mass); 
+		TLorentzVector tau2 = getP4(genDecay.tau2, pt, eta, phi, mass); 
+
+
+		TLorentzVector jet1, jet2; 
+
+
+		double diJetMass = -999.; 
+
+		int jetIdx1 = -999; 
+		int jetIdx2 = -999; 
+		
+
+		for (unsigned int i=0; i<nJets; i++) 
+		{
+			// VBF jet selection requirements 
+			if (pt[i] < ptThres) continue; 
+			if (eta[i] > etaThres) continue; 
+
+			jet1.SetPtEtaPhiM(pt[i], eta[i], phi[i], mass[i]); 
+
+			if (jet1.DeltaR(b1) < isoThres) continue; 
+			if (jet1.DeltaR(b2) < isoThres) continue; 
+			if (jet1.DeltaR(tau1) < isoThres) continue; 
+			if (jet1.DeltaR(tau2) < isoThres) continue; 
+
+
+			for (unsigned int j=0; j<nJets; j++) 
+			{
+				if (j == i) continue; 
+
+				// VBF jet selection requirements 
+				if (pt[i] < ptThres) continue; 
+				if (eta[i] > etaThres) continue; 
+
+				jet2.SetPtEtaPhiM(pt[j], eta[j], phi[j], mass[j]); 
+
+				if (jet2.DeltaR(b1) < isoThres) continue; 
+				if (jet2.DeltaR(b2) < isoThres) continue; 
+				if (jet2.DeltaR(tau1) < isoThres) continue; 
+				if (jet2.DeltaR(tau2) < isoThres) continue; 
+
+				// Both jets pass the VBF jet preselection requirements and do not overlap wth the Higgs decay products 
+
+
+				double currentDiJetMass = (jet1 + jet2).M(); 
+
+				if (currentDiJetMass > diJetMass) 
+				{
+					diJetMass = currentDiJetMass; 
+
+					jetIdx1 = i; 
+					jetIdx2 = j; 
+				}
+
+
+			}
+
+		}
+		result.VBFgenJet1 = jetIdx1; 
+		result.VBFgenJet2 = jetIdx2; 
+
+		return result;
 	}
 
 

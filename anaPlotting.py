@@ -350,18 +350,21 @@ def PlotSimple(frame, variable, histomodel = None):
 	canvas = TCanvas(name, variable, 800, 600)
 
 	legend = TLegend(canvas.GetLeftMargin()+0.35, 
-		1.-canvas.GetTopMargin()-.2, 
+		1.-canvas.GetTopMargin()-.15, 
 		canvas.GetLeftMargin()+(1.-(canvas.GetLeftMargin()+canvas.GetRightMargin())),
 		1.-canvas.GetTopMargin() )
 
+	color = ROOT.kBlue
 	histo = frame.Histo1D(histomodel, variable)
 	histo.SetMarkerStyle(8) # Large scalable dot
 	histo.SetMarkerSize(0.5)
-	histo.SetLineColor(ROOT.kBlack)
+	histo.SetLineColor(color)
+	histo.SetLineWidth(2)
 	#histo.SetTitle("{}_{}".format(variable, region)) # TODO: Delete once the binning is centralised
 	#histo.SetFillColor(ROOT.kBlack)
-	#legend.AddEntry(histo.GetPtr(), "histo", "PE")
-	histo.Draw("E")
+	histo.SetMarkerColor(color)
+	legend.AddEntry(histo.GetPtr(), variable, "LPE")
+	histo.Draw("HIST E")
 
 	
 	if (drawlegend): legend.Draw()

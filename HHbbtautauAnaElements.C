@@ -836,6 +836,10 @@ namespace Ana
 
 		double isoThres = 0.4; 
 
+		double diJetMassThres = 400.; 
+
+		double deltaEtaThres = 3.;
+
 		TLorentzVector b1 = getP4(genDecay.b1, pt, eta, phi, mass); 
 		TLorentzVector b2 = getP4(genDecay.b2, pt, eta, phi, mass); 
 		TLorentzVector tau1 = getP4(genDecay.tau1, pt, eta, phi, mass); 
@@ -897,6 +901,11 @@ namespace Ana
 			}
 
 		}
+
+		// Final selection on jet pair
+		bool finalSel = (diJetMass > diJetMassThres) && (abs(eta[jetIdx1] - eta[jetIdx2]) > deltaEtaThres) && (eta[jetIdx1]*eta[jetIdx2] < 0.); 
+		if (!finalSel ) return result; 
+		
 		result.VBFgenJet1 = jetIdx1; 
 		result.VBFgenJet2 = jetIdx2; 
 

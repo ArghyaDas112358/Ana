@@ -103,10 +103,10 @@ namespace Ana
 			int mu = -999; 
 			int e = -999; 
 			int decayType = None; 
-			int VBFjet1; 
-			int VBFjet2; 
-			int VBFgenJet1; 
-			int VBFgenJet2; 
+			int VBFjet1 = -999.; 
+			int VBFjet2 = -999.; 
+			int VBFgenJet1 = -999.; 
+			int VBFgenJet2 = -999.; 
 	};
 
 	template<typename T>
@@ -797,6 +797,8 @@ namespace Ana
 		result.b1 = bs[0]; 
 		result.b2 = bs[1]; 
 
+		// TODO: add VBF gen particle selection 
+
 		
 
 		return result; 
@@ -836,7 +838,7 @@ namespace Ana
 
 		double isoThres = 0.4; 
 
-		double diJetMassThres = 400.; 
+		double diJetMassThres = 300.; 
 
 		double deltaEtaThres = 3.;
 

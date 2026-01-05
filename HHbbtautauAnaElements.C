@@ -889,6 +889,11 @@ namespace Ana
 
 				double currentDiJetMass = (jet1 + jet2).M(); 
 
+				// Selection on jet pair
+				if (currentDiJetMass < diJetMassThres) continue; 
+				if (abs(jet1.Eta() - jet2.Eta()) < deltaEtaThres) continue;
+				if (jet1.Eta()*jet2.Eta() > 0.) continue;
+
 				if (currentDiJetMass > diJetMass) 
 				{
 					diJetMass = currentDiJetMass; 
@@ -903,9 +908,9 @@ namespace Ana
 		}
 
 		// Final selection on jet pair
-		bool finalSel = (diJetMass > diJetMassThres) && (abs(eta[jetIdx1] - eta[jetIdx2]) > deltaEtaThres) && (eta[jetIdx1]*eta[jetIdx2] < 0.); 
-		if (!finalSel ) return result; 
-		
+		//bool finalSel = (diJetMass > diJetMassThres) && (abs(eta[jetIdx1] - eta[jetIdx2]) > deltaEtaThres) && (eta[jetIdx1]*eta[jetIdx2] < 0.); 
+		//if (!finalSel ) return result; 
+
 		result.VBFgenJet1 = jetIdx1; 
 		result.VBFgenJet2 = jetIdx2; 
 

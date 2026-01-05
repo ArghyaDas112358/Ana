@@ -93,11 +93,15 @@ if __name__ == "__main__":
 
 	genprefix = "GenPart"
 
+	cutflow = ROOT.CutFlow("cutflow", "Selection cutflow")
+
 	n0 = sig.Count().GetValue()
+	cutflow.Increment("Initial", n0)
 
 	sig = sig.Filter("nFatJet>=2").Filter("FatJet_pt[0]>250&&FatJet_pt[1]>200")
 
 	n1 = sig.Count().GetValue()
+	cutflow.Add("jet selection", n1)
 
 	sig = sig.Define("GenDecay", "Ana::DecayGenMatching({0}_pdgId, {0}_genPartIdxMother, {0}_statusFlags)".format("GenPart"))
 
@@ -149,6 +153,14 @@ if __name__ == "__main__":
 	hm.Snapshot("Events", "./Sighm.root", Ana.purgeColumns(hm.GetColumnNames(), blacklist))
 
 	print("Initial: {}, 2 FatJets: {}, tauhtaumu: {}, gen mu within jet: {}, reco mu within jet: {}, other selection requirements: {}".format(n0, n1, n2, n3, n4, n5))
+
+	canvas = ROOT.TCanvas("canvas", "canvas", 800, 600)
+	histo = cutflow.GenerateHistogram()
+	histo.Draw("HIST")
+	histo.SetLineColor(ROOT.kBlue)
+	histo.SetLineWidth(2)
+	canvas.Draw()
+	canvas.SaveAs("cutflow.pdf")
 
 	Ana.filemanager.CloseAll()
 

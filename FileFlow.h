@@ -15,6 +15,7 @@
 //#include "external/jsoncpp/dist/jsoncpp.cpp"
 #include <fstream>
 #include "AnaBuildingBlocks.C"
+#include "CutFlowMonitor.h"
 //#include "HHbbtautauAnaElements.C"
 
 

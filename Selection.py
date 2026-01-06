@@ -87,6 +87,8 @@ if __name__ == "__main__":
 	if (options.test): 
 		sig = generalise(sig.Range(0, 5000))
 
+	ROOT.gStyle.SetOptStat(0)
+
 	print(sig)
 
 	dropBranchNames(sig, "branchnames.txt", ["L1", "HLT", "DST"])
@@ -169,6 +171,14 @@ if __name__ == "__main__":
 	histo.SetLineWidth(2)
 	canvas.Draw()
 	canvas.SaveAs("cutflow.pdf")
+
+	efficiencies = ROOT.TCanvas("efficiencies", "efficiencies", 800, 600)
+	eff = cutflow.MakeEffHistogram()
+	eff.Draw("HIST")
+	eff.SetLineColor(ROOT.kBlue)
+	eff.SetLineWidth(2)
+	efficiencies.Draw()
+	efficiencies.SaveAs("efficiencies.pdf")
 
 	Ana.filemanager.CloseAll()
 

@@ -37,6 +37,27 @@ normalisebinwidth = False
 
 
 
+def binning(variable): 
+	#print(variable)
+	variables = []
+	for item in Ana.binning: 
+		#print(item)
+		variables.append(item[0])
+	#print(variables)
+	if variable in variables: 
+		model = Ana.binning[variable]
+	else: 
+		proxy = ""
+		for element in variables: 
+			if element in variable: 
+				proxy = element
+				break
+		#print(proxy)
+		model = Ana.binning[proxy]
+	
+	return model
+
+
 def PlotOverlay(frames, dataname, initialcomponents, regions, variables, yields, outfolder, drawlegend=True, normalise=False): 
 	# Plotting distributions over each other 
 	from anaPrepareRegions import GetBaseName
@@ -346,7 +367,7 @@ def PlotSimple(frame, variable, histomodel = None):
 	outfolder = "."
 	drawlegend = False
 	if (histomodel == None): # Take the default binning for this variable defined in the analysis
-		histomodel = Ana.binning[variable]
+		histomodel = binning(variable)
 	canvas = TCanvas(name, variable, 800, 600)
 
 	legend = TLegend(canvas.GetLeftMargin()+0.35, 

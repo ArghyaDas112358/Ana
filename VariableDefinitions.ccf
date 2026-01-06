@@ -56,3 +56,5 @@
 {"nMuon",              {"", ";N_{#mu};Counts",          10, -0.5, 9.5}},
 {"nElectron",          {"", ";N_{e};Counts",            10, -0.5, 9.5}},
 {"nTau",               {"", ";N_{#tau};Counts",         10, -0.5, 9.5}},
+// General
+{"dR", 				   {"", ";#Delta R;Counts",         nBins, -0.1, 5.1}},

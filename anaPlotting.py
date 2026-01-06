@@ -39,10 +39,7 @@ normalisebinwidth = False
 
 def binning(variable): 
 	#print(variable)
-	variables = []
-	for item in Ana.binning: 
-		#print(item)
-		variables.append(item[0])
+	variables = [item[0] for item in Ana.binning]
 	#print(variables)
 	if variable in variables: 
 		model = Ana.binning[variable]

@@ -141,6 +141,8 @@ if __name__ == "__main__":
 
 	hi = hi.Define("TheRecoMuon", "closest_mu_gen")
 
+	hi = hi.Define("TheRecoMuon_pt", "Muon_pt[TheRecoMuon]")
+
 	hi = hi.Filter("Muon_tightId[TheRecoMuon]")
 
 	n4 = hi.Count().GetValue()
@@ -161,6 +163,8 @@ if __name__ == "__main__":
 	hh.Snapshot("Events", "./Sighh.root", Ana.purgeColumns(hh.GetColumnNames(), blacklist))
 
 	hm.Snapshot("Events", "./Sighm.root", Ana.purgeColumns(hm.GetColumnNames(), blacklist))
+
+	hi.Snapshot("Events", "./Sigwithproxy.root", Ana.purgeColumns(hi.GetColumnNames(), blacklist))
 
 	print("Initial: {}, 2 FatJets: {}, tauhtaumu: {}, gen mu within jet: {}, reco mu within jet: {}, other selection requirements: {}".format(n0, n1, n2, n3, n4, n5))
 

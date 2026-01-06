@@ -100,7 +100,13 @@ if __name__ == "__main__":
 	from anaPlotting import PlotSimple
 
 	for var in options.variables: 
-		PlotSimple(sample, var)
+		if "[" in var: 
+			varname = "autoVar_{}".format(var.replace("[", "_").replace("]", "_"))
+			#print(var)
+			sampleToPlot = generalise(sample.Define(varname, var)) #sample.Define("TheRecoMuon_pt", "Muon_pt[TheRecoMuon]") 
+			PlotSimple(sampleToPlot, varname)
+		else: 
+			PlotSimple(sample, var)
 
 	
 	Ana.filemanager.CloseAll()

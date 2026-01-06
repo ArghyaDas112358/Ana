@@ -14,6 +14,9 @@
 constexpr double Pion_Mass = 0.13957; // The pion mass from the PDG (used as default mass hypothesis)
 constexpr double Muon_Mass = -1.; // TODO: set value from PDG, perhaps also for electron and Kaon
 
+
+constexpr double drThres = 0.05; // The maximal dR separation when genmatching 
+
 // TODO: 
 // - implement autoblacklist
 // - do not hardcode names, write all initial names and final names for collections
@@ -975,7 +978,7 @@ namespace Ana
 
 			float currentdR = P4.DeltaR(gen); 
 
-			if (currentdR < dR) 
+			if ((currentdR < dR) && (currentdR < drThres)) 
 			{
 				dR = currentdR; 
 				closest = i; 

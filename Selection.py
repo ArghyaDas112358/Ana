@@ -124,22 +124,26 @@ if __name__ == "__main__":
 	hm = sig.Filter("GenDecay.decayType==2")
 
 	n2 = hm.Count().GetValue()
+	cutflow.Add("tauh taumu", n2)
 
 	hm = hm.Define("dR_mu_FatJet_hm", "Ana::deltaR(GenDecay.mu, {0}_pt, {0}_eta, {0}_phi, {0}_mass, {1}_pt, {1}_eta, {1}_phi, {1}_mass)".format("GenPart", "FatJet"))
 
 	hi = hm.Filter("dR_mu_FatJet_hm<0.8&&dR_mu_FatJet_hm>0")
 
 	n3 = hi.Count().GetValue()
+	cutflow.Add("gen mu in jet", n3)
 
 	hi = hi.Define("TheRecoMuon", "closest_mu_gen")
 
 	hi = hi.Filter("Muon_tightId[TheRecoMuon]")
 
 	n4 = hi.Count().GetValue()
+	cutflow.Add("reco mu matched", n4)
 
 	hi = hi.Filter("Muon_pt[TheRecoMuon]>20&&abs(Muon_eta[TheRecoMuon])<2.4&&Muon_dz[TheRecoMuon]<0.2&&Muon_dxy[TheRecoMuon]<0.05")
 
 	n5 = hi.Count().GetValue()
+	cutflow.Add("muon sel", n5)
 
 	#hh = hh.Define("dR_tautau", "Ana::deltaR(GenDecay.tau1, {0}_pt, {0}_eta, {0}_phi, {0}_mass, {0}_pt, {0}_eta, {0}_phi, {0}_mass, GenDecay.tau2)".format("GenPart"))
 

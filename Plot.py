@@ -67,6 +67,7 @@ if __name__ == "__main__":
 	parser.add_argument("--variables", dest="variables", action="store", nargs="+", default="", help="List of variables to plot")
 	parser.add_argument("-o", "--out", dest="outputpath", action="store", type=str, default="./temp", help="Local output path")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
+	parser.add_argument("--folder", dest="folder", action="store", type=str, default="./", help="Folder to store the output plots")
 	parser.add_argument("--test", dest="test", action="store_true", default=False, help="Process a reduced number of files for testing purposes")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
 
@@ -104,9 +105,9 @@ if __name__ == "__main__":
 			varname = "autoVar_{}".format(var.replace("[", "_").replace("]", "_"))
 			#print(var)
 			sampleToPlot = generalise(sample.Define(varname, var)) #sample.Define("TheRecoMuon_pt", "Muon_pt[TheRecoMuon]") 
-			PlotSimple(sampleToPlot, varname)
+			PlotSimple(sampleToPlot, varname, options.folder)
 		else: 
-			PlotSimple(sample, var)
+			PlotSimple(sample, var, options.folder)
 
 	
 	Ana.filemanager.CloseAll()

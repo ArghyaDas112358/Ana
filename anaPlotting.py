@@ -359,9 +359,11 @@ def PlotComparison(frames, referencename, comparisonname, regions, variables, ou
 			canvas.Print(outfolder+name+".pdf")
 
 
-def PlotSimple(frame, variable, histomodel = None): 
-	name = "{}".format(variable)
-	outfolder = "."
+def PlotSimple(frame, variable, outfolder = ".", name = "", histomodel = None): 
+	if name == "": 
+		name = "/{}".format(variable)
+	print(name)
+	os.system("mkdir -p "+outfolder)
 	drawlegend = False
 	if (histomodel == None): # Take the default binning for this variable defined in the analysis
 		histomodel = binning(variable)
@@ -390,8 +392,8 @@ def PlotSimple(frame, variable, histomodel = None):
 	legend.SetMargin(0.3)
 	legend.SetTextSize(0.04)
 
-	canvas.Print(outfolder+name+".png")
-	canvas.Print(outfolder+name+".pdf")
+	canvas.SaveAs(outfolder+name+".png")
+	canvas.SaveAs(outfolder+name+".pdf")
 
 
 def PlotFitResult(session, dataname, initialcomponents, variables, outfolder, drawlegend=False): 

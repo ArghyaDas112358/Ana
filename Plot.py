@@ -68,6 +68,7 @@ if __name__ == "__main__":
 	parser.add_argument("-o", "--out", dest="outputpath", action="store", type=str, default="./temp", help="Local output path")
 	parser.add_argument("--debug", dest="debug", action="store_true", default=False, help="Turn on debug output")
 	parser.add_argument("--folder", dest="folder", action="store", type=str, default="./", help="Folder to store the output plots")
+	parser.add_argument("--selection", dest="selection", action="store", type=str, default="1", help="Selection to be applied to events")
 	parser.add_argument("--test", dest="test", action="store_true", default=False, help="Process a reduced number of files for testing purposes")
 	parser.add_argument('-b', "--batch", dest="batch", action="store_true", default=False, help="Run in batch mode")
 
@@ -99,6 +100,9 @@ if __name__ == "__main__":
 	hist = ("", "#mu p_{T};#mu p_{T};", nBins, 0., 30.)
 
 	from anaPlotting import PlotSimple
+
+	if options.selection != "1": 
+		sample = generalise(sample.Filter(options.selection))
 
 	for var in options.variables: 
 		if "[" in var: 

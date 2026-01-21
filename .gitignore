@@ -1,0 +1,36 @@
+# C++ build artifacts
+*.so
+*.pcm
+*.d
+
+# ROOT output files
+*.root
+*.pdf
+*.png
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter notebooks (optional)
+*.ipynb
+
+# Git control files
+*.swp
+*.swo
+*~
+
+# Output text/data
+*.txt
+*.log
+
+# Auto-generated ROOT ACLiC files
+*_ACLiC_dict*
+*.gch
+
+# Your custom plugin directory
+plugins/
+
+# Optional: ignore local config or init scripts
+__init__.py

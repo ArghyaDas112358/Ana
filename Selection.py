@@ -15,12 +15,18 @@ from argparse import ArgumentParser
 
 
 filedict = {"sigggF": "/eos/home-m/mhuwiler/data/HHtobbtautau/NanoAODv15/signalggF.root", }
-Ana.filemanager.AddItem("sigggF", "/eos/home-m/mhuwiler/data/HHtobbtautau/NanoAODv15/signalggF.root", "Events")
-Ana.filemanager.AddItem("official", "/eos/home-m/mhuwiler/data/HHtobbtautau/NanoAODv12/Run3Summer22NanoAODv12_1-1.root", "Events")
-Ana.filemanager.AddItem("ggfBoostedPrivate", "/eos/home-m/mhuwiler/software/rh9/AnaBoosted/data/Run3_2023_BoostedPrivate/glugluHHto2b2tau/ggf.root", "Events")
-Ana.filemanager.AddItem("VBFBoostedPrivate", "/eos/home-m/mhuwiler/software/rh9/AnaBoosted/data/Run3_2023_BoostedPrivate/VBFHHto2b2tau/VBF_SM.root", "Events")
-Ana.filemanager.AddItem("QCDBoostedPrivate", "/eos/home-m/mhuwiler/software/rh9/AnaBoosted/data/Run3_2023_BoostedPrivate/QCD/qcd_HT_100-1200.root", "Events")
-Ana.filemanager.AddItem("VBFBoostedPrivate", "/eos/home-m/mhuwiler/software/rh9/AnaBoosted/data/Run3_2023_BoostedPrivate/dataset/jetmet.root", "Events")
+# Ana.filemanager.AddItem("sigggF", "/eos/home-m/mhuwiler/data/HHtobbtautau/NanoAODv15/signalggF.root", "Events")
+# Ana.filemanager.AddItem("official", "/eos/home-m/mhuwiler/data/HHtobbtautau/NanoAODv12/Run3Summer22NanoAODv12_1-1.root", "Events")
+# Ana.filemanager.AddItem("ggfBoostedPrivate", "/eos/home-m/mhuwiler/software/rh9/AnaBoosted/data/Run3_2023_BoostedPrivate/glugluHHto2b2tau/ggf.root", "Events")
+# Ana.filemanager.AddItem("VBFBoostedPrivate", "/eos/home-m/mhuwiler/software/rh9/AnaBoosted/data/Run3_2023_BoostedPrivate/VBFHHto2b2tau/VBF_SM.root", "Events")
+# Ana.filemanager.AddItem("QCDBoostedPrivate", "/eos/home-m/mhuwiler/software/rh9/AnaBoosted/data/Run3_2023_BoostedPrivate/QCD/qcd_HT_100-1200.root", "Events")
+# Ana.filemanager.AddItem("VBFBoostedPrivate", "/eos/home-m/mhuwiler/software/rh9/AnaBoosted/data/Run3_2023_BoostedPrivate/dataset/jetmet.root", "Events")
+
+Ana.filemanager.AddItem(
+    "ggfBoostedPrivate",
+	"root://cmseos.fnal.gov//store/user/lpcdihiggsboost/NanoAOD_v12_ParT/rkansal/2022/HHbbtt/GluGlutoHHto2B2Tau_kl-0p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV_powheg-pythia8/GluGlutoHHto2B2Tau_kl-0p00_kt-1p00_c2-0p00_TuneCP5_13p6TeV/241029_185858/0000/Run3Summer22NanoAODv12_1-1.root",
+    "Events"
+)
 
 
 def loadFile(desc): 

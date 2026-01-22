@@ -15,7 +15,7 @@ constexpr double Pion_Mass = 0.13957; // The pion mass from the PDG (used as def
 constexpr double Muon_Mass = -1.; // TODO: set value from PDG, perhaps also for electron and Kaon
 
 
-constexpr double drThres = 0.05; // The maximal dR separation when genmatching 
+constexpr double matchingDrThres = 0.05; // The maximal dR separation when genmatching 
 
 // TODO: 
 // - implement autoblacklist
@@ -388,10 +388,7 @@ namespace Ana
     		}
     	}
 
-    	std::cout << "N bs: " << bs.size() << std::endl; 
     	if (bs.size() > 2) return result; // if more than 2 b, probably 4b or other weird stuff
-
-    	//std::cout << "Sizes: " << id.size() << " " << mother.size() << " " << statusFlag.size() << std::endl; 
 
 
 		for (unsigned int i=0; i<id.size(); i++) 
@@ -400,28 +397,14 @@ namespace Ana
 			{
 				// Might be the muon
 				auto localtaus = findMothers(i, "Tau", id, mother, statusFlag); 
-
 				if (localtaus.size() < 1 ) continue; 
 
-				//std::cout << "Flag: " << (1u << 7) << " " << hardProcess << std::endl; 
 				auto localHiggses = findMothers(i, "Higgs", id, mother, statusFlag, hardProcess); 
-
-				std::cout << "N taus: " << localtaus.size() << ", N Higgses: " << localHiggses.size() << std::endl; 
-
 				if (localHiggses.size() < 1) continue; 
 
 
 				std::vector<int> otherTaus = findDescendants(localHiggses[0], "Tau", id, mother, statusFlag, hardProcess); 
-				std::cout << "N taus: " << otherTaus.size() << std::endl; 
-				for (auto element : otherTaus) 
-				{
-					std::string text = RevertPDGid(id[element]); 
-					/*for (auto it = PDGid.begin(); it != PDGid.end(); it++) 
-					{
-						if (it->second == element) text = it->first; 
-					}*/
-					std::cout << text << ": " << id[element] << " (id), " << RevertPDGid(id[mother[element]]) << " (mother = " << id[mother[element]] << "), " << statusFlag[element] << " (status)" << std::endl; 
-				}
+
 				otherTaus.erase(std::remove(otherTaus.begin(), otherTaus.end(), localtaus.at(0)), otherTaus.end()); // Remove the muonic tau
 				bool notTauh = false; 
 				for (unsigned int j=0; j<otherTaus.size(); j++) // Make sure the other tau decay is not electronic
@@ -433,9 +416,6 @@ namespace Ana
 				}
 
 				if (notTauh) continue; 
-
-
-
 
 				muons.push_back(i); 
 				Higgses.insert(Higgses.end(), localHiggses.begin(), localHiggses.end()); 
@@ -451,28 +431,14 @@ namespace Ana
 			{
 				// Might be the muon
 				auto localtaus = findMothers(i, "Tau", id, mother, statusFlag); 
-
 				if (localtaus.size() < 1 ) continue; 
 
-				//std::cout << "Flag: " << (1u << 7) << " " << hardProcess << std::endl; 
 				auto localHiggses = findMothers(i, "Higgs", id, mother, statusFlag, hardProcess); 
-
-				std::cout << "N taus: " << localtaus.size() << ", N Higgses: " << localHiggses.size() << std::endl; 
-
 				if (localHiggses.size() < 1) continue; 
 
 
 				std::vector<int> otherTaus = findDescendants(localHiggses[0], "Tau", id, mother, statusFlag, hardProcess); 
-				std::cout << "N taus: " << otherTaus.size() << std::endl; 
-				for (auto element : otherTaus) 
-				{
-					std::string text = RevertPDGid(id[element]); 
-					/*for (auto it = PDGid.begin(); it != PDGid.end(); it++) 
-					{
-						if (it->second == element) text = it->first; 
-					}*/
-					std::cout << text << ": " << id[element] << " (id), " << RevertPDGid(id[mother[element]]) << " (mother = " << id[mother[element]] << "), " << statusFlag[element] << " (status)" << std::endl; 
-				}
+
 				otherTaus.erase(std::remove(otherTaus.begin(), otherTaus.end(), localtaus.at(0)), otherTaus.end()); // Remove the muonic tau
 				bool notTauh = false; 
 				for (unsigned int j=0; j<otherTaus.size(); j++) // Make sure the other tau decay is not electronic
@@ -619,11 +585,7 @@ namespace Ana
     		}
     	}
 
-    	std::cout << "N bs: " << bs.size() << std::endl; 
     	if (bs.size() > 2) return result; // if more than 2 b, probably 4b or other weird stuff
-
-    	//std::cout << "Sizes: " << id.size() << " " << mother.size() << " " << statusFlag.size() << std::endl; 
-
 
 		for (unsigned int i=0; i<id.size(); i++) 
 		{
@@ -631,28 +593,14 @@ namespace Ana
 			{
 				// Might be the muon
 				auto localtaus = findMothers(i, "Tau", id, mother, statusFlag); 
-
 				if (localtaus.size() < 1 ) continue; 
 
-				//std::cout << "Flag: " << (1u << 7) << " " << hardProcess << std::endl; 
 				auto localHiggses = findMothers(i, "Higgs", id, mother, statusFlag, hardProcess); 
-
-				std::cout << "N taus: " << localtaus.size() << ", N Higgses: " << localHiggses.size() << std::endl; 
-
 				if (localHiggses.size() < 1) continue; 
 
 
 				std::vector<int> otherTaus = findDescendants(localHiggses[0], "Tau", id, mother, statusFlag, hardProcess); 
-				std::cout << "N taus: " << otherTaus.size() << std::endl; 
-				for (auto element : otherTaus) 
-				{
-					std::string text = RevertPDGid(id[element]); 
-					/*for (auto it = PDGid.begin(); it != PDGid.end(); it++) 
-					{
-						if (it->second == element) text = it->first; 
-					}*/
-					std::cout << text << ": " << id[element] << " (id), " << RevertPDGid(id[mother[element]]) << " (mother = " << id[mother[element]] << "), " << statusFlag[element] << " (status)" << std::endl; 
-				}
+
 				otherTaus.erase(std::remove(otherTaus.begin(), otherTaus.end(), localtaus.at(0)), otherTaus.end()); // Remove the muonic tau
 				bool notTauh = false; 
 				for (unsigned int j=0; j<otherTaus.size(); j++) // Make sure the other tau decay is not electronic
@@ -685,25 +633,9 @@ namespace Ana
 
 				if (localtaus.size() < 1 ) continue; 
 
-				//std::cout << "Flag: " << (1u << 7) << " " << hardProcess << std::endl; 
 				auto localHiggses = findMothers(i, "Higgs", id, mother, statusFlag, hardProcess); 
-
-				std::cout << "N taus: " << localtaus.size() << ", N Higgses: " << localHiggses.size() << std::endl; 
-
 				if (localHiggses.size() < 1) continue; 
-
-
 				std::vector<int> otherTaus = findDescendants(localHiggses[0], "Tau", id, mother, statusFlag, hardProcess); 
-				std::cout << "N taus: " << otherTaus.size() << std::endl; 
-				for (auto element : otherTaus) 
-				{
-					std::string text = RevertPDGid(id[element]); 
-					/*for (auto it = PDGid.begin(); it != PDGid.end(); it++) 
-					{
-						if (it->second == element) text = it->first; 
-					}*/
-					std::cout << text << ": " << id[element] << " (id), " << RevertPDGid(id[mother[element]]) << " (mother = " << id[mother[element]] << "), " << statusFlag[element] << " (status)" << std::endl; 
-				}
 				otherTaus.erase(std::remove(otherTaus.begin(), otherTaus.end(), localtaus.at(0)), otherTaus.end()); // Remove the muonic tau
 				bool notTauh = false; 
 				for (unsigned int j=0; j<otherTaus.size(); j++) // Make sure the other tau decay is not electronic
@@ -973,12 +905,12 @@ namespace Ana
 		TLorentzVector P4; 
 		for (unsigned int i = 0; i<pt.size(); i++) 
 		{
-			if ((pdgId.size() != pt.size()) || (abs(pdgId[i]) != type)) continue; 
+			if ((pdgId.size() == pt.size()) && (abs(pdgId[i]) != type)) continue; 
 			P4.SetPtEtaPhiM(pt[i], eta[i], phi[i], m[i]); 
 
 			float currentdR = P4.DeltaR(gen); 
 
-			if ((currentdR < dR) && (currentdR < drThres)) 
+			if (currentdR < dR) // && (currentdR < matchingDrThres)
 			{
 				dR = currentdR; 
 				closest = i; 
@@ -989,11 +921,75 @@ namespace Ana
 	}
 
 
+	int closestMatchBelowThreshold(int genParticle, const ROOT::VecOps::RVec<float>& genPt, const ROOT::VecOps::RVec<float>& genEta, const ROOT::VecOps::RVec<float>& genPhi, const ROOT::VecOps::RVec<float>& genMass, const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m, const ROOT::VecOps::RVec<float>& pdgId = std::vector<float>(), const std::string particleType = "") 
+	{
+		if (overflowProtected(genPt, genParticle) < 0.) return defaultValue<int>(); 
+		TLorentzVector gen; 
+		gen.SetPtEtaPhiM(overflowProtected(genPt, genParticle), overflowProtected(genEta, genParticle), overflowProtected(genPhi, genParticle), overflowProtected(genMass, genParticle)); 
+
+		int type = PDGid[particleType]; 
+
+
+		float dR = 999.; 
+		int closest = -999; 
+
+		TLorentzVector P4; 
+		for (unsigned int i = 0; i<pt.size(); i++) 
+		{
+			if ((pdgId.size() != pt.size()) || (abs(pdgId[i]) != type)) continue; 
+			P4.SetPtEtaPhiM(pt[i], eta[i], phi[i], m[i]); 
+
+			float currentdR = P4.DeltaR(gen); 
+
+			if ((currentdR < dR) && (currentdR < matchingDrThres)) 
+			{
+				dR = currentdR; 
+				closest = i; 
+			}
+		}
+
+		return closest; 
+	};
+
+
+	/*int closestMatch[&matchingDrThres](int genParticle, const ROOT::VecOps::RVec<float>& genPt, const ROOT::VecOps::RVec<float>& genEta, const ROOT::VecOps::RVec<float>& genPhi, const ROOT::VecOps::RVec<float>& genMass, const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m, const ROOT::VecOps::RVec<float>& pdgId = std::vector<float>(), const std::string particleType = "") 
+	{
+		constexpr double matchingDrThres = 0.05; // The maximal dR separation when genmatching 
+		if (overflowProtected(genPt, genParticle) < 0.) return defaultValue<int>(); 
+		TLorentzVector gen; 
+		gen.SetPtEtaPhiM(overflowProtected(genPt, genParticle), overflowProtected(genEta, genParticle), overflowProtected(genPhi, genParticle), overflowProtected(genMass, genParticle)); 
+
+		int type = PDGid[particleType]; 
+
+
+		float dR = 999.; 
+		int closest = -999; 
+
+		TLorentzVector P4; 
+		for (unsigned int i = 0; i<pt.size(); i++) 
+		{
+			if ((pdgId.size() != pt.size()) || (abs(pdgId[i]) != type)) continue; 
+			P4.SetPtEtaPhiM(pt[i], eta[i], phi[i], m[i]); 
+
+			float currentdR = P4.DeltaR(gen); 
+
+			if ((currentdR < dR) && (currentdR < matchingDrThres)) 
+			{
+				dR = currentdR; 
+				closest = i; 
+			}
+		}
+
+		return closest; 
+	};*/
+
+
 	float deltaR(int genParticle, const ROOT::VecOps::RVec<float>& genPt, const ROOT::VecOps::RVec<float>& genEta, const ROOT::VecOps::RVec<float>& genPhi, const ROOT::VecOps::RVec<float>& genMass, const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& m, const int cand) 
 	{
 		double genpt = overflowProtected(genPt, genParticle); 
+		if (genpt < 0.) return genpt; 
 		double candpt = overflowProtected(pt, cand); 
-		if (genpt < 0. || candpt < 0.) return genpt; // If gen particle is out of bounds, return default overflow value
+		if (candpt < 0.) return candpt; // If gen particle is out of bounds, return default overflow value
 		TLorentzVector gen, candidate; 
 		gen.SetPtEtaPhiM(genpt, overflowProtected(genEta, genParticle), overflowProtected(genPhi, genParticle), overflowProtected(genMass, genParticle)); 
 		candidate.SetPtEtaPhiM(candpt, eta[cand], phi[cand], m[cand]); 
@@ -1002,6 +998,209 @@ namespace Ana
 		
 
 		return dR; 
+	}
+
+
+	inline double deltaPhi(double phi1, double phi2)
+	{
+	    double dphi = phi1 - phi2;
+	    while (dphi >  M_PI) dphi -= 2.0 * M_PI;
+	    while (dphi <= -M_PI) dphi += 2.0 * M_PI;
+	    return dphi;
+	}
+
+
+	inline double deltaR(double eta1, double phi1, double eta2, double phi2)
+	{
+	    const double dEta = eta1 - eta2;
+	    const double dPhi = deltaPhi(phi1, phi2);
+	    return std::sqrt(dEta * dEta + dPhi * dPhi);
+	}
+
+
+	int RecoMuon(
+		const ROOT::VecOps::RVec<float>& pt, 
+		const ROOT::VecOps::RVec<float>& eta, 
+		const ROOT::VecOps::RVec<float>& phi, 
+		const ROOT::VecOps::RVec<int>& id, 
+		const ROOT::VecOps::RVec<float>& dz, 
+		const ROOT::VecOps::RVec<float>& dxy, 
+		const float jetEta, 
+		const float jetPhi
+	) 
+	{
+		int n = pt.size(); 
+		assert(eta.size() == n); 
+		assert(phi.size() == n); 
+		assert(mass.size() == n); 
+
+		// Muon selection requirements 
+		double ptThres = 20.; 
+		double etaThres = 2.4; 
+		double dzThres = 0.2; 
+		double dxyThres = 0.045; 
+		//double idThres = 0.2; // The ID is a bool 
+		double drThres = 1.5; 
+
+
+		int muon = -999.; 
+
+		for (unsigned int i=0; i<n; i++) 
+		{
+			if (pt[i] < ptThres) continue; 
+			if (eta[i] > etaThres) continue; 
+			if (dz[i] > dzThres) continue; 
+			if (dxy[i] > dxyThres) continue; 
+			if (id[i]) continue; 
+			double dR = deltaR(eta[i], phi[i], jetEta, jetPhi); // ROOT::Math::VectorUtil::DeltaR(eta[i], phi[i], jetEta, jetPhi); 
+			if (dR > drThres) continue; 
+
+			muon = i;
+			break; 
+		}
+
+		return muon; 
+	}
+
+
+	int RecoTauJet(const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& id) 
+	{
+		int nJets = pt.size(); 
+		assert(eta.size() == nJets); 
+		assert(phi.size() == nJets); 
+		assert(mass.size() == nJets); 
+
+		// Muon selection requirements 
+		double ptThres = 200.; 
+		double etaThres = 2.4; 
+		double idThres = 0.5; 
+		
+
+
+		int tauJet = -999.; 
+
+		//std::vector<std::pair<double, int> > jetRanking; 
+		int idPrev = -999.; 
+
+		for (unsigned int i=0; i<nJets; i++) 
+		{
+			if (pt[i] < ptThres) continue; 
+			if (eta[i] > etaThres) continue; 
+			//if (id[i] < idThres) continue; 
+
+			//jetRanking.push_back(std::make_pair(id[i], i)); 
+			if (id[i] > idPrev) 
+			{
+				idPrev = id[i]; 
+				tauJet = i; 
+			}
+		}
+
+		//std::sort(jetRanking.begin(), jetRanking.end()); //std::less<>()
+
+		/*std::cout << "Sorting..." << std::endl; 
+		for (auto element : jetRanking) 
+		{
+			std::cout << "Jet ID: " << element.first << " " << element.second << std::endl; 
+		}*/
+
+		/*if (jetRanking.size()) 
+		{
+			tauJet = jetRanking[0].second; 
+		}*/
+
+		return tauJet; 
+	}
+
+
+	int RecoBJet(
+		const ROOT::VecOps::RVec<float>& pt, 
+		const ROOT::VecOps::RVec<float>& eta, 
+		const ROOT::VecOps::RVec<float>& phi, 
+		const ROOT::VecOps::RVec<float>& id
+	) 
+	{
+		int nJets = pt.size(); 
+		assert(eta.size() == nJets); 
+		assert(phi.size() == nJets); 
+		assert(mass.size() == nJets); 
+
+		// Muon selection requirements 
+		double ptThres = 200.; 
+		double etaThres = 2.4; 
+		double idThres = 0.3; 
+		
+
+
+		int bJet = -999.; 
+
+		//std::vector<std::pair<double, int> > jetRanking; 
+		int idPrev = -999.; 
+
+		for (unsigned int i=0; i<nJets; i++) 
+		{
+			if (pt[i] < ptThres) continue; 
+			if (eta[i] > etaThres) continue; 
+			if (id[i] < idThres) continue; 
+
+			//jetRanking.push_back(std::make_pair(id[i], i)); 
+			if (id[i] > idPrev) 
+			{
+				idPrev = id[i]; 
+				bJet = i; 
+			}
+		}
+
+		//std::sort(jetRanking.begin(), jetRanking.end()); //std::less<>()
+
+		/*std::cout << "Sorting..." << std::endl; 
+		for (auto element : jetRanking) 
+		{
+			std::cout << "Jet ID: " << element.first << " " << element.second << std::endl; 
+		}*/
+
+		/*if (jetRanking.size()) 
+		{
+			bJet = jetRanking[0].second; 
+		}*/
+
+		return bJet; 
+	}
+
+
+	int RecoElectron(const ROOT::VecOps::RVec<float>& pt, const ROOT::VecOps::RVec<float>& eta, const ROOT::VecOps::RVec<float>& phi, const ROOT::VecOps::RVec<float>& id, const ROOT::VecOps::RVec<float>& dz, const ROOT::VecOps::RVec<float>& dxy, const float jetEta, const float jetPhi) 
+	{
+		int n = pt.size(); 
+		assert(eta.size() == n); 
+		assert(phi.size() == n); 
+		assert(mass.size() == n); 
+
+		// Muon selection requirements 
+		double ptThres = 20.; 
+		double etaThres = 2.4; 
+		double dzThres = 0.2; 
+		double dxyThres = 0.045; 
+		double idThres = 0.2; 
+		double drThres = 1.5; 
+
+
+		int electron = -999.; 
+
+		for (unsigned int i=0; i<n; i++) 
+		{
+			if (pt[i] < ptThres) continue; 
+			if (eta[i] > etaThres) continue; 
+			if (dz[i] > dzThres) continue; 
+			if (dxy[i] > dxyThres) continue; 
+			if (id[i] < idThres) continue; 
+			double dR = deltaR(eta[i], phi[i], jetEta, jetPhi); // ROOT::Math::VectorUtil::DeltaR(eta[i], phi[i], jetEta, jetPhi); 
+			if (dR > drThres) continue; 
+
+			electron = i;
+			break; 
+		}
+
+		return electron; 
 	}
 
 
@@ -1043,5 +1242,4 @@ namespace Ana
 
 
 #endif
-
 

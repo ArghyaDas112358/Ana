@@ -28,8 +28,13 @@ class Particle : public TObject
 
 	Particle() = default; 
 
-	inline Particle(const float& initPt, const float& initEta, const float& initPhi, const double mass, const int initpdgid = 0) 
-	  : pt(initPt), eta(initEta), phi(initPhi), m(mass), pdgid(initpdgid) {
+	inline Particle(
+		const float& initPt, 
+		const float& initEta, 
+		const float& initPhi, 
+		const double mass, 
+		const int initpdgid = 0
+	) : pt(initPt), eta(initEta), phi(initPhi), m(mass), pdgid(initpdgid) {
 	  		P4.SetPtEtaPhiM(pt, eta, phi, m); 
 	  }
 
